@@ -71,7 +71,7 @@ LEVEL2_OFFSET = 500
 NUM_XP_WEEK1 = 15600
 WEEKLY_INCREMENT = 1
 
-CONFIG_PATH = "config.json"
+CONFIG_PATH = "../dat/config.json"
 
 def cumulativeSum(index, offset, amount):
     value = 0

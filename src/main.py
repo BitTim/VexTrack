@@ -1,5 +1,9 @@
 import tkinter as tk
-from tkinter import Variable, ttk
+from tkinter import ttk, simpledialog
+
+from addDiag import AddDiag
+
+from addDiag import *
 
 import os
 import datetime as dt
@@ -58,6 +62,21 @@ dailyRemainingTitle.pack(padx=8, pady=8, side=tk.LEFT)
 dailyRemainingLabel = ttk.Label(dailyRemainingContainer, text="99999")
 dailyRemainingLabel.pack(padx=8, pady=8, side=tk.LEFT)
 
+# --------------------------------
+#  Add XP Dialog
+# --------------------------------
+
+def addXPCallback():
+    diag = AddDiag(title="Add XP", parent=root)
+    print(diag.xpAmount, ",",  diag.message)
+    return diag.xpAmount, diag.message
+
+addXPContainer = ttk.Frame(dailyXPContainer)
+addXPContainer.pack(padx=8, pady=0, side=tk.LEFT)
+
+addXPBtn = ttk.Button(addXPContainer, text="Add XP", command=addXPCallback)
+addXPBtn.pack(padx=8, pady=8, side=tk.LEFT)
+
 # ================================
 #  Main Loop
 # ================================
@@ -71,7 +90,7 @@ LEVEL2_OFFSET = 500
 NUM_XP_WEEK1 = 15600
 WEEKLY_INCREMENT = 1
 
-CONFIG_PATH = "../dat/config.json"
+CONFIG_PATH = "dat/config.json"
 
 def cumulativeSum(index, offset, amount):
     value = 0

@@ -5,4 +5,4 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/BitTim/ValorantXPCalc?logo=github&style=for-the-badge) ![GitHub contributors](https://img.shields.io/github/contributors/BitTim/ValorantXPCalc?logo=github&style=for-the-badge "Contributors") ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/BitTim/ValorantXPCalc?logo=github&style=for-the-badge "Last commit")
 
 ## Installation
-
+Download zip from https://github.com/BitTim/VexTrack/releases/tag/v1.1 and extract VexTrack.exe in a folder. After opening VexTrack fro the first time, a new folder "dat" will be created in the same folder the exe is in automatically.

@@ -9,5 +9,7 @@ BUFFER_DAYS = 8
 
 CONFIG_PATH = "dat/config.json"
 
-WINDOW_TITLE = "Valorant XP Calculator"
+WINDOW_TITLE = "Vex Track"
 WINDOW_GEOMETRY = "700x640"
+
+VERSION_STRING = "v1.1"

@@ -1,4 +1,11 @@
 config.json
 __pycache__
-dat
-.vscode
+dat/
+.vscode/
+dist/
+*.toc
+*.pyz
+*.html
+*.pkg
+*.exe
+*.bak

@@ -19,7 +19,8 @@ from matplotlib.patches import Rectangle
 windowSize = vars.WINDOW_GEOMETRY.split("x")
 
 root = tk.Tk()
-root.title(vars.WINDOW_TITLE)
+root.title(vars.WINDOW_TITLE + " " + vars.VERSION_STRING)
+root.iconbitmap("VexTrack.ico")
 root.geometry(vars.WINDOW_GEOMETRY)
 root.minsize(int(windowSize[0]), int(windowSize[1]))
 
@@ -356,7 +357,11 @@ def resetCallback():
 def init():
     runInit = False
 
-    if not os.path.isfile(vars.CONFIG_PATH):
+    if not os.path.exists(os.path.dirname(vars.CONFIG_PATH)):
+        os.mkdir(os.path.dirname(vars.CONFIG_PATH))
+        runInit = True
+
+    if not os.path.exists(vars.CONFIG_PATH):
         f = open(vars.CONFIG_PATH, "x")
         f.close()
         runInit = True
@@ -441,6 +446,7 @@ def updateGraph(config, epilogue, plot):
             yAxisYou.append(int(h["amount"]) + prevValue)
             index += 1
 
+    if prevDate != date.today(): yAxisYou.append(yAxisYou[len(yAxisYou) - 1])
     plot.plot(timeAxis[:len(yAxisYou)], yAxisYou, color='red', label='You', linewidth=3)
 
     yAxisDailyIdeal = []

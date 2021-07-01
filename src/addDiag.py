@@ -8,6 +8,8 @@ class AddDiag(simpledialog.Dialog):
         super().__init__(parent, title)
 
     def body(self, frame):
+        self.iconbitmap("VexTrack.exe")
+
         self.descriptionContainer = Frame(frame)
         self.descriptionContainer.pack(padx=8, pady=8)
 

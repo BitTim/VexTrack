@@ -7,6 +7,7 @@ from core import *
 from tkinter import *
 from tkinter import ttk, messagebox
 from addDiag import AddDiag
+from updater import *
 
 from datetime import *
 
@@ -20,7 +21,7 @@ windowSize = vars.WINDOW_GEOMETRY.split("x")
 
 root = tk.Tk()
 root.title(vars.WINDOW_TITLE + " " + vars.VERSION_STRING)
-root.iconbitmap("VexTrack.ico")
+root.iconbitmap("VexTrack.exe")
 root.geometry(vars.WINDOW_GEOMETRY)
 root.minsize(int(windowSize[0]), int(windowSize[1]))
 
@@ -430,18 +431,23 @@ def updateGraph(config, epilogue, plot):
     plot.plot(timeAxis, yAxisIdeal, color='gray', label='Ideal', linestyle="-")
 
     yAxisYou = []
-    prevDate = date(1970, 1, 1)
+    prevDate = date.fromtimestamp(config["history"][0]["time"])
     index = -1
 
     for h in config["history"]:
         currDate = date.fromtimestamp(h["time"])
-        if currDate == prevDate:
+        if currDate == prevDate and index != -1:
             yAxisYou[index] = yAxisYou[index] + int(h["amount"])
         else:
+            deltaDate = (currDate - prevDate)
             prevDate = currDate
 
             if index != -1: prevValue = yAxisYou[index]
             else: prevValue = 0
+
+            for i in range(1, deltaDate.days):
+                yAxisYou.append(prevValue)
+                index += 1
 
             yAxisYou.append(int(h["amount"]) + prevValue)
             index += 1
@@ -494,6 +500,12 @@ def updateGraph(config, epilogue, plot):
 def updateValues():
     config = readConfig(vars.CONFIG_PATH)
 
+    if config["activeBPLevel"] > 50:
+        epilogueCheck.config(state=DISABLED)
+        epilogueVar.set(1)
+    else:
+        epilogueCheck.config(state=NORMAL)
+
     dailyProgress, dailyCollected, dailyRemaining, dailyTotal = calcDailyValues(config, epilogueVar.get())
     if(dailyProgress > 100): dailyProgress = 100
     if(dailyRemaining < 0): dailyRemaining = 0
@@ -527,7 +539,7 @@ def updateValues():
 
     history.delete(*history.get_children())
     for h in config["history"]:
-        history.insert("", "end", values=(h["description"], h["amount"], datetime.fromtimestamp(h["time"]).strftime("%d.%m.%Y %H:%M")))
+        history.insert("", "end", values=(h["description"], str(h["amount"]) + " XP", datetime.fromtimestamp(h["time"]).strftime("%d.%m.%Y %H:%M")))
     
     updateGraph(config, epilogueVar.get(), graphPlot)
 
@@ -552,6 +564,7 @@ epilogueCheck.pack(padx=8, pady=0, side=tk.RIGHT)
 #  Main Loop
 # ================================
 
+checkNewVersion()
 init()
 
 while dailyBar == None:

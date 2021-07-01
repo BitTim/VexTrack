@@ -12,6 +12,8 @@ class InitDiag(simpledialog.Dialog):
         super().__init__(parent, title)
 
     def body(self, frame):
+        self.iconbitmap("VexTrack.exe")
+
         self.activeBPContainer = Frame(frame)
         self.activeBPContainer.pack(padx=8, pady=8, fill="x")
 

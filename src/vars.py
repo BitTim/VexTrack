@@ -12,4 +12,7 @@ CONFIG_PATH = "dat/config.json"
 WINDOW_TITLE = "Vex Track"
 WINDOW_GEOMETRY = "700x640"
 
-VERSION_STRING = "v1.1"
+GITHUB_USER = "BitTim"
+GITHUB_REPO = "VexTrack"
+EXE_FILENAME = "VexTrack.exe"
+VERSION_STRING = "v1.2"

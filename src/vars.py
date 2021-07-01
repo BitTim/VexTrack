@@ -8,6 +8,8 @@ LEVEL2_OFFSET = 500
 BUFFER_DAYS = 8
 
 CONFIG_PATH = "dat/config.json"
+UPDATER_PATH = "Updater.exe"
+VERSION_PATH = "version"
 
 WINDOW_TITLE = "Vex Track"
 WINDOW_GEOMETRY = "700x640"
@@ -15,4 +17,3 @@ WINDOW_GEOMETRY = "700x640"
 GITHUB_USER = "BitTim"
 GITHUB_REPO = "VexTrack"
 EXE_FILENAME = "VexTrack.exe"
-VERSION_STRING = "v1.2"

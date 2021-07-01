@@ -7,7 +7,6 @@ from core import *
 from tkinter import *
 from tkinter import ttk, messagebox
 from addDiag import AddDiag
-from updater import *
 
 from datetime import *
 
@@ -19,8 +18,11 @@ from matplotlib.patches import Rectangle
 
 windowSize = vars.WINDOW_GEOMETRY.split("x")
 
+with open(vars.VERSION_PATH, 'r') as f:
+        versionString = f.read()
+
 root = tk.Tk()
-root.title(vars.WINDOW_TITLE + " " + vars.VERSION_STRING)
+root.title(vars.WINDOW_TITLE + " " + versionString)
 root.iconbitmap("VexTrack.exe")
 root.geometry(vars.WINDOW_GEOMETRY)
 root.minsize(int(windowSize[0]), int(windowSize[1]))
@@ -564,12 +566,12 @@ epilogueCheck.pack(padx=8, pady=0, side=tk.RIGHT)
 #  Main Loop
 # ================================
 
-checkNewVersion()
+os.startfile(vars.UPDATER_PATH)
+
 init()
 
 while dailyBar == None:
     continue
 
 updateValues()
-
 root.mainloop()

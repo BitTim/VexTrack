@@ -21,7 +21,6 @@ def downloadNewVersion(versionString):
 
 def restartProgram():
     os.startfile(EXE_FILENAME)
-    root.destroy()
 
 def checkNewVersion():
     response = requests.get("https://api.github.com/repos/" + GITHUB_USER + "/" + GITHUB_REPO + "/releases/latest")

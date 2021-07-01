@@ -540,8 +540,8 @@ def updateValues():
     levelTotalLabel["text"] = str(levelTotal) + " XP"
 
     history.delete(*history.get_children())
-    for h in config["history"]:
-        history.insert("", "end", values=(h["description"], str(h["amount"]) + " XP", datetime.fromtimestamp(h["time"]).strftime("%d.%m.%Y %H:%M")))
+    for i in range(len(config["history"]) - 1, -1, -1):
+        history.insert("", "end", values=(config["history"][i]["description"], str(config["history"][i]["amount"]) + " XP", datetime.fromtimestamp(config["history"][i]["time"]).strftime("%d.%m.%Y %H:%M")))
     
     updateGraph(config, epilogueVar.get(), graphPlot)
 

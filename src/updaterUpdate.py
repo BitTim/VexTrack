@@ -20,15 +20,15 @@ def downloadNewUpdaterVersion(versionString):
     with open(VERSION_PATH, 'r') as f:
         content = f.readlines()
     
+    if len(content) < 2:
+        content.append("v1.0")
+
     content[1] = versionString
     for i in range(0, len(content)):
         if i != len(content) - 1: content[i] += "\n"
     
     with open(VERSION_PATH, 'w') as f:
         f.writelines(content)
-
-def restartUpdater():
-    os.startfile("Updater.exe")
 
 def checkNewUpdaterVersion():
     with open(VERSION_PATH, 'r') as f:
@@ -48,8 +48,8 @@ def checkNewUpdaterVersion():
                 break
 
             if versionNumber < latestVersionNumber:
+                messagebox.showinfo("Updater", "Updater is updating from version " + versionString + " to " + latestVersionString)
                 downloadNewUpdaterVersion(latestVersionString)
-                restartUpdater()
                 break
     
     root.destroy()

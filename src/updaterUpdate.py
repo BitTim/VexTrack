@@ -25,6 +25,8 @@ def downloadNewUpdaterVersion(versionString):
         f.writelines(content)
 
 def checkNewUpdaterVersion():
+    newVersion = False
+
     content = []
     with open(VERSION_PATH, 'r') as f:
         content = f.readlines()
@@ -56,6 +58,9 @@ def checkNewUpdaterVersion():
             if versionNumber < latestVersionNumber:
                 messagebox.showinfo("Updater", "Updater is updating from version " + versionString + " to " + latestVersionString)
                 downloadNewUpdaterVersion(latestVersionString)
+                messagebox.showinfo("Updater", "Updater ha been updated")
+                newVersion = True
                 break
     
     root.destroy()
+    return newVersion

@@ -18,7 +18,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.patches import Rectangle
 
 windowSize = vars.WINDOW_GEOMETRY.split("x")
-checkNewUpdaterVersion()
+newUpdaterVersion = checkNewUpdaterVersion()
 
 with open(vars.VERSION_PATH, 'r') as f:
     versionString = f.readlines()[0]
@@ -28,6 +28,11 @@ root.title(vars.WINDOW_TITLE + " " + versionString)
 root.iconbitmap("VexTrack.exe")
 root.geometry(vars.WINDOW_GEOMETRY)
 root.minsize(int(windowSize[0]), int(windowSize[1]))
+
+if newUpdaterVersion == True:
+    root.iconify()
+    root.update()
+    root.deiconify()
 
 # ================================
 #  Tabbed View

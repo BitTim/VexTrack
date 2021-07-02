@@ -371,6 +371,18 @@ def editElementCallback():
     if editDiag.description != currElement["values"][0] or editDiag.xpAmount != currElement["values"][1].strip(" XP"):
         editElement(currElementID, editDiag.description, int(editDiag.xpAmount))
 
+def deleteElementCallback():
+    currElementFocus = history.focus()
+    currElement = history.item(currElementFocus)
+    currElementID = history.index(currElementFocus)
+
+    if len(currElement["values"]) == 0:
+        return
+
+    res = messagebox.askquestion("Delete Element", "Are you sure, that you want to delete the selected element?\nDescription: " + currElement["values"][0] + "\nAmount: " + currElement["values"][1])
+    if res == "yes":
+        deleteElement(currElementID)
+
 # --------------------------------
 #  Init
 # --------------------------------
@@ -448,6 +460,28 @@ def editElement(index, description, amount):
     writeConfig(vars.CONFIG_PATH, config)
     updateValues()
 
+def deleteElement(index):
+    config = readConfig(vars.CONFIG_PATH)
+    historyLen = len(config["history"])
+
+    prevBPLevel = config["activeBPLevel"]
+
+    index = historyLen - 1 - index
+    config["history"].pop(index)
+
+    config = recalcXP(config)
+    deltaBP = prevBPLevel - config["activeBPLevel"]
+    
+    if deltaBP > 0:
+        for i in range(0, deltaBP, 1):
+            messagebox.showinfo("Sorry", "You have lost Battlepass Level " + str(prevBPLevel - i - 1))
+    elif deltaBP < 0:
+        for i in range(0, deltaBP, -1):
+            messagebox.showinfo("Congratulations", "Congratulations! You have unlocked Battlepass Level " + str(-1 * i + prevBPLevel))
+
+    writeConfig(vars.CONFIG_PATH, config)
+    updateValues()
+
 def updateGraph(config, epilogue, plot):
     plot.clear()
     timeAxis = []
@@ -504,10 +538,13 @@ def updateGraph(config, epilogue, plot):
     remainingDays = dateDelta.days
     dayDelta = duration - remainingDays
 
-    dailyProgress, dailyCollected, dailyRemaining, dailyTotal = calcDailyValues(config, epilogue)
-    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = calcTotalValues(config, epilogue)
+    if date.fromtimestamp(config["history"][len(config["history"]) - 1]["time"]) == date.today(): offset = 1
+    else: offset = 0
 
-    yAxisDailyIdeal.append(totalXPCollected)
+    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = calcTotalValues(config, epilogue)
+    dailyTotal = round((totalXPTotal - yAxisYou[index - offset]) / (remainingDays - vars.BUFFER_DAYS))
+
+    yAxisDailyIdeal.append(yAxisYou[index - offset])
 
     for i in range(1, remainingDays + 1):
         yAxisDailyIdeal.append(yAxisDailyIdeal[i - 1] + dailyTotal)
@@ -604,7 +641,10 @@ epilogueCheck = ttk.Checkbutton(buttonContainer, text="Epilogue", onvalue=1, off
 epilogueCheck.pack(padx=8, pady=0, side=tk.RIGHT)
 
 editBTN = ttk.Button(historyBtnContainer, text="Edit Element", command=editElementCallback)
-editBTN.pack(side=tk.BOTTOM, fill="x")
+editBTN.pack(side=tk.RIGHT, fill="both", expand=True)
+
+delBTN = ttk.Button(historyBtnContainer, text="Delete Element", command=deleteElementCallback)
+delBTN.pack(side=tk.LEFT, fill="both", expand=True)
 
 # ================================
 #  Main Loop

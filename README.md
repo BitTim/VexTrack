@@ -5,4 +5,22 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/BitTim/ValorantXPCalc?logo=github&style=for-the-badge) ![GitHub contributors](https://img.shields.io/github/contributors/BitTim/ValorantXPCalc?logo=github&style=for-the-badge "Contributors") ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/BitTim/ValorantXPCalc?logo=github&style=for-the-badge "Last commit")
 
 ## Installation
-Download zip from ![Here](https://github.com/BitTim/VexTrack/releases/latest) and extract all contents in a folder. After opening VexTrack for the first time, a new folder "dat" will be created in the same folder the exe is in automatically.
+Download zip from ![here](https://github.com/BitTim/VexTrack/releases) and extract all contents in a folder. After opening VexTrack for the first time, a new folder "dat" will be created in the same folder the exe is in automatically.
+
+## Compilation
+First of all, download and install the latest version of python from ![here](https://python.org).
+
+Then install pyinstaller via this command: `pip install pyinstaller`
+
+When you have both installed, run the following commands in the root folder:
+
+    pyinstaller --onefile --windowed --icon=VexTrack.ico src/VexTrack.py
+    pyinstaller --onefile --windowed --icon=VexTrack.ico src/Updater.py
+
+The compiled .exe files are in a new folder "dist". Move them to the desired location and create one more file in the same folder as the .exe files called "version" without any file extension with the following contents:
+
+    <VexTrack Version>
+    <Updater Version>
+
+Where <VexTrack Version> is the version string of the latest version of VexTrack (e.g. "v1.3") and <Updater Version> is the version string of the latest version of the Updater (e.g. "v1.1")
+To see which versions are the latest, ![click here](https://github.com/BitTim/VexTrack/releases)

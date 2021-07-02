@@ -10,7 +10,7 @@ root.withdraw()
 def downloadNewUpdaterVersion(versionString):
     os.system("taskkill /f /im " + "Updater.exe")
 
-    url = "https://github.com/" + GITHUB_USER + "/" + GITHUB_REPO + "/releases/download/" + versionString + "/" + "Updater.exe"
+    url = "https://github.com/" + GITHUB_USER + "/" + GITHUB_REPO + "/releases/download/U" + versionString + "/" + "Updater.exe"
     r = requests.get(url)
 
     with open("Updater.exe", 'wb') as f:
@@ -19,20 +19,26 @@ def downloadNewUpdaterVersion(versionString):
     content = []
     with open(VERSION_PATH, 'r') as f:
         content = f.readlines()
-    
-    if len(content) < 2:
-        content.append("v1.0")
 
     content[1] = versionString
-    for i in range(0, len(content)):
-        if i != len(content) - 1: content[i] += "\n"
-    
     with open(VERSION_PATH, 'w') as f:
         f.writelines(content)
 
 def checkNewUpdaterVersion():
+    content = []
     with open(VERSION_PATH, 'r') as f:
-        versionString = f.readlines()[1] 
+        content = f.readlines()
+    
+    if len(content) < 2:
+        content.append("v1.0")
+
+        for i in range(0, len(content)):
+            if i != len(content) - 1: content[i] += "\n"
+
+        with open(VERSION_PATH, 'w') as f:
+            f.writelines(content)
+    
+    versionString = content[1]
 
     versionNumber = versionString.split("v")[1]
     response = requests.get("https://api.github.com/repos/" + GITHUB_USER + "/" + GITHUB_REPO + "/releases")

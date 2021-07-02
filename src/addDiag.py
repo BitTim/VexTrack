@@ -2,9 +2,9 @@ from tkinter import *
 from tkinter import simpledialog, messagebox
 
 class AddDiag(simpledialog.Dialog):
-    def __init__(self, parent, title):
-        self.xpAmount = None
-        self.description = None
+    def __init__(self, parent, title, description=None, amount=None):
+        self.xpAmount = amount
+        self.description = description
         super().__init__(parent, title)
 
     def body(self, frame):
@@ -17,12 +17,16 @@ class AddDiag(simpledialog.Dialog):
         self.descriptionBox = Entry(self.descriptionContainer, width=32)
         self.descriptionBox.pack(padx=8, pady=0, side=LEFT)
 
+        if self.description != None: self.descriptionBox.insert(0, self.description)
+
         self.xpAmountContainer = Frame(frame)
         self.xpAmountContainer.pack(padx=8, pady=8)
 
         Label(self.xpAmountContainer, text="XP Amount").pack(padx=8, pady=0, side=LEFT)
         self.xpAmountBox = Entry(self.xpAmountContainer, width=32)
         self.xpAmountBox.pack(padx=8, pady=0, side=LEFT)
+
+        if self.xpAmount != None: self.xpAmountBox.insert(0, self.xpAmount)
 
         return frame
     

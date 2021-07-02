@@ -68,6 +68,49 @@ graphPlot.tick_params(left = False, right = False, labelleft = False, labelbotto
 # --------------------------------    
 
 # --------------------------------
+#  Misc
+# --------------------------------
+
+miscStatsContainer = ttk.LabelFrame(statsTab, text="Miscellaneous")
+miscStatsContainer.pack(padx=8, pady=8, fill="x")
+
+ttk.Label(miscStatsContainer, text="Remaining Days:").grid(column=0, row=0, sticky="w", padx=8)
+
+miscRemainingDaysLabel = ttk.Label(miscStatsContainer, text="90")
+miscRemainingDaysLabel.grid(column=1, row=0, sticky="w", padx=8)
+
+ttk.Label(miscStatsContainer, text="Average XP per Day:").grid(column=3, row=0, sticky="w", padx=8)
+
+miscAverageLabel = ttk.Label(miscStatsContainer, text="99999 XP")
+miscAverageLabel.grid(column=4, row=0, sticky="w", padx=8)
+
+ttk.Label(miscStatsContainer, text="Deviation from ideal:").grid(column=0, row=1, sticky="w", padx=8)
+
+miscIdealDeviationLabel = ttk.Label(miscStatsContainer, text="99999 XP")
+miscIdealDeviationLabel.grid(column=1, row=1, sticky="w", padx=8)
+
+ttk.Label(miscStatsContainer, text="Deviation from daily ideal:").grid(column=3, row=1, sticky="w", padx=8)
+
+miscDailyDeviationLabel = ttk.Label(miscStatsContainer, text="99999 XP")
+miscDailyDeviationLabel.grid(column=4, row=1, sticky="w", padx=8)
+
+ttk.Label(miscStatsContainer, text="Strongest day: ").grid(column=0, row=2, sticky="w", padx=8)
+
+miscStrongestDayDateLabel = ttk.Label(miscStatsContainer, text="01.01.1970")
+miscStrongestDayDateLabel.grid(column=1, row=2, sticky="w", padx=8)
+
+miscStrongestDayAmountLabel = ttk.Label(miscStatsContainer, text="99999 XP")
+miscStrongestDayAmountLabel.grid(column=2, row=2, sticky="w", padx=8)
+
+ttk.Label(miscStatsContainer, text="Weakest day:").grid(column=3, row=2, sticky="w", padx=8)
+
+miscWeakestDayDateLabel = ttk.Label(miscStatsContainer, text="01.01.1970")
+miscWeakestDayDateLabel.grid(column=4, row=2, sticky="w", padx=8)
+
+miscWeakestDayAmountLabel = ttk.Label(miscStatsContainer, text="99999 XP")
+miscWeakestDayAmountLabel.grid(column=5, row=2, sticky="w", padx=8)
+
+# --------------------------------
 #  Total XP
 # --------------------------------
 
@@ -150,7 +193,6 @@ bpBar.pack(padx=8, pady=8, side=tk.RIGHT, fill="x")
 bpBar["value"] = 35
 bpPercentageLabel["text"] = str(bpBar["value"]) + "%"
 
-
 # ................................
 #  Collecetd
 # ................................
@@ -162,6 +204,18 @@ ttk.Label(bpPreviousUnlockContainer, text="Previous Unlock:").pack(padx=8, pady=
 
 bpPreviousUnlockLabel = ttk.Label(bpPreviousUnlockContainer, text="54")
 bpPreviousUnlockLabel.pack(padx=8, pady=0, side=tk.LEFT)
+
+# ................................
+#  Active
+# ................................
+
+bpActiveContainer = ttk.Frame(bpContainer)
+bpActiveContainer.pack(padx=8, pady=8, side=tk.LEFT)
+
+ttk.Label(bpActiveContainer, text="Active:").pack(padx=8, pady=0, side=tk.LEFT)
+
+bpActiveLabel = ttk.Label(bpActiveContainer, text="55")
+bpActiveLabel.pack(padx=8, pady=0, side=tk.LEFT)
 
 # ................................
 #  Remaining
@@ -246,43 +300,6 @@ ttk.Label(levelTotalContainer, text="Total:").pack(padx=8, pady=0, side=tk.LEFT)
 
 levelTotalLabel = ttk.Label(levelTotalContainer, text="38000")
 levelTotalLabel.pack(padx=8, pady=0, side=tk.LEFT)
-
-# --------------------------------
-#  Misc
-# --------------------------------
-
-miscStatsContainer = ttk.LabelFrame(statsTab, text="Miscellaneous")
-miscStatsContainer.pack(padx=8, pady=8, fill="x")
-
-miscStatsContentContainer = ttk.Frame(miscStatsContainer)
-miscStatsContentContainer.pack(padx=8, pady=8, fill="both")
-
-miscRemainingDaysContainer = ttk.Frame(miscStatsContentContainer)
-miscRemainingDaysContainer.pack(padx=8, pady=0, fill="x")
-
-ttk.Label(miscRemainingDaysContainer, text="Remaining Days:").pack(padx=8, pady=0, side=tk.LEFT)
-
-miscRemainingDaysLabel = ttk.Label(miscRemainingDaysContainer, text="90")
-miscRemainingDaysLabel.pack(padx=8, pady=0, side=tk.LEFT)
-
-miscDeviationContainer = ttk.Frame(miscStatsContentContainer)
-miscDeviationContainer.pack(padx=8, pady=0)
-
-miscIdealDeviationContainer = ttk.Frame(miscDeviationContainer)
-miscIdealDeviationContainer.pack(padx=8, pady=0, side=tk.LEFT)
-
-ttk.Label(miscIdealDeviationContainer, text="Deviation from ideal:").pack(padx=8, pady=0, side=tk.LEFT)
-
-miscIdealDeviationLabel = ttk.Label(miscIdealDeviationContainer, text="9999999 XP")
-miscIdealDeviationLabel.pack(padx=8, pady=0, side=tk.LEFT)
-
-miscDailyDeviationContainer = ttk.Frame(miscStatsContentContainer)
-miscDailyDeviationContainer.pack(padx=8, pady=0, side=tk.LEFT)
-
-ttk.Label(miscDailyDeviationContainer, text="Deviation from daily ideal:").pack(padx=8, pady=0, side=tk.LEFT)
-
-miscDailyDeviationLabel = ttk.Label(miscDailyDeviationContainer, text="9999999 XP")
-miscDailyDeviationLabel.pack(padx=8, pady=0, side=tk.LEFT)
 
 # --------------------------------
 #  History
@@ -530,8 +547,8 @@ def updateGraph(config, epilogue, plot):
     plot.clear()
     timeAxis = []
     
-    seasonEndDate = dt.datetime.strptime(config["seasonEndDate"], "%d.%m.%Y")
-    dateDelta = seasonEndDate - dt.datetime.fromtimestamp(config["history"][0]["time"])
+    seasonEndDate = datetime.strptime(config["seasonEndDate"], "%d.%m.%Y")
+    dateDelta = seasonEndDate - datetime.fromtimestamp(config["history"][0]["time"])
     duration = dateDelta.days
     timeAxis = range(0, duration + 1)
 
@@ -574,11 +591,10 @@ def updateGraph(config, epilogue, plot):
             index += 1
 
     if prevDate != date.today(): yAxisYou.append(yAxisYou[len(yAxisYou) - 1])
-    plot.plot(timeAxis[:len(yAxisYou)], yAxisYou, color='red', label='You', linewidth=3)
 
     yAxisDailyIdeal = []
 
-    dateDelta = seasonEndDate - dt.datetime.now()
+    dateDelta = seasonEndDate - datetime.now()
     remainingDays = dateDelta.days
     dayDelta = duration - remainingDays
 
@@ -595,6 +611,7 @@ def updateGraph(config, epilogue, plot):
         if yAxisDailyIdeal[i] > totalXP: yAxisDailyIdeal[i] = totalXP
 
     plot.plot(timeAxis[dayDelta - 1:], yAxisDailyIdeal, color='skyblue', label='Daily Ideal', alpha=1, linestyle="-.")
+    plot.plot(timeAxis[:len(yAxisYou)], yAxisYou, color='red', label='You', linewidth=3)
     plot.plot(dayDelta, totalXPCollected, color='darkred', label="Now", marker="o", markersize=5)
 
     plot.tick_params(top=False, bottom=False, left=False, right=False, labelleft=False)
@@ -618,8 +635,9 @@ def updateGraph(config, epilogue, plot):
     # --------------------------------
 
     plot.add_patch(Rectangle((duration - vars.BUFFER_DAYS, 0), vars.BUFFER_DAYS, totalXP, edgecolor="red", facecolor="red", alpha=0.1))
-
     graph.draw()
+
+    return yAxisYou, yAxisIdeal, yAxisDailyIdeal
 
 def updateValues():
     config = readConfig(vars.CONFIG_PATH)
@@ -634,6 +652,8 @@ def updateValues():
     if(dailyProgress > 100): dailyProgress = 100
     if(dailyRemaining < 0): dailyRemaining = 0
 
+    yAxisYou, yAxisIdeal, yAxisDailyIdeal = updateGraph(config, epilogueVar.get(), graphPlot)
+
     dailyBar["value"] = dailyProgress
     dailyPercentageLabel["text"] = str(dailyProgress) + "%"
     dailyCollectedLabel["text"] = str(dailyCollected) + " XP"
@@ -647,10 +667,11 @@ def updateValues():
     totalRemainingLabel["text"] = str(totalXPRemaining) + " XP"
     totalTotalLabel["text"] = str(totalXPTotal) + " XP"
 
-    bpProgress, bpCollected, bpRemaining, bpTotal = calcBattlepassValues(config, epilogueVar.get())
+    bpProgress, bpCollected, bpActive, bpRemaining, bpTotal = calcBattlepassValues(config, epilogueVar.get())
     bpBar["value"] = bpProgress
     bpPercentageLabel["text"] = str(bpProgress) + "%"
     bpPreviousUnlockLabel["text"] = str(bpCollected) + " Levels"
+    bpActiveLabel["text"] = "Level " + str(bpActive)
     bpRemainingLabel["text"] = str(bpRemaining) + " Levels"
     bpTotalLabel["text"] = str(bpTotal) + " Levels"
 
@@ -661,12 +682,20 @@ def updateValues():
     levelRemainingLabel["text"] = str(levelRemaining) + " XP"
     levelTotalLabel["text"] = str(levelTotal) + " XP"
 
+    miscRemainigDays, miscAverage, miscDeviationIdeal, miscDeviationDaily, miscStrongestDayDate, miscStrongestDayAmount, miscWeakestDayDate, miscWeakestDayAmount = calcMiscValues(config, yAxisYou, yAxisIdeal, yAxisDailyIdeal, epilogueVar.get())
+    miscRemainingDaysLabel["text"] = str(miscRemainigDays) + " Days"
+    miscAverageLabel["text"] = str(miscAverage) + " XP"
+    miscIdealDeviationLabel["text"] = str(miscDeviationIdeal) + " XP"
+    miscDailyDeviationLabel["text"] = str(miscDeviationDaily) + " XP"
+    miscStrongestDayDateLabel["text"] = str(miscStrongestDayDate)
+    miscStrongestDayAmountLabel["text"] = str(miscStrongestDayAmount) + " XP"
+    miscWeakestDayDateLabel["text"] = str(miscWeakestDayDate)
+    miscWeakestDayAmountLabel["text"] = str(miscWeakestDayAmount) + " XP"
+
     history.delete(*history.get_children())
     for i in range(len(config["history"]) - 1, -1, -1):
         history.insert("", "end", values=(config["history"][i]["description"], str(config["history"][i]["amount"]) + " XP", datetime.fromtimestamp(config["history"][i]["time"]).strftime("%d.%m.%Y %H:%M")))
     
-    updateGraph(config, epilogueVar.get(), graphPlot)
-
 # ================================
 #  Buttons
 # ================================

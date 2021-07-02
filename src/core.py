@@ -1,4 +1,4 @@
-import datetime as dt
+from datetime import *
 import json
 import vars
 
@@ -22,8 +22,8 @@ def writeConfig(path, config):
 # ================================
 
 def calcDailyValues(config, epilogue):
-    seasonEndDate = dt.datetime.strptime(config["seasonEndDate"], "%d.%m.%Y")
-    dateDelta = seasonEndDate - dt.datetime.now()
+    seasonEndDate = datetime.strptime(config["seasonEndDate"], "%d.%m.%Y")
+    dateDelta = seasonEndDate - datetime.now()
     remainingDays = dateDelta.days
 
     totalXP = cumulativeSum(vars.NUM_BPLEVELS, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL) + epilogue * vars.NUM_EPLOGUE_LEVELS * vars.NUM_EPLOGUE_XP_PER_LEVEL
@@ -38,7 +38,7 @@ def calcDailyValues(config, epilogue):
 
     xpToday = 0
     for t in config["history"]:
-        if dt.date.fromtimestamp(t["time"]) != dt.date.today():
+        if date.fromtimestamp(t["time"]) != date.today():
             continue
         xpToday += int(t["amount"])
 
@@ -65,8 +65,9 @@ def calcBattlepassValues(config, epilogue):
     bpTotal = vars.NUM_BPLEVELS + epilogue * vars.NUM_EPLOGUE_LEVELS
     bpRemaining = bpTotal - bpLastUnlocked
     bpProgress = round(bpLastUnlocked / bpTotal * 100)
+    bpActive = config["activeBPLevel"]
 
-    return bpProgress, bpLastUnlocked, bpRemaining, bpTotal
+    return bpProgress, bpLastUnlocked, bpActive, bpRemaining, bpTotal
 
 def calcLevelValues(config, epilogue):
     levelCollected = config["cXP"]
@@ -79,6 +80,49 @@ def calcLevelValues(config, epilogue):
     levelProgress = round(levelCollected / levelTotal * 100)
 
     return levelProgress, levelCollected, levelRemaining, levelTotal
+
+def calcMiscValues(config, yAxisYou, yAxisIdeal, yAxisDailyIdeal, epilogue):
+    seasonEndDate = datetime.strptime(config["seasonEndDate"], "%d.%m.%Y")
+    dateDelta = seasonEndDate - datetime.now()
+    miscRemainigDays = dateDelta.days
+
+    dailyXP = []
+    prevDate = date.fromtimestamp(config["history"][0]["time"])
+    index = -1
+
+    for h in config["history"]:
+        currDate = date.fromtimestamp(h["time"])
+        if currDate == prevDate and index != -1:
+            dailyXP[index]["amount"] = dailyXP[index]["amount"] + int(h["amount"])
+        else:
+            deltaDate = (currDate - prevDate)
+
+            for i in range(1, deltaDate.days):
+                dailyXP.append({"date": (prevDate + timedelta(days=i)).strftime("%d.%m.%Y"), "amount": 0})
+                index += 1
+
+            dailyXP.append({"date": currDate.strftime("%d.%m.%Y"), "amount": int(h["amount"])})
+
+            prevDate = currDate
+            index += 1
+    
+    miscAverage = 0
+    for d in dailyXP:
+        miscAverage += d["amount"]
+
+    miscAverage = round(miscAverage / len(dailyXP))
+
+    t = len(yAxisYou) - 1
+    dailyXP.sort(key=lambda item: item.get("amount"))
+
+    miscDeviationIdeal = yAxisYou[t] - yAxisIdeal[t]
+    miscDeviationDaily = yAxisYou[t] - yAxisDailyIdeal[1]
+    miscStrongestDayDate = dailyXP[len(dailyXP) - 1]["date"]
+    miscStrongestDayAmount = dailyXP[len(dailyXP) - 1]["amount"]
+    miscWeakestDayDate = dailyXP[0]["date"]
+    miscWeakestDayAmount = dailyXP[0]["amount"]
+
+    return miscRemainigDays, miscAverage, miscDeviationIdeal, miscDeviationDaily, miscStrongestDayDate, miscStrongestDayAmount, miscWeakestDayDate, miscWeakestDayAmount
 
 def recalcXP(config):
     collectedXP = 0

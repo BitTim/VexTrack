@@ -544,15 +544,15 @@ def updateGraph(config, epilogue, plot):
     else: offset = 0
 
     totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = calcTotalValues(config, epilogue)
-    dailyTotal = round((totalXPTotal - yAxisYou[index - offset]) / (remainingDays - vars.BUFFER_DAYS))
+    dailyTotal = round((totalXPTotal - yAxisYou[index - offset]) / (remainingDays - vars.BUFFER_DAYS + 1))
 
     yAxisDailyIdeal.append(yAxisYou[index - offset])
 
-    for i in range(1, remainingDays + 1):
+    for i in range(1, remainingDays + 2):
         yAxisDailyIdeal.append(yAxisDailyIdeal[i - 1] + dailyTotal)
         if yAxisDailyIdeal[i] > totalXP: yAxisDailyIdeal[i] = totalXP
 
-    plot.plot(timeAxis[dayDelta:], yAxisDailyIdeal, color='skyblue', label='Daily Ideal', alpha=1, linestyle="-.")
+    plot.plot(timeAxis[dayDelta - 1:], yAxisDailyIdeal, color='skyblue', label='Daily Ideal', alpha=1, linestyle="-.")
     plot.plot(dayDelta, totalXPCollected, color='darkred', label="Now", marker="o", markersize=5)
 
     plot.tick_params(top=False, bottom=False, left=False, right=False, labelleft=False)

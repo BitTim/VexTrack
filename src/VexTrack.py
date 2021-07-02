@@ -1,12 +1,14 @@
 import tkinter as tk
 from initDiag import InitDiag
+from scrollableFrame import ScrollableFrame
 import vars
 import os
 
 from core import *
 from tkinter import *
 from tkinter import ttk, messagebox
-from addDiag import AddDiag
+from addXPDiag import *
+from addGoalDiag import *
 
 from updaterUpdate import *
 from datetime import *
@@ -67,54 +69,57 @@ graphPlot.tick_params(left = False, right = False, labelleft = False, labelbotto
 #  Stats
 # --------------------------------    
 
-# --------------------------------
-#  Misc
-# --------------------------------
+statsScrollableContainer = ScrollableFrame(statsTab)
+statsContainer = statsScrollableContainer.scrollableFrame
+statsScrollableContainer.pack(fill="both", expand=True)
 
-miscStatsContainer = ttk.LabelFrame(statsTab, text="Miscellaneous")
+miscStatsContainer = ttk.LabelFrame(statsContainer, text="Miscellaneous")
 miscStatsContainer.pack(padx=8, pady=8, fill="x")
 
-ttk.Label(miscStatsContainer, text="Remaining Days:").grid(column=0, row=0, sticky="w", padx=8)
+miscContentContainer = ttk.Frame(miscStatsContainer)
+miscContentContainer.pack(padx=8, pady=8, fill="x")
 
-miscRemainingDaysLabel = ttk.Label(miscStatsContainer, text="90")
+ttk.Label(miscContentContainer, text="Remaining Days:", font=('TkDefaultFont', 9,'bold')).grid(column=0, row=0, sticky="w", padx=8)
+
+miscRemainingDaysLabel = ttk.Label(miscContentContainer, text="90")
 miscRemainingDaysLabel.grid(column=1, row=0, sticky="w", padx=8)
 
-ttk.Label(miscStatsContainer, text="Average XP per Day:").grid(column=3, row=0, sticky="w", padx=8)
+ttk.Label(miscContentContainer, text="Average XP per Day:", font=('TkDefaultFont', 9,'bold')).grid(column=3, row=0, sticky="w", padx=8)
 
-miscAverageLabel = ttk.Label(miscStatsContainer, text="99999 XP")
+miscAverageLabel = ttk.Label(miscContentContainer, text="99999 XP")
 miscAverageLabel.grid(column=4, row=0, sticky="w", padx=8)
 
-ttk.Label(miscStatsContainer, text="Deviation from ideal:").grid(column=0, row=1, sticky="w", padx=8)
+ttk.Label(miscContentContainer, text="Deviation from ideal:", font=('TkDefaultFont', 9,'bold')).grid(column=0, row=1, sticky="w", padx=8)
 
-miscIdealDeviationLabel = ttk.Label(miscStatsContainer, text="99999 XP")
+miscIdealDeviationLabel = ttk.Label(miscContentContainer, text="99999 XP")
 miscIdealDeviationLabel.grid(column=1, row=1, sticky="w", padx=8)
 
-ttk.Label(miscStatsContainer, text="Deviation from daily ideal:").grid(column=3, row=1, sticky="w", padx=8)
+ttk.Label(miscContentContainer, text="Deviation from daily ideal:", font=('TkDefaultFont', 9,'bold')).grid(column=3, row=1, sticky="w", padx=8)
 
-miscDailyDeviationLabel = ttk.Label(miscStatsContainer, text="99999 XP")
+miscDailyDeviationLabel = ttk.Label(miscContentContainer, text="99999 XP")
 miscDailyDeviationLabel.grid(column=4, row=1, sticky="w", padx=8)
 
-ttk.Label(miscStatsContainer, text="Strongest day: ").grid(column=0, row=2, sticky="w", padx=8)
+ttk.Label(miscContentContainer, text="Strongest day: ", font=('TkDefaultFont', 9,'bold')).grid(column=0, row=2, sticky="w", padx=8)
 
-miscStrongestDayDateLabel = ttk.Label(miscStatsContainer, text="01.01.1970")
+miscStrongestDayDateLabel = ttk.Label(miscContentContainer, text="01.01.1970")
 miscStrongestDayDateLabel.grid(column=1, row=2, sticky="w", padx=8)
 
-miscStrongestDayAmountLabel = ttk.Label(miscStatsContainer, text="99999 XP")
+miscStrongestDayAmountLabel = ttk.Label(miscContentContainer, text="99999 XP")
 miscStrongestDayAmountLabel.grid(column=2, row=2, sticky="w", padx=8)
 
-ttk.Label(miscStatsContainer, text="Weakest day:").grid(column=3, row=2, sticky="w", padx=8)
+ttk.Label(miscContentContainer, text="Weakest day:", font=('TkDefaultFont', 9,'bold')).grid(column=3, row=2, sticky="w", padx=8)
 
-miscWeakestDayDateLabel = ttk.Label(miscStatsContainer, text="01.01.1970")
+miscWeakestDayDateLabel = ttk.Label(miscContentContainer, text="01.01.1970")
 miscWeakestDayDateLabel.grid(column=4, row=2, sticky="w", padx=8)
 
-miscWeakestDayAmountLabel = ttk.Label(miscStatsContainer, text="99999 XP")
+miscWeakestDayAmountLabel = ttk.Label(miscContentContainer, text="99999 XP")
 miscWeakestDayAmountLabel.grid(column=5, row=2, sticky="w", padx=8)
 
 # --------------------------------
 #  Total XP
 # --------------------------------
 
-totalXPContainer = ttk.LabelFrame(statsTab, text="Total XP")
+totalXPContainer = ttk.LabelFrame(statsContainer, text="Total XP")
 totalXPContainer.pack(padx=8, pady=8, fill="x")
 
 # ................................
@@ -128,7 +133,7 @@ totalXPPercentageLabel = ttk.Label(totalProgressContainer)
 totalXPPercentageLabel.pack(padx=8, pady=8, side=tk.RIGHT, fill="x", expand=True)
 
 totalXPBar = ttk.Progressbar(totalProgressContainer, orient="horizontal", length=10000, mode="determinate")
-totalXPBar.pack(padx=8, pady=8, side=tk.RIGHT, fill="x")
+totalXPBar.pack(padx=1, pady=8, side=tk.RIGHT, fill="x")
 
 totalXPBar["value"] = 35
 totalXPPercentageLabel["text"] = str(totalXPBar["value"]) + "%"
@@ -141,10 +146,10 @@ totalXPPercentageLabel["text"] = str(totalXPBar["value"]) + "%"
 totalCollectedContainer = ttk.Frame(totalXPContainer)
 totalCollectedContainer.pack(padx=8, pady=8, side=tk.LEFT)
 
-ttk.Label(totalCollectedContainer, text="Collected:").pack(padx=8, pady=0, side=tk.LEFT)
+ttk.Label(totalCollectedContainer, text="Collected:", font=('TkDefaultFont', 9,'bold')).pack(padx=1, pady=0, side=tk.LEFT)
 
 totalCollectedLabel = ttk.Label(totalCollectedContainer, text="9999999 XP")
-totalCollectedLabel.pack(padx=8, pady=0, side=tk.LEFT)
+totalCollectedLabel.pack(padx=1, pady=0, side=tk.LEFT)
 
 # ................................
 #  Remaining
@@ -153,10 +158,10 @@ totalCollectedLabel.pack(padx=8, pady=0, side=tk.LEFT)
 totalRemainingContainer = ttk.Frame(totalXPContainer)
 totalRemainingContainer.pack(padx=8, pady=8, side=tk.LEFT)
 
-ttk.Label(totalRemainingContainer, text="Remaining:").pack(padx=8, pady=0, side=tk.LEFT)
+ttk.Label(totalRemainingContainer, text="Remaining:", font=('TkDefaultFont', 9,'bold')).pack(padx=1, pady=0, side=tk.LEFT)
 
 totalRemainingLabel = ttk.Label(totalRemainingContainer, text="9999999 XP")
-totalRemainingLabel.pack(padx=8, pady=0, side=tk.LEFT)
+totalRemainingLabel.pack(padx=1, pady=0, side=tk.LEFT)
 
 # ................................
 #  Total
@@ -165,16 +170,16 @@ totalRemainingLabel.pack(padx=8, pady=0, side=tk.LEFT)
 totalTotalContainer = ttk.Frame(totalXPContainer)
 totalTotalContainer.pack(padx=8, pady=8, side=tk.LEFT)
 
-ttk.Label(totalTotalContainer, text="Total:").pack(padx=8, pady=0, side=tk.LEFT)
+ttk.Label(totalTotalContainer, text="Total:", font=('TkDefaultFont', 9,'bold')).pack(padx=1, pady=0, side=tk.LEFT)
 
 totalTotalLabel = ttk.Label(totalTotalContainer, text="9999999 XP")
-totalTotalLabel.pack(padx=8, pady=0, side=tk.LEFT)
+totalTotalLabel.pack(padx=1, pady=0, side=tk.LEFT)
 
 # --------------------------------
 #  Battlepass
 # --------------------------------
 
-bpContainer = ttk.LabelFrame(statsTab, text="Battlepass")
+bpContainer = ttk.LabelFrame(statsContainer, text="Battlepass")
 bpContainer.pack(padx=8, pady=8, fill="x")
 
 # ................................
@@ -200,10 +205,10 @@ bpPercentageLabel["text"] = str(bpBar["value"]) + "%"
 bpPreviousUnlockContainer = ttk.Frame(bpContainer)
 bpPreviousUnlockContainer.pack(padx=8, pady=8, side=tk.LEFT)
 
-ttk.Label(bpPreviousUnlockContainer, text="Previous Unlock:").pack(padx=8, pady=0, side=tk.LEFT)
+ttk.Label(bpPreviousUnlockContainer, text="Previous Unlock:", font=('TkDefaultFont', 9,'bold')).pack(padx=1, pady=0, side=tk.LEFT)
 
 bpPreviousUnlockLabel = ttk.Label(bpPreviousUnlockContainer, text="54")
-bpPreviousUnlockLabel.pack(padx=8, pady=0, side=tk.LEFT)
+bpPreviousUnlockLabel.pack(padx=1, pady=0, side=tk.LEFT)
 
 # ................................
 #  Active
@@ -212,10 +217,10 @@ bpPreviousUnlockLabel.pack(padx=8, pady=0, side=tk.LEFT)
 bpActiveContainer = ttk.Frame(bpContainer)
 bpActiveContainer.pack(padx=8, pady=8, side=tk.LEFT)
 
-ttk.Label(bpActiveContainer, text="Active:").pack(padx=8, pady=0, side=tk.LEFT)
+ttk.Label(bpActiveContainer, text="Active:", font=('TkDefaultFont', 9,'bold')).pack(padx=1, pady=0, side=tk.LEFT)
 
 bpActiveLabel = ttk.Label(bpActiveContainer, text="55")
-bpActiveLabel.pack(padx=8, pady=0, side=tk.LEFT)
+bpActiveLabel.pack(padx=1, pady=0, side=tk.LEFT)
 
 # ................................
 #  Remaining
@@ -224,10 +229,10 @@ bpActiveLabel.pack(padx=8, pady=0, side=tk.LEFT)
 bpRemainingContainer = ttk.Frame(bpContainer)
 bpRemainingContainer.pack(padx=8, pady=8, side=tk.LEFT)
 
-ttk.Label(bpRemainingContainer, text="Remaining:").pack(padx=8, pady=0, side=tk.LEFT)
+ttk.Label(bpRemainingContainer, text="Remaining:", font=('TkDefaultFont', 9,'bold')).pack(padx=1, pady=0, side=tk.LEFT)
 
 bpRemainingLabel = ttk.Label(bpRemainingContainer, text="54")
-bpRemainingLabel.pack(padx=8, pady=0, side=tk.LEFT)
+bpRemainingLabel.pack(padx=1, pady=0, side=tk.LEFT)
 
 # ................................
 #  Total
@@ -236,16 +241,16 @@ bpRemainingLabel.pack(padx=8, pady=0, side=tk.LEFT)
 bpTotalContainer = ttk.Frame(bpContainer)
 bpTotalContainer.pack(padx=8, pady=8, side=tk.LEFT)
 
-ttk.Label(bpTotalContainer, text="Total:").pack(padx=8, pady=0, side=tk.LEFT)
+ttk.Label(bpTotalContainer, text="Total:", font=('TkDefaultFont', 9,'bold')).pack(padx=1, pady=0, side=tk.LEFT)
 
 bpTotalLabel = ttk.Label(bpTotalContainer, text="55")
-bpTotalLabel.pack(padx=8, pady=0, side=tk.LEFT)
+bpTotalLabel.pack(padx=1, pady=0, side=tk.LEFT)
 
 # --------------------------------
 #  Level
 # --------------------------------
 
-levelContainer = ttk.LabelFrame(statsTab, text="Active Level")
+levelContainer = ttk.LabelFrame(statsContainer, text="Active Level")
 levelContainer.pack(padx=8, pady=8, fill="x")
 
 # ................................
@@ -272,10 +277,10 @@ levelPercentageLabel["text"] = str(levelBar["value"]) + "%"
 levelCollectedContainer = ttk.Frame(levelContainer)
 levelCollectedContainer.pack(padx=8, pady=8, side=tk.LEFT)
 
-ttk.Label(levelCollectedContainer, text="Collected:").pack(padx=8, pady=0, side=tk.LEFT)
+ttk.Label(levelCollectedContainer, text="Collected:", font=('TkDefaultFont', 9,'bold')).pack(padx=1, pady=0, side=tk.LEFT)
 
 levelCollectedLabel = ttk.Label(levelCollectedContainer, text="37999")
-levelCollectedLabel.pack(padx=8, pady=0, side=tk.LEFT)
+levelCollectedLabel.pack(padx=1, pady=0, side=tk.LEFT)
 
 # ................................
 #  Remaining
@@ -284,10 +289,10 @@ levelCollectedLabel.pack(padx=8, pady=0, side=tk.LEFT)
 levelRemainingContainer = ttk.Frame(levelContainer)
 levelRemainingContainer.pack(padx=8, pady=8, side=tk.LEFT)
 
-ttk.Label(levelRemainingContainer, text="Remaining:").pack(padx=8, pady=0, side=tk.LEFT)
+ttk.Label(levelRemainingContainer, text="Remaining:", font=('TkDefaultFont', 9,'bold')).pack(padx=1, pady=0, side=tk.LEFT)
 
 levelRemainingLabel = ttk.Label(levelRemainingContainer, text="38000")
-levelRemainingLabel.pack(padx=8, pady=0, side=tk.LEFT)
+levelRemainingLabel.pack(padx=1, pady=0, side=tk.LEFT)
 
 # ................................
 #  Total
@@ -296,10 +301,10 @@ levelRemainingLabel.pack(padx=8, pady=0, side=tk.LEFT)
 levelTotalContainer = ttk.Frame(levelContainer)
 levelTotalContainer.pack(padx=8, pady=8, side=tk.LEFT)
 
-ttk.Label(levelTotalContainer, text="Total:").pack(padx=8, pady=0, side=tk.LEFT)
+ttk.Label(levelTotalContainer, text="Total:", font=('TkDefaultFont', 9,'bold')).pack(padx=1, pady=0, side=tk.LEFT)
 
 levelTotalLabel = ttk.Label(levelTotalContainer, text="38000")
-levelTotalLabel.pack(padx=8, pady=0, side=tk.LEFT)
+levelTotalLabel.pack(padx=1, pady=0, side=tk.LEFT)
 
 # --------------------------------
 #  History
@@ -361,10 +366,10 @@ dailyBar.pack(padx=8, pady=8, side=tk.RIGHT, fill="x")
 dailyCollectedContainer = ttk.Frame(dailyXPContainer)
 dailyCollectedContainer.pack(padx=8, pady=8, side=tk.LEFT)
 
-ttk.Label(dailyCollectedContainer, text="Collected:").pack(padx=8, pady=0, side=tk.LEFT)
+ttk.Label(dailyCollectedContainer, text="Collected:", font=('TkDefaultFont', 9,'bold')).pack(padx=1, pady=0, side=tk.LEFT)
 
 dailyCollectedLabel = ttk.Label(dailyCollectedContainer, text="99999")
-dailyCollectedLabel.pack(padx=8, pady=0, side=tk.LEFT)
+dailyCollectedLabel.pack(padx=1, pady=0, side=tk.LEFT)
 
 # --------------------------------
 #  Remaining
@@ -373,10 +378,10 @@ dailyCollectedLabel.pack(padx=8, pady=0, side=tk.LEFT)
 dailyRemainingContainer = ttk.Frame(dailyXPContainer)
 dailyRemainingContainer.pack(padx=8, pady=8, side=tk.LEFT)
 
-ttk.Label(dailyRemainingContainer, text="Remaining:").pack(padx=8, pady=0, side=tk.LEFT)
+ttk.Label(dailyRemainingContainer, text="Remaining:", font=('TkDefaultFont', 9,'bold')).pack(padx=1, pady=0, side=tk.LEFT)
 
 dailyRemainingLabel = ttk.Label(dailyRemainingContainer, text="99999")
-dailyRemainingLabel.pack(padx=8, pady=0, side=tk.LEFT)
+dailyRemainingLabel.pack(padx=1, pady=0, side=tk.LEFT)
 
 # --------------------------------
 #  Total
@@ -385,10 +390,10 @@ dailyRemainingLabel.pack(padx=8, pady=0, side=tk.LEFT)
 dailyTotalContainer = ttk.Frame(dailyXPContainer)
 dailyTotalContainer.pack(padx=8, pady=8, side=tk.LEFT)
 
-ttk.Label(dailyTotalContainer, text="Total:").pack(padx=8, pady=0, side=tk.LEFT)
+ttk.Label(dailyTotalContainer, text="Total:", font=('TkDefaultFont', 9,'bold')).pack(padx=1, pady=0, side=tk.LEFT)
 
 dailyTotalLabel = ttk.Label(dailyTotalContainer, text="99999")
-dailyTotalLabel.pack(padx=8, pady=0, side=tk.LEFT)
+dailyTotalLabel.pack(padx=1, pady=0, side=tk.LEFT)
 
 # ================================
 #  Functions
@@ -399,10 +404,18 @@ dailyTotalLabel.pack(padx=8, pady=0, side=tk.LEFT)
 # --------------------------------
 
 def addXPCallback():
-    addDiag = AddDiag(root, "Add XP")
+    addXPDiag = AddXPDiag(root, "Add XP")
 
-    if addDiag.description != None and addDiag.xpAmount != None:
-        addXP(addDiag.description, int(addDiag.xpAmount))
+    if addXPDiag.description != None and addXPDiag.xpAmount != None:
+        addXP(addXPDiag.description, int(addXPDiag.xpAmount))
+    
+    updateValues()
+
+def addGoalCallback():
+    addGoalDiag = AddGoalDiag(root, "Add Goal")
+
+    # if addGoalDiag.description != None and addGoalDiag.xpAmount != None:
+    #     addXP(addGoalDiag.description, int(addGoalDiag.xpAmount))
     
     updateValues()
 
@@ -428,7 +441,7 @@ def editElementCallback():
     if len(currElement["values"]) == 0:
         return
 
-    editDiag = AddDiag(root, "Edit Element", currElement["values"][0], currElement["values"][1].strip(" XP"))
+    editDiag = AddXPDiag(root, "Edit Element", currElement["values"][0], currElement["values"][1].strip(" XP"))
     if editDiag.description != currElement["values"][0] or editDiag.xpAmount != currElement["values"][1].strip(" XP"):
         editElement(currElementID, editDiag.description, int(editDiag.xpAmount))
 
@@ -705,6 +718,9 @@ buttonContainer.pack(padx=8, pady=8, side=tk.RIGHT, fill="both", expand=True)
 
 addXPBtn = ttk.Button(buttonContainer, text="Add XP", command=addXPCallback)
 addXPBtn.pack(padx=8, pady=0, side=tk.RIGHT)
+
+resetBtn = ttk.Button(buttonContainer, text="Add Goal", command=addGoalCallback)
+resetBtn.pack(padx=8, pady=0, side=tk.RIGHT)
 
 resetBtn = ttk.Button(buttonContainer, text="Reset", command=resetCallback)
 resetBtn.pack(padx=8, pady=0, side=tk.RIGHT)

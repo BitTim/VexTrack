@@ -79,3 +79,28 @@ def calcLevelValues(config, epilogue):
     levelProgress = round(levelCollected / levelTotal * 100)
 
     return levelProgress, levelCollected, levelRemaining, levelTotal
+
+def recalcXP(config):
+    collectedXP = 0
+
+    for i in range(0, len(config["history"])):
+        collectedXP += int(config["history"][i]["amount"])
+    
+    iteration = 2
+    while collectedXP > 0:
+        if iteration < vars.NUM_BPLEVELS:
+            collectedXP -= vars.LEVEL2_OFFSET + iteration * vars.NUM_XP_PER_LEVEL
+        elif iteration < vars.NUM_BPLEVELS + vars.NUM_EPLOGUE_LEVELS:
+            collectedXP -= vars.NUM_EPLOGUE_XP_PER_LEVEL
+        iteration += 1
+
+    iteration -= 1
+    config["activeBPLevel"] = iteration
+
+    if iteration < vars.NUM_BPLEVELS:
+        collectedXP += vars.LEVEL2_OFFSET + iteration * vars.NUM_XP_PER_LEVEL
+    elif iteration < vars.NUM_BPLEVELS + vars.NUM_EPLOGUE_LEVELS:
+        collectedXP += vars.NUM_EPLOGUE_XP_PER_LEVEL
+    
+    config["cXP"] = collectedXP
+    return config

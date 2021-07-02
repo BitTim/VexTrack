@@ -244,12 +244,15 @@ levelTotalLabel.pack(padx=8, pady=0, side=tk.LEFT)
 #  History
 # --------------------------------
 
+historyListContainer = tk.Frame(historyTab)
+historyListContainer.pack(fill="both", expand=True)
+
 historyStyle = ttk.Style()
 historyStyle.configure("history.Treeview", highlightthickness=0, bd=0, font=('TkDefaultFont', 10))
 historyStyle.configure("history.Treeview.Heading", font=('TkDefaultFont', 10,'bold'))
 historyStyle.layout("history.Treeview", [('history.Treeview.treearea', {'sticky': 'nswe'})])
 
-history = ttk.Treeview(historyTab, columns=(1, 2, 3), show="headings", height="16", style="history.Treeview")
+history = ttk.Treeview(historyListContainer, columns=(1, 2, 3), show="headings", height="16", style="history.Treeview")
 history.pack(side=tk.LEFT, fill="both", expand=True)
 
 history.heading(1, text="Description", anchor="w")
@@ -261,10 +264,13 @@ history.column(2, anchor="e")
 history.column(3, anchor="e")
 
 # Create history Scrollbar
-historyScrollbar = Scrollbar(historyTab, orient=VERTICAL, command=history.yview)
+historyScrollbar = Scrollbar(historyListContainer, orient=VERTICAL, command=history.yview)
 historyScrollbar.pack(side=tk.LEFT, fill="y")
 
 history.configure(yscrollcommand=historyScrollbar.set)
+
+historyBtnContainer = tk.Frame(historyTab)
+historyBtnContainer.pack(fill="x")
 
 # ================================
 #  Daily XP Container
@@ -353,6 +359,18 @@ def resetCallback():
         return
     return
 
+def editElementCallback():
+    currElementFocus = history.focus()
+    currElement = history.item(currElementFocus)
+    currElementID = history.index(currElementFocus)
+
+    if len(currElement["values"]) == 0:
+        return
+
+    editDiag = AddDiag(root, "Edit Element", currElement["values"][0], currElement["values"][1].strip(" XP"))
+    if editDiag.description != currElement["values"][0] or editDiag.xpAmount != currElement["values"][1].strip(" XP"):
+        editElement(currElementID, editDiag.description, int(editDiag.xpAmount))
+
 # --------------------------------
 #  Init
 # --------------------------------
@@ -406,6 +424,29 @@ def addXP(description, amount):
         messagebox.showinfo("Congratulations", "Congratulations! You have unlocked Battlepass Level " + str(config["activeBPLevel"] - 1))
 
     writeConfig(vars.CONFIG_PATH, config)
+
+def editElement(index, description, amount):
+    config = readConfig(vars.CONFIG_PATH)
+    historyLen = len(config["history"])
+
+    prevBPLevel = config["activeBPLevel"]
+
+    index = historyLen - 1 - index
+    config["history"][index]["description"] = description
+    config["history"][index]["amount"] = amount
+
+    config = recalcXP(config)
+    deltaBP = prevBPLevel - config["activeBPLevel"]
+    
+    if deltaBP > 0:
+        for i in range(0, deltaBP, 1):
+            messagebox.showinfo("Sorry", "You have lost Battlepass Level " + str(prevBPLevel - i - 1))
+    elif deltaBP < 0:
+        for i in range(0, deltaBP, -1):
+            messagebox.showinfo("Congratulations", "Congratulations! You have unlocked Battlepass Level " + str(-1 * i + prevBPLevel))
+
+    writeConfig(vars.CONFIG_PATH, config)
+    updateValues()
 
 def updateGraph(config, epilogue, plot):
     plot.clear()
@@ -561,6 +602,9 @@ resetBtn.pack(padx=8, pady=0, side=tk.RIGHT)
 epilogueVar = IntVar()
 epilogueCheck = ttk.Checkbutton(buttonContainer, text="Epilogue", onvalue=1, offvalue=0, variable=epilogueVar, command=updateValues)
 epilogueCheck.pack(padx=8, pady=0, side=tk.RIGHT)
+
+editBTN = ttk.Button(historyBtnContainer, text="Edit Element", command=editElementCallback)
+editBTN.pack(side=tk.BOTTOM, fill="x")
 
 # ================================
 #  Main Loop

@@ -188,7 +188,7 @@ bpTotalLabel = ttk.Label(bpTotalContainer, text="55")
 bpTotalLabel.pack(padx=8, pady=0, side=tk.LEFT)
 
 # --------------------------------
-#  Battlepass
+#  Level
 # --------------------------------
 
 levelContainer = ttk.LabelFrame(statsTab, text="Active Level")
@@ -246,6 +246,43 @@ ttk.Label(levelTotalContainer, text="Total:").pack(padx=8, pady=0, side=tk.LEFT)
 
 levelTotalLabel = ttk.Label(levelTotalContainer, text="38000")
 levelTotalLabel.pack(padx=8, pady=0, side=tk.LEFT)
+
+# --------------------------------
+#  Misc
+# --------------------------------
+
+miscStatsContainer = ttk.LabelFrame(statsTab, text="Miscellaneous")
+miscStatsContainer.pack(padx=8, pady=8, fill="x")
+
+miscStatsContentContainer = ttk.Frame(miscStatsContainer)
+miscStatsContentContainer.pack(padx=8, pady=8, fill="both")
+
+miscRemainingDaysContainer = ttk.Frame(miscStatsContentContainer)
+miscRemainingDaysContainer.pack(padx=8, pady=0, fill="x")
+
+ttk.Label(miscRemainingDaysContainer, text="Remaining Days:").pack(padx=8, pady=0, side=tk.LEFT)
+
+miscRemainingDaysLabel = ttk.Label(miscRemainingDaysContainer, text="90")
+miscRemainingDaysLabel.pack(padx=8, pady=0, side=tk.LEFT)
+
+miscDeviationContainer = ttk.Frame(miscStatsContentContainer)
+miscDeviationContainer.pack(padx=8, pady=0)
+
+miscIdealDeviationContainer = ttk.Frame(miscDeviationContainer)
+miscIdealDeviationContainer.pack(padx=8, pady=0, side=tk.LEFT)
+
+ttk.Label(miscIdealDeviationContainer, text="Deviation from ideal:").pack(padx=8, pady=0, side=tk.LEFT)
+
+miscIdealDeviationLabel = ttk.Label(miscIdealDeviationContainer, text="9999999 XP")
+miscIdealDeviationLabel.pack(padx=8, pady=0, side=tk.LEFT)
+
+miscDailyDeviationContainer = ttk.Frame(miscStatsContentContainer)
+miscDailyDeviationContainer.pack(padx=8, pady=0, side=tk.LEFT)
+
+ttk.Label(miscDailyDeviationContainer, text="Deviation from daily ideal:").pack(padx=8, pady=0, side=tk.LEFT)
+
+miscDailyDeviationLabel = ttk.Label(miscDailyDeviationContainer, text="9999999 XP")
+miscDailyDeviationLabel.pack(padx=8, pady=0, side=tk.LEFT)
 
 # --------------------------------
 #  History

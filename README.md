@@ -12,7 +12,12 @@ First of all, download and install the latest version of python from ![here](htt
 
 Then install pyinstaller via this command: `pip install pyinstaller`
 
-When you have both installed, run the following commands in the root folder:
+When you have both installed, create a new file called "tokenString.py" in src/ which should contain the following:
+
+    TOKEN=<YOUR_GITHUB_PERSONAL_ACCESS_TOKEN>
+
+Where <YOUR_GITHUB_PERSONAL_ACCESS_TOKEN> should be replaced by your personal access token, which can be generated ![here](https://github.com/settings/tokens). The only needed permissions are `repo:status` and `public_repo`.
+After you have created tokenString.py, run these two commands to compile the binaries:
 
     pyinstaller --onefile --windowed --icon=VexTrack.ico src/VexTrack.py
     pyinstaller --onefile --windowed --icon=VexTrack.ico src/Updater.py

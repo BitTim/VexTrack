@@ -3,6 +3,7 @@ from tkinter import messagebox
 import os
 import requests
 from vars import *
+from tokenString import *
 
 root = Tk()
 root.withdraw()
@@ -36,7 +37,7 @@ def checkNewVersion():
 
     versionNumber = versionString.split("v")[1]
     
-    response = requests.get("https://api.github.com/repos/" + GITHUB_USER + "/" + GITHUB_REPO + "/releases")
+    response = requests.get("https://api.github.com/repos/" + GITHUB_USER + "/" + GITHUB_REPO + "/releases", headers={"Authorization": TOKEN})
     releases = response.json()
 
     for r in releases:

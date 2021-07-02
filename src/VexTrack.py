@@ -8,6 +8,7 @@ from tkinter import *
 from tkinter import ttk, messagebox
 from addDiag import AddDiag
 
+from updaterUpdate import *
 from datetime import *
 
 import matplotlib
@@ -17,9 +18,10 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.patches import Rectangle
 
 windowSize = vars.WINDOW_GEOMETRY.split("x")
+checkNewUpdaterVersion()
 
 with open(vars.VERSION_PATH, 'r') as f:
-        versionString = f.read()
+    versionString = f.readlines()[0]
 
 root = tk.Tk()
 root.title(vars.WINDOW_TITLE + " " + versionString)
@@ -651,7 +653,6 @@ delBTN.pack(side=tk.LEFT, fill="both", expand=True)
 # ================================
 
 os.startfile(vars.UPDATER_PATH)
-
 init()
 
 while dailyBar == None:

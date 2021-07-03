@@ -7,6 +7,9 @@
 ## Installation
 Download zip from ![here](https://github.com/BitTim/VexTrack/releases) and extract all contents in a folder. After opening VexTrack for the first time, a new folder "dat" will be created in the same folder the exe is in automatically.
 
+## I updated and the program is crashing, what to do?
+It may take me a while to fix the update, but once I do, you simply open the "version" file and replace the upper version number with the version number of the previous release (e.g. for v1.4 it would be v1.3). Since you have no way of knowing if i fixed the update or not, retry that step until it works.
+
 ## Compilation
 First of all, download and install the latest version of python from ![here](https://python.org).
 

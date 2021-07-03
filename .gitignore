@@ -11,4 +11,5 @@ dist/
 *.bak
 build/
 sign.bat
+compile.bat
 tokenString.py

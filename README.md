@@ -10,9 +10,18 @@ Download zip from ![here](https://github.com/BitTim/VexTrack/releases) and extra
 ## Compilation
 First of all, download and install the latest version of python from ![here](https://python.org).
 
-Then install pyinstaller via this command: `pip install pyinstaller`
+To compile the binaries, you need the following packages:
 
-When you have both installed, run the following commands in the root folder:
+    pip install tkinter
+    pip install matplotlib
+    pip install pyinstaller
+
+When you have everything installed, create a new file called "tokenString.py" in src/ which should contain the following:
+
+    TOKEN=<YOUR_GITHUB_PERSONAL_ACCESS_TOKEN>
+
+Where <YOUR_GITHUB_PERSONAL_ACCESS_TOKEN> should be replaced by your personal access token, which can be generated ![here](https://github.com/settings/tokens). The only needed permissions are `repo:status` and `public_repo`.
+After you have created tokenString.py, run these two commands to compile the binaries:
 
     pyinstaller --onefile --windowed --icon=VexTrack.ico src/VexTrack.py
     pyinstaller --onefile --windowed --icon=VexTrack.ico src/Updater.py

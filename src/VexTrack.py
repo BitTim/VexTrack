@@ -1,12 +1,15 @@
 import tkinter as tk
 from initDiag import InitDiag
+from scrollableFrame import ScrollableFrame
 import vars
 import os
 
 from core import *
 from tkinter import *
 from tkinter import ttk, messagebox
-from addDiag import AddDiag
+from addXPDiag import *
+from addGoalDiag import *
+from goalContainer import *
 
 from updaterUpdate import *
 from datetime import *
@@ -18,7 +21,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.patches import Rectangle
 
 windowSize = vars.WINDOW_GEOMETRY.split("x")
-checkNewUpdaterVersion()
+newUpdaterVersion = checkNewUpdaterVersion()
 
 with open(vars.VERSION_PATH, 'r') as f:
     versionString = f.readlines()[0]
@@ -28,6 +31,11 @@ root.title(vars.WINDOW_TITLE + " " + versionString)
 root.iconbitmap("VexTrack.exe")
 root.geometry(vars.WINDOW_GEOMETRY)
 root.minsize(int(windowSize[0]), int(windowSize[1]))
+
+if newUpdaterVersion == True:
+    root.iconify()
+    root.update()
+    root.deiconify()
 
 # ================================
 #  Tabbed View
@@ -62,11 +70,57 @@ graphPlot.tick_params(left = False, right = False, labelleft = False, labelbotto
 #  Stats
 # --------------------------------    
 
+statsScrollableContainer = ScrollableFrame(statsTab)
+statsContainer = statsScrollableContainer.scrollableFrame
+statsScrollableContainer.pack(fill="both", expand=True)
+
+miscStatsContainer = ttk.LabelFrame(statsContainer, text="Miscellaneous")
+miscStatsContainer.pack(padx=8, pady=8, fill="x")
+
+miscContentContainer = ttk.Frame(miscStatsContainer)
+miscContentContainer.pack(padx=8, pady=8, fill="x")
+
+ttk.Label(miscContentContainer, text="Remaining Days:", font=('TkDefaultFont', 9,'bold')).grid(column=0, row=0, sticky="w", padx=8)
+
+miscRemainingDaysLabel = ttk.Label(miscContentContainer, text="90")
+miscRemainingDaysLabel.grid(column=1, row=0, sticky="w", padx=8)
+
+ttk.Label(miscContentContainer, text="Average XP per Day:", font=('TkDefaultFont', 9,'bold')).grid(column=3, row=0, sticky="w", padx=8)
+
+miscAverageLabel = ttk.Label(miscContentContainer, text="99999 XP")
+miscAverageLabel.grid(column=4, row=0, sticky="w", padx=8)
+
+ttk.Label(miscContentContainer, text="Deviation from ideal:", font=('TkDefaultFont', 9,'bold')).grid(column=0, row=1, sticky="w", padx=8)
+
+miscIdealDeviationLabel = ttk.Label(miscContentContainer, text="99999 XP")
+miscIdealDeviationLabel.grid(column=1, row=1, sticky="w", padx=8)
+
+ttk.Label(miscContentContainer, text="Deviation from daily ideal:", font=('TkDefaultFont', 9,'bold')).grid(column=3, row=1, sticky="w", padx=8)
+
+miscDailyDeviationLabel = ttk.Label(miscContentContainer, text="99999 XP")
+miscDailyDeviationLabel.grid(column=4, row=1, sticky="w", padx=8)
+
+ttk.Label(miscContentContainer, text="Strongest day: ", font=('TkDefaultFont', 9,'bold')).grid(column=0, row=2, sticky="w", padx=8)
+
+miscStrongestDayDateLabel = ttk.Label(miscContentContainer, text="01.01.1970")
+miscStrongestDayDateLabel.grid(column=1, row=2, sticky="w", padx=8)
+
+miscStrongestDayAmountLabel = ttk.Label(miscContentContainer, text="99999 XP")
+miscStrongestDayAmountLabel.grid(column=2, row=2, sticky="w", padx=8)
+
+ttk.Label(miscContentContainer, text="Weakest day:", font=('TkDefaultFont', 9,'bold')).grid(column=3, row=2, sticky="w", padx=8)
+
+miscWeakestDayDateLabel = ttk.Label(miscContentContainer, text="01.01.1970")
+miscWeakestDayDateLabel.grid(column=4, row=2, sticky="w", padx=8)
+
+miscWeakestDayAmountLabel = ttk.Label(miscContentContainer, text="99999 XP")
+miscWeakestDayAmountLabel.grid(column=5, row=2, sticky="w", padx=8)
+
 # --------------------------------
 #  Total XP
 # --------------------------------
 
-totalXPContainer = ttk.LabelFrame(statsTab, text="Total XP")
+totalXPContainer = ttk.LabelFrame(statsContainer, text="Total XP")
 totalXPContainer.pack(padx=8, pady=8, fill="x")
 
 # ................................
@@ -80,7 +134,7 @@ totalXPPercentageLabel = ttk.Label(totalProgressContainer)
 totalXPPercentageLabel.pack(padx=8, pady=8, side=tk.RIGHT, fill="x", expand=True)
 
 totalXPBar = ttk.Progressbar(totalProgressContainer, orient="horizontal", length=10000, mode="determinate")
-totalXPBar.pack(padx=8, pady=8, side=tk.RIGHT, fill="x")
+totalXPBar.pack(padx=1, pady=8, side=tk.RIGHT, fill="x")
 
 totalXPBar["value"] = 35
 totalXPPercentageLabel["text"] = str(totalXPBar["value"]) + "%"
@@ -93,10 +147,10 @@ totalXPPercentageLabel["text"] = str(totalXPBar["value"]) + "%"
 totalCollectedContainer = ttk.Frame(totalXPContainer)
 totalCollectedContainer.pack(padx=8, pady=8, side=tk.LEFT)
 
-ttk.Label(totalCollectedContainer, text="Collected:").pack(padx=8, pady=0, side=tk.LEFT)
+ttk.Label(totalCollectedContainer, text="Collected:", font=('TkDefaultFont', 9,'bold')).pack(padx=1, pady=0, side=tk.LEFT)
 
 totalCollectedLabel = ttk.Label(totalCollectedContainer, text="9999999 XP")
-totalCollectedLabel.pack(padx=8, pady=0, side=tk.LEFT)
+totalCollectedLabel.pack(padx=1, pady=0, side=tk.LEFT)
 
 # ................................
 #  Remaining
@@ -105,10 +159,10 @@ totalCollectedLabel.pack(padx=8, pady=0, side=tk.LEFT)
 totalRemainingContainer = ttk.Frame(totalXPContainer)
 totalRemainingContainer.pack(padx=8, pady=8, side=tk.LEFT)
 
-ttk.Label(totalRemainingContainer, text="Remaining:").pack(padx=8, pady=0, side=tk.LEFT)
+ttk.Label(totalRemainingContainer, text="Remaining:", font=('TkDefaultFont', 9,'bold')).pack(padx=1, pady=0, side=tk.LEFT)
 
 totalRemainingLabel = ttk.Label(totalRemainingContainer, text="9999999 XP")
-totalRemainingLabel.pack(padx=8, pady=0, side=tk.LEFT)
+totalRemainingLabel.pack(padx=1, pady=0, side=tk.LEFT)
 
 # ................................
 #  Total
@@ -117,16 +171,16 @@ totalRemainingLabel.pack(padx=8, pady=0, side=tk.LEFT)
 totalTotalContainer = ttk.Frame(totalXPContainer)
 totalTotalContainer.pack(padx=8, pady=8, side=tk.LEFT)
 
-ttk.Label(totalTotalContainer, text="Total:").pack(padx=8, pady=0, side=tk.LEFT)
+ttk.Label(totalTotalContainer, text="Total:", font=('TkDefaultFont', 9,'bold')).pack(padx=1, pady=0, side=tk.LEFT)
 
 totalTotalLabel = ttk.Label(totalTotalContainer, text="9999999 XP")
-totalTotalLabel.pack(padx=8, pady=0, side=tk.LEFT)
+totalTotalLabel.pack(padx=1, pady=0, side=tk.LEFT)
 
 # --------------------------------
 #  Battlepass
 # --------------------------------
 
-bpContainer = ttk.LabelFrame(statsTab, text="Battlepass")
+bpContainer = ttk.LabelFrame(statsContainer, text="Battlepass")
 bpContainer.pack(padx=8, pady=8, fill="x")
 
 # ................................
@@ -145,7 +199,6 @@ bpBar.pack(padx=8, pady=8, side=tk.RIGHT, fill="x")
 bpBar["value"] = 35
 bpPercentageLabel["text"] = str(bpBar["value"]) + "%"
 
-
 # ................................
 #  Collecetd
 # ................................
@@ -153,10 +206,22 @@ bpPercentageLabel["text"] = str(bpBar["value"]) + "%"
 bpPreviousUnlockContainer = ttk.Frame(bpContainer)
 bpPreviousUnlockContainer.pack(padx=8, pady=8, side=tk.LEFT)
 
-ttk.Label(bpPreviousUnlockContainer, text="Previous Unlock:").pack(padx=8, pady=0, side=tk.LEFT)
+ttk.Label(bpPreviousUnlockContainer, text="Previous Unlock:", font=('TkDefaultFont', 9,'bold')).pack(padx=1, pady=0, side=tk.LEFT)
 
 bpPreviousUnlockLabel = ttk.Label(bpPreviousUnlockContainer, text="54")
-bpPreviousUnlockLabel.pack(padx=8, pady=0, side=tk.LEFT)
+bpPreviousUnlockLabel.pack(padx=1, pady=0, side=tk.LEFT)
+
+# ................................
+#  Active
+# ................................
+
+bpActiveContainer = ttk.Frame(bpContainer)
+bpActiveContainer.pack(padx=8, pady=8, side=tk.LEFT)
+
+ttk.Label(bpActiveContainer, text="Active:", font=('TkDefaultFont', 9,'bold')).pack(padx=1, pady=0, side=tk.LEFT)
+
+bpActiveLabel = ttk.Label(bpActiveContainer, text="55")
+bpActiveLabel.pack(padx=1, pady=0, side=tk.LEFT)
 
 # ................................
 #  Remaining
@@ -165,10 +230,10 @@ bpPreviousUnlockLabel.pack(padx=8, pady=0, side=tk.LEFT)
 bpRemainingContainer = ttk.Frame(bpContainer)
 bpRemainingContainer.pack(padx=8, pady=8, side=tk.LEFT)
 
-ttk.Label(bpRemainingContainer, text="Remaining:").pack(padx=8, pady=0, side=tk.LEFT)
+ttk.Label(bpRemainingContainer, text="Remaining:", font=('TkDefaultFont', 9,'bold')).pack(padx=1, pady=0, side=tk.LEFT)
 
 bpRemainingLabel = ttk.Label(bpRemainingContainer, text="54")
-bpRemainingLabel.pack(padx=8, pady=0, side=tk.LEFT)
+bpRemainingLabel.pack(padx=1, pady=0, side=tk.LEFT)
 
 # ................................
 #  Total
@@ -177,16 +242,16 @@ bpRemainingLabel.pack(padx=8, pady=0, side=tk.LEFT)
 bpTotalContainer = ttk.Frame(bpContainer)
 bpTotalContainer.pack(padx=8, pady=8, side=tk.LEFT)
 
-ttk.Label(bpTotalContainer, text="Total:").pack(padx=8, pady=0, side=tk.LEFT)
+ttk.Label(bpTotalContainer, text="Total:", font=('TkDefaultFont', 9,'bold')).pack(padx=1, pady=0, side=tk.LEFT)
 
 bpTotalLabel = ttk.Label(bpTotalContainer, text="55")
-bpTotalLabel.pack(padx=8, pady=0, side=tk.LEFT)
+bpTotalLabel.pack(padx=1, pady=0, side=tk.LEFT)
 
 # --------------------------------
-#  Battlepass
+#  Level
 # --------------------------------
 
-levelContainer = ttk.LabelFrame(statsTab, text="Active Level")
+levelContainer = ttk.LabelFrame(statsContainer, text="Active Level")
 levelContainer.pack(padx=8, pady=8, fill="x")
 
 # ................................
@@ -213,10 +278,10 @@ levelPercentageLabel["text"] = str(levelBar["value"]) + "%"
 levelCollectedContainer = ttk.Frame(levelContainer)
 levelCollectedContainer.pack(padx=8, pady=8, side=tk.LEFT)
 
-ttk.Label(levelCollectedContainer, text="Collected:").pack(padx=8, pady=0, side=tk.LEFT)
+ttk.Label(levelCollectedContainer, text="Collected:", font=('TkDefaultFont', 9,'bold')).pack(padx=1, pady=0, side=tk.LEFT)
 
 levelCollectedLabel = ttk.Label(levelCollectedContainer, text="37999")
-levelCollectedLabel.pack(padx=8, pady=0, side=tk.LEFT)
+levelCollectedLabel.pack(padx=1, pady=0, side=tk.LEFT)
 
 # ................................
 #  Remaining
@@ -225,10 +290,10 @@ levelCollectedLabel.pack(padx=8, pady=0, side=tk.LEFT)
 levelRemainingContainer = ttk.Frame(levelContainer)
 levelRemainingContainer.pack(padx=8, pady=8, side=tk.LEFT)
 
-ttk.Label(levelRemainingContainer, text="Remaining:").pack(padx=8, pady=0, side=tk.LEFT)
+ttk.Label(levelRemainingContainer, text="Remaining:", font=('TkDefaultFont', 9,'bold')).pack(padx=1, pady=0, side=tk.LEFT)
 
 levelRemainingLabel = ttk.Label(levelRemainingContainer, text="38000")
-levelRemainingLabel.pack(padx=8, pady=0, side=tk.LEFT)
+levelRemainingLabel.pack(padx=1, pady=0, side=tk.LEFT)
 
 # ................................
 #  Total
@@ -237,10 +302,16 @@ levelRemainingLabel.pack(padx=8, pady=0, side=tk.LEFT)
 levelTotalContainer = ttk.Frame(levelContainer)
 levelTotalContainer.pack(padx=8, pady=8, side=tk.LEFT)
 
-ttk.Label(levelTotalContainer, text="Total:").pack(padx=8, pady=0, side=tk.LEFT)
+ttk.Label(levelTotalContainer, text="Total:", font=('TkDefaultFont', 9,'bold')).pack(padx=1, pady=0, side=tk.LEFT)
 
 levelTotalLabel = ttk.Label(levelTotalContainer, text="38000")
-levelTotalLabel.pack(padx=8, pady=0, side=tk.LEFT)
+levelTotalLabel.pack(padx=1, pady=0, side=tk.LEFT)
+
+# ................................
+#  Goals
+# ................................
+
+goalContainers = []
 
 # --------------------------------
 #  History
@@ -302,10 +373,10 @@ dailyBar.pack(padx=8, pady=8, side=tk.RIGHT, fill="x")
 dailyCollectedContainer = ttk.Frame(dailyXPContainer)
 dailyCollectedContainer.pack(padx=8, pady=8, side=tk.LEFT)
 
-ttk.Label(dailyCollectedContainer, text="Collected:").pack(padx=8, pady=0, side=tk.LEFT)
+ttk.Label(dailyCollectedContainer, text="Collected:", font=('TkDefaultFont', 9,'bold')).pack(padx=1, pady=0, side=tk.LEFT)
 
 dailyCollectedLabel = ttk.Label(dailyCollectedContainer, text="99999")
-dailyCollectedLabel.pack(padx=8, pady=0, side=tk.LEFT)
+dailyCollectedLabel.pack(padx=1, pady=0, side=tk.LEFT)
 
 # --------------------------------
 #  Remaining
@@ -314,10 +385,10 @@ dailyCollectedLabel.pack(padx=8, pady=0, side=tk.LEFT)
 dailyRemainingContainer = ttk.Frame(dailyXPContainer)
 dailyRemainingContainer.pack(padx=8, pady=8, side=tk.LEFT)
 
-ttk.Label(dailyRemainingContainer, text="Remaining:").pack(padx=8, pady=0, side=tk.LEFT)
+ttk.Label(dailyRemainingContainer, text="Remaining:", font=('TkDefaultFont', 9,'bold')).pack(padx=1, pady=0, side=tk.LEFT)
 
 dailyRemainingLabel = ttk.Label(dailyRemainingContainer, text="99999")
-dailyRemainingLabel.pack(padx=8, pady=0, side=tk.LEFT)
+dailyRemainingLabel.pack(padx=1, pady=0, side=tk.LEFT)
 
 # --------------------------------
 #  Total
@@ -326,10 +397,10 @@ dailyRemainingLabel.pack(padx=8, pady=0, side=tk.LEFT)
 dailyTotalContainer = ttk.Frame(dailyXPContainer)
 dailyTotalContainer.pack(padx=8, pady=8, side=tk.LEFT)
 
-ttk.Label(dailyTotalContainer, text="Total:").pack(padx=8, pady=0, side=tk.LEFT)
+ttk.Label(dailyTotalContainer, text="Total:", font=('TkDefaultFont', 9,'bold')).pack(padx=1, pady=0, side=tk.LEFT)
 
 dailyTotalLabel = ttk.Label(dailyTotalContainer, text="99999")
-dailyTotalLabel.pack(padx=8, pady=0, side=tk.LEFT)
+dailyTotalLabel.pack(padx=1, pady=0, side=tk.LEFT)
 
 # ================================
 #  Functions
@@ -340,10 +411,18 @@ dailyTotalLabel.pack(padx=8, pady=0, side=tk.LEFT)
 # --------------------------------
 
 def addXPCallback():
-    addDiag = AddDiag(root, "Add XP")
+    addXPDiag = AddXPDiag(root, "Add XP")
 
-    if addDiag.description != None and addDiag.xpAmount != None:
-        addXP(addDiag.description, int(addDiag.xpAmount))
+    if addXPDiag.description != None and addXPDiag.xpAmount != None:
+        addXP(addXPDiag.description, int(addXPDiag.xpAmount))
+    
+    updateValues()
+
+def addGoalCallback():
+    addGoalDiag = AddGoalDiag(root, "Add Goal")
+
+    if addGoalDiag.name != None and addGoalDiag.xpAmount != None and addGoalDiag.color != None:
+        addGoal(addGoalDiag.name, int(addGoalDiag.xpAmount), addGoalDiag.color)
     
     updateValues()
 
@@ -369,7 +448,7 @@ def editElementCallback():
     if len(currElement["values"]) == 0:
         return
 
-    editDiag = AddDiag(root, "Edit Element", currElement["values"][0], currElement["values"][1].strip(" XP"))
+    editDiag = AddXPDiag(root, "Edit Element", currElement["values"][0], currElement["values"][1].strip(" XP"))
     if editDiag.description != currElement["values"][0] or editDiag.xpAmount != currElement["values"][1].strip(" XP"):
         editElement(currElementID, editDiag.description, int(editDiag.xpAmount))
 
@@ -384,6 +463,16 @@ def deleteElementCallback():
     res = messagebox.askquestion("Delete Element", "Are you sure, that you want to delete the selected element?\nDescription: " + currElement["values"][0] + "\nAmount: " + currElement["values"][1])
     if res == "yes":
         deleteElement(currElementID)
+
+def gcRemoveCallback(index):
+    res = messagebox.askquestion("Remove Goal", "Are you sure, that you want to remove this goal?\nName: " + goalContainers[index].name)
+    if res == "yes":
+        gcRemove(index)
+
+def gcEditCallback(index):
+    editDiag = AddGoalDiag(root, "Edit Goal", name=goalContainers[index].name, amount=goalContainers[index].amount, color=goalContainers[index].color, edit=True)
+    if editDiag.changeStartXP != None and (editDiag.name != goalContainers[index].name or editDiag.xpAmount != goalContainers[index].amount or editDiag.color != goalContainers[index].color or editDiag.changeStartXP == True):
+        gcEdit(index, editDiag.changeStartXP, editDiag.name, int(editDiag.xpAmount), editDiag.color)
 
 # --------------------------------
 #  Init
@@ -437,6 +526,27 @@ def addXP(description, amount):
         config["activeBPLevel"] += 1
         messagebox.showinfo("Congratulations", "Congratulations! You have unlocked Battlepass Level " + str(config["activeBPLevel"] - 1))
 
+    if not "goals" in config: config["goals"] = []
+
+    for i in range(0, len(config["goals"])):
+        completed = False
+        if config["goals"][i]["remaining"] <= 0: completed = True
+
+        config["goals"][i]["remaining"] -= amount
+
+        if config["goals"][i]["remaining"] <= 0 and not completed:
+            messagebox.showinfo("Congratulations", "Congratulations! You have completed the goal: " + str(config["goals"][i]["name"]))
+        
+    writeConfig(vars.CONFIG_PATH, config)
+
+def addGoal(name, amount, color):
+    config = readConfig(vars.CONFIG_PATH)
+
+    if not "goals" in config:
+        config["goals"] = []
+
+    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = calcTotalValues(config, epilogueVar.get())
+    config["goals"].append({"name": name, "remaining": amount, "startXP": totalXPCollected,"color": color})
     writeConfig(vars.CONFIG_PATH, config)
 
 def editElement(index, description, amount):
@@ -446,8 +556,15 @@ def editElement(index, description, amount):
     prevBPLevel = config["activeBPLevel"]
 
     index = historyLen - 1 - index
+    prevAmount = config["history"][index]["amount"]
     config["history"][index]["description"] = description
     config["history"][index]["amount"] = amount
+
+    if not "goals" in config: config["goals"] = []
+    completedGoals = []
+    for i in range(0, len(config["goals"])):
+        if config["goals"][i]["remaining"] <= 0: completedGoals.append(i)
+        config["goals"][i]["remaining"] -= amount - prevAmount
 
     config = recalcXP(config)
     deltaBP = prevBPLevel - config["activeBPLevel"]
@@ -458,6 +575,11 @@ def editElement(index, description, amount):
     elif deltaBP < 0:
         for i in range(0, deltaBP, -1):
             messagebox.showinfo("Congratulations", "Congratulations! You have unlocked Battlepass Level " + str(-1 * i + prevBPLevel))
+
+    for cg in completedGoals:
+        if config["goals"][cg]["remaining"] > 0:
+            messagebox.showinfo("Sorry", "You have no longer completed the goal: " + config["goals"][cg]["name"])
+
 
     writeConfig(vars.CONFIG_PATH, config)
     updateValues()
@@ -469,11 +591,18 @@ def deleteElement(index):
     prevBPLevel = config["activeBPLevel"]
 
     index = historyLen - 1 - index
+    amount = config["history"][index]["amount"]
     config["history"].pop(index)
+
+    if not "goals" in config: config["goals"] = []
+    completedGoals = []
+    for i in range(0, len(config["goals"])):
+        if config["goals"][i]["remaining"] <= 0: completedGoals.append(i)
+        config["goals"][i]["remaining"] += amount
 
     config = recalcXP(config)
     deltaBP = prevBPLevel - config["activeBPLevel"]
-    
+
     if deltaBP > 0:
         for i in range(0, deltaBP, 1):
             messagebox.showinfo("Sorry", "You have lost Battlepass Level " + str(prevBPLevel - i - 1))
@@ -481,15 +610,80 @@ def deleteElement(index):
         for i in range(0, deltaBP, -1):
             messagebox.showinfo("Congratulations", "Congratulations! You have unlocked Battlepass Level " + str(-1 * i + prevBPLevel))
 
+    for cg in completedGoals:
+        if config["goals"][cg]["remaining"] > 0:
+            messagebox.showinfo("Sorry", "You have no longer completed the goal: " + config["goals"][cg]["name"])
+
     writeConfig(vars.CONFIG_PATH, config)
     updateValues()
+
+def gcRemove(index):
+    config = readConfig(vars.CONFIG_PATH)
+
+    config["goals"].pop(index)
+    goalContainers[index].destroy()
+    goalContainers.pop(index)
+
+    writeConfig(vars.CONFIG_PATH, config)
+    updateValues()
+
+def gcEdit(index, changeStartXP, name, amount, color):
+    config = readConfig(vars.CONFIG_PATH)
+    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = calcTotalValues(config, epilogueVar.get())
+
+    completed = False
+    if config["goals"][index]["remaining"] <= 0: completed = True
+
+    config["goals"][index]["name"] = name
+    if changeStartXP: config["goals"][index]["startXP"] = totalXPCollected
+    config["goals"][index]["remaining"] = amount
+    config["goals"][index]["color"] = color
+
+    goalContainers[index].updateGoal(name, amount, color)
+
+    if config["goals"][index]["remaining"] > 0 and completed:
+        messagebox.showinfo("Sorry", "You have no longer completed the goal: " + config["goals"][index]["name"])
+    elif config["goals"][index]["remaining"] <= 0 and not completed:
+        messagebox.showinfo("Congratulations", "Congratulations! You have completed the goal: " + str(config["goals"][index]["name"]))
+
+    writeConfig(vars.CONFIG_PATH, config)
+    updateValues()
+
+def updateGoals(config, plot, collectedXP):
+    if not "goals" in config:
+        config["goals"] = []
+
+    for i in range(0, len(config["goals"])):
+        alpha = 0.75
+
+        if collectedXP + config["goals"][i]["remaining"] <= 0: continue
+        if config["goals"][i]["remaining"] <= 0: alpha = 0.15
+
+        plot.axhline(collectedXP + config["goals"][i]["remaining"], color=config["goals"][i]["color"], alpha=alpha, linestyle="-")
+        plot.annotate(config["goals"][i]["name"], (0, collectedXP + config["goals"][i]["remaining"]), xytext=(-3, collectedXP + config["goals"][i]["remaining"] + 5000), color=config["goals"][i]["color"], alpha=alpha)
+
+        if i >= len(goalContainers):
+            gc = GoalContainer(statsContainer, config["goals"][i]["name"], config["goals"][i]["remaining"], color=config["goals"][i]["color"])
+            gc.pack(padx=8, pady=8, fill="x")
+            goalContainers.append(gc)
+        
+        collectedInGoal = collectedXP - config["goals"][i]["startXP"]
+        if collectedInGoal < 0:
+            config["goals"][i]["startXP"] += collectedInGoal
+            collectedInGoal = 0
+
+        totalInGoal = collectedInGoal + config["goals"][i]["remaining"]
+
+        goalContainers[i].setValues(round(collectedInGoal / totalInGoal * 100), collectedInGoal, config["goals"][i]["remaining"], totalInGoal)
+        goalContainers[i].removeBtn.configure(command=lambda j=i: gcRemoveCallback(j))
+        goalContainers[i].editBtn.configure(command=lambda j=i: gcEditCallback(j))
 
 def updateGraph(config, epilogue, plot):
     plot.clear()
     timeAxis = []
     
-    seasonEndDate = dt.datetime.strptime(config["seasonEndDate"], "%d.%m.%Y")
-    dateDelta = seasonEndDate - dt.datetime.fromtimestamp(config["history"][0]["time"])
+    seasonEndDate = datetime.strptime(config["seasonEndDate"], "%d.%m.%Y")
+    dateDelta = seasonEndDate - datetime.fromtimestamp(config["history"][0]["time"])
     duration = dateDelta.days
     timeAxis = range(0, duration + 1)
 
@@ -532,11 +726,10 @@ def updateGraph(config, epilogue, plot):
             index += 1
 
     if prevDate != date.today(): yAxisYou.append(yAxisYou[len(yAxisYou) - 1])
-    plot.plot(timeAxis[:len(yAxisYou)], yAxisYou, color='red', label='You', linewidth=3)
 
     yAxisDailyIdeal = []
 
-    dateDelta = seasonEndDate - dt.datetime.now()
+    dateDelta = seasonEndDate - datetime.now()
     remainingDays = dateDelta.days
     dayDelta = duration - remainingDays
 
@@ -544,45 +737,57 @@ def updateGraph(config, epilogue, plot):
     else: offset = 0
 
     totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = calcTotalValues(config, epilogue)
-    dailyTotal = round((totalXPTotal - yAxisYou[index - offset]) / (remainingDays - vars.BUFFER_DAYS))
+    dailyTotal = round((totalXPTotal - yAxisYou[index - offset]) / (remainingDays - vars.BUFFER_DAYS + 1))
 
     yAxisDailyIdeal.append(yAxisYou[index - offset])
 
-    for i in range(1, remainingDays + 1):
+    for i in range(1, remainingDays + 2):
         yAxisDailyIdeal.append(yAxisDailyIdeal[i - 1] + dailyTotal)
         if yAxisDailyIdeal[i] > totalXP: yAxisDailyIdeal[i] = totalXP
 
-    plot.plot(timeAxis[dayDelta:], yAxisDailyIdeal, color='skyblue', label='Daily Ideal', alpha=1, linestyle="-.")
+    plot.plot(timeAxis[dayDelta - 1:], yAxisDailyIdeal, color='skyblue', label='Daily Ideal', alpha=1, linestyle="--")
+    plot.plot(timeAxis[:len(yAxisYou)], yAxisYou, color='red', label='You', linewidth=3)
     plot.plot(dayDelta, totalXPCollected, color='darkred', label="Now", marker="o", markersize=5)
 
-    plot.tick_params(top=False, bottom=False, left=False, right=False, labelleft=False)
+    plot.set_xticks(range(0, duration + 1, 5), minor=True)
+    plot.tick_params(which="both", top=False, bottom=False, left=False, right=False, labelleft=False)
+    plot.grid(axis="x", color="lightgray", which="both", linestyle=":")
 
     # --------------------------------
     # Draw lines for significant unlocks
     # --------------------------------
 
     for i in range(0, vars.NUM_BPLEVELS + 1, 1):
-        plot.axhline(cumulativeSum(i, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL), color="gray", alpha=0.05, linestyle="--")
+        plot.axhline(cumulativeSum(i, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL), color="gray", alpha=0.05, linestyle="-")
 
     for i in range(0, vars.NUM_BPLEVELS + 1, 5):
-        plot.axhline(cumulativeSum(i, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL), color="green", alpha=0.15, linestyle="--")
+        plot.axhline(cumulativeSum(i, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL), color="green", alpha=0.15, linestyle="-")
     
     if epilogue:
         for i in range(1, vars.NUM_EPLOGUE_LEVELS + 1, 1):
-            plot.axhline(cumulativeSum(vars.NUM_BPLEVELS, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL) + i * vars.NUM_EPLOGUE_XP_PER_LEVEL, color="green", alpha=0.15, linestyle="--")
+            plot.axhline(cumulativeSum(vars.NUM_BPLEVELS, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL) + i * vars.NUM_EPLOGUE_XP_PER_LEVEL, color="green", alpha=0.15, linestyle="-")
+    
+    updateGoals(config, plot, totalXPCollected)
 
     # --------------------------------
     # Draw Buffer Zone
     # --------------------------------
 
     plot.add_patch(Rectangle((duration - vars.BUFFER_DAYS, 0), vars.BUFFER_DAYS, totalXP, edgecolor="red", facecolor="red", alpha=0.1))
-
     graph.draw()
+
+    return yAxisYou, yAxisIdeal, yAxisDailyIdeal
 
 def updateValues():
     config = readConfig(vars.CONFIG_PATH)
 
-    if config["activeBPLevel"] > 50:
+    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = calcTotalValues(config, 0)
+
+    largestGoalRemaining = 0
+    for g in config["goals"]:
+        if g["remaining"] + totalXPCollected > largestGoalRemaining: largestGoalRemaining = g["remaining"] + totalXPCollected
+
+    if config["activeBPLevel"] > 50 or largestGoalRemaining > totalXPTotal:
         epilogueCheck.config(state=DISABLED)
         epilogueVar.set(1)
     else:
@@ -591,6 +796,8 @@ def updateValues():
     dailyProgress, dailyCollected, dailyRemaining, dailyTotal = calcDailyValues(config, epilogueVar.get())
     if(dailyProgress > 100): dailyProgress = 100
     if(dailyRemaining < 0): dailyRemaining = 0
+
+    yAxisYou, yAxisIdeal, yAxisDailyIdeal = updateGraph(config, epilogueVar.get(), graphPlot)
 
     dailyBar["value"] = dailyProgress
     dailyPercentageLabel["text"] = str(dailyProgress) + "%"
@@ -605,10 +812,11 @@ def updateValues():
     totalRemainingLabel["text"] = str(totalXPRemaining) + " XP"
     totalTotalLabel["text"] = str(totalXPTotal) + " XP"
 
-    bpProgress, bpCollected, bpRemaining, bpTotal = calcBattlepassValues(config, epilogueVar.get())
+    bpProgress, bpCollected, bpActive, bpRemaining, bpTotal = calcBattlepassValues(config, epilogueVar.get())
     bpBar["value"] = bpProgress
     bpPercentageLabel["text"] = str(bpProgress) + "%"
     bpPreviousUnlockLabel["text"] = str(bpCollected) + " Levels"
+    bpActiveLabel["text"] = "Level " + str(bpActive)
     bpRemainingLabel["text"] = str(bpRemaining) + " Levels"
     bpTotalLabel["text"] = str(bpTotal) + " Levels"
 
@@ -619,12 +827,20 @@ def updateValues():
     levelRemainingLabel["text"] = str(levelRemaining) + " XP"
     levelTotalLabel["text"] = str(levelTotal) + " XP"
 
+    miscRemainigDays, miscAverage, miscDeviationIdeal, miscDeviationDaily, miscStrongestDayDate, miscStrongestDayAmount, miscWeakestDayDate, miscWeakestDayAmount = calcMiscValues(config, yAxisYou, yAxisIdeal, yAxisDailyIdeal, epilogueVar.get())
+    miscRemainingDaysLabel["text"] = str(miscRemainigDays) + " Days"
+    miscAverageLabel["text"] = str(miscAverage) + " XP"
+    miscIdealDeviationLabel["text"] = str(miscDeviationIdeal) + " XP"
+    miscDailyDeviationLabel["text"] = str(miscDeviationDaily) + " XP"
+    miscStrongestDayDateLabel["text"] = str(miscStrongestDayDate)
+    miscStrongestDayAmountLabel["text"] = str(miscStrongestDayAmount) + " XP"
+    miscWeakestDayDateLabel["text"] = str(miscWeakestDayDate)
+    miscWeakestDayAmountLabel["text"] = str(miscWeakestDayAmount) + " XP"
+
     history.delete(*history.get_children())
     for i in range(len(config["history"]) - 1, -1, -1):
         history.insert("", "end", values=(config["history"][i]["description"], str(config["history"][i]["amount"]) + " XP", datetime.fromtimestamp(config["history"][i]["time"]).strftime("%d.%m.%Y %H:%M")))
     
-    updateGraph(config, epilogueVar.get(), graphPlot)
-
 # ================================
 #  Buttons
 # ================================
@@ -634,6 +850,9 @@ buttonContainer.pack(padx=8, pady=8, side=tk.RIGHT, fill="both", expand=True)
 
 addXPBtn = ttk.Button(buttonContainer, text="Add XP", command=addXPCallback)
 addXPBtn.pack(padx=8, pady=0, side=tk.RIGHT)
+
+resetBtn = ttk.Button(buttonContainer, text="Add Goal", command=addGoalCallback)
+resetBtn.pack(padx=8, pady=0, side=tk.RIGHT)
 
 resetBtn = ttk.Button(buttonContainer, text="Reset", command=resetCallback)
 resetBtn.pack(padx=8, pady=0, side=tk.RIGHT)

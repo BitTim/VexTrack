@@ -3,6 +3,7 @@ from tkinter import messagebox
 import os
 import requests
 from vars import *
+from tokenString import *
 
 root = Tk()
 root.withdraw()
@@ -25,6 +26,8 @@ def downloadNewUpdaterVersion(versionString):
         f.writelines(content)
 
 def checkNewUpdaterVersion():
+    newVersion = False
+
     content = []
     with open(VERSION_PATH, 'r') as f:
         content = f.readlines()
@@ -41,7 +44,7 @@ def checkNewUpdaterVersion():
     versionString = content[1]
 
     versionNumber = versionString.split("v")[1]
-    response = requests.get("https://api.github.com/repos/" + GITHUB_USER + "/" + GITHUB_REPO + "/releases")
+    response = requests.get("https://api.github.com/repos/" + GITHUB_USER + "/" + GITHUB_REPO + "/releases", headers={"Authorization": TOKEN})
     releases = response.json()
 
     for r in releases:
@@ -56,6 +59,9 @@ def checkNewUpdaterVersion():
             if versionNumber < latestVersionNumber:
                 messagebox.showinfo("Updater", "Updater is updating from version " + versionString + " to " + latestVersionString)
                 downloadNewUpdaterVersion(latestVersionString)
+                messagebox.showinfo("Updater", "Updater ha been updated")
+                newVersion = True
                 break
     
     root.destroy()
+    return newVersion

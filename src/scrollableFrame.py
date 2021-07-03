@@ -17,3 +17,4 @@ class ScrollableFrame(ttk.Frame):
         scrollbar.pack(side="right", fill="y")
     
         self.canvas.bind('<Configure>', lambda event: self.canvas.itemconfigure(self.windowID, width=event.width))
+        self.canvas.bind_all("<MouseWheel>", lambda event: self.canvas.yview_scroll(round(-1 * (event.delta / 120)), "units"))

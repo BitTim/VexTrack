@@ -2,10 +2,12 @@ from tkinter import *
 from tkinter import simpledialog, messagebox, ttk, colorchooser
 
 class AddGoalDiag(simpledialog.Dialog):
-    def __init__(self, parent, title, name=None, amount=None, color="#FF0000"):
+    def __init__(self, parent, title, name=None, amount=None, color="#FF0000", edit=False):
         self.xpAmount = amount
         self.name = name
         self.color = color
+        self.changeStartXP = False if edit == True else None
+        self.edit = edit
         super().__init__(parent, title)
 
     def changeColor(self):
@@ -34,6 +36,12 @@ class AddGoalDiag(simpledialog.Dialog):
         colorBtn = ttk.Button(frame, text="Change Color", command=self.changeColor)
         colorBtn.grid(padx=8, pady=4, column=2, row=2, sticky="e")
 
+        self.changeStartXPVar = IntVar()
+
+        if self.edit:
+            changeStartXPCheck = ttk.Checkbutton(frame, text="Change Start Point", onvalue=1, offvalue=0, variable=self.changeStartXPVar)
+            changeStartXPCheck.grid(padx=8, pady=4, column=2, row=3, sticky="e")
+
         return frame
     
 
@@ -44,11 +52,8 @@ class AddGoalDiag(simpledialog.Dialog):
             messagebox.showerror("Invalid Input", "Amount must be numerical")
             return
         
-        if self.xpAmount == 0:
-            messagebox.showerror("Invalid Input", "Amount must be more than 0")
-            return
-        
         self.name = self.nameBox.get()
+        if self.edit: self.changeStartXP = self.changeStartXPVar.get()
         self.destroy()
 
     def cancel_pressed(self):

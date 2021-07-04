@@ -783,6 +783,8 @@ def updateValues():
 
     totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = calcTotalValues(config, 0)
 
+    if not "goals" in config: config["goals"] = []
+
     largestGoalRemaining = 0
     for g in config["goals"]:
         if g["remaining"] + totalXPCollected > largestGoalRemaining: largestGoalRemaining = g["remaining"] + totalXPCollected

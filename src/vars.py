@@ -9,7 +9,8 @@ BUFFER_DAYS = 8
 
 CONFIG_PATH = "dat/config.json"
 UPDATER_PATH = "Updater.exe"
-VERSION_PATH = "version"
+VERSION_PATH = "version.json"
+OLD_VERSION_PATH = "version"
 
 WINDOW_TITLE = "Vex Track"
 WINDOW_GEOMETRY = "700x640"

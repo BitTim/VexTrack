@@ -11,7 +11,7 @@ from addXPDiag import *
 from addGoalDiag import *
 from goalContainer import *
 
-from updaterUpdate import *
+from Updater import core
 from datetime import *
 
 import matplotlib
@@ -21,7 +21,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.patches import Rectangle
 
 windowSize = vars.WINDOW_GEOMETRY.split("x")
-newUpdaterVersion = checkNewUpdaterVersion()
+newUpdaterVersion = checkNewVersion("Updater")
 
 with open(vars.VERSION_PATH, 'r') as f:
     versionString = f.readlines()[0]

@@ -9,11 +9,16 @@ BUFFER_DAYS = 8
 
 CONFIG_PATH = "dat/config.json"
 UPDATER_PATH = "Updater.exe"
-VERSION_PATH = "version"
+VERSION_PATH = "version.json"
+OLD_VERSION_PATH = "version"
 
-WINDOW_TITLE = "Vex Track"
+APP_NAME = "VexTrack"
 WINDOW_GEOMETRY = "700x640"
 
 GITHUB_USER = "BitTim"
-GITHUB_REPO = "VexTrack"
-EXE_FILENAME = "VexTrack.exe"
+GITHUB_REPO = APP_NAME
+EXE_FILENAME = APP_NAME + ".exe"
+
+LEGACY_VERSIONS = [APP_NAME, "Updater"]
+LEGACY_LAST_APP = 1.4
+LEGACY_LAST_UPDATER = 1.15

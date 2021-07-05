@@ -4,7 +4,7 @@
 block_cipher = None
 
 
-a = Analysis(['src\\Updater.py'],
+a = Analysis(['src\\Updater\\main.py'],
              pathex=['P:\\VexTrack'],
              binaries=[],
              datas=[],

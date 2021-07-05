@@ -1,17 +1,17 @@
+import os, sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import tkinter as tk
 from initDiag import InitDiag
 from scrollableFrame import ScrollableFrame
 import vars
-import os
+import json
 
-from core import *
+from VexTrack import core, addXPDiag as xpDiag, addGoalDiag as goalDiag, goalContainer
+from Updater import core as uCore
+
 from tkinter import *
 from tkinter import ttk, messagebox
-from addXPDiag import *
-from addGoalDiag import *
-from goalContainer import *
-
-from updaterUpdate import *
 from datetime import *
 
 import matplotlib
@@ -21,13 +21,13 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.patches import Rectangle
 
 windowSize = vars.WINDOW_GEOMETRY.split("x")
-newUpdaterVersion = checkNewUpdaterVersion()
+newUpdaterVersion = uCore.checkNewVersion("Updater")
 
 with open(vars.VERSION_PATH, 'r') as f:
-    versionString = f.readlines()[0]
+    versionString = json.loads(f.read())[vars.APP_NAME]
 
 root = tk.Tk()
-root.title(vars.WINDOW_TITLE + " " + versionString)
+root.title(vars.APP_NAME + " " + versionString)
 root.iconbitmap("VexTrack.exe")
 root.geometry(vars.WINDOW_GEOMETRY)
 root.minsize(int(windowSize[0]), int(windowSize[1]))
@@ -411,7 +411,7 @@ dailyTotalLabel.pack(padx=1, pady=0, side=tk.LEFT)
 # --------------------------------
 
 def addXPCallback():
-    addXPDiag = AddXPDiag(root, "Add XP")
+    addXPDiag = xpDiag.AddXPDiag(root, "Add XP")
 
     if addXPDiag.description != None and addXPDiag.xpAmount != None:
         addXP(addXPDiag.description, int(addXPDiag.xpAmount))
@@ -419,7 +419,7 @@ def addXPCallback():
     updateValues()
 
 def addGoalCallback():
-    addGoalDiag = AddGoalDiag(root, "Add Goal")
+    addGoalDiag = goalDiag.AddGoalDiag(root, "Add Goal")
 
     if addGoalDiag.name != None and addGoalDiag.xpAmount != None and addGoalDiag.color != None:
         addGoal(addGoalDiag.name, int(addGoalDiag.xpAmount), addGoalDiag.color)
@@ -448,7 +448,7 @@ def editElementCallback():
     if len(currElement["values"]) == 0:
         return
 
-    editDiag = AddXPDiag(root, "Edit Element", currElement["values"][0], currElement["values"][1].strip(" XP"))
+    editDiag = xpDiag.AddXPDiag(root, "Edit Element", currElement["values"][0], currElement["values"][1].strip(" XP"))
     if editDiag.description != currElement["values"][0] or editDiag.xpAmount != currElement["values"][1].strip(" XP"):
         editElement(currElementID, editDiag.description, int(editDiag.xpAmount))
 
@@ -470,7 +470,7 @@ def gcRemoveCallback(index):
         gcRemove(index)
 
 def gcEditCallback(index):
-    editDiag = AddGoalDiag(root, "Edit Goal", name=goalContainers[index].name, amount=goalContainers[index].amount, color=goalContainers[index].color, edit=True)
+    editDiag = goalDiag.AddGoalDiag(root, "Edit Goal", name=goalContainers[index].name, amount=goalContainers[index].amount, color=goalContainers[index].color, edit=True)
     if editDiag.changeStartXP != None and (editDiag.name != goalContainers[index].name or editDiag.xpAmount != goalContainers[index].amount or editDiag.color != goalContainers[index].color or editDiag.changeStartXP == True):
         gcEdit(index, editDiag.changeStartXP, editDiag.name, int(editDiag.xpAmount), editDiag.color)
 
@@ -511,13 +511,13 @@ def initConfig(activeBPLevel, cXP, remainingDays):
     seasonEndDate = datetime.today() + delta
     seasonEndDateStr = seasonEndDate.strftime("%d.%m.%Y")
 
-    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = calcTotalValues({"activeBPLevel": int(activeBPLevel), "cXP": int(cXP)}, 0)
+    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues({"activeBPLevel": int(activeBPLevel), "cXP": int(cXP)}, 0)
 
     config = {"activeBPLevel": int(activeBPLevel), "cXP": int(cXP), "seasonEndDate": seasonEndDateStr, "history": [{"time": datetime.now().timestamp(), "description": "Initialization", "amount": int(totalXPCollected)}]}
-    writeConfig(vars.CONFIG_PATH, config)
+    core.writeConfig(vars.CONFIG_PATH, config)
 
 def addXP(description, amount):
-    config = readConfig(vars.CONFIG_PATH)
+    config = core.readConfig(vars.CONFIG_PATH)
     config["history"].append({"time": datetime.now().timestamp(), "description": description, "amount": int(amount)})
     config["cXP"] += amount
 
@@ -537,20 +537,20 @@ def addXP(description, amount):
         if config["goals"][i]["remaining"] <= 0 and not completed:
             messagebox.showinfo("Congratulations", "Congratulations! You have completed the goal: " + str(config["goals"][i]["name"]))
         
-    writeConfig(vars.CONFIG_PATH, config)
+    core.writeConfig(vars.CONFIG_PATH, config)
 
 def addGoal(name, amount, color):
-    config = readConfig(vars.CONFIG_PATH)
+    config = core.readConfig(vars.CONFIG_PATH)
 
     if not "goals" in config:
         config["goals"] = []
 
-    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = calcTotalValues(config, epilogueVar.get())
+    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(config, epilogueVar.get())
     config["goals"].append({"name": name, "remaining": amount, "startXP": totalXPCollected,"color": color})
-    writeConfig(vars.CONFIG_PATH, config)
+    core.writeConfig(vars.CONFIG_PATH, config)
 
 def editElement(index, description, amount):
-    config = readConfig(vars.CONFIG_PATH)
+    config = core.readConfig(vars.CONFIG_PATH)
     historyLen = len(config["history"])
 
     prevBPLevel = config["activeBPLevel"]
@@ -566,7 +566,7 @@ def editElement(index, description, amount):
         if config["goals"][i]["remaining"] <= 0: completedGoals.append(i)
         config["goals"][i]["remaining"] -= amount - prevAmount
 
-    config = recalcXP(config)
+    config = core.recalcXP(config)
     deltaBP = prevBPLevel - config["activeBPLevel"]
     
     if deltaBP > 0:
@@ -581,11 +581,11 @@ def editElement(index, description, amount):
             messagebox.showinfo("Sorry", "You have no longer completed the goal: " + config["goals"][cg]["name"])
 
 
-    writeConfig(vars.CONFIG_PATH, config)
+    core.writeConfig(vars.CONFIG_PATH, config)
     updateValues()
 
 def deleteElement(index):
-    config = readConfig(vars.CONFIG_PATH)
+    config = core.readConfig(vars.CONFIG_PATH)
     historyLen = len(config["history"])
 
     prevBPLevel = config["activeBPLevel"]
@@ -600,7 +600,7 @@ def deleteElement(index):
         if config["goals"][i]["remaining"] <= 0: completedGoals.append(i)
         config["goals"][i]["remaining"] += amount
 
-    config = recalcXP(config)
+    config = core.recalcXP(config)
     deltaBP = prevBPLevel - config["activeBPLevel"]
 
     if deltaBP > 0:
@@ -614,22 +614,22 @@ def deleteElement(index):
         if config["goals"][cg]["remaining"] > 0:
             messagebox.showinfo("Sorry", "You have no longer completed the goal: " + config["goals"][cg]["name"])
 
-    writeConfig(vars.CONFIG_PATH, config)
+    core.writeConfig(vars.CONFIG_PATH, config)
     updateValues()
 
 def gcRemove(index):
-    config = readConfig(vars.CONFIG_PATH)
+    config = core.readConfig(vars.CONFIG_PATH)
 
     config["goals"].pop(index)
     goalContainers[index].destroy()
     goalContainers.pop(index)
 
-    writeConfig(vars.CONFIG_PATH, config)
+    core.writeConfig(vars.CONFIG_PATH, config)
     updateValues()
 
 def gcEdit(index, changeStartXP, name, amount, color):
-    config = readConfig(vars.CONFIG_PATH)
-    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = calcTotalValues(config, epilogueVar.get())
+    config = core.readConfig(vars.CONFIG_PATH)
+    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(config, epilogueVar.get())
 
     completed = False
     if config["goals"][index]["remaining"] <= 0: completed = True
@@ -646,7 +646,7 @@ def gcEdit(index, changeStartXP, name, amount, color):
     elif config["goals"][index]["remaining"] <= 0 and not completed:
         messagebox.showinfo("Congratulations", "Congratulations! You have completed the goal: " + str(config["goals"][index]["name"]))
 
-    writeConfig(vars.CONFIG_PATH, config)
+    core.writeConfig(vars.CONFIG_PATH, config)
     updateValues()
 
 def updateGoals(config, plot, collectedXP):
@@ -663,7 +663,7 @@ def updateGoals(config, plot, collectedXP):
         plot.annotate(config["goals"][i]["name"], (0, collectedXP + config["goals"][i]["remaining"]), xytext=(-3, collectedXP + config["goals"][i]["remaining"] + 5000), color=config["goals"][i]["color"], alpha=alpha)
 
         if i >= len(goalContainers):
-            gc = GoalContainer(statsContainer, config["goals"][i]["name"], config["goals"][i]["remaining"], color=config["goals"][i]["color"])
+            gc = goalContainer.GoalContainer(statsContainer, config["goals"][i]["name"], config["goals"][i]["remaining"], color=config["goals"][i]["color"])
             gc.pack(padx=8, pady=8, fill="x")
             goalContainers.append(gc)
         
@@ -689,7 +689,7 @@ def updateGraph(config, epilogue, plot):
 
     yAxisIdeal = []
 
-    totalXP = cumulativeSum(vars.NUM_BPLEVELS, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL) + epilogue * vars.NUM_EPLOGUE_LEVELS * vars.NUM_EPLOGUE_XP_PER_LEVEL
+    totalXP = core.cumulativeSum(vars.NUM_BPLEVELS, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL) + epilogue * vars.NUM_EPLOGUE_LEVELS * vars.NUM_EPLOGUE_XP_PER_LEVEL
     collectedXP = config["history"][0]["amount"]
     
     remainingXP = totalXP - collectedXP
@@ -736,7 +736,7 @@ def updateGraph(config, epilogue, plot):
     if date.fromtimestamp(config["history"][len(config["history"]) - 1]["time"]) == date.today(): offset = 1
     else: offset = 0
 
-    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = calcTotalValues(config, epilogue)
+    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(config, epilogue)
     dailyTotal = round((totalXPTotal - yAxisYou[index - offset]) / (remainingDays - vars.BUFFER_DAYS + 1))
 
     yAxisDailyIdeal.append(yAxisYou[index - offset])
@@ -758,14 +758,14 @@ def updateGraph(config, epilogue, plot):
     # --------------------------------
 
     for i in range(0, vars.NUM_BPLEVELS + 1, 1):
-        plot.axhline(cumulativeSum(i, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL), color="gray", alpha=0.05, linestyle="-")
+        plot.axhline(core.cumulativeSum(i, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL), color="gray", alpha=0.05, linestyle="-")
 
     for i in range(0, vars.NUM_BPLEVELS + 1, 5):
-        plot.axhline(cumulativeSum(i, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL), color="green", alpha=0.15, linestyle="-")
+        plot.axhline(core.cumulativeSum(i, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL), color="green", alpha=0.15, linestyle="-")
     
     if epilogue:
         for i in range(1, vars.NUM_EPLOGUE_LEVELS + 1, 1):
-            plot.axhline(cumulativeSum(vars.NUM_BPLEVELS, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL) + i * vars.NUM_EPLOGUE_XP_PER_LEVEL, color="green", alpha=0.15, linestyle="-")
+            plot.axhline(core.cumulativeSum(vars.NUM_BPLEVELS, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL) + i * vars.NUM_EPLOGUE_XP_PER_LEVEL, color="green", alpha=0.15, linestyle="-")
     
     updateGoals(config, plot, totalXPCollected)
 
@@ -779,9 +779,9 @@ def updateGraph(config, epilogue, plot):
     return yAxisYou, yAxisIdeal, yAxisDailyIdeal
 
 def updateValues():
-    config = readConfig(vars.CONFIG_PATH)
+    config = core.readConfig(vars.CONFIG_PATH)
 
-    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = calcTotalValues(config, 0)
+    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(config, 0)
 
     if not "goals" in config: config["goals"] = []
 
@@ -795,7 +795,7 @@ def updateValues():
     else:
         epilogueCheck.config(state=NORMAL)
 
-    dailyProgress, dailyCollected, dailyRemaining, dailyTotal = calcDailyValues(config, epilogueVar.get())
+    dailyProgress, dailyCollected, dailyRemaining, dailyTotal = core.calcDailyValues(config, epilogueVar.get())
     if(dailyProgress > 100): dailyProgress = 100
     if(dailyRemaining < 0): dailyRemaining = 0
 
@@ -807,14 +807,14 @@ def updateValues():
     dailyRemainingLabel["text"] = str(dailyRemaining) + " XP"
     dailyTotalLabel["text"] = str(dailyTotal) + " XP"
 
-    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = calcTotalValues(config, epilogueVar.get())
+    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(config, epilogueVar.get())
     totalXPBar["value"] = totalXPProgress
     totalXPPercentageLabel["text"] = str(totalXPProgress) + "%"
     totalCollectedLabel["text"] = str(totalXPCollected) + " XP"
     totalRemainingLabel["text"] = str(totalXPRemaining) + " XP"
     totalTotalLabel["text"] = str(totalXPTotal) + " XP"
 
-    bpProgress, bpCollected, bpActive, bpRemaining, bpTotal = calcBattlepassValues(config, epilogueVar.get())
+    bpProgress, bpCollected, bpActive, bpRemaining, bpTotal = core.calcBattlepassValues(config, epilogueVar.get())
     bpBar["value"] = bpProgress
     bpPercentageLabel["text"] = str(bpProgress) + "%"
     bpPreviousUnlockLabel["text"] = str(bpCollected) + " Levels"
@@ -822,14 +822,14 @@ def updateValues():
     bpRemainingLabel["text"] = str(bpRemaining) + " Levels"
     bpTotalLabel["text"] = str(bpTotal) + " Levels"
 
-    levelProgress, levelCollected, levelRemaining, levelTotal = calcLevelValues(config, epilogueVar.get())
+    levelProgress, levelCollected, levelRemaining, levelTotal = core.calcLevelValues(config, epilogueVar.get())
     levelBar["value"] = levelProgress
     levelPercentageLabel["text"] = str(levelProgress) + "%"
     levelCollectedLabel["text"] = str(levelCollected) + " XP"
     levelRemainingLabel["text"] = str(levelRemaining) + " XP"
     levelTotalLabel["text"] = str(levelTotal) + " XP"
 
-    miscRemainigDays, miscAverage, miscDeviationIdeal, miscDeviationDaily, miscStrongestDayDate, miscStrongestDayAmount, miscWeakestDayDate, miscWeakestDayAmount = calcMiscValues(config, yAxisYou, yAxisIdeal, yAxisDailyIdeal, epilogueVar.get())
+    miscRemainigDays, miscAverage, miscDeviationIdeal, miscDeviationDaily, miscStrongestDayDate, miscStrongestDayAmount, miscWeakestDayDate, miscWeakestDayAmount = core.calcMiscValues(config, yAxisYou, yAxisIdeal, yAxisDailyIdeal, epilogueVar.get())
     miscRemainingDaysLabel["text"] = str(miscRemainigDays) + " Days"
     miscAverageLabel["text"] = str(miscAverage) + " XP"
     miscIdealDeviationLabel["text"] = str(miscDeviationIdeal) + " XP"

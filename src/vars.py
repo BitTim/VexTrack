@@ -12,7 +12,7 @@ UPDATER_PATH = "Updater.exe"
 VERSION_PATH = "version.json"
 OLD_VERSION_PATH = "version"
 
-WINDOW_TITLE = "Vex Track"
+APP_NAME = "VexTrack"
 WINDOW_GEOMETRY = "700x640"
 
 GITHUB_USER = "BitTim"

@@ -4,12 +4,13 @@ import os
 import requests
 from vars import *
 from tokenString import *
+import json
 
 root = Tk()
 root.withdraw()
 
 def downloadNewVersion(versionString, softwareName):
-    os.system("taskkill /f /im " + SoftwareName + ".exe")
+    os.system("taskkill /f /im " + softwareName + ".exe")
 
     url = "https://github.com/" + GITHUB_USER + "/" + GITHUB_REPO + "/releases/download/" + versionString + "/" + softwareName + ".exe"
     r = requests.get(url)
@@ -35,12 +36,14 @@ def checkNewVersion(softwareName):
     isNewVersion = False
 
     # Update old version file
-    if not os.exists(VERSION_PATH):
-        if os.exists(OLD_VERSION_PATH):
+    if not os.path.exists(VERSION_PATH):
+        if os.path.exists(OLD_VERSION_PATH):
             version = []
             with open(OLD_VERSION_PATH, 'r') as f:
                 version = f.readlines()
             
+            for i in range(0, len(version)): version[i] = version[i].strip()
+
             newVersion = {GITHUB_REPO: version[0], "Updater": version[1]}
             os.remove(OLD_VERSION_PATH)
         else:
@@ -50,7 +53,7 @@ def checkNewVersion(softwareName):
             f.write(json.dumps(newVersion, indent = 4, separators=(',', ': ')))
 
     with open(VERSION_PATH, 'r') as f:
-        versionString = f.readlines().json()[softwareName]
+        versionString = json.loads(f.read())[softwareName]
 
     versionNumber = versionString.split("v")[1]
     
@@ -76,5 +79,6 @@ def checkNewVersion(softwareName):
         
                     restartProgram(softwareName)
                     break
+    
     root.destroy()
     return isNewVersion

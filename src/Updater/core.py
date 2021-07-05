@@ -3,7 +3,7 @@ from tkinter import *
 from tkinter import messagebox
 import os
 import requests
-from Updater import changelogDiag, downloadDiag
+from Updater import changelogDiag, downloadDiag, legacy
 from vars import *
 from tokenString import *
 import json
@@ -12,7 +12,7 @@ import time
 root = Tk()
 root.withdraw()
 
-def downloadNewVersion(versionString, softwareName):
+def downloadNewVersion(versionString, softwareName, legacyMode):
     os.system("taskkill /f /im " + softwareName + ".exe")
 
     url = "https://github.com/" + GITHUB_USER + "/" + GITHUB_REPO + "/releases/download/" + versionString + "/" + softwareName + ".exe"
@@ -36,19 +36,32 @@ def downloadNewVersion(versionString, softwareName):
     
     downDiag.destroy()
     
-    content = []
-    with open(VERSION_PATH, 'r') as f:
-        content = json.loads(f.read())
-    
-    content[softwareName] = versionString
-    with open(VERSION_PATH, 'w') as f:
-        f.write(json.dumps(content, indent = 4, separators=(',', ': ')))
+    if not legacyMode:
+        content = []
+        with open(VERSION_PATH, 'r') as f:
+            content = json.loads(f.read())
+        
+        content[softwareName] = versionString
+        with open(VERSION_PATH, 'w') as f:
+            f.write(json.dumps(content, indent = 4, separators=(',', ': ')))
+    else:
+        content = []
+        with open(OLD_VERSION_PATH, 'r') as f:
+            content = f.readlines()
+        
+        content[LEGACY_VERSIONS.index(softwareName)] = versionString
+        for i in range(0, len(content)):
+            if i != len(content) - 1: content[i] += "\n"
+
+        with open(OLD_VERSION_PATH, 'w') as f:
+            f.writelines(content)
 
 def restartProgram(softwareName):
     os.startfile(softwareName + ".exe")
 
 def checkNewVersion(softwareName):
     isNewVersion = False
+    legacyMode = False
 
     # Update old version file
     if not os.path.exists(VERSION_PATH):
@@ -58,17 +71,24 @@ def checkNewVersion(softwareName):
                 version = f.readlines()
             
             for i in range(0, len(version)): version[i] = version[i].strip()
+            legacyMode = legacy.checkLegacy(version)
 
-            newVersion = {GITHUB_REPO: version[0], "Updater": version[1]}
-            os.remove(OLD_VERSION_PATH)
+            if not legacyMode:
+                newVersion = {GITHUB_REPO: version[0], "Updater": version[1]}
+                os.remove(OLD_VERSION_PATH)
         else:
             newVersion = {GITHUB_REPO: "v1.0", "Updater": "v1.0"}
         
-        with open(VERSION_PATH, 'w') as f:
-            f.write(json.dumps(newVersion, indent = 4, separators=(',', ': ')))
+        if not legacyMode:
+            with open(VERSION_PATH, 'w') as f:
+                f.write(json.dumps(newVersion, indent = 4, separators=(',', ': ')))
 
-    with open(VERSION_PATH, 'r') as f:
-        versionString = json.loads(f.read())[softwareName]
+    if legacyMode:
+        with open(OLD_VERSION_PATH, 'r') as f:
+            versionString = f.readlines()[LEGACY_VERSIONS.index(softwareName)]
+    else:
+        with open(VERSION_PATH, 'r') as f:
+            versionString = json.loads(f.read())[softwareName]
 
     versionNumber = versionString.split("v")[1]
     
@@ -87,7 +107,7 @@ def checkNewVersion(softwareName):
             if versionNumber < latestVersionNumber:
                 res = messagebox.askquestion("Updater", "A new version of " + softwareName + " is available: " + latestVersionString + "\nDo you want to update?")
                 if res == "yes":
-                    downloadNewVersion(latestVersionString, softwareName)
+                    downloadNewVersion(latestVersionString, softwareName, legacyMode)
 
                     changelogRaw = r["body"].split("##")[1].split("\r\n")
                     changelog = []
@@ -99,7 +119,7 @@ def checkNewVersion(softwareName):
                     isNewVersion = True
         
                     restartProgram(softwareName)
-                    break
+                break
     
     root.destroy()
     return isNewVersion

@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 import os
 import requests
+from Updater.changelogDiag import ChangelogDiag
 from vars import *
 from tokenString import *
 import json
@@ -20,14 +21,11 @@ def downloadNewVersion(versionString, softwareName):
     
     content = []
     with open(VERSION_PATH, 'r') as f:
-        content = f.readlines()
+        content = json.loads(f.read())
     
-    content[0] = versionString
-    for i in range(0, len(content)):
-        if i != len(content) - 1: content[i] += "\n"
-    
+    content[softwareName] = versionString
     with open(VERSION_PATH, 'w') as f:
-        f.writelines(content)
+        f.write(json.dumps(content, indent = 4, separators=(',', ': ')))
 
 def restartProgram(softwareName):
     os.startfile(softwareName + ".exe")
@@ -73,7 +71,13 @@ def checkNewVersion(softwareName):
                 res = messagebox.askquestion("Updater", "A new version of " + softwareName + " is available: " + latestVersionString + "\nDo you want to update?")
                 if res == "yes":
                     downloadNewVersion(latestVersionString, softwareName)
-                    messagebox.showinfo("Updater", "Update complete, program will restart now")
+
+                    changelogRaw = r["body"].split("##")[1].split("\r\n")
+                    changelog = []
+                    for c in changelogRaw[1:]:
+                        if c != "": changelog.append(c)
+
+                    ChangelogDiag(root, "Changelog", changelog)
         
                     isNewVersion = True
         

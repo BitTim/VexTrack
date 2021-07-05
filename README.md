@@ -26,7 +26,7 @@ When you have everything installed, create a new file called "tokenString.py" in
 Where <YOUR_GITHUB_PERSONAL_ACCESS_TOKEN> should be replaced by your personal access token, which can be generated ![here](https://github.com/settings/tokens). The only needed permissions are `repo:status` and `public_repo`.
 After you have created tokenString.py, run these two commands to compile the binaries:
 
-    pyinstaller --onefile --windowed --icon=VexTrack.ico src/VexTrack.py
-    pyinstaller --onefile --windowed --icon=VexTrack.ico src/Updater.py
+    pyinstaller --onefile --windowed --icon=VexTrack.ico --name=VexTrack --paths "./src" src/VexTrack.py
+    pyinstaller --onefile --windowed --icon=VexTrack.ico --name=Updater --paths "./src" src/Updater.py
 
-The compiled .exe files are in a new folder "dist". Move them to the desired location and move the file "version" into the same folder as the .exe files
+The compiled .exe files are in a new folder "dist". Move them to the desired location and move the file "version" for versions v1.1 - v1.4 or "version.json" for versions v1.5+ into the same folder as the .exe files

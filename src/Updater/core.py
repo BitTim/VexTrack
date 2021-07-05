@@ -1,11 +1,13 @@
+from sys import version
 from tkinter import *
 from tkinter import messagebox
 import os
 import requests
-from Updater.changelogDiag import ChangelogDiag
+from Updater import changelogDiag, downloadDiag
 from vars import *
 from tokenString import *
 import json
+import time
 
 root = Tk()
 root.withdraw()
@@ -14,10 +16,25 @@ def downloadNewVersion(versionString, softwareName):
     os.system("taskkill /f /im " + softwareName + ".exe")
 
     url = "https://github.com/" + GITHUB_USER + "/" + GITHUB_REPO + "/releases/download/" + versionString + "/" + softwareName + ".exe"
-    r = requests.get(url)
+    r = requests.get(url, stream=True)
+
+    downDiag = downloadDiag.DownloadDiag(root, "Downloading " + softwareName + " " + versionString)
+    while downDiag == None: pass
 
     with open(softwareName + ".exe", 'wb') as f:
-        f.write(r.content)
+        startTime = time.mktime(time.localtime())
+        downloaded = 0
+        total = int(r.headers.get('content-length'))
+
+        for chunk in r.iter_content(chunk_size=max(int(total/1000), 1024*1024)):
+            if chunk:
+                downloaded += len(chunk)
+                f.write(chunk)
+                cTime = time.mktime(time.localtime())
+
+                downDiag.updateValues(downloaded, total, 0 if cTime == startTime else round(downloaded / (cTime - startTime), 2))
+    
+    downDiag.destroy()
     
     content = []
     with open(VERSION_PATH, 'r') as f:
@@ -77,7 +94,7 @@ def checkNewVersion(softwareName):
                     for c in changelogRaw[1:]:
                         if c != "": changelog.append(c)
 
-                    ChangelogDiag(root, "Changelog", changelog)
+                    changelogDiag.ChangelogDiag(root, "Changelog", changelog)
         
                     isNewVersion = True
         

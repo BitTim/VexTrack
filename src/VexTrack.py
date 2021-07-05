@@ -1,14 +1,12 @@
-import os, sys
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 import tkinter as tk
-from initDiag import InitDiag
-from scrollableFrame import ScrollableFrame
+from vextrackLib.initDiag import InitDiag
+from vextrackLib.scrollableFrame import ScrollableFrame
 import vars
 import json
+import os
 
-from VexTrack import core, addXPDiag as xpDiag, addGoalDiag as goalDiag, goalContainer
-from Updater import core as uCore
+from vextrackLib import core, addXPDiag as xpDiag, addGoalDiag as goalDiag, goalContainer
+from updaterLib import core as uCore
 
 from tkinter import *
 from tkinter import ttk, messagebox

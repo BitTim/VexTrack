@@ -3,7 +3,7 @@ from tkinter import *
 from tkinter import messagebox
 import os
 import requests
-from Updater import changelogDiag, downloadDiag, legacy
+from . import changelogDiag, downloadDiag, legacy
 from vars import *
 from tokenString import *
 import json

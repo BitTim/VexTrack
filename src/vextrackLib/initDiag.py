@@ -2,8 +2,6 @@ from tkinter import *
 from tkinter import simpledialog, messagebox, ttk
 from vars import *
 
-from vars import NUM_BPLEVELS, NUM_EPLOGUE_LEVELS
-
 class InitDiag(simpledialog.Dialog):
     def __init__(self, parent, title):
         self.activeBPLevel = None

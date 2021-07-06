@@ -315,6 +315,20 @@ goalContainers = []
 #  History
 # --------------------------------
 
+def historySelect(event):
+    elements = history.get_children()
+
+    for e in elements:
+        tags = history.item(e, "tags")
+
+        if "selected" in tags:
+            tag = core.getScoreTag(history.item(e, "values")[0])
+            history.item(e, tags=(tag))
+            break
+
+    currElementFocus = history.focus()
+    history.item(currElementFocus, tags=("selected"))
+
 def _fixed_map(style, style_name, option):
     return [elm for elm in style.map(style_name, query_opt=option) if elm[:2] != ('!disabled', '!selected')]
 
@@ -338,11 +352,16 @@ history.column(1, anchor="w")
 history.column(2, anchor="e")
 history.column(3, anchor="e")
 
+history.tag_configure("win", background=vars.WIN_BG_COLOR, foreground=vars.WIN_FG_COLOR)
+history.tag_configure("loss", background=vars.LOSS_BG_COLOR, foreground=vars.LOSS_FG_COLOR)
+history.tag_configure("selected", background=vars.SELECTED_BG_COLOR, foreground=vars.SELECTED_FG_COLOR)
+
 # Create history Scrollbar
 historyScrollbar = Scrollbar(historyListContainer, orient=VERTICAL, command=history.yview)
 historyScrollbar.pack(side=tk.LEFT, fill="y")
 
 history.configure(yscrollcommand=historyScrollbar.set)
+history.bind("<<TreeviewSelect>>", historySelect)
 
 historyBtnContainer = tk.Frame(historyTab)
 historyBtnContainer.pack(fill="x")
@@ -863,12 +882,7 @@ def updateValues():
         desc = config["history"][i]["description"]
         tag = core.getScoreTag(desc)
         
-        print(desc, tag)
-
         history.insert("", "end", values=(desc, str(config["history"][i]["amount"]) + " XP", datetime.fromtimestamp(config["history"][i]["time"]).strftime("%d.%m.%Y %H:%M")), tags=(tag))
-    
-    history.tag_configure("win", background=vars.WIN_COLOR)
-    history.tag_configure("loss", background=vars.LOSS_COLOR)
     
 # ================================
 #  Buttons

@@ -315,10 +315,14 @@ goalContainers = []
 #  History
 # --------------------------------
 
+def _fixed_map(style, style_name, option):
+    return [elm for elm in style.map(style_name, query_opt=option) if elm[:2] != ('!disabled', '!selected')]
+
 historyListContainer = tk.Frame(historyTab)
 historyListContainer.pack(fill="both", expand=True)
 
 historyStyle = ttk.Style()
+historyStyle.map("history.Treeview", foreground=_fixed_map(historyStyle, "history.Treeview", "foreground"), background=_fixed_map(historyStyle, "history.Treeview", "background"))
 historyStyle.configure("history.Treeview", highlightthickness=0, bd=0, font=('TkDefaultFont', 10))
 historyStyle.configure("history.Treeview.Heading", font=('TkDefaultFont', 10,'bold'))
 historyStyle.layout("history.Treeview", [('history.Treeview.treearea', {'sticky': 'nswe'})])
@@ -856,7 +860,15 @@ def updateValues():
 
     history.delete(*history.get_children())
     for i in range(len(config["history"]) - 1, -1, -1):
-        history.insert("", "end", values=(config["history"][i]["description"], str(config["history"][i]["amount"]) + " XP", datetime.fromtimestamp(config["history"][i]["time"]).strftime("%d.%m.%Y %H:%M")))
+        desc = config["history"][i]["description"]
+        tag = core.getScoreTag(desc)
+        
+        print(desc, tag)
+
+        history.insert("", "end", values=(desc, str(config["history"][i]["amount"]) + " XP", datetime.fromtimestamp(config["history"][i]["time"]).strftime("%d.%m.%Y %H:%M")), tags=(tag))
+    
+    history.tag_configure("win", background=vars.WIN_COLOR)
+    history.tag_configure("loss", background=vars.LOSS_COLOR)
     
 # ================================
 #  Buttons

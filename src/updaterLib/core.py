@@ -59,11 +59,10 @@ def downloadNewVersion(versionString, softwareName, legacyMode):
 def restartProgram(softwareName):
     os.startfile(softwareName + ".exe")
 
-def checkNewVersion(softwareName):
-    isNewVersion = False
+def getVersionString(softwareName):
     legacyMode = False
+    newVersion = {}
 
-    # Update old version file
     if not os.path.exists(VERSION_PATH):
         if os.path.exists(OLD_VERSION_PATH):
             version = []
@@ -79,6 +78,8 @@ def checkNewVersion(softwareName):
         else:
             newVersion = {GITHUB_REPO: "v1.0", "Updater": "v1.0"}
         
+        print(legacyMode, newVersion)
+
         if not legacyMode:
             with open(VERSION_PATH, 'w') as f:
                 f.write(json.dumps(newVersion, indent = 4, separators=(',', ': ')))
@@ -89,7 +90,14 @@ def checkNewVersion(softwareName):
     else:
         with open(VERSION_PATH, 'r') as f:
             versionString = json.loads(f.read())[softwareName]
+    
+    return versionString, legacyMode
 
+def checkNewVersion(softwareName):
+    isNewVersion = False
+    legacyMode = False
+
+    versionString, legacyMode = getVersionString(softwareName)
     versionNumber = versionString.split("v")[1]
     
     response = requests.get("https://api.github.com/repos/" + GITHUB_USER + "/" + GITHUB_REPO + "/releases", headers={"Authorization": TOKEN})

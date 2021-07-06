@@ -20,9 +20,7 @@ from matplotlib.patches import Rectangle
 
 windowSize = vars.WINDOW_GEOMETRY.split("x")
 newUpdaterVersion = uCore.checkNewVersion("Updater")
-
-with open(vars.VERSION_PATH, 'r') as f:
-    versionString = json.loads(f.read())[vars.APP_NAME]
+versionString, _ = uCore.getVersionString(vars.APP_NAME)
 
 root = tk.Tk()
 root.title(vars.APP_NAME + " " + versionString)
@@ -352,8 +350,10 @@ history.column(1, anchor="w")
 history.column(2, anchor="e")
 history.column(3, anchor="e")
 
+history.tag_configure("none", background=vars.NONE_BG_COLOR, foreground=vars.NONE_FG_COLOR)
 history.tag_configure("win", background=vars.WIN_BG_COLOR, foreground=vars.WIN_FG_COLOR)
 history.tag_configure("loss", background=vars.LOSS_BG_COLOR, foreground=vars.LOSS_FG_COLOR)
+history.tag_configure("draw", background=vars.DRAW_BG_COLOR, foreground=vars.DRAW_FG_COLOR)
 history.tag_configure("selected", background=vars.SELECTED_BG_COLOR, foreground=vars.SELECTED_FG_COLOR)
 
 # Create history Scrollbar
@@ -702,7 +702,7 @@ def updateGoals(config, plot, collectedXP):
         goalContainers[i].removeBtn.configure(command=lambda j=i: gcRemoveCallback(j))
         goalContainers[i].editBtn.configure(command=lambda j=i: gcEditCallback(j))
 
-def updateGraph(config, epilogue, plot):
+def updateGraph(config, epilogue, drawEpilogue, plot):
     plot.clear()
     timeAxis = []
     
@@ -796,7 +796,7 @@ def updateGraph(config, epilogue, plot):
         if totalXPCollected >= neededXP: alpha = 0.05
         plot.axhline(neededXP, color="limegreen", alpha=alpha, linestyle="-")
     
-    if epilogue:
+    if epilogue or drawEpilogue:
         for i in range(1, vars.NUM_EPLOGUE_LEVELS + 1, 1):
             alpha = 0.5
             neededXP = core.cumulativeSum(vars.NUM_BPLEVELS, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL) + i * vars.NUM_EPLOGUE_XP_PER_LEVEL
@@ -818,6 +818,7 @@ def updateGraph(config, epilogue, plot):
 
 def updateValues():
     config = core.readConfig(vars.CONFIG_PATH)
+    drawEpilogue = False
 
     totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(config, 0)
 
@@ -827,17 +828,20 @@ def updateValues():
     for g in config["goals"]:
         if g["remaining"] + totalXPCollected > largestGoalRemaining: largestGoalRemaining = g["remaining"] + totalXPCollected
 
-    if config["activeBPLevel"] > 50 or largestGoalRemaining > totalXPTotal:
+    if config["activeBPLevel"] > 50:
         epilogueCheck.config(state=DISABLED)
         epilogueVar.set(1)
     else:
         epilogueCheck.config(state=NORMAL)
+    
+    if largestGoalRemaining > totalXPTotal:
+        drawEpilogue = True
 
     dailyProgress, dailyCollected, dailyRemaining, dailyTotal = core.calcDailyValues(config, epilogueVar.get())
     if(dailyProgress > 100): dailyProgress = 100
     if(dailyRemaining < 0): dailyRemaining = 0
 
-    yAxisYou, yAxisIdeal, yAxisDailyIdeal = updateGraph(config, epilogueVar.get(), graphPlot)
+    yAxisYou, yAxisIdeal, yAxisDailyIdeal = updateGraph(config, epilogueVar.get(), drawEpilogue, graphPlot)
 
     dailyBar["value"] = dailyProgress
     dailyPercentageLabel["text"] = str(dailyProgress) + "%"

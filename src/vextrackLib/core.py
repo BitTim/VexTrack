@@ -171,5 +171,6 @@ def getScoreTag(desc):
         scores.append(scoreComponents)
     
     if len(scores) != 1: return "none"
-    if scores[0][0] > scores[0][1]: return "win"
-    if scores[0][0] < scores[0][1]: return "loss"
+    if int(scores[0][0]) > int(scores[0][1]): return "win"
+    if int(scores[0][0]) < int(scores[0][1]): return "loss"
+    if int(scores[0][0]) == int(scores[0][1]): return "draw"

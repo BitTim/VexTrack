@@ -756,18 +756,31 @@ def updateGraph(config, epilogue, plot):
     plot.grid(axis="x", color="lightgray", which="both", linestyle=":")
 
     # --------------------------------
-    # Draw lines for significant unlocks
+    # Draw lines for battlepass unlocks
     # --------------------------------
 
     for i in range(0, vars.NUM_BPLEVELS + 1, 1):
-        plot.axhline(core.cumulativeSum(i, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL), color="gray", alpha=0.05, linestyle="-")
+        alpha = 0.5
+        neededXP = core.cumulativeSum(i, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL)
+
+        if totalXPCollected >= neededXP: alpha = 0.05
+        plot.axhline(neededXP, color="lightgray", alpha=alpha, linestyle="-")
 
     for i in range(0, vars.NUM_BPLEVELS + 1, 5):
-        plot.axhline(core.cumulativeSum(i, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL), color="green", alpha=0.15, linestyle="-")
+        alpha = 0.5
+        neededXP = core.cumulativeSum(i, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL)
+
+        if totalXPCollected >= neededXP: alpha = 0.05
+        plot.axhline(neededXP, color="limegreen", alpha=alpha, linestyle="-")
     
     if epilogue:
         for i in range(1, vars.NUM_EPLOGUE_LEVELS + 1, 1):
-            plot.axhline(core.cumulativeSum(vars.NUM_BPLEVELS, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL) + i * vars.NUM_EPLOGUE_XP_PER_LEVEL, color="green", alpha=0.15, linestyle="-")
+            alpha = 0.5
+            neededXP = core.cumulativeSum(vars.NUM_BPLEVELS, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL) + i * vars.NUM_EPLOGUE_XP_PER_LEVEL
+
+            if totalXPCollected >= neededXP: alpha = 0.05
+
+            plot.axhline(neededXP, color="orange", alpha=alpha, linestyle="-")
     
     updateGoals(config, plot, totalXPCollected)
 

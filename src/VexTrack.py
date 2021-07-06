@@ -723,7 +723,8 @@ def updateGraph(config, epilogue, plot):
             yAxisYou.append(int(h["amount"]) + prevValue)
             index += 1
 
-    if prevDate != date.today(): yAxisYou.append(yAxisYou[len(yAxisYou) - 1])
+    deltaDate = date.today() - prevDate
+    for i in range(0, deltaDate.days): yAxisYou.append(yAxisYou[len(yAxisYou) - 1])
 
     yAxisDailyIdeal = []
 

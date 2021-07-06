@@ -672,7 +672,10 @@ def updateGoals(config, plot, collectedXP):
 
         totalInGoal = collectedInGoal + config["goals"][i]["remaining"]
 
-        goalContainers[i].setValues(round(collectedInGoal / totalInGoal * 100), collectedInGoal, config["goals"][i]["remaining"], totalInGoal)
+        goalProgress = round(collectedInGoal / totalInGoal * 100)
+        if goalProgress > 100: goalProgress = 100
+
+        goalContainers[i].setValues(goalProgress, collectedInGoal, config["goals"][i]["remaining"] if config["goals"][i]["remaining"] > 0 else 0, totalInGoal)
         goalContainers[i].removeBtn.configure(command=lambda j=i: gcRemoveCallback(j))
         goalContainers[i].editBtn.configure(command=lambda j=i: gcEditCallback(j))
 

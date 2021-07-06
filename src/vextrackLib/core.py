@@ -148,3 +148,28 @@ def recalcXP(config):
     
     config["cXP"] = collectedXP
     return config
+
+def getScoreTag(desc):
+    splitDesc = desc.split()
+    scoreCandidates = []
+
+    for s in splitDesc:
+        if "-" in s:
+            scoreCandidates.append(s)
+    
+    scores = []
+    for c in scoreCandidates:
+        scoreComponents = c.split("-")
+        if len(scoreComponents) != 2: continue
+
+        noNumeric = False
+        for comp in scoreComponents:
+            if not comp.isnumeric(): noNumeric = True
+        
+        if noNumeric: continue
+
+        scores.append(scoreComponents)
+    
+    if len(scores) != 1: return "none"
+    if scores[0][0] > scores[0][1]: return "win"
+    if scores[0][0] < scores[0][1]: return "loss"

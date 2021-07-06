@@ -95,6 +95,11 @@ def checkNewVersion(softwareName):
     response = requests.get("https://api.github.com/repos/" + GITHUB_USER + "/" + GITHUB_REPO + "/releases", headers={"Authorization": TOKEN})
     releases = response.json()
 
+    if "message" in releases:
+        messagebox.showerror("Ratelimit reached", "Updater could not fetch new version of " + softwareName + ":\nYou have reached your rate limit. Try again later")
+        root.destroy()
+        return False
+
     for r in releases:
         tokenized = r["name"].split()
         if tokenized[0] == softwareName:

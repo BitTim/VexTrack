@@ -315,10 +315,28 @@ goalContainers = []
 #  History
 # --------------------------------
 
+def historySelect(event):
+    elements = history.get_children()
+
+    for e in elements:
+        tags = history.item(e, "tags")
+
+        if "selected" in tags:
+            tag = core.getScoreTag(history.item(e, "values")[0])
+            history.item(e, tags=(tag))
+            break
+
+    currElementFocus = history.focus()
+    history.item(currElementFocus, tags=("selected"))
+
+def _fixed_map(style, style_name, option):
+    return [elm for elm in style.map(style_name, query_opt=option) if elm[:2] != ('!disabled', '!selected')]
+
 historyListContainer = tk.Frame(historyTab)
 historyListContainer.pack(fill="both", expand=True)
 
 historyStyle = ttk.Style()
+historyStyle.map("history.Treeview", foreground=_fixed_map(historyStyle, "history.Treeview", "foreground"), background=_fixed_map(historyStyle, "history.Treeview", "background"))
 historyStyle.configure("history.Treeview", highlightthickness=0, bd=0, font=('TkDefaultFont', 10))
 historyStyle.configure("history.Treeview.Heading", font=('TkDefaultFont', 10,'bold'))
 historyStyle.layout("history.Treeview", [('history.Treeview.treearea', {'sticky': 'nswe'})])
@@ -334,11 +352,16 @@ history.column(1, anchor="w")
 history.column(2, anchor="e")
 history.column(3, anchor="e")
 
+history.tag_configure("win", background=vars.WIN_BG_COLOR, foreground=vars.WIN_FG_COLOR)
+history.tag_configure("loss", background=vars.LOSS_BG_COLOR, foreground=vars.LOSS_FG_COLOR)
+history.tag_configure("selected", background=vars.SELECTED_BG_COLOR, foreground=vars.SELECTED_FG_COLOR)
+
 # Create history Scrollbar
 historyScrollbar = Scrollbar(historyListContainer, orient=VERTICAL, command=history.yview)
 historyScrollbar.pack(side=tk.LEFT, fill="y")
 
 history.configure(yscrollcommand=historyScrollbar.set)
+history.bind("<<TreeviewSelect>>", historySelect)
 
 historyBtnContainer = tk.Frame(historyTab)
 historyBtnContainer.pack(fill="x")
@@ -672,7 +695,10 @@ def updateGoals(config, plot, collectedXP):
 
         totalInGoal = collectedInGoal + config["goals"][i]["remaining"]
 
-        goalContainers[i].setValues(round(collectedInGoal / totalInGoal * 100), collectedInGoal, config["goals"][i]["remaining"], totalInGoal)
+        goalProgress = round(collectedInGoal / totalInGoal * 100)
+        if goalProgress > 100: goalProgress = 100
+
+        goalContainers[i].setValues(goalProgress, collectedInGoal, config["goals"][i]["remaining"] if config["goals"][i]["remaining"] > 0 else 0, totalInGoal)
         goalContainers[i].removeBtn.configure(command=lambda j=i: gcRemoveCallback(j))
         goalContainers[i].editBtn.configure(command=lambda j=i: gcEditCallback(j))
 
@@ -723,7 +749,8 @@ def updateGraph(config, epilogue, plot):
             yAxisYou.append(int(h["amount"]) + prevValue)
             index += 1
 
-    if prevDate != date.today(): yAxisYou.append(yAxisYou[len(yAxisYou) - 1])
+    deltaDate = date.today() - prevDate
+    for i in range(0, deltaDate.days): yAxisYou.append(yAxisYou[len(yAxisYou) - 1])
 
     yAxisDailyIdeal = []
 
@@ -752,18 +779,31 @@ def updateGraph(config, epilogue, plot):
     plot.grid(axis="x", color="lightgray", which="both", linestyle=":")
 
     # --------------------------------
-    # Draw lines for significant unlocks
+    # Draw lines for battlepass unlocks
     # --------------------------------
 
     for i in range(0, vars.NUM_BPLEVELS + 1, 1):
-        plot.axhline(core.cumulativeSum(i, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL), color="gray", alpha=0.05, linestyle="-")
+        alpha = 0.5
+        neededXP = core.cumulativeSum(i, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL)
+
+        if totalXPCollected >= neededXP: alpha = 0.05
+        plot.axhline(neededXP, color="lightgray", alpha=alpha, linestyle="-")
 
     for i in range(0, vars.NUM_BPLEVELS + 1, 5):
-        plot.axhline(core.cumulativeSum(i, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL), color="green", alpha=0.15, linestyle="-")
+        alpha = 0.5
+        neededXP = core.cumulativeSum(i, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL)
+
+        if totalXPCollected >= neededXP: alpha = 0.05
+        plot.axhline(neededXP, color="limegreen", alpha=alpha, linestyle="-")
     
     if epilogue:
         for i in range(1, vars.NUM_EPLOGUE_LEVELS + 1, 1):
-            plot.axhline(core.cumulativeSum(vars.NUM_BPLEVELS, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL) + i * vars.NUM_EPLOGUE_XP_PER_LEVEL, color="green", alpha=0.15, linestyle="-")
+            alpha = 0.5
+            neededXP = core.cumulativeSum(vars.NUM_BPLEVELS, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL) + i * vars.NUM_EPLOGUE_XP_PER_LEVEL
+
+            if totalXPCollected >= neededXP: alpha = 0.05
+
+            plot.axhline(neededXP, color="orange", alpha=alpha, linestyle="-")
     
     updateGoals(config, plot, totalXPCollected)
 
@@ -839,7 +879,10 @@ def updateValues():
 
     history.delete(*history.get_children())
     for i in range(len(config["history"]) - 1, -1, -1):
-        history.insert("", "end", values=(config["history"][i]["description"], str(config["history"][i]["amount"]) + " XP", datetime.fromtimestamp(config["history"][i]["time"]).strftime("%d.%m.%Y %H:%M")))
+        desc = config["history"][i]["description"]
+        tag = core.getScoreTag(desc)
+        
+        history.insert("", "end", values=(desc, str(config["history"][i]["amount"]) + " XP", datetime.fromtimestamp(config["history"][i]["time"]).strftime("%d.%m.%Y %H:%M")), tags=(tag))
     
 # ================================
 #  Buttons

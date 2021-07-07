@@ -3,7 +3,7 @@ from tkinter import *
 from tkinter import messagebox
 import os
 import requests
-from . import changelogDiag, downloadDiag, legacy
+from . import changelogDiag, downloadDiag, warningDiag, legacy
 from vars import *
 from tokenString import *
 import json
@@ -14,6 +14,12 @@ root.withdraw()
 
 def downloadNewVersion(versionString, softwareName, legacyMode):
     os.system("taskkill /f /im " + softwareName + ".exe")
+
+    with open(softwareName + ".exe", 'rb') as f:
+        oldExec = f.read()
+    
+    with open(softwareName + ".exe.bak", 'wb') as f:
+        f.write(oldExec)
 
     url = "https://github.com/" + GITHUB_USER + "/" + GITHUB_REPO + "/releases/download/" + versionString + "/" + softwareName + ".exe"
     r = requests.get(url, stream=True)
@@ -34,8 +40,25 @@ def downloadNewVersion(versionString, softwareName, legacyMode):
 
                 downDiag.updateValues(downloaded, total, 0 if cTime == startTime else round(downloaded / (cTime - startTime), 2))
     
-    downDiag.destroy()
+    failed = False
+    with open(softwareName + ".exe", 'r') as f:
+        if f.read() == "Not Found": failed = True
+
+    if failed:
+        messagebox.showerror("Update Failed", "Update of " + softwareName + " failed. Reverting to previous version")
+
+        with open(softwareName + ".exe.bak", "rb") as f:
+            oldExec = f.read()
+        
+        with open(softwareName + ".exe", "wb") as f:
+            f.write(oldExec)
+        
+        ignoreVersion(versionString, softwareName, legacyMode)
     
+    downDiag.destroy()
+    os.remove(softwareName + ".exe.bak")
+    if failed: return
+
     if not legacyMode:
         content = []
         with open(VERSION_PATH, 'r') as f:
@@ -62,6 +85,7 @@ def restartProgram(softwareName):
 def getVersionString(softwareName):
     legacyMode = False
     newVersion = {}
+    ignoredVersions = []
 
     if not os.path.exists(VERSION_PATH):
         if os.path.exists(OLD_VERSION_PATH):
@@ -76,7 +100,7 @@ def getVersionString(softwareName):
                 newVersion = {GITHUB_REPO: version[0], "Updater": version[1]}
                 os.remove(OLD_VERSION_PATH)
         else:
-            newVersion = {GITHUB_REPO: "v1.0", "Updater": "v1.0"}
+            newVersion = {APP_NAME: "v1.0", "Updater": "v1.0"}
         
         print(legacyMode, newVersion)
 
@@ -89,15 +113,33 @@ def getVersionString(softwareName):
             versionString = f.readlines()[LEGACY_VERSIONS.index(softwareName)]
     else:
         with open(VERSION_PATH, 'r') as f:
-            versionString = json.loads(f.read())[softwareName]
+            versionFile = json.loads(f.read())
+            versionString = versionFile[softwareName]
+            
+            if "ignored" in versionFile: ignoredVersions = versionFile["ignored"][softwareName]
     
-    return versionString, legacyMode
+    return versionString, legacyMode, ignoredVersions
+
+def ignoreVersion(versionString, softwareName, legacyMode):
+    if legacyMode: return
+
+    versionFile = None
+    with open(VERSION_PATH, 'r') as f:
+        versionFile = json.loads(f.read())
+    
+    if not "ignored" in versionFile:
+        versionFile["ignored"] = {APP_NAME: [], "Updater": []}
+    
+    versionFile["ignored"][softwareName].append(versionString)
+
+    with open(VERSION_PATH, 'w') as f:
+        f.write(json.dumps(versionFile, indent = 4, separators=(',', ': ')))
 
 def checkNewVersion(softwareName):
     isNewVersion = False
     legacyMode = False
 
-    versionString, legacyMode = getVersionString(softwareName)
+    versionString, legacyMode, ignoredVersions = getVersionString(softwareName)
     versionNumber = versionString.split("v")[1]
     
     response = requests.get("https://api.github.com/repos/" + GITHUB_USER + "/" + GITHUB_REPO + "/releases", headers={"Authorization": TOKEN})
@@ -114,24 +156,38 @@ def checkNewVersion(softwareName):
             latestVersionString = tokenized[1]
             latestVersionNumber = latestVersionString.split("v")[1]
 
-            if versionNumber > latestVersionNumber:
-                break
+            if latestVersionString in ignoredVersions: break
+            if versionNumber > latestVersionNumber: break
 
             if versionNumber < latestVersionNumber:
                 res = messagebox.askquestion("Updater", "A new version of " + softwareName + " is available: " + latestVersionString + "\nDo you want to update?")
+
                 if res == "yes":
-                    downloadNewVersion(latestVersionString, softwareName, legacyMode)
-
-                    changelogRaw = r["body"].split("##")[1].split("\r\n")
+                    warnings = []
                     changelog = []
-                    for c in changelogRaw[1:]:
-                        if c != "": changelog.append(c)
 
+                    descRaw = r["body"].split("##")
+                    for d in descRaw:
+                        splitDRaw = d.split("\r\n")
+                        splitD = [x for x in splitDRaw if x != ""]
+
+                        if len(splitD) < 2: continue
+
+                        if "Changelog" in splitD[0]: changelog = splitD[1:]
+                        if "Warning" in splitD[0]: warnings = splitD[1:]
+                    
+                    if r["prerelease"]: warnings.append("- This release is a pre-release")
+
+                    warningDiagInstance = warningDiag.WarningDiag(root, "Warnings", warnings)
+                    if warningDiagInstance.response == "no":
+                        ignoreVersion(latestVersionString, softwareName, legacyMode)
+                        break
+
+                    downloadNewVersion(latestVersionString, softwareName, legacyMode)
                     changelogDiag.ChangelogDiag(root, "Changelog", changelog)
-        
                     isNewVersion = True
-        
                     restartProgram(softwareName)
+                else: ignoreVersion(latestVersionString, softwareName, legacyMode)
                 break
     
     root.destroy()

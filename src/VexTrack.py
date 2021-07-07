@@ -5,7 +5,7 @@ from vars import *
 import json
 import os
 
-from vextrackLib import core, addXPDiag as xpDiag, addGoalDiag as goalDiag, goalContainer
+from vextrackLib import core, addXPDiag as xpDiag, addGoalDiag as goalDiag, goalContainer, newSeasonDiag
 from updaterLib import core as uCore
 
 from tkinter import *
@@ -34,6 +34,7 @@ if newUpdaterVersion == True:
     root.deiconify()
 
 seasonIndex = IntVar()
+seasonNameVar = StringVar()
 
 # ================================
 #  Tabbed View
@@ -497,6 +498,19 @@ def gcEditCallback(index):
     if editDiag.changeStartXP != None and (editDiag.name != goalContainers[index].name or editDiag.xpAmount != goalContainers[index].amount or editDiag.color != goalContainers[index].color or editDiag.changeStartXP == True):
         gcEdit(index, editDiag.changeStartXP, editDiag.name, int(editDiag.xpAmount), editDiag.color)
 
+def seasonSelectorCallback(choice):
+    data = core.readData()
+    
+    seasonName = seasonNameVar.get()
+
+    i = 0
+    for s in data["seasons"]:
+        if s["name"] == seasonName:
+            seasonIndex.set(i)
+        i += 1
+
+    updateValues()
+
 # --------------------------------
 #  Init
 # --------------------------------
@@ -539,6 +553,7 @@ def init():
     
     data = core.readData()
     seasonIndex.set(len(data["seasons"]) - 1)
+    seasonNameVar.set(data["seasons"][seasonIndex.get()]["name"])
 
 # --------------------------------
 #  Update Values
@@ -551,7 +566,7 @@ def initData(seasonName, activeBPLevel, cXP, remainingDays):
 
     totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues({"seasons": [{"activeBPLevel": int(activeBPLevel), "cXP": int(cXP)}]}, 0, 0)
 
-    data = {"seasons": [{"activeBPLevel": int(activeBPLevel), "cXP": int(cXP), "endDate": seasonEndDateStr, "xpHistory": [{"time": datetime.now().timestamp(), "description": "Initialization", "amount": int(totalXPCollected)}]}]}
+    data = {"seasons": [{"name": seasonName, "activeBPLevel": int(activeBPLevel), "cXP": int(cXP), "endDate": seasonEndDateStr, "xpHistory": [{"time": datetime.now().timestamp(), "description": "Initialization", "amount": int(totalXPCollected)}]}]}
     core.writeData(data)
 
 def addXP(description, amount):
@@ -699,6 +714,7 @@ def updateGoals(data, plot, collectedXP):
             goalContainers[index].destroy()
         goalContainers = []
 
+    j = 0
     for i in range(0, len(data["goals"])):
         alpha = 0.75
 
@@ -708,7 +724,7 @@ def updateGoals(data, plot, collectedXP):
         plot.axhline(collectedXP + data["goals"][i]["remaining"], color=data["goals"][i]["color"], alpha=alpha, linestyle="-")
         plot.annotate(data["goals"][i]["name"], (0, collectedXP + data["goals"][i]["remaining"]), xytext=(-3, collectedXP + data["goals"][i]["remaining"] + 5000), color=data["goals"][i]["color"], alpha=alpha)
 
-        if i >= len(goalContainers):
+        if j >= len(goalContainers):
             gc = goalContainer.GoalContainer(statsContainer, data["goals"][i]["name"], data["goals"][i]["remaining"], color=data["goals"][i]["color"])
             gc.pack(padx=8, pady=8, fill="x")
             goalContainers.append(gc)
@@ -723,9 +739,11 @@ def updateGoals(data, plot, collectedXP):
         goalProgress = round(collectedInGoal / totalInGoal * 100)
         if goalProgress > 100: goalProgress = 100
 
-        goalContainers[i].setValues(goalProgress, collectedInGoal, data["goals"][i]["remaining"] if data["goals"][i]["remaining"] > 0 else 0, totalInGoal)
-        goalContainers[i].removeBtn.configure(command=lambda j=i: gcRemoveCallback(j))
-        goalContainers[i].editBtn.configure(command=lambda j=i: gcEditCallback(j))
+        goalContainers[j].setValues(goalProgress, collectedInGoal, data["goals"][i]["remaining"] if data["goals"][i]["remaining"] > 0 else 0, totalInGoal)
+        goalContainers[j].removeBtn.configure(command=lambda k=j: gcRemoveCallback(k))
+        goalContainers[j].editBtn.configure(command=lambda k=j: gcEditCallback(k))
+
+        j += 1
 
 def updateGraph(data, epilogue, drawEpilogue, plot):
     plot.clear()
@@ -783,14 +801,18 @@ def updateGraph(data, epilogue, drawEpilogue, plot):
     remainingDays = dateDelta.days
     dayDelta = duration - remainingDays
 
+    yAxisYou = yAxisYou[:duration]
+    yAxisIdeal = yAxisIdeal[:duration]
+
     if date.fromtimestamp(data["seasons"][seasonIndex.get()]["xpHistory"][len(data["seasons"][seasonIndex.get()]["xpHistory"]) - 1]["time"]) == date.today(): offset = 1
     else: offset = 0
 
     totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(data, epilogue, seasonIndex.get())
 
     divisor = remainingDays - BUFFER_DAYS + 1 if dayDelta > 0 else remainingDays - BUFFER_DAYS
-    if divisor == 0: divisor = 1
+    if divisor >= -BUFFER_DAYS: divisor = 1
     
+    if index - offset == len(yAxisYou): offset = 2
     dailyTotal = round((totalXPTotal - yAxisYou[index - offset]) / divisor)
 
     yAxisDailyIdeal.append(yAxisYou[index - offset])
@@ -799,7 +821,13 @@ def updateGraph(data, epilogue, drawEpilogue, plot):
         yAxisDailyIdeal.append(yAxisDailyIdeal[i - 1] + dailyTotal)
         if yAxisDailyIdeal[i] > totalXP: yAxisDailyIdeal[i] = totalXP
 
-    plot.plot(timeAxis[(dayDelta - 1) if dayDelta > 0 else 0:], yAxisDailyIdeal, color='skyblue', label='Daily Ideal', alpha=1, linestyle="--")
+    yAxisDailyIdeal = yAxisDailyIdeal[:duration]
+
+    offset = 0
+    if dayDelta == 0: offset = 1
+    if dayDelta > 0: dayDelta - 1
+
+    plot.plot(timeAxis[offset:], yAxisDailyIdeal, color='skyblue', label='Daily Ideal', alpha=1, linestyle="--")
     plot.plot(timeAxis[:len(yAxisYou)], yAxisYou, color='red', label='You', linewidth=3)
     plot.plot(dayDelta, totalXPCollected, color='darkred', label="Now", marker="o", markersize=5)
 
@@ -867,6 +895,19 @@ def updateValues():
         drawEpilogue = True
 
     dailyProgress, dailyCollected, dailyRemaining, dailyTotal = core.calcDailyValues(data, epilogueVar.get(), seasonIndex.get())
+    if dailyProgress == -1 and dailyCollected == -1 and dailyRemaining == -1 and dailyTotal == -1 and seasonIndex == len(data["seasons"]) - 1:
+        seasonDiag = newSeasonDiag.NewSeasonDiag(root, "New season")
+        if seasonDiag.seasonName == None or int(seasonDiag.remainingDays) == None:
+            messagebox.showerror("New Season", "New Season has to be created")
+            exit()
+        
+        core.startNewSeason(seasonDiag.seasonName, seasonDiag.remainingDays)
+        seasonIndex.set(len(data["seasons"]))
+        updateValues()
+        return
+
+    dailyProgress, dailyCollected, dailyRemaining, dailyTotal = core.calcDailyValues(data, epilogueVar.get(), len(data["seasons"]) - 1)
+
     if(dailyProgress > 100): dailyProgress = 100
     if(dailyRemaining < 0): dailyRemaining = 0
 
@@ -919,9 +960,21 @@ def updateValues():
         
         history.insert("", "end", values=(desc, str(xpHistoryData[i]["amount"]) + " XP", datetime.fromtimestamp(xpHistoryData[i]["time"]).strftime("%d.%m.%Y %H:%M")), tags=(tag))
     
+    seasonNames = [""]
+    for s in data["seasons"]:
+        seasonNames.append(s["name"])
+
+    global seasonSelector
+    if seasonSelector != None: seasonSelector.destroy()
+
+    seasonSelector = ttk.OptionMenu(root, seasonNameVar, *seasonNames, command=seasonSelectorCallback)
+    seasonSelector.pack(padx=8, pady=8, side=tk.LEFT, fill="both", expand=True)
+    
 # ================================
 #  Buttons
 # ================================
+
+seasonSelector = None
 
 buttonContainer = ttk.Frame(root)
 buttonContainer.pack(padx=8, pady=8, side=tk.RIGHT, fill="both", expand=True)

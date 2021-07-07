@@ -30,6 +30,7 @@ def convertDataFormat(data):
 
 def calcDailyValues(completeData, epilogue, seasonIndex):
     data = completeData["seasons"][seasonIndex]
+    done = False
 
     seasonEndDate = datetime.strptime(data["endDate"], "%d.%m.%Y")
     dateDelta = seasonEndDate - datetime.now()
@@ -43,7 +44,14 @@ def calcDailyValues(completeData, epilogue, seasonIndex):
         collectedXP = cumulativeSum(NUM_BPLEVELS, LEVEL2_OFFSET, NUM_XP_PER_LEVEL) + data["cXP"] + (data["activeBPLevel"] - NUM_BPLEVELS - 1) * NUM_EPLOGUE_XP_PER_LEVEL
     
     remainingXP = totalXP - collectedXP
-    dailyXP = round(remainingXP / (remainingDays - BUFFER_DAYS))
+
+    divisor = remainingDays - BUFFER_DAYS
+    if divisor >= -BUFFER_DAYS: divisor = 1
+    elif divisor < -BUFFER_DAYS: done = True
+
+    if done: return -1, -1, -1, -1
+   
+    dailyXP = round(remainingXP / divisor)
 
     xpToday = 0
     for t in data["xpHistory"]:
@@ -191,3 +199,12 @@ def getScoreTag(desc):
     if int(scores[0][0]) > int(scores[0][1]): return "win"
     if int(scores[0][0]) < int(scores[0][1]): return "loss"
     if int(scores[0][0]) == int(scores[0][1]): return "draw"
+
+def startNewSeason(name, remainingDays):
+    data = readData()
+    delta = timedelta(int(remainingDays) + 1)
+    seasonEndDate = datetime.today() + delta
+    seasonEndDateStr = seasonEndDate.strftime("%d.%m.%Y")
+
+    data["seasons"].append({"name": name, "activeBPLevel": 2, "cXP": 0, "endDate": seasonEndDateStr, "xpHistory": [{"time": datetime.now().timestamp(), "description": "Initialization", "amount": 0}]})
+    writeData(data)

@@ -454,8 +454,8 @@ def resetCallback():
     if res == "yes":
         initDiag = InitDiag(root, "Reset Config")
 
-        if initDiag.activeBPLevel != None and initDiag.cXP != None and initDiag.remainingDays != None:
-            initData(int(initDiag.activeBPLevel), int(initDiag.cXP), int(initDiag.remainingDays))
+        if initDiag.activeBPLevel != None or initDiag.cXP != None or initDiag.remainingDays != None or initDiag.seasonName != None:
+            initData(initDiag.seasonName, int(initDiag.activeBPLevel), int(initDiag.cXP), int(initDiag.remainingDays))
         else:
             messagebox.showinfo("Reset data", "Cancelled, previous data has not been removed")
 
@@ -525,19 +525,17 @@ def init():
             f.close()
             runInit = True
 
-    # TODO: Update init dialog
-
     if not runInit and os.stat(DATA_PATH).st_size == 0:
         runInit = True
     
     if runInit:
         initDiag = InitDiag(root, "Initialization")
 
-        if initDiag.activeBPLevel== None and initDiag.cXP == None and initDiag.remainingDays == None:
+        if initDiag.activeBPLevel == None or initDiag.cXP == None or initDiag.remainingDays == None or initDiag.seasonName == None:
             messagebox.showerror("Initialization", "Initial data has to be created")
             exit()
         
-        initData(int(initDiag.activeBPLevel), int(initDiag.cXP), int(initDiag.remainingDays))
+        initData(initDiag.seasonName, int(initDiag.activeBPLevel), int(initDiag.cXP), int(initDiag.remainingDays))
     
     data = core.readData()
     seasonIndex.set(len(data["seasons"]) - 1)
@@ -546,15 +544,14 @@ def init():
 #  Update Values
 # --------------------------------
 
-# TODO: Update this
-def initData(activeBPLevel, cXP, remainingDays):
+def initData(seasonName, activeBPLevel, cXP, remainingDays):
     delta = timedelta(int(remainingDays) + 1)
     seasonEndDate = datetime.today() + delta
     seasonEndDateStr = seasonEndDate.strftime("%d.%m.%Y")
 
-    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues({"activeBPLevel": int(activeBPLevel), "cXP": int(cXP)}, 0)
+    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues({"seasons": [{"activeBPLevel": int(activeBPLevel), "cXP": int(cXP)}]}, 0, 0)
 
-    data = {"activeBPLevel": int(activeBPLevel), "cXP": int(cXP), "endDate": seasonEndDateStr, "xpHistory": [{"time": datetime.now().timestamp(), "description": "Initialization", "amount": int(totalXPCollected)}]}
+    data = {"seasons": [{"activeBPLevel": int(activeBPLevel), "cXP": int(cXP), "endDate": seasonEndDateStr, "xpHistory": [{"time": datetime.now().timestamp(), "description": "Initialization", "amount": int(totalXPCollected)}]}]}
     core.writeData(data)
 
 def addXP(description, amount):
@@ -692,8 +689,15 @@ def gcEdit(index, changeStartXP, name, amount, color):
     updateValues()
 
 def updateGoals(data, plot, collectedXP):
+    global goalContainers
+
     if not "goals" in data:
         data["goals"] = []
+
+    if len(data["goals"]) == 0:
+        for index in range(0, len(goalContainers)):
+            goalContainers[index].destroy()
+        goalContainers = []
 
     for i in range(0, len(data["goals"])):
         alpha = 0.75
@@ -783,15 +787,19 @@ def updateGraph(data, epilogue, drawEpilogue, plot):
     else: offset = 0
 
     totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(data, epilogue, seasonIndex.get())
-    dailyTotal = round((totalXPTotal - yAxisYou[index - offset]) / (remainingDays - BUFFER_DAYS + 1))
+
+    divisor = remainingDays - BUFFER_DAYS + 1 if dayDelta > 0 else remainingDays - BUFFER_DAYS
+    if divisor == 0: divisor = 1
+    
+    dailyTotal = round((totalXPTotal - yAxisYou[index - offset]) / divisor)
 
     yAxisDailyIdeal.append(yAxisYou[index - offset])
 
-    for i in range(1, remainingDays + 2):
+    for i in range(1, remainingDays + 2 if dayDelta > 0 else remainingDays + 1):
         yAxisDailyIdeal.append(yAxisDailyIdeal[i - 1] + dailyTotal)
         if yAxisDailyIdeal[i] > totalXP: yAxisDailyIdeal[i] = totalXP
 
-    plot.plot(timeAxis[dayDelta - 1:], yAxisDailyIdeal, color='skyblue', label='Daily Ideal', alpha=1, linestyle="--")
+    plot.plot(timeAxis[(dayDelta - 1) if dayDelta > 0 else 0:], yAxisDailyIdeal, color='skyblue', label='Daily Ideal', alpha=1, linestyle="--")
     plot.plot(timeAxis[:len(yAxisYou)], yAxisYou, color='red', label='You', linewidth=3)
     plot.plot(dayDelta, totalXPCollected, color='darkred', label="Now", marker="o", markersize=5)
 

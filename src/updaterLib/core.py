@@ -62,6 +62,7 @@ def restartProgram(softwareName):
 def getVersionString(softwareName):
     legacyMode = False
     newVersion = {}
+    ignoredVersions = []
 
     if not os.path.exists(VERSION_PATH):
         if os.path.exists(OLD_VERSION_PATH):
@@ -89,15 +90,33 @@ def getVersionString(softwareName):
             versionString = f.readlines()[LEGACY_VERSIONS.index(softwareName)]
     else:
         with open(VERSION_PATH, 'r') as f:
-            versionString = json.loads(f.read())[softwareName]
+            versionFile = json.loads(f.read())
+            versionString = versionFile[softwareName]
+            
+            if "ignored" in versionFile: ignoredVersions = versionFile["ignored"][softwareName]
     
-    return versionString, legacyMode
+    return versionString, legacyMode, ignoredVersions
+
+def ignoreVersion(versionString, softwareName, legacyMode):
+    if legacyMode: return
+
+    versionFile = None
+    with open(VERSION_PATH, 'r') as f:
+        versionFile = json.loads(f.read())
+    
+    if not "ignored" in versionFile:
+        versionFile["ignored"] = {APP_NAME: [], "Updater": []}
+    
+    versionFile["ignored"][softwareName].append(versionString)
+
+    with open(VERSION_PATH, 'w') as f:
+        f.write(json.dumps(versionFile, indent = 4, separators=(',', ': ')))
 
 def checkNewVersion(softwareName):
     isNewVersion = False
     legacyMode = False
 
-    versionString, legacyMode = getVersionString(softwareName)
+    versionString, legacyMode, ignoredVersions = getVersionString(softwareName)
     versionNumber = versionString.split("v")[1]
     
     response = requests.get("https://api.github.com/repos/" + GITHUB_USER + "/" + GITHUB_REPO + "/releases", headers={"Authorization": TOKEN})
@@ -114,8 +133,8 @@ def checkNewVersion(softwareName):
             latestVersionString = tokenized[1]
             latestVersionNumber = latestVersionString.split("v")[1]
 
-            if versionNumber > latestVersionNumber:
-                break
+            if latestVersionString in ignoredVersions: break
+            if versionNumber > latestVersionNumber: break
 
             if versionNumber < latestVersionNumber:
                 res = messagebox.askquestion("Updater", "A new version of " + softwareName + " is available: " + latestVersionString + "\nDo you want to update?")
@@ -132,6 +151,8 @@ def checkNewVersion(softwareName):
                     isNewVersion = True
         
                     restartProgram(softwareName)
+                else:
+                    ignoreVersion(latestVersionString, softwareName, legacyMode)
                 break
     
     root.destroy()

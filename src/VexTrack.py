@@ -20,7 +20,7 @@ from matplotlib.patches import Rectangle
 
 windowSize = vars.WINDOW_GEOMETRY.split("x")
 newUpdaterVersion = uCore.checkNewVersion("Updater")
-versionString, _ = uCore.getVersionString(vars.APP_NAME)
+versionString, _, _ = uCore.getVersionString(vars.APP_NAME)
 
 root = tk.Tk()
 root.title(vars.APP_NAME + " " + versionString)

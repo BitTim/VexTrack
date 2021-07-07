@@ -3,7 +3,7 @@ from tkinter import *
 from tkinter import messagebox
 import os
 import requests
-from . import changelogDiag, downloadDiag, legacy
+from . import changelogDiag, downloadDiag, warningDiag, legacy
 from vars import *
 from tokenString import *
 import json
@@ -77,7 +77,7 @@ def getVersionString(softwareName):
                 newVersion = {GITHUB_REPO: version[0], "Updater": version[1]}
                 os.remove(OLD_VERSION_PATH)
         else:
-            newVersion = {GITHUB_REPO: "v1.0", "Updater": "v1.0"}
+            newVersion = {APP_NAME: "v1.0", "Updater": "v1.0"}
         
         print(legacyMode, newVersion)
 
@@ -138,21 +138,33 @@ def checkNewVersion(softwareName):
 
             if versionNumber < latestVersionNumber:
                 res = messagebox.askquestion("Updater", "A new version of " + softwareName + " is available: " + latestVersionString + "\nDo you want to update?")
+
                 if res == "yes":
-                    downloadNewVersion(latestVersionString, softwareName, legacyMode)
-
-                    changelogRaw = r["body"].split("##")[1].split("\r\n")
+                    warnings = []
                     changelog = []
-                    for c in changelogRaw[1:]:
-                        if c != "": changelog.append(c)
 
+                    descRaw = r["body"].split("##")
+                    for d in descRaw:
+                        splitDRaw = d.split("\r\n")
+                        splitD = [x for x in splitDRaw if x != ""]
+
+                        if len(splitD) < 2: continue
+
+                        if "Changelog" in splitD[0]: changelog = splitD[1:]
+                        if "Warning" in splitD[0]: warnings = splitD[1:]
+                    
+                    if r["prerelease"]: warnings.append("- This release is a pre-release")
+
+                    warningDiagInstance = warningDiag.WarningDiag(root, "Warnings", warnings)
+                    if warningDiagInstance.response == "no":
+                        ignoreVersion(latestVersionString, softwareName, legacyMode)
+                        break
+
+                    downloadNewVersion(latestVersionString, softwareName, legacyMode)
                     changelogDiag.ChangelogDiag(root, "Changelog", changelog)
-        
                     isNewVersion = True
-        
                     restartProgram(softwareName)
-                else:
-                    ignoreVersion(latestVersionString, softwareName, legacyMode)
+                else: ignoreVersion(latestVersionString, softwareName, legacyMode)
                 break
     
     root.destroy()

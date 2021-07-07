@@ -12,7 +12,7 @@ import time
 root = Tk()
 root.withdraw()
 
-def downloadNewVersion(versionString, softwareName, legacyMode):
+def downloadNewVersion(versionString, softwareName, legacyMode, tag):
     os.system("taskkill /f /im " + softwareName + ".exe")
 
     with open(softwareName + ".exe", 'rb') as f:
@@ -21,7 +21,7 @@ def downloadNewVersion(versionString, softwareName, legacyMode):
     with open(softwareName + ".exe.bak", 'wb') as f:
         f.write(oldExec)
 
-    url = "https://github.com/" + GITHUB_USER + "/" + GITHUB_REPO + "/releases/download/" + versionString + "/" + softwareName + ".exe"
+    url = "https://github.com/" + GITHUB_USER + "/" + GITHUB_REPO + "/releases/download/" + tag + "/" + softwareName + ".exe"
     r = requests.get(url, stream=True)
 
     downDiag = downloadDiag.DownloadDiag(root, "Downloading " + softwareName + " " + versionString)
@@ -183,7 +183,7 @@ def checkNewVersion(softwareName):
                         ignoreVersion(latestVersionString, softwareName, legacyMode)
                         break
 
-                    downloadNewVersion(latestVersionString, softwareName, legacyMode)
+                    downloadNewVersion(latestVersionString, softwareName, legacyMode, r["tag_name"])
                     changelogDiag.ChangelogDiag(root, "Changelog", changelog)
                     isNewVersion = True
                     restartProgram(softwareName)

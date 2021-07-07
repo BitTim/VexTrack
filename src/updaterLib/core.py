@@ -15,6 +15,12 @@ root.withdraw()
 def downloadNewVersion(versionString, softwareName, legacyMode):
     os.system("taskkill /f /im " + softwareName + ".exe")
 
+    with open(softwareName + ".exe", 'rb') as f:
+        oldExec = f.read()
+    
+    with open(softwareName + ".exe.bak", 'wb') as f:
+        f.write(oldExec)
+
     url = "https://github.com/" + GITHUB_USER + "/" + GITHUB_REPO + "/releases/download/" + versionString + "/" + softwareName + ".exe"
     r = requests.get(url, stream=True)
 
@@ -34,8 +40,25 @@ def downloadNewVersion(versionString, softwareName, legacyMode):
 
                 downDiag.updateValues(downloaded, total, 0 if cTime == startTime else round(downloaded / (cTime - startTime), 2))
     
-    downDiag.destroy()
+    failed = False
+    with open(softwareName + ".exe", 'r') as f:
+        if f.read() == "Not Found": failed = True
+
+    if failed:
+        messagebox.showerror("Update Failed", "Update of " + softwareName + " failed. Reverting to previous version")
+
+        with open(softwareName + ".exe.bak", "rb") as f:
+            oldExec = f.read()
+        
+        with open(softwareName + ".exe", "wb") as f:
+            f.write(oldExec)
+        
+        ignoreVersion(versionString, softwareName, legacyMode)
     
+    downDiag.destroy()
+    os.remove(softwareName + ".exe.bak")
+    if failed: return
+
     if not legacyMode:
         content = []
         with open(VERSION_PATH, 'r') as f:

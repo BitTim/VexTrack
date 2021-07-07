@@ -33,6 +33,8 @@ if newUpdaterVersion == True:
     root.update()
     root.deiconify()
 
+seasonIndex = IntVar()
+
 # ================================
 #  Tabbed View
 # ================================
@@ -453,7 +455,7 @@ def resetCallback():
         initDiag = InitDiag(root, "Reset Config")
 
         if initDiag.activeBPLevel != None and initDiag.cXP != None and initDiag.remainingDays != None:
-            initConfig(int(initDiag.activeBPLevel), int(initDiag.cXP), int(initDiag.remainingDays))
+            initData(int(initDiag.activeBPLevel), int(initDiag.cXP), int(initDiag.remainingDays))
         else:
             messagebox.showinfo("Reset data", "Cancelled, previous data has not been removed")
 
@@ -523,6 +525,8 @@ def init():
             f.close()
             runInit = True
 
+    # TODO: Update init dialog
+
     if not runInit and os.stat(DATA_PATH).st_size == 0:
         runInit = True
     
@@ -533,31 +537,36 @@ def init():
             messagebox.showerror("Initialization", "Initial data has to be created")
             exit()
         
-        initConfig(int(initDiag.activeBPLevel), int(initDiag.cXP), int(initDiag.remainingDays))
+        initData(int(initDiag.activeBPLevel), int(initDiag.cXP), int(initDiag.remainingDays))
+    
+    data = core.readData()
+    seasonIndex.set(len(data["seasons"]) - 1)
 
 # --------------------------------
 #  Update Values
 # --------------------------------
 
-def initConfig(activeBPLevel, cXP, remainingDays):
+# TODO: Update this
+def initData(activeBPLevel, cXP, remainingDays):
     delta = timedelta(int(remainingDays) + 1)
     seasonEndDate = datetime.today() + delta
     seasonEndDateStr = seasonEndDate.strftime("%d.%m.%Y")
 
     totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues({"activeBPLevel": int(activeBPLevel), "cXP": int(cXP)}, 0)
 
-    data = {"activeBPLevel": int(activeBPLevel), "cXP": int(cXP), "seasonEndDate": seasonEndDateStr, "history": [{"time": datetime.now().timestamp(), "description": "Initialization", "amount": int(totalXPCollected)}]}
+    data = {"activeBPLevel": int(activeBPLevel), "cXP": int(cXP), "endDate": seasonEndDateStr, "xpHistory": [{"time": datetime.now().timestamp(), "description": "Initialization", "amount": int(totalXPCollected)}]}
     core.writeData(data)
 
 def addXP(description, amount):
     data = core.readData()
-    data["history"].append({"time": datetime.now().timestamp(), "description": description, "amount": int(amount)})
-    data["cXP"] += amount
 
-    while data["cXP"] >= LEVEL2_OFFSET + NUM_XP_PER_LEVEL * data["activeBPLevel"]:
-        data["cXP"] -= LEVEL2_OFFSET + NUM_XP_PER_LEVEL * data["activeBPLevel"]
-        data["activeBPLevel"] += 1
-        messagebox.showinfo("Congratulations", "Congratulations! You have unlocked Battlepass Level " + str(data["activeBPLevel"] - 1))
+    data["seasons"][seasonIndex.get()]["xpHistory"].append({"time": datetime.now().timestamp(), "description": description, "amount": int(amount)})
+    data["seasons"][seasonIndex.get()]["cXP"] += amount
+
+    while data["seasons"][seasonIndex.get()]["cXP"] >= LEVEL2_OFFSET + NUM_XP_PER_LEVEL * data["seasons"][seasonIndex.get()]["activeBPLevel"]:
+        data["seasons"][seasonIndex.get()]["cXP"] -= LEVEL2_OFFSET + NUM_XP_PER_LEVEL * data["seasons"][seasonIndex.get()]["activeBPLevel"]
+        data["seasons"][seasonIndex.get()]["activeBPLevel"] += 1
+        messagebox.showinfo("Congratulations", "Congratulations! You have unlocked Battlepass Level " + str(data["seasons"][seasonIndex.get()]["activeBPLevel"] - 1))
 
     if not "goals" in data: data["goals"] = []
 
@@ -578,20 +587,20 @@ def addGoal(name, amount, color):
     if not "goals" in data:
         data["goals"] = []
 
-    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(data, epilogueVar.get())
+    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(data, epilogueVar.get(), len(data["seasons"]) - 1)
     data["goals"].append({"name": name, "remaining": amount, "startXP": totalXPCollected,"color": color})
     core.writeData(data)
 
 def editElement(index, description, amount):
     data = core.readData()
-    historyLen = len(data["history"])
+    historyLen = len(data["seasons"][seasonIndex.get()]["xpHistory"])
 
-    prevBPLevel = data["activeBPLevel"]
+    prevBPLevel = data["seasons"][seasonIndex.get()]["activeBPLevel"]
 
     index = historyLen - 1 - index
-    prevAmount = data["history"][index]["amount"]
-    data["history"][index]["description"] = description
-    data["history"][index]["amount"] = amount
+    prevAmount = data["seasons"][seasonIndex.get()]["xpHistory"][index]["amount"]
+    data["seasons"][seasonIndex.get()]["xpHistory"][index]["description"] = description
+    data["seasons"][seasonIndex.get()]["xpHistory"][index]["amount"] = amount
 
     if not "goals" in data: data["goals"] = []
     completedGoals = []
@@ -599,8 +608,8 @@ def editElement(index, description, amount):
         if data["goals"][i]["remaining"] <= 0: completedGoals.append(i)
         data["goals"][i]["remaining"] -= amount - prevAmount
 
-    data = core.recalcXP(data)
-    deltaBP = prevBPLevel - data["activeBPLevel"]
+    data["seasons"][seasonIndex.get()] = core.recalcXP(data, seasonIndex.get())
+    deltaBP = prevBPLevel - data["seasons"][seasonIndex.get()]["activeBPLevel"]
     
     if deltaBP > 0:
         for i in range(0, deltaBP, 1):
@@ -619,13 +628,13 @@ def editElement(index, description, amount):
 
 def deleteElement(index):
     data = core.readData()
-    historyLen = len(data["history"])
+    historyLen = len(data["seasons"][seasonIndex.get()]["xpHistory"])
 
-    prevBPLevel = data["activeBPLevel"]
+    prevBPLevel = data["seasons"][seasonIndex.get()]["activeBPLevel"]
 
     index = historyLen - 1 - index
-    amount = data["history"][index]["amount"]
-    data["history"].pop(index)
+    amount = data["seasons"][seasonIndex.get()]["xpHistory"][index]["amount"]
+    data["seasons"][seasonIndex.get()]["xpHistory"].pop(index)
 
     if not "goals" in data: data["goals"] = []
     completedGoals = []
@@ -633,8 +642,8 @@ def deleteElement(index):
         if data["goals"][i]["remaining"] <= 0: completedGoals.append(i)
         data["goals"][i]["remaining"] += amount
 
-    data = core.recalcXP(data)
-    deltaBP = prevBPLevel - data["activeBPLevel"]
+    data["seasons"][seasonIndex.get()] = core.recalcXP(data, seasonIndex.get())
+    deltaBP = prevBPLevel - data["seasons"][seasonIndex.get()]["activeBPLevel"]
 
     if deltaBP > 0:
         for i in range(0, deltaBP, 1):
@@ -662,7 +671,7 @@ def gcRemove(index):
 
 def gcEdit(index, changeStartXP, name, amount, color):
     data = core.readData()
-    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(data, epilogueVar.get())
+    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(data, epilogueVar.get(), len(data["seasons"]) - 1)
 
     completed = False
     if data["goals"][index]["remaining"] <= 0: completed = True
@@ -718,15 +727,15 @@ def updateGraph(data, epilogue, drawEpilogue, plot):
     plot.clear()
     timeAxis = []
     
-    seasonEndDate = datetime.strptime(data["seasonEndDate"], "%d.%m.%Y")
-    dateDelta = seasonEndDate - datetime.fromtimestamp(data["history"][0]["time"])
+    seasonEndDate = datetime.strptime(data["seasons"][seasonIndex.get()]["endDate"], "%d.%m.%Y")
+    dateDelta = seasonEndDate - datetime.fromtimestamp(data["seasons"][seasonIndex.get()]["xpHistory"][0]["time"])
     duration = dateDelta.days
     timeAxis = range(0, duration + 1)
 
     yAxisIdeal = []
 
     totalXP = core.cumulativeSum(NUM_BPLEVELS, LEVEL2_OFFSET, NUM_XP_PER_LEVEL) + epilogue * NUM_EPLOGUE_LEVELS * NUM_EPLOGUE_XP_PER_LEVEL
-    collectedXP = data["history"][0]["amount"]
+    collectedXP = data["seasons"][seasonIndex.get()]["xpHistory"][0]["amount"]
     
     remainingXP = totalXP - collectedXP
     originalDaily = round(remainingXP / (duration - BUFFER_DAYS))
@@ -740,10 +749,10 @@ def updateGraph(data, epilogue, drawEpilogue, plot):
     plot.plot(timeAxis, yAxisIdeal, color='gray', label='Ideal', linestyle="-")
 
     yAxisYou = []
-    prevDate = date.fromtimestamp(data["history"][0]["time"])
+    prevDate = date.fromtimestamp(data["seasons"][seasonIndex.get()]["xpHistory"][0]["time"])
     index = -1
 
-    for h in data["history"]:
+    for h in data["seasons"][seasonIndex.get()]["xpHistory"]:
         currDate = date.fromtimestamp(h["time"])
         if currDate == prevDate and index != -1:
             yAxisYou[index] = yAxisYou[index] + int(h["amount"])
@@ -770,10 +779,10 @@ def updateGraph(data, epilogue, drawEpilogue, plot):
     remainingDays = dateDelta.days
     dayDelta = duration - remainingDays
 
-    if date.fromtimestamp(data["history"][len(data["history"]) - 1]["time"]) == date.today(): offset = 1
+    if date.fromtimestamp(data["seasons"][seasonIndex.get()]["xpHistory"][len(data["seasons"][seasonIndex.get()]["xpHistory"]) - 1]["time"]) == date.today(): offset = 1
     else: offset = 0
 
-    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(data, epilogue)
+    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(data, epilogue, seasonIndex.get())
     dailyTotal = round((totalXPTotal - yAxisYou[index - offset]) / (remainingDays - BUFFER_DAYS + 1))
 
     yAxisDailyIdeal.append(yAxisYou[index - offset])
@@ -832,7 +841,7 @@ def updateValues():
     data = core.readData()
     drawEpilogue = False
 
-    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(data, 0)
+    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(data, 0, seasonIndex.get())
 
     if not "goals" in data: data["goals"] = []
 
@@ -840,20 +849,20 @@ def updateValues():
     for g in data["goals"]:
         if g["remaining"] + totalXPCollected > largestGoalRemaining: largestGoalRemaining = g["remaining"] + totalXPCollected
 
-    if data["activeBPLevel"] > 50:
-        epilogueCheck.data(state=DISABLED)
+    if data["seasons"][seasonIndex.get()]["activeBPLevel"] > 50:
+        epilogueCheck.configure(state=DISABLED)
         epilogueVar.set(1)
     else:
-        epilogueCheck.data(state=NORMAL)
+        epilogueCheck.configure(state=NORMAL)
     
     if largestGoalRemaining > totalXPTotal:
         drawEpilogue = True
 
-    dailyProgress, dailyCollected, dailyRemaining, dailyTotal = core.calcDailyValues(data, epilogueVar.get())
+    dailyProgress, dailyCollected, dailyRemaining, dailyTotal = core.calcDailyValues(data, epilogueVar.get(), seasonIndex.get())
     if(dailyProgress > 100): dailyProgress = 100
     if(dailyRemaining < 0): dailyRemaining = 0
 
-    yAxisYou, yAxisIdeal, yAxisDailyIdeal = updateGraph(data, epilogueVar.get(), drawEpilogue, graphPlot)
+    yAxisYou, yAxisIdeal, yAxisDailyIdeal = updateGraph(data,epilogueVar.get(), drawEpilogue, graphPlot)
 
     dailyBar["value"] = dailyProgress
     dailyPercentageLabel["text"] = str(dailyProgress) + "%"
@@ -861,14 +870,14 @@ def updateValues():
     dailyRemainingLabel["text"] = str(dailyRemaining) + " XP"
     dailyTotalLabel["text"] = str(dailyTotal) + " XP"
 
-    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(data, epilogueVar.get())
+    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(data, epilogueVar.get(), seasonIndex.get())
     totalXPBar["value"] = totalXPProgress
     totalXPPercentageLabel["text"] = str(totalXPProgress) + "%"
     totalCollectedLabel["text"] = str(totalXPCollected) + " XP"
     totalRemainingLabel["text"] = str(totalXPRemaining) + " XP"
     totalTotalLabel["text"] = str(totalXPTotal) + " XP"
 
-    bpProgress, bpCollected, bpActive, bpRemaining, bpTotal = core.calcBattlepassValues(data, epilogueVar.get())
+    bpProgress, bpCollected, bpActive, bpRemaining, bpTotal = core.calcBattlepassValues(data, epilogueVar.get(), seasonIndex.get())
     bpBar["value"] = bpProgress
     bpPercentageLabel["text"] = str(bpProgress) + "%"
     bpPreviousUnlockLabel["text"] = str(bpCollected) + " Levels"
@@ -876,14 +885,14 @@ def updateValues():
     bpRemainingLabel["text"] = str(bpRemaining) + " Levels"
     bpTotalLabel["text"] = str(bpTotal) + " Levels"
 
-    levelProgress, levelCollected, levelRemaining, levelTotal = core.calcLevelValues(data, epilogueVar.get())
+    levelProgress, levelCollected, levelRemaining, levelTotal = core.calcLevelValues(data, epilogueVar.get(), seasonIndex.get())
     levelBar["value"] = levelProgress
     levelPercentageLabel["text"] = str(levelProgress) + "%"
     levelCollectedLabel["text"] = str(levelCollected) + " XP"
     levelRemainingLabel["text"] = str(levelRemaining) + " XP"
     levelTotalLabel["text"] = str(levelTotal) + " XP"
 
-    miscRemainigDays, miscAverage, miscDeviationIdeal, miscDeviationDaily, miscStrongestDayDate, miscStrongestDayAmount, miscWeakestDayDate, miscWeakestDayAmount = core.calcMiscValues(data, yAxisYou, yAxisIdeal, yAxisDailyIdeal, epilogueVar.get())
+    miscRemainigDays, miscAverage, miscDeviationIdeal, miscDeviationDaily, miscStrongestDayDate, miscStrongestDayAmount, miscWeakestDayDate, miscWeakestDayAmount = core.calcMiscValues(data, yAxisYou, yAxisIdeal, yAxisDailyIdeal, epilogueVar.get(), seasonIndex.get())
     miscRemainingDaysLabel["text"] = str(miscRemainigDays) + " Days"
     miscAverageLabel["text"] = str(miscAverage) + " XP"
     miscIdealDeviationLabel["text"] = str(miscDeviationIdeal) + " XP"
@@ -894,11 +903,13 @@ def updateValues():
     miscWeakestDayAmountLabel["text"] = str(miscWeakestDayAmount) + " XP"
 
     history.delete(*history.get_children())
-    for i in range(len(data["history"]) - 1, -1, -1):
-        desc = data["history"][i]["description"]
+    xpHistoryData = data["seasons"][seasonIndex.get()]["xpHistory"]
+
+    for i in range(len(xpHistoryData) - 1, -1, -1):
+        desc = xpHistoryData[i]["description"]
         tag = core.getScoreTag(desc)
         
-        history.insert("", "end", values=(desc, str(data["history"][i]["amount"]) + " XP", datetime.fromtimestamp(data["history"][i]["time"]).strftime("%d.%m.%Y %H:%M")), tags=(tag))
+        history.insert("", "end", values=(desc, str(xpHistoryData[i]["amount"]) + " XP", datetime.fromtimestamp(xpHistoryData[i]["time"]).strftime("%d.%m.%Y %H:%M")), tags=(tag))
     
 # ================================
 #  Buttons

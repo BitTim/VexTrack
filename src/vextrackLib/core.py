@@ -28,8 +28,10 @@ def convertDataFormat(data):
 #  Calculate Values
 # ================================
 
-def calcDailyValues(data, epilogue):
-    seasonEndDate = datetime.strptime(data["seasonEndDate"], "%d.%m.%Y")
+def calcDailyValues(completeData, epilogue, seasonIndex):
+    data = completeData["seasons"][seasonIndex]
+
+    seasonEndDate = datetime.strptime(data["endDate"], "%d.%m.%Y")
     dateDelta = seasonEndDate - datetime.now()
     remainingDays = dateDelta.days
 
@@ -44,7 +46,7 @@ def calcDailyValues(data, epilogue):
     dailyXP = round(remainingXP / (remainingDays - BUFFER_DAYS))
 
     xpToday = 0
-    for t in data["history"]:
+    for t in data["xpHistory"]:
         if date.fromtimestamp(t["time"]) != date.today():
             continue
         xpToday += int(t["amount"])
@@ -54,7 +56,8 @@ def calcDailyValues(data, epilogue):
 
     return dailyProgress, xpToday, dailyXPRemaining, dailyXP
 
-def calcTotalValues(data, epilogue):
+def calcTotalValues(completeData, epilogue, seasonIndex):
+    data = completeData["seasons"][seasonIndex]
     totalXP = cumulativeSum(NUM_BPLEVELS, LEVEL2_OFFSET, NUM_XP_PER_LEVEL) + epilogue * NUM_EPLOGUE_LEVELS * NUM_EPLOGUE_XP_PER_LEVEL
     
     if data["activeBPLevel"] - 1 <= NUM_BPLEVELS:
@@ -67,7 +70,9 @@ def calcTotalValues(data, epilogue):
 
     return totalProgress, collectedXP, remainingXP, totalXP
 
-def calcBattlepassValues(data, epilogue):
+def calcBattlepassValues(completeData, epilogue, seasonIndex):
+    data = completeData["seasons"][seasonIndex]
+    
     bpLastUnlocked = data["activeBPLevel"] - 1
     bpTotal = NUM_BPLEVELS + epilogue * NUM_EPLOGUE_LEVELS
     bpRemaining = bpTotal - bpLastUnlocked
@@ -76,7 +81,9 @@ def calcBattlepassValues(data, epilogue):
 
     return bpProgress, bpLastUnlocked, bpActive, bpRemaining, bpTotal
 
-def calcLevelValues(data, epilogue):
+def calcLevelValues(completeData, epilogue, seasonIndex):
+    data = completeData["seasons"][seasonIndex]
+    
     levelCollected = data["cXP"]
     if data["activeBPLevel"] - 1 <= NUM_BPLEVELS:
         levelTotal = LEVEL2_OFFSET + NUM_XP_PER_LEVEL * data["activeBPLevel"]
@@ -88,16 +95,18 @@ def calcLevelValues(data, epilogue):
 
     return levelProgress, levelCollected, levelRemaining, levelTotal
 
-def calcMiscValues(data, yAxisYou, yAxisIdeal, yAxisDailyIdeal, epilogue):
-    seasonEndDate = datetime.strptime(data["seasonEndDate"], "%d.%m.%Y")
+def calcMiscValues(completeData, yAxisYou, yAxisIdeal, yAxisDailyIdeal, epilogue, seasonIndex):
+    data = completeData["seasons"][seasonIndex]
+    
+    seasonEndDate = datetime.strptime(data["endDate"], "%d.%m.%Y")
     dateDelta = seasonEndDate - datetime.now()
     miscRemainigDays = dateDelta.days
 
     dailyXP = []
-    prevDate = date.fromtimestamp(data["history"][0]["time"])
+    prevDate = date.fromtimestamp(data["xpHistory"][0]["time"])
     index = -1
 
-    for h in data["history"]:
+    for h in data["xpHistory"]:
         currDate = date.fromtimestamp(h["time"])
         if currDate == prevDate and index != -1:
             dailyXP[index]["amount"] = dailyXP[index]["amount"] + int(h["amount"])
@@ -131,11 +140,12 @@ def calcMiscValues(data, yAxisYou, yAxisIdeal, yAxisDailyIdeal, epilogue):
 
     return miscRemainigDays, miscAverage, miscDeviationIdeal, miscDeviationDaily, miscStrongestDayDate, miscStrongestDayAmount, miscWeakestDayDate, miscWeakestDayAmount
 
-def recalcXP(data):
+def recalcXP(completeData, seasonIndex):
+    data = completeData["seasons"][seasonIndex]
     collectedXP = 0
 
-    for i in range(0, len(data["history"])):
-        collectedXP += int(data["history"][i]["amount"])
+    for i in range(0, len(data["xpHistory"])):
+        collectedXP += int(data["xpHistory"][i]["amount"])
     
     iteration = 2
     while collectedXP > 0:

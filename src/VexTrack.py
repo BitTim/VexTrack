@@ -1,7 +1,7 @@
 import tkinter as tk
 from vextrackLib.initDiag import InitDiag
 from vextrackLib.scrollableFrame import ScrollableFrame
-import vars
+from vars import *
 import json
 import os
 
@@ -18,14 +18,14 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.patches import Rectangle
 
-windowSize = vars.WINDOW_GEOMETRY.split("x")
+windowSize = WINDOW_GEOMETRY.split("x")
 newUpdaterVersion = uCore.checkNewVersion("Updater")
-versionString, _, _ = uCore.getVersionString(vars.APP_NAME)
+versionString, _, _ = uCore.getVersionString(APP_NAME)
 
 root = tk.Tk()
-root.title(vars.APP_NAME + " " + versionString)
+root.title(APP_NAME + " " + versionString)
 root.iconbitmap("VexTrack.exe")
-root.geometry(vars.WINDOW_GEOMETRY)
+root.geometry(WINDOW_GEOMETRY)
 root.minsize(int(windowSize[0]), int(windowSize[1]))
 
 if newUpdaterVersion == True:
@@ -350,11 +350,11 @@ history.column(1, anchor="w")
 history.column(2, anchor="e")
 history.column(3, anchor="e")
 
-history.tag_configure("none", background=vars.NONE_BG_COLOR, foreground=vars.NONE_FG_COLOR)
-history.tag_configure("win", background=vars.WIN_BG_COLOR, foreground=vars.WIN_FG_COLOR)
-history.tag_configure("loss", background=vars.LOSS_BG_COLOR, foreground=vars.LOSS_FG_COLOR)
-history.tag_configure("draw", background=vars.DRAW_BG_COLOR, foreground=vars.DRAW_FG_COLOR)
-history.tag_configure("selected", background=vars.SELECTED_BG_COLOR, foreground=vars.SELECTED_FG_COLOR)
+history.tag_configure("none", background=NONE_BG_COLOR, foreground=NONE_FG_COLOR)
+history.tag_configure("win", background=WIN_BG_COLOR, foreground=WIN_FG_COLOR)
+history.tag_configure("loss", background=LOSS_BG_COLOR, foreground=LOSS_FG_COLOR)
+history.tag_configure("draw", background=DRAW_BG_COLOR, foreground=DRAW_FG_COLOR)
+history.tag_configure("selected", background=SELECTED_BG_COLOR, foreground=SELECTED_FG_COLOR)
 
 # Create history Scrollbar
 historyScrollbar = Scrollbar(historyListContainer, orient=VERTICAL, command=history.yview)
@@ -448,14 +448,14 @@ def addGoalCallback():
     updateValues()
 
 def resetCallback():
-    res = messagebox.askquestion("Reset config", "Are you sure you want to reset your config? This will remove all progress")
+    res = messagebox.askquestion("Reset data", "Are you sure you want to reset your data? This will remove all progress")
     if res == "yes":
         initDiag = InitDiag(root, "Reset Config")
 
         if initDiag.activeBPLevel != None and initDiag.cXP != None and initDiag.remainingDays != None:
             initConfig(int(initDiag.activeBPLevel), int(initDiag.cXP), int(initDiag.remainingDays))
         else:
-            messagebox.showinfo("Reset Config", "Cancelled, previous config has not been removed")
+            messagebox.showinfo("Reset data", "Cancelled, previous data has not been removed")
 
         updateValues()
         return
@@ -502,23 +502,35 @@ def gcEditCallback(index):
 def init():
     runInit = False
 
-    if not os.path.exists(os.path.dirname(vars.CONFIG_PATH)):
-        os.mkdir(os.path.dirname(vars.CONFIG_PATH))
+    if not os.path.exists(os.path.dirname(DATA_PATH)):
+        os.mkdir(os.path.dirname(DATA_PATH))
         runInit = True
 
-    if not os.path.exists(vars.CONFIG_PATH):
-        f = open(vars.CONFIG_PATH, "x")
-        f.close()
-        runInit = True
+    if not os.path.exists(DATA_PATH):
+        if os.path.exists(OLD_DATA_PATH):
+            data = None
+            with open(OLD_DATA_PATH, "r") as f:
+                data = f.read()
+            with open(DATA_PATH + ".bak", "w") as f:
+                f.write(data)
+            
+            newData = core.convertDataFormat(json.loads(data))
+            core.writeData(newData)
+            
+            os.remove(OLD_DATA_PATH)
+        else:
+            f = open(DATA_PATH, "x")
+            f.close()
+            runInit = True
 
-    if not runInit and os.stat(vars.CONFIG_PATH).st_size == 0:
+    if not runInit and os.stat(DATA_PATH).st_size == 0:
         runInit = True
     
     if runInit:
         initDiag = InitDiag(root, "Initialization")
 
         if initDiag.activeBPLevel== None and initDiag.cXP == None and initDiag.remainingDays == None:
-            messagebox.showerror("Initialization", "Initial config has to be created")
+            messagebox.showerror("Initialization", "Initial data has to be created")
             exit()
         
         initConfig(int(initDiag.activeBPLevel), int(initDiag.cXP), int(initDiag.remainingDays))
@@ -534,61 +546,61 @@ def initConfig(activeBPLevel, cXP, remainingDays):
 
     totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues({"activeBPLevel": int(activeBPLevel), "cXP": int(cXP)}, 0)
 
-    config = {"activeBPLevel": int(activeBPLevel), "cXP": int(cXP), "seasonEndDate": seasonEndDateStr, "history": [{"time": datetime.now().timestamp(), "description": "Initialization", "amount": int(totalXPCollected)}]}
-    core.writeConfig(vars.CONFIG_PATH, config)
+    data = {"activeBPLevel": int(activeBPLevel), "cXP": int(cXP), "seasonEndDate": seasonEndDateStr, "history": [{"time": datetime.now().timestamp(), "description": "Initialization", "amount": int(totalXPCollected)}]}
+    core.writeData(data)
 
 def addXP(description, amount):
-    config = core.readConfig(vars.CONFIG_PATH)
-    config["history"].append({"time": datetime.now().timestamp(), "description": description, "amount": int(amount)})
-    config["cXP"] += amount
+    data = core.readData()
+    data["history"].append({"time": datetime.now().timestamp(), "description": description, "amount": int(amount)})
+    data["cXP"] += amount
 
-    while config["cXP"] >= vars.LEVEL2_OFFSET + vars.NUM_XP_PER_LEVEL * config["activeBPLevel"]:
-        config["cXP"] -= vars.LEVEL2_OFFSET + vars.NUM_XP_PER_LEVEL * config["activeBPLevel"]
-        config["activeBPLevel"] += 1
-        messagebox.showinfo("Congratulations", "Congratulations! You have unlocked Battlepass Level " + str(config["activeBPLevel"] - 1))
+    while data["cXP"] >= LEVEL2_OFFSET + NUM_XP_PER_LEVEL * data["activeBPLevel"]:
+        data["cXP"] -= LEVEL2_OFFSET + NUM_XP_PER_LEVEL * data["activeBPLevel"]
+        data["activeBPLevel"] += 1
+        messagebox.showinfo("Congratulations", "Congratulations! You have unlocked Battlepass Level " + str(data["activeBPLevel"] - 1))
 
-    if not "goals" in config: config["goals"] = []
+    if not "goals" in data: data["goals"] = []
 
-    for i in range(0, len(config["goals"])):
+    for i in range(0, len(data["goals"])):
         completed = False
-        if config["goals"][i]["remaining"] <= 0: completed = True
+        if data["goals"][i]["remaining"] <= 0: completed = True
 
-        config["goals"][i]["remaining"] -= amount
+        data["goals"][i]["remaining"] -= amount
 
-        if config["goals"][i]["remaining"] <= 0 and not completed:
-            messagebox.showinfo("Congratulations", "Congratulations! You have completed the goal: " + str(config["goals"][i]["name"]))
+        if data["goals"][i]["remaining"] <= 0 and not completed:
+            messagebox.showinfo("Congratulations", "Congratulations! You have completed the goal: " + str(data["goals"][i]["name"]))
         
-    core.writeConfig(vars.CONFIG_PATH, config)
+    core.writeData(data)
 
 def addGoal(name, amount, color):
-    config = core.readConfig(vars.CONFIG_PATH)
+    data = core.readData()
 
-    if not "goals" in config:
-        config["goals"] = []
+    if not "goals" in data:
+        data["goals"] = []
 
-    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(config, epilogueVar.get())
-    config["goals"].append({"name": name, "remaining": amount, "startXP": totalXPCollected,"color": color})
-    core.writeConfig(vars.CONFIG_PATH, config)
+    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(data, epilogueVar.get())
+    data["goals"].append({"name": name, "remaining": amount, "startXP": totalXPCollected,"color": color})
+    core.writeData(data)
 
 def editElement(index, description, amount):
-    config = core.readConfig(vars.CONFIG_PATH)
-    historyLen = len(config["history"])
+    data = core.readData()
+    historyLen = len(data["history"])
 
-    prevBPLevel = config["activeBPLevel"]
+    prevBPLevel = data["activeBPLevel"]
 
     index = historyLen - 1 - index
-    prevAmount = config["history"][index]["amount"]
-    config["history"][index]["description"] = description
-    config["history"][index]["amount"] = amount
+    prevAmount = data["history"][index]["amount"]
+    data["history"][index]["description"] = description
+    data["history"][index]["amount"] = amount
 
-    if not "goals" in config: config["goals"] = []
+    if not "goals" in data: data["goals"] = []
     completedGoals = []
-    for i in range(0, len(config["goals"])):
-        if config["goals"][i]["remaining"] <= 0: completedGoals.append(i)
-        config["goals"][i]["remaining"] -= amount - prevAmount
+    for i in range(0, len(data["goals"])):
+        if data["goals"][i]["remaining"] <= 0: completedGoals.append(i)
+        data["goals"][i]["remaining"] -= amount - prevAmount
 
-    config = core.recalcXP(config)
-    deltaBP = prevBPLevel - config["activeBPLevel"]
+    data = core.recalcXP(data)
+    deltaBP = prevBPLevel - data["activeBPLevel"]
     
     if deltaBP > 0:
         for i in range(0, deltaBP, 1):
@@ -598,31 +610,31 @@ def editElement(index, description, amount):
             messagebox.showinfo("Congratulations", "Congratulations! You have unlocked Battlepass Level " + str(-1 * i + prevBPLevel))
 
     for cg in completedGoals:
-        if config["goals"][cg]["remaining"] > 0:
-            messagebox.showinfo("Sorry", "You have no longer completed the goal: " + config["goals"][cg]["name"])
+        if data["goals"][cg]["remaining"] > 0:
+            messagebox.showinfo("Sorry", "You have no longer completed the goal: " + data["goals"][cg]["name"])
 
 
-    core.writeConfig(vars.CONFIG_PATH, config)
+    core.writeData(data)
     updateValues()
 
 def deleteElement(index):
-    config = core.readConfig(vars.CONFIG_PATH)
-    historyLen = len(config["history"])
+    data = core.readData()
+    historyLen = len(data["history"])
 
-    prevBPLevel = config["activeBPLevel"]
+    prevBPLevel = data["activeBPLevel"]
 
     index = historyLen - 1 - index
-    amount = config["history"][index]["amount"]
-    config["history"].pop(index)
+    amount = data["history"][index]["amount"]
+    data["history"].pop(index)
 
-    if not "goals" in config: config["goals"] = []
+    if not "goals" in data: data["goals"] = []
     completedGoals = []
-    for i in range(0, len(config["goals"])):
-        if config["goals"][i]["remaining"] <= 0: completedGoals.append(i)
-        config["goals"][i]["remaining"] += amount
+    for i in range(0, len(data["goals"])):
+        if data["goals"][i]["remaining"] <= 0: completedGoals.append(i)
+        data["goals"][i]["remaining"] += amount
 
-    config = core.recalcXP(config)
-    deltaBP = prevBPLevel - config["activeBPLevel"]
+    data = core.recalcXP(data)
+    deltaBP = prevBPLevel - data["activeBPLevel"]
 
     if deltaBP > 0:
         for i in range(0, deltaBP, 1):
@@ -632,92 +644,92 @@ def deleteElement(index):
             messagebox.showinfo("Congratulations", "Congratulations! You have unlocked Battlepass Level " + str(-1 * i + prevBPLevel))
 
     for cg in completedGoals:
-        if config["goals"][cg]["remaining"] > 0:
-            messagebox.showinfo("Sorry", "You have no longer completed the goal: " + config["goals"][cg]["name"])
+        if data["goals"][cg]["remaining"] > 0:
+            messagebox.showinfo("Sorry", "You have no longer completed the goal: " + data["goals"][cg]["name"])
 
-    core.writeConfig(vars.CONFIG_PATH, config)
+    core.writeData(data)
     updateValues()
 
 def gcRemove(index):
-    config = core.readConfig(vars.CONFIG_PATH)
+    data = core.readData()
 
-    config["goals"].pop(index)
+    data["goals"].pop(index)
     goalContainers[index].destroy()
     goalContainers.pop(index)
 
-    core.writeConfig(vars.CONFIG_PATH, config)
+    core.writeData(data)
     updateValues()
 
 def gcEdit(index, changeStartXP, name, amount, color):
-    config = core.readConfig(vars.CONFIG_PATH)
-    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(config, epilogueVar.get())
+    data = core.readData()
+    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(data, epilogueVar.get())
 
     completed = False
-    if config["goals"][index]["remaining"] <= 0: completed = True
+    if data["goals"][index]["remaining"] <= 0: completed = True
 
-    config["goals"][index]["name"] = name
-    if changeStartXP: config["goals"][index]["startXP"] = totalXPCollected
-    config["goals"][index]["remaining"] = amount
-    config["goals"][index]["color"] = color
+    data["goals"][index]["name"] = name
+    if changeStartXP: data["goals"][index]["startXP"] = totalXPCollected
+    data["goals"][index]["remaining"] = amount
+    data["goals"][index]["color"] = color
 
     goalContainers[index].updateGoal(name, amount, color)
 
-    if config["goals"][index]["remaining"] > 0 and completed:
-        messagebox.showinfo("Sorry", "You have no longer completed the goal: " + config["goals"][index]["name"])
-    elif config["goals"][index]["remaining"] <= 0 and not completed:
-        messagebox.showinfo("Congratulations", "Congratulations! You have completed the goal: " + str(config["goals"][index]["name"]))
+    if data["goals"][index]["remaining"] > 0 and completed:
+        messagebox.showinfo("Sorry", "You have no longer completed the goal: " + data["goals"][index]["name"])
+    elif data["goals"][index]["remaining"] <= 0 and not completed:
+        messagebox.showinfo("Congratulations", "Congratulations! You have completed the goal: " + str(data["goals"][index]["name"]))
 
-    core.writeConfig(vars.CONFIG_PATH, config)
+    core.writeData(data)
     updateValues()
 
-def updateGoals(config, plot, collectedXP):
-    if not "goals" in config:
-        config["goals"] = []
+def updateGoals(data, plot, collectedXP):
+    if not "goals" in data:
+        data["goals"] = []
 
-    for i in range(0, len(config["goals"])):
+    for i in range(0, len(data["goals"])):
         alpha = 0.75
 
-        if collectedXP + config["goals"][i]["remaining"] <= 0: continue
-        if config["goals"][i]["remaining"] <= 0: alpha = 0.15
+        if collectedXP + data["goals"][i]["remaining"] <= 0: continue
+        if data["goals"][i]["remaining"] <= 0: alpha = 0.15
 
-        plot.axhline(collectedXP + config["goals"][i]["remaining"], color=config["goals"][i]["color"], alpha=alpha, linestyle="-")
-        plot.annotate(config["goals"][i]["name"], (0, collectedXP + config["goals"][i]["remaining"]), xytext=(-3, collectedXP + config["goals"][i]["remaining"] + 5000), color=config["goals"][i]["color"], alpha=alpha)
+        plot.axhline(collectedXP + data["goals"][i]["remaining"], color=data["goals"][i]["color"], alpha=alpha, linestyle="-")
+        plot.annotate(data["goals"][i]["name"], (0, collectedXP + data["goals"][i]["remaining"]), xytext=(-3, collectedXP + data["goals"][i]["remaining"] + 5000), color=data["goals"][i]["color"], alpha=alpha)
 
         if i >= len(goalContainers):
-            gc = goalContainer.GoalContainer(statsContainer, config["goals"][i]["name"], config["goals"][i]["remaining"], color=config["goals"][i]["color"])
+            gc = goalContainer.GoalContainer(statsContainer, data["goals"][i]["name"], data["goals"][i]["remaining"], color=data["goals"][i]["color"])
             gc.pack(padx=8, pady=8, fill="x")
             goalContainers.append(gc)
         
-        collectedInGoal = collectedXP - config["goals"][i]["startXP"]
+        collectedInGoal = collectedXP - data["goals"][i]["startXP"]
         if collectedInGoal < 0:
-            config["goals"][i]["startXP"] += collectedInGoal
+            data["goals"][i]["startXP"] += collectedInGoal
             collectedInGoal = 0
 
-        totalInGoal = collectedInGoal + config["goals"][i]["remaining"]
+        totalInGoal = collectedInGoal + data["goals"][i]["remaining"]
 
         goalProgress = round(collectedInGoal / totalInGoal * 100)
         if goalProgress > 100: goalProgress = 100
 
-        goalContainers[i].setValues(goalProgress, collectedInGoal, config["goals"][i]["remaining"] if config["goals"][i]["remaining"] > 0 else 0, totalInGoal)
+        goalContainers[i].setValues(goalProgress, collectedInGoal, data["goals"][i]["remaining"] if data["goals"][i]["remaining"] > 0 else 0, totalInGoal)
         goalContainers[i].removeBtn.configure(command=lambda j=i: gcRemoveCallback(j))
         goalContainers[i].editBtn.configure(command=lambda j=i: gcEditCallback(j))
 
-def updateGraph(config, epilogue, drawEpilogue, plot):
+def updateGraph(data, epilogue, drawEpilogue, plot):
     plot.clear()
     timeAxis = []
     
-    seasonEndDate = datetime.strptime(config["seasonEndDate"], "%d.%m.%Y")
-    dateDelta = seasonEndDate - datetime.fromtimestamp(config["history"][0]["time"])
+    seasonEndDate = datetime.strptime(data["seasonEndDate"], "%d.%m.%Y")
+    dateDelta = seasonEndDate - datetime.fromtimestamp(data["history"][0]["time"])
     duration = dateDelta.days
     timeAxis = range(0, duration + 1)
 
     yAxisIdeal = []
 
-    totalXP = core.cumulativeSum(vars.NUM_BPLEVELS, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL) + epilogue * vars.NUM_EPLOGUE_LEVELS * vars.NUM_EPLOGUE_XP_PER_LEVEL
-    collectedXP = config["history"][0]["amount"]
+    totalXP = core.cumulativeSum(NUM_BPLEVELS, LEVEL2_OFFSET, NUM_XP_PER_LEVEL) + epilogue * NUM_EPLOGUE_LEVELS * NUM_EPLOGUE_XP_PER_LEVEL
+    collectedXP = data["history"][0]["amount"]
     
     remainingXP = totalXP - collectedXP
-    originalDaily = round(remainingXP / (duration - vars.BUFFER_DAYS))
+    originalDaily = round(remainingXP / (duration - BUFFER_DAYS))
 
     yAxisIdeal.append(collectedXP)
 
@@ -728,10 +740,10 @@ def updateGraph(config, epilogue, drawEpilogue, plot):
     plot.plot(timeAxis, yAxisIdeal, color='gray', label='Ideal', linestyle="-")
 
     yAxisYou = []
-    prevDate = date.fromtimestamp(config["history"][0]["time"])
+    prevDate = date.fromtimestamp(data["history"][0]["time"])
     index = -1
 
-    for h in config["history"]:
+    for h in data["history"]:
         currDate = date.fromtimestamp(h["time"])
         if currDate == prevDate and index != -1:
             yAxisYou[index] = yAxisYou[index] + int(h["amount"])
@@ -758,11 +770,11 @@ def updateGraph(config, epilogue, drawEpilogue, plot):
     remainingDays = dateDelta.days
     dayDelta = duration - remainingDays
 
-    if date.fromtimestamp(config["history"][len(config["history"]) - 1]["time"]) == date.today(): offset = 1
+    if date.fromtimestamp(data["history"][len(data["history"]) - 1]["time"]) == date.today(): offset = 1
     else: offset = 0
 
-    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(config, epilogue)
-    dailyTotal = round((totalXPTotal - yAxisYou[index - offset]) / (remainingDays - vars.BUFFER_DAYS + 1))
+    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(data, epilogue)
+    dailyTotal = round((totalXPTotal - yAxisYou[index - offset]) / (remainingDays - BUFFER_DAYS + 1))
 
     yAxisDailyIdeal.append(yAxisYou[index - offset])
 
@@ -782,66 +794,66 @@ def updateGraph(config, epilogue, drawEpilogue, plot):
     # Draw lines for battlepass unlocks
     # --------------------------------
 
-    for i in range(0, vars.NUM_BPLEVELS + 1, 1):
+    for i in range(0, NUM_BPLEVELS + 1, 1):
         alpha = 0.5
-        neededXP = core.cumulativeSum(i, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL)
+        neededXP = core.cumulativeSum(i, LEVEL2_OFFSET, NUM_XP_PER_LEVEL)
 
         if totalXPCollected >= neededXP: alpha = 0.05
         plot.axhline(neededXP, color="lightgray", alpha=alpha, linestyle="-")
 
-    for i in range(0, vars.NUM_BPLEVELS + 1, 5):
+    for i in range(0, NUM_BPLEVELS + 1, 5):
         alpha = 0.5
-        neededXP = core.cumulativeSum(i, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL)
+        neededXP = core.cumulativeSum(i, LEVEL2_OFFSET, NUM_XP_PER_LEVEL)
 
         if totalXPCollected >= neededXP: alpha = 0.05
         plot.axhline(neededXP, color="limegreen", alpha=alpha, linestyle="-")
     
     if epilogue or drawEpilogue:
-        for i in range(1, vars.NUM_EPLOGUE_LEVELS + 1, 1):
+        for i in range(1, NUM_EPLOGUE_LEVELS + 1, 1):
             alpha = 0.5
-            neededXP = core.cumulativeSum(vars.NUM_BPLEVELS, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL) + i * vars.NUM_EPLOGUE_XP_PER_LEVEL
+            neededXP = core.cumulativeSum(NUM_BPLEVELS, LEVEL2_OFFSET, NUM_XP_PER_LEVEL) + i * NUM_EPLOGUE_XP_PER_LEVEL
 
             if totalXPCollected >= neededXP: alpha = 0.05
 
             plot.axhline(neededXP, color="orange", alpha=alpha, linestyle="-")
     
-    updateGoals(config, plot, totalXPCollected)
+    updateGoals(data, plot, totalXPCollected)
 
     # --------------------------------
     # Draw Buffer Zone
     # --------------------------------
 
-    plot.add_patch(Rectangle((duration - vars.BUFFER_DAYS, 0), vars.BUFFER_DAYS, totalXP, edgecolor="red", facecolor="red", alpha=0.1))
+    plot.add_patch(Rectangle((duration - BUFFER_DAYS, 0), BUFFER_DAYS, totalXP, edgecolor="red", facecolor="red", alpha=0.1))
     graph.draw()
 
     return yAxisYou, yAxisIdeal, yAxisDailyIdeal
 
 def updateValues():
-    config = core.readConfig(vars.CONFIG_PATH)
+    data = core.readData()
     drawEpilogue = False
 
-    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(config, 0)
+    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(data, 0)
 
-    if not "goals" in config: config["goals"] = []
+    if not "goals" in data: data["goals"] = []
 
     largestGoalRemaining = 0
-    for g in config["goals"]:
+    for g in data["goals"]:
         if g["remaining"] + totalXPCollected > largestGoalRemaining: largestGoalRemaining = g["remaining"] + totalXPCollected
 
-    if config["activeBPLevel"] > 50:
-        epilogueCheck.config(state=DISABLED)
+    if data["activeBPLevel"] > 50:
+        epilogueCheck.data(state=DISABLED)
         epilogueVar.set(1)
     else:
-        epilogueCheck.config(state=NORMAL)
+        epilogueCheck.data(state=NORMAL)
     
     if largestGoalRemaining > totalXPTotal:
         drawEpilogue = True
 
-    dailyProgress, dailyCollected, dailyRemaining, dailyTotal = core.calcDailyValues(config, epilogueVar.get())
+    dailyProgress, dailyCollected, dailyRemaining, dailyTotal = core.calcDailyValues(data, epilogueVar.get())
     if(dailyProgress > 100): dailyProgress = 100
     if(dailyRemaining < 0): dailyRemaining = 0
 
-    yAxisYou, yAxisIdeal, yAxisDailyIdeal = updateGraph(config, epilogueVar.get(), drawEpilogue, graphPlot)
+    yAxisYou, yAxisIdeal, yAxisDailyIdeal = updateGraph(data, epilogueVar.get(), drawEpilogue, graphPlot)
 
     dailyBar["value"] = dailyProgress
     dailyPercentageLabel["text"] = str(dailyProgress) + "%"
@@ -849,14 +861,14 @@ def updateValues():
     dailyRemainingLabel["text"] = str(dailyRemaining) + " XP"
     dailyTotalLabel["text"] = str(dailyTotal) + " XP"
 
-    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(config, epilogueVar.get())
+    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(data, epilogueVar.get())
     totalXPBar["value"] = totalXPProgress
     totalXPPercentageLabel["text"] = str(totalXPProgress) + "%"
     totalCollectedLabel["text"] = str(totalXPCollected) + " XP"
     totalRemainingLabel["text"] = str(totalXPRemaining) + " XP"
     totalTotalLabel["text"] = str(totalXPTotal) + " XP"
 
-    bpProgress, bpCollected, bpActive, bpRemaining, bpTotal = core.calcBattlepassValues(config, epilogueVar.get())
+    bpProgress, bpCollected, bpActive, bpRemaining, bpTotal = core.calcBattlepassValues(data, epilogueVar.get())
     bpBar["value"] = bpProgress
     bpPercentageLabel["text"] = str(bpProgress) + "%"
     bpPreviousUnlockLabel["text"] = str(bpCollected) + " Levels"
@@ -864,14 +876,14 @@ def updateValues():
     bpRemainingLabel["text"] = str(bpRemaining) + " Levels"
     bpTotalLabel["text"] = str(bpTotal) + " Levels"
 
-    levelProgress, levelCollected, levelRemaining, levelTotal = core.calcLevelValues(config, epilogueVar.get())
+    levelProgress, levelCollected, levelRemaining, levelTotal = core.calcLevelValues(data, epilogueVar.get())
     levelBar["value"] = levelProgress
     levelPercentageLabel["text"] = str(levelProgress) + "%"
     levelCollectedLabel["text"] = str(levelCollected) + " XP"
     levelRemainingLabel["text"] = str(levelRemaining) + " XP"
     levelTotalLabel["text"] = str(levelTotal) + " XP"
 
-    miscRemainigDays, miscAverage, miscDeviationIdeal, miscDeviationDaily, miscStrongestDayDate, miscStrongestDayAmount, miscWeakestDayDate, miscWeakestDayAmount = core.calcMiscValues(config, yAxisYou, yAxisIdeal, yAxisDailyIdeal, epilogueVar.get())
+    miscRemainigDays, miscAverage, miscDeviationIdeal, miscDeviationDaily, miscStrongestDayDate, miscStrongestDayAmount, miscWeakestDayDate, miscWeakestDayAmount = core.calcMiscValues(data, yAxisYou, yAxisIdeal, yAxisDailyIdeal, epilogueVar.get())
     miscRemainingDaysLabel["text"] = str(miscRemainigDays) + " Days"
     miscAverageLabel["text"] = str(miscAverage) + " XP"
     miscIdealDeviationLabel["text"] = str(miscDeviationIdeal) + " XP"
@@ -882,11 +894,11 @@ def updateValues():
     miscWeakestDayAmountLabel["text"] = str(miscWeakestDayAmount) + " XP"
 
     history.delete(*history.get_children())
-    for i in range(len(config["history"]) - 1, -1, -1):
-        desc = config["history"][i]["description"]
+    for i in range(len(data["history"]) - 1, -1, -1):
+        desc = data["history"][i]["description"]
         tag = core.getScoreTag(desc)
         
-        history.insert("", "end", values=(desc, str(config["history"][i]["amount"]) + " XP", datetime.fromtimestamp(config["history"][i]["time"]).strftime("%d.%m.%Y %H:%M")), tags=(tag))
+        history.insert("", "end", values=(desc, str(data["history"][i]["amount"]) + " XP", datetime.fromtimestamp(data["history"][i]["time"]).strftime("%d.%m.%Y %H:%M")), tags=(tag))
     
 # ================================
 #  Buttons
@@ -918,7 +930,7 @@ delBTN.pack(side=tk.LEFT, fill="both", expand=True)
 #  Main Loop
 # ================================
 
-os.startfile(vars.UPDATER_PATH)
+os.startfile(UPDATER_PATH)
 init()
 
 while dailyBar == None:

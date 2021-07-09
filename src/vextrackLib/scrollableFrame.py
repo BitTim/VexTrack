@@ -25,6 +25,6 @@ class ScrollableFrame(ttk.Frame):
         self.scrollbar.pack(side="right", fill="y")
     
         self.canvas.bind('<Configure>', lambda event: self.canvas.itemconfigure(self.windowID, width=event.width))
-        self.canvas.bind_all("<MouseWheel>", lambda event: self.onScroll(event))
+        self.canvas.bind_all("<MouseWheel>", lambda event: self.onScroll(event), add=True)
         self.canvas.bind("<Enter>", lambda event: self.setHover(True))
         self.canvas.bind("<Leave>", lambda event: self.setHover(False))

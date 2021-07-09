@@ -5,7 +5,7 @@ from vars import *
 import json
 import os
 
-from vextrackLib import core, addXPDiag as xpDiag, addGoalDiag as goalDiag, goalContainer, newSeasonDiag
+from vextrackLib import core, addXPDiag as xpDiag, addGoalDiag as goalDiag, goalContainer, newSeasonDiag, seasonContainer
 from updaterLib import core as uCore
 
 from tkinter import *
@@ -44,10 +44,14 @@ notebook = ttk.Notebook(root)
 graphTab = Frame(notebook)
 statsTab = Frame(notebook)
 historyTab = Frame(notebook)
+seasonsTab = Frame(notebook)
+settingsTab = Frame(notebook)
 
 notebook.add(graphTab, text="Graph")
-notebook.add(statsTab, text="Stats")
+notebook.add(statsTab, text="Goals / Stats")
 notebook.add(historyTab, text="History")
+notebook.add(seasonsTab, text="Seasons")
+notebook.add(settingsTab, text="Settings")
 notebook.pack(padx=8, pady=8, fill="both", expand=True)
 
 # --------------------------------
@@ -311,6 +315,7 @@ levelTotalLabel.pack(padx=1, pady=0, side=tk.LEFT)
 # ................................
 
 goalContainers = []
+seasonContainers = []
 
 # --------------------------------
 #  History
@@ -427,6 +432,20 @@ dailyTotalLabel = ttk.Label(dailyTotalContainer, text="99999")
 dailyTotalLabel.pack(padx=1, pady=0, side=tk.LEFT)
 
 # ================================
+#  Seasons
+# ================================
+
+seasonsScrollableContainer = ScrollableFrame(seasonsTab)
+seasonsContainer = seasonsScrollableContainer.scrollableFrame
+seasonsScrollableContainer.pack(fill="both", expand=True)
+
+# ================================
+#  Settings
+# ================================
+
+
+
+# ================================
 #  Functions
 # ================================
 
@@ -498,9 +517,23 @@ def gcEditCallback(index):
     if editDiag.changeStartXP != None and (editDiag.name != goalContainers[index].name or editDiag.xpAmount != goalContainers[index].amount or editDiag.color != goalContainers[index].color or editDiag.changeStartXP == True):
         gcEdit(index, editDiag.changeStartXP, editDiag.name, int(editDiag.xpAmount), editDiag.color)
 
+def seasonRemoveCallback(index):
+    res = messagebox.askquestion("Remove Season", "Are you sure, that you want to remove this season?\nName: " + seasonContainers[index].name)
+    if res == "yes":
+        seasonRemove(index)
+
+def seasonEditCallback(index):
+    data = core.readData()
+    names = []
+    for s in data["seasons"]:
+        names.append(s["name"])
+
+    editDiag = newSeasonDiag.NewSeasonDiag(root, "Edit Season", name=seasonContainers[index].name, forbiddenNames=names, remainingDays=seasonContainers[index].remainingDays, edit=True, ended=1 if seasonContainers[index].remainingDays <= 0 else 0)
+    if editDiag.seasonName != seasonContainers[index].name or editDiag.remainingDays != seasonContainers[index].remainingDays:
+        seasonEdit(index, editDiag.seasonName, editDiag.remainingDays, editDiag.ended)
+
 def seasonSelectorCallback(choice):
     data = core.readData()
-    
     seasonName = seasonNameVar.get()
 
     i = 0
@@ -522,7 +555,7 @@ def init():
         os.mkdir(os.path.dirname(DATA_PATH))
         runInit = True
 
-    if not os.path.exists(DATA_PATH):
+    if not os.path.exists(DATA_PATH) or os.stat(DATA_PATH).st_size == 0:
         if os.path.exists(OLD_DATA_PATH):
             data = None
             with open(OLD_DATA_PATH, "r") as f:
@@ -538,9 +571,6 @@ def init():
             f = open(DATA_PATH, "x")
             f.close()
             runInit = True
-
-    if not runInit and os.stat(DATA_PATH).st_size == 0:
-        runInit = True
     
     if runInit:
         initDiag = InitDiag(root, "Initialization")
@@ -705,6 +735,46 @@ def gcEdit(index, changeStartXP, name, amount, color):
 
     core.writeData(data)
     updateValues()
+
+def seasonRemove(index):
+    data = core.readData()
+
+    data["seasons"].pop(index)
+    seasonContainers[index].destroy()
+    seasonContainers.pop(index)
+
+    core.writeData(data)
+    updateValues()
+
+def seasonEdit(index, name, remaining, ended):
+    data = core.readData()
+    
+    data["seasons"][index]["name"] = name
+    if not ended: data["seasons"][index]["endDate"] = datetime.strftime(date.today() + timedelta(days=remaining), "%d.%m.%Y")
+    seasonContainers[index].setValues(name, remaining)
+
+    core.writeData(data)
+    updateValues()
+
+def updateSeasons(data):
+    global seasonContainers
+
+    for i in range(0, len(data["seasons"])):
+        if i >= len(seasonContainers):
+            sc = seasonContainer.SeasonContainer(seasonsContainer, data["seasons"][i]["name"])
+            sc.pack(padx=8, pady=8, fill="x")
+            seasonContainers.append(sc)
+
+        totalProgress, _, _, _ = core.calcTotalValues(data, epilogueVar.get(), i)
+
+        seasonEndDate = datetime.strptime(data["seasons"][i]["endDate"], "%d.%m.%Y").date()
+        dateDelta = seasonEndDate - date.today()
+        remainingDays = dateDelta.days
+        if remainingDays < 0: remainingDays = 0
+
+        seasonContainers[i].updateValues(totalProgress, remainingDays)
+        seasonContainers[i].removeBtn.configure(command=lambda k=i: seasonRemoveCallback(k))
+        seasonContainers[i].editBtn.configure(command=lambda k=i: seasonEditCallback(k))
 
 def updateGoals(data, plot, collectedXP):
     global goalContainers
@@ -892,9 +962,13 @@ def updateValues():
     if largestGoalRemaining > totalXPTotal:
         drawEpilogue = True
 
+    names = []
+    for s in data["seasons"]:
+        names.append(s["name"])
+
     dailyProgress, dailyCollected, dailyRemaining, dailyTotal = core.calcDailyValues(data, epilogueVar.get(), seasonIndex.get())
     if dailyProgress == -1 and dailyCollected == -1 and dailyRemaining == -1 and dailyTotal == -1 and seasonIndex.get() == len(data["seasons"]) - 1:
-        seasonDiag = newSeasonDiag.NewSeasonDiag(root, "New season")
+        seasonDiag = newSeasonDiag.NewSeasonDiag(root, "New season", forbiddenNames=names)
         if seasonDiag.seasonName == None or int(seasonDiag.remainingDays) == None:
             messagebox.showerror("New Season", "New Season has to be created")
             exit()
@@ -958,15 +1032,15 @@ def updateValues():
         
         history.insert("", "end", values=(desc, str(xpHistoryData[i]["amount"]) + " XP", datetime.fromtimestamp(xpHistoryData[i]["time"]).strftime("%d.%m.%Y %H:%M")), tags=(tag))
     
-    seasonNames = [""]
-    for s in data["seasons"]:
-        seasonNames.append(s["name"])
+    seasonNames = [""] + names
 
     global seasonSelector
     if seasonSelector != None: seasonSelector.destroy()
 
     seasonSelector = ttk.OptionMenu(root, seasonNameVar, *seasonNames, command=seasonSelectorCallback)
     seasonSelector.pack(padx=8, pady=8, side=tk.LEFT, fill="both", expand=True)
+
+    updateSeasons(data)
     
 # ================================
 #  Buttons

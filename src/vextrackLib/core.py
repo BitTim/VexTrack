@@ -32,8 +32,8 @@ def calcDailyValues(completeData, epilogue, seasonIndex):
     data = completeData["seasons"][seasonIndex]
     done = False
 
-    seasonEndDate = datetime.strptime(data["endDate"], "%d.%m.%Y")
-    dateDelta = seasonEndDate - datetime.now()
+    seasonEndDate = datetime.strptime(data["endDate"], "%d.%m.%Y").date()
+    dateDelta = seasonEndDate - date.today()
     remainingDays = dateDelta.days
 
     totalXP = cumulativeSum(NUM_BPLEVELS, LEVEL2_OFFSET, NUM_XP_PER_LEVEL) + epilogue * NUM_EPLOGUE_LEVELS * NUM_EPLOGUE_XP_PER_LEVEL
@@ -46,7 +46,7 @@ def calcDailyValues(completeData, epilogue, seasonIndex):
     remainingXP = totalXP - collectedXP
 
     divisor = remainingDays - BUFFER_DAYS
-    if divisor >= -BUFFER_DAYS: divisor = 1
+    if divisor >= -BUFFER_DAYS and divisor <= 0: divisor = 1
     elif divisor < -BUFFER_DAYS: done = True
 
     if done: return -1, -1, -1, -1
@@ -110,8 +110,13 @@ def calcMiscValues(completeData, yAxisYou, yAxisIdeal, yAxisDailyIdeal, epilogue
     dateDelta = seasonEndDate - datetime.now()
     miscRemainigDays = dateDelta.days
 
-    dailyXP = []
     prevDate = date.fromtimestamp(data["xpHistory"][0]["time"])
+    durationDelta = seasonEndDate.date() - prevDate
+    duration = durationDelta.days - 1
+
+    miscDeviationDaily = 0
+
+    dailyXP = []
     index = -1
 
     for h in data["xpHistory"]:
@@ -139,8 +144,11 @@ def calcMiscValues(completeData, yAxisYou, yAxisIdeal, yAxisDailyIdeal, epilogue
     t = len(yAxisYou) - 1
     dailyXP.sort(key=lambda item: item.get("amount"))
 
+    if miscRemainigDays >= 0 and miscRemainigDays < duration:
+        miscDeviationDaily = yAxisYou[t] - yAxisDailyIdeal[1]
+    else: miscRemainigDays = 0
+    
     miscDeviationIdeal = yAxisYou[t] - yAxisIdeal[t]
-    miscDeviationDaily = yAxisYou[t] - yAxisDailyIdeal[1]
     miscStrongestDayDate = dailyXP[len(dailyXP) - 1]["date"]
     miscStrongestDayAmount = dailyXP[len(dailyXP) - 1]["amount"]
     miscWeakestDayDate = dailyXP[0]["date"]
@@ -202,8 +210,8 @@ def getScoreTag(desc):
 
 def startNewSeason(name, remainingDays):
     data = readData()
-    delta = timedelta(int(remainingDays) + 1)
-    seasonEndDate = datetime.today() + delta
+    delta = timedelta(remainingDays)
+    seasonEndDate = date.today() + delta
     seasonEndDateStr = seasonEndDate.strftime("%d.%m.%Y")
 
     data["seasons"].append({"name": name, "activeBPLevel": 2, "cXP": 0, "endDate": seasonEndDateStr, "xpHistory": [{"time": datetime.now().timestamp(), "description": "Initialization", "amount": 0}]})

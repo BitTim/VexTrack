@@ -572,13 +572,13 @@ def initData(seasonName, activeBPLevel, cXP, remainingDays):
 def addXP(description, amount):
     data = core.readData()
 
-    data["seasons"][seasonIndex.get()]["xpHistory"].append({"time": datetime.now().timestamp(), "description": description, "amount": int(amount)})
-    data["seasons"][seasonIndex.get()]["cXP"] += amount
+    data["seasons"][len(data["seasons"]) - 1]["xpHistory"].append({"time": datetime.now().timestamp(), "description": description, "amount": int(amount)})
+    data["seasons"][len(data["seasons"]) - 1]["cXP"] += amount
 
-    while data["seasons"][seasonIndex.get()]["cXP"] >= LEVEL2_OFFSET + NUM_XP_PER_LEVEL * data["seasons"][seasonIndex.get()]["activeBPLevel"]:
-        data["seasons"][seasonIndex.get()]["cXP"] -= LEVEL2_OFFSET + NUM_XP_PER_LEVEL * data["seasons"][seasonIndex.get()]["activeBPLevel"]
-        data["seasons"][seasonIndex.get()]["activeBPLevel"] += 1
-        messagebox.showinfo("Congratulations", "Congratulations! You have unlocked Battlepass Level " + str(data["seasons"][seasonIndex.get()]["activeBPLevel"] - 1))
+    while data["seasons"][len(data["seasons"]) - 1]["cXP"] >= LEVEL2_OFFSET + NUM_XP_PER_LEVEL * data["seasons"][len(data["seasons"]) - 1]["activeBPLevel"]:
+        data["seasons"][len(data["seasons"]) - 1]["cXP"] -= LEVEL2_OFFSET + NUM_XP_PER_LEVEL * data["seasons"][len(data["seasons"]) - 1]["activeBPLevel"]
+        data["seasons"][len(data["seasons"]) - 1]["activeBPLevel"] += 1
+        messagebox.showinfo("Congratulations", "Congratulations! You have unlocked Battlepass Level " + str(data["seasons"][len(data["seasons"]) - 1]["activeBPLevel"] - 1))
 
     if not "goals" in data: data["goals"] = []
 
@@ -616,24 +616,29 @@ def editElement(index, description, amount):
 
     if not "goals" in data: data["goals"] = []
     completedGoals = []
+    incompleteGoals = []
     for i in range(0, len(data["goals"])):
         if data["goals"][i]["remaining"] <= 0: completedGoals.append(i)
+        else: incompleteGoals.append(i)
         data["goals"][i]["remaining"] -= amount - prevAmount
 
     data["seasons"][seasonIndex.get()] = core.recalcXP(data, seasonIndex.get())
     deltaBP = prevBPLevel - data["seasons"][seasonIndex.get()]["activeBPLevel"]
     
-    if deltaBP > 0:
-        for i in range(0, deltaBP, 1):
-            messagebox.showinfo("Sorry", "You have lost Battlepass Level " + str(prevBPLevel - i - 1))
-    elif deltaBP < 0:
-        for i in range(0, deltaBP, -1):
-            messagebox.showinfo("Congratulations", "Congratulations! You have unlocked Battlepass Level " + str(-1 * i + prevBPLevel))
+    if seasonIndex.get() == len(data["seasons"]) - 1:
+        if deltaBP > 0:
+            for i in range(0, deltaBP, 1):
+                messagebox.showinfo("Sorry", "You have lost Battlepass Level " + str(prevBPLevel - i - 1))
+        elif deltaBP < 0:
+            for i in range(0, deltaBP, -1):
+                messagebox.showinfo("Congratulations", "Congratulations! You have unlocked Battlepass Level " + str(-1 * i + prevBPLevel))
 
     for cg in completedGoals:
         if data["goals"][cg]["remaining"] > 0:
             messagebox.showinfo("Sorry", "You have no longer completed the goal: " + data["goals"][cg]["name"])
-
+    for ig in incompleteGoals:
+        if data["goals"][ig]["remaining"] < 0:
+            messagebox.showinfo("Congratulations", "Congratulations! You have completed the goal: " + data["goals"][ig]["name"])
 
     core.writeData(data)
     updateValues()
@@ -657,12 +662,10 @@ def deleteElement(index):
     data["seasons"][seasonIndex.get()] = core.recalcXP(data, seasonIndex.get())
     deltaBP = prevBPLevel - data["seasons"][seasonIndex.get()]["activeBPLevel"]
 
-    if deltaBP > 0:
-        for i in range(0, deltaBP, 1):
-            messagebox.showinfo("Sorry", "You have lost Battlepass Level " + str(prevBPLevel - i - 1))
-    elif deltaBP < 0:
-        for i in range(0, deltaBP, -1):
-            messagebox.showinfo("Congratulations", "Congratulations! You have unlocked Battlepass Level " + str(-1 * i + prevBPLevel))
+    if seasonIndex.get() == len(data["seasons"]) - 1:
+        if deltaBP > 0:
+            for i in range(0, deltaBP, 1):
+                messagebox.showinfo("Sorry", "You have lost Battlepass Level " + str(prevBPLevel - i - 1))
 
     for cg in completedGoals:
         if data["goals"][cg]["remaining"] > 0:
@@ -749,8 +752,8 @@ def updateGraph(data, epilogue, drawEpilogue, plot):
     plot.clear()
     timeAxis = []
     
-    seasonEndDate = datetime.strptime(data["seasons"][seasonIndex.get()]["endDate"], "%d.%m.%Y")
-    dateDelta = seasonEndDate - datetime.fromtimestamp(data["seasons"][seasonIndex.get()]["xpHistory"][0]["time"])
+    seasonEndDate = datetime.strptime(data["seasons"][seasonIndex.get()]["endDate"], "%d.%m.%Y").date()
+    dateDelta = seasonEndDate - datetime.fromtimestamp(data["seasons"][seasonIndex.get()]["xpHistory"][0]["time"]).date()
     duration = dateDelta.days
     timeAxis = range(0, duration + 1)
 
@@ -792,44 +795,39 @@ def updateGraph(data, epilogue, drawEpilogue, plot):
             yAxisYou.append(int(h["amount"]) + prevValue)
             index += 1
 
-    deltaDate = date.today() - prevDate
+    if date.today() < seasonEndDate: deltaDate = date.today() - prevDate
+    else: deltaDate = seasonEndDate - prevDate
     for i in range(0, deltaDate.days): yAxisYou.append(yAxisYou[len(yAxisYou) - 1])
 
     yAxisDailyIdeal = []
 
-    dateDelta = seasonEndDate - datetime.now()
+    dateDelta = seasonEndDate - date.today()
     remainingDays = dateDelta.days
     dayDelta = duration - remainingDays
-
-    yAxisYou = yAxisYou[:duration]
-    yAxisIdeal = yAxisIdeal[:duration]
 
     if date.fromtimestamp(data["seasons"][seasonIndex.get()]["xpHistory"][len(data["seasons"][seasonIndex.get()]["xpHistory"]) - 1]["time"]) == date.today(): offset = 1
     else: offset = 0
 
     totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(data, epilogue, seasonIndex.get())
 
-    divisor = remainingDays - BUFFER_DAYS + 1 if dayDelta > 0 else remainingDays - BUFFER_DAYS
-    if divisor >= -BUFFER_DAYS: divisor = 1
+    if remainingDays >= 0 and remainingDays < duration:
+        divisor = remainingDays - BUFFER_DAYS + 1
+        if divisor <= 0: divisor = 1
     
-    if index - offset == len(yAxisYou): offset = 2
-    dailyTotal = round((totalXPTotal - yAxisYou[index - offset]) / divisor)
+        dailyTotal = round((totalXPTotal - yAxisYou[index - offset]) / divisor)
+        yAxisDailyIdeal.append(yAxisYou[index - offset])
 
-    yAxisDailyIdeal.append(yAxisYou[index - offset])
+        for i in range(1, remainingDays + 2):
+            yAxisDailyIdeal.append(yAxisDailyIdeal[i - 1] + dailyTotal)
+            if yAxisDailyIdeal[i] > totalXP: yAxisDailyIdeal[i] = totalXP
 
-    for i in range(1, remainingDays + 2 if dayDelta > 0 else remainingDays + 1):
-        yAxisDailyIdeal.append(yAxisDailyIdeal[i - 1] + dailyTotal)
-        if yAxisDailyIdeal[i] > totalXP: yAxisDailyIdeal[i] = totalXP
+        yAxisDailyIdeal = yAxisDailyIdeal[:duration]
 
-    yAxisDailyIdeal = yAxisDailyIdeal[:duration]
-
-    offset = 0
-    if dayDelta == 0: offset = 1
-    if dayDelta > 0: dayDelta - 1
-
-    plot.plot(timeAxis[offset:], yAxisDailyIdeal, color='skyblue', label='Daily Ideal', alpha=1, linestyle="--")
+        offset = dayDelta - 1
+        plot.plot(timeAxis[offset:], yAxisDailyIdeal, color='skyblue', label='Daily Ideal', alpha=1, linestyle="--")
+    
     plot.plot(timeAxis[:len(yAxisYou)], yAxisYou, color='red', label='You', linewidth=3)
-    plot.plot(dayDelta, totalXPCollected, color='darkred', label="Now", marker="o", markersize=5)
+    if remainingDays >= 0: plot.plot(dayDelta, totalXPCollected, color='darkred', label="Now", marker="o", markersize=5)
 
     plot.set_xticks(range(0, duration + 1, 5), minor=True)
     plot.tick_params(which="both", top=False, bottom=False, left=False, right=False, labelleft=False)
@@ -895,7 +893,7 @@ def updateValues():
         drawEpilogue = True
 
     dailyProgress, dailyCollected, dailyRemaining, dailyTotal = core.calcDailyValues(data, epilogueVar.get(), seasonIndex.get())
-    if dailyProgress == -1 and dailyCollected == -1 and dailyRemaining == -1 and dailyTotal == -1 and seasonIndex == len(data["seasons"]) - 1:
+    if dailyProgress == -1 and dailyCollected == -1 and dailyRemaining == -1 and dailyTotal == -1 and seasonIndex.get() == len(data["seasons"]) - 1:
         seasonDiag = newSeasonDiag.NewSeasonDiag(root, "New season")
         if seasonDiag.seasonName == None or int(seasonDiag.remainingDays) == None:
             messagebox.showerror("New Season", "New Season has to be created")

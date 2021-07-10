@@ -443,7 +443,20 @@ seasonsScrollableContainer.pack(fill="both", expand=True)
 #  Settings
 # ================================
 
+settingsScrollableContainer = ScrollableFrame(settingsTab)
+settingsContainer = settingsScrollableContainer.scrollableFrame
+settingsScrollableContainer.pack(fill="both", expand=True)
 
+bufferDaysSettingContainer = ttk.Frame(settingsContainer)
+bufferDaysSettingContainer.pack(padx=8, pady=8, side=tk.LEFT)
+
+ttk.Label(bufferDaysSettingContainer, text="Buffer Days:").pack(padx=1, pady=0, side=tk.LEFT)
+
+bufferDaysSettingVar = IntVar()
+bufferDaysSettingEntry = ttk.Entry(bufferDaysSettingContainer, textvariable=bufferDaysSettingVar)
+bufferDaysSettingEntry.pack(padx=1, pady=0, side=tk.LEFT)
+
+# bufferDaysSettingVar.set(BUFFER_DAYS)
 
 # ================================
 #  Functions
@@ -891,10 +904,7 @@ def updateGraph(data, epilogue, drawEpilogue, plot):
             yAxisDailyIdeal.append(yAxisDailyIdeal[i - 1] + dailyTotal)
             if yAxisDailyIdeal[i] > totalXP: yAxisDailyIdeal[i] = totalXP
 
-        yAxisDailyIdeal = yAxisDailyIdeal[:duration]
-
-        offset = dayDelta - 1
-        plot.plot(timeAxis[offset:], yAxisDailyIdeal, color='skyblue', label='Daily Ideal', alpha=1, linestyle="--")
+        plot.plot(timeAxis[dayDelta - 1:], yAxisDailyIdeal, color='skyblue', label='Daily Ideal', alpha=1, linestyle="--")
     
     plot.plot(timeAxis[:len(yAxisYou)], yAxisYou, color='red', label='You', linewidth=3)
     if remainingDays >= 0: plot.plot(dayDelta, totalXPCollected, color='darkred', label="Now", marker="o", markersize=5)

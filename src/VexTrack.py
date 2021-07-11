@@ -6,6 +6,7 @@ import json
 import os
 
 from vextrackLib import core, addXPDiag as xpDiag, addGoalDiag as goalDiag, goalContainer, newSeasonDiag, seasonContainer, colorButton
+from vextrackLib.settings import *
 from updaterLib import core as uCore
 
 from tkinter import *
@@ -21,6 +22,8 @@ from matplotlib.patches import Rectangle
 windowSize = WINDOW_GEOMETRY.split("x")
 newUpdaterVersion = uCore.checkNewVersion("Updater")
 versionString, _, _ = uCore.getVersionString(APP_NAME)
+
+settings = loadSettings()
 
 root = tk.Tk()
 root.title(APP_NAME + " " + versionString)
@@ -358,11 +361,12 @@ history.column(1, anchor="w")
 history.column(2, anchor="e")
 history.column(3, anchor="e")
 
-history.tag_configure("none", background=NONE_BG_COLOR, foreground=NONE_FG_COLOR)
-history.tag_configure("win", background=WIN_BG_COLOR, foreground=WIN_FG_COLOR)
-history.tag_configure("loss", background=LOSS_BG_COLOR, foreground=LOSS_FG_COLOR)
-history.tag_configure("draw", background=DRAW_BG_COLOR, foreground=DRAW_FG_COLOR)
-history.tag_configure("selected", background=SELECTED_BG_COLOR, foreground=SELECTED_FG_COLOR)
+if settings["useHistoryColors"]:
+    history.tag_configure("none", background=settings["noneBackground"], foreground=settings["noneForeground"])
+    history.tag_configure("win", background=settings["winBackground"], foreground=settings["winForeground"])
+    history.tag_configure("loss", background=settings["lossBackground"], foreground=settings["lossForeground"])
+    history.tag_configure("draw", background=settings["drawBackground"], foreground=settings["drawForeground"])
+    history.tag_configure("selected", background=settings["selectedBackground"], foreground=settings["selectedForeground"])
 
 # Create history Scrollbar
 historyScrollbar = Scrollbar(historyListContainer, orient=VERTICAL, command=history.yview)
@@ -462,50 +466,50 @@ ttk.Label(settingsContainer, text="Enable colors in history:").grid(padx=8, pady
 enableColorsSettingCheck = ttk.Checkbutton(settingsContainer, onvalue=1, offvalue=0, variable=enableColorsSettingVar)
 enableColorsSettingCheck.grid(padx=8, pady=2, columnspan=2, column=2, row=1, sticky="we")
 
-bufferDaysSettingVar = IntVar()
 ttk.Label(settingsContainer, text="Win Background:").grid(padx=8, pady=2, column=0, row=2, sticky="we")
-bufferDaysSettingEntry = colorButton.ColorButton(settingsContainer)
-bufferDaysSettingEntry.grid(padx=8, pady=2, column=1, row=2, sticky="we")
+winBackgroundSettingBtn = colorButton.ColorButton(settingsContainer)
+winBackgroundSettingBtn.grid(padx=8, pady=2, column=1, row=2, sticky="we")
 
-bufferDaysSettingVar = IntVar()
 ttk.Label(settingsContainer, text="Win Foreground:").grid(padx=8, pady=2, column=2, row=2, sticky="we")
-bufferDaysSettingEntry = colorButton.ColorButton(settingsContainer)
-bufferDaysSettingEntry.grid(padx=8, pady=2, column=3, row=2, sticky="we")
+winForegroundSettingBtn = colorButton.ColorButton(settingsContainer)
+winForegroundSettingBtn.grid(padx=8, pady=2, column=3, row=2, sticky="we")
 
-bufferDaysSettingVar = IntVar()
 ttk.Label(settingsContainer, text="Loss Background:").grid(padx=8, pady=2, column=0, row=3, sticky="we")
-bufferDaysSettingEntry = colorButton.ColorButton(settingsContainer)
-bufferDaysSettingEntry.grid(padx=8, pady=2, column=1, row=3, sticky="we")
+lossBackgroundSettingBtn = colorButton.ColorButton(settingsContainer)
+lossBackgroundSettingBtn.grid(padx=8, pady=2, column=1, row=3, sticky="we")
 
-bufferDaysSettingVar = IntVar()
 ttk.Label(settingsContainer, text="Loss Foreground:").grid(padx=8, pady=2, column=2, row=3, sticky="we")
-bufferDaysSettingEntry = colorButton.ColorButton(settingsContainer)
-bufferDaysSettingEntry.grid(padx=8, pady=2, column=3, row=3, sticky="we")
+lossForegroundSettingBtn = colorButton.ColorButton(settingsContainer)
+lossForegroundSettingBtn.grid(padx=8, pady=2, column=3, row=3, sticky="we")
 
-bufferDaysSettingVar = IntVar()
 ttk.Label(settingsContainer, text="Draw Background:").grid(padx=8, pady=2, column=0, row=4, sticky="we")
-bufferDaysSettingEntry = colorButton.ColorButton(settingsContainer)
-bufferDaysSettingEntry.grid(padx=8, pady=2, column=1, row=4, sticky="we")
+drawBackgroundSettingBtn = colorButton.ColorButton(settingsContainer)
+drawBackgroundSettingBtn.grid(padx=8, pady=2, column=1, row=4, sticky="we")
 
-bufferDaysSettingVar = IntVar()
 ttk.Label(settingsContainer, text="Draw Foreground:").grid(padx=8, pady=2, column=2, row=4, sticky="we")
-bufferDaysSettingEntry = colorButton.ColorButton(settingsContainer)
-bufferDaysSettingEntry.grid(padx=8, pady=2, column=3, row=4, sticky="we")
+drawForegroundSettingBtn = colorButton.ColorButton(settingsContainer)
+drawForegroundSettingBtn.grid(padx=8, pady=2, column=3, row=4, sticky="we")
 
-bufferDaysSettingVar = IntVar()
 ttk.Label(settingsContainer, text="None Background:").grid(padx=8, pady=2, column=0, row=5, sticky="we")
-bufferDaysSettingEntry = colorButton.ColorButton(settingsContainer)
-bufferDaysSettingEntry.grid(padx=8, pady=2, column=1, row=5, sticky="we")
+noneBackgroundSettingBtn = colorButton.ColorButton(settingsContainer)
+noneBackgroundSettingBtn.grid(padx=8, pady=2, column=1, row=5, sticky="we")
 
-bufferDaysSettingVar = IntVar()
 ttk.Label(settingsContainer, text="None Foreground:").grid(padx=8, pady=2, column=2, row=5, sticky="we")
-bufferDaysSettingEntry = colorButton.ColorButton(settingsContainer)
-bufferDaysSettingEntry.grid(padx=8, pady=2, column=3, row=5, sticky="we")
+noneForegroundSettingBtn = colorButton.ColorButton(settingsContainer)
+noneForegroundSettingBtn.grid(padx=8, pady=2, column=3, row=5, sticky="we")
+
+ttk.Label(settingsContainer, text="Selected Background:").grid(padx=8, pady=2, column=0, row=6, sticky="we")
+selectedBackgroundSettingBtn = colorButton.ColorButton(settingsContainer)
+selectedBackgroundSettingBtn.grid(padx=8, pady=2, column=1, row=6, sticky="we")
+
+ttk.Label(settingsContainer, text="Selected Foreground:").grid(padx=8, pady=2, column=2, row=6, sticky="we")
+selectedForegroundSettingBtn = colorButton.ColorButton(settingsContainer)
+selectedForegroundSettingBtn.grid(padx=8, pady=2, column=3, row=6, sticky="we")
 
 settingsBtnContainer = tk.Frame(settingsTab)
 settingsBtnContainer.pack(fill="x")
 
-# bufferDaysSettingVar.set(BUFFER_DAYS)
+# bufferDaysSettingVar.set(settings["bufferDays"])
 
 # ================================
 #  Functions
@@ -895,7 +899,7 @@ def updateGraph(data, epilogue, drawEpilogue, plot):
     collectedXP = data["seasons"][seasonIndex.get()]["xpHistory"][0]["amount"]
     
     remainingXP = totalXP - collectedXP
-    originalDaily = round(remainingXP / (duration - BUFFER_DAYS))
+    originalDaily = round(remainingXP / (duration - settings["bufferDays"]))
 
     yAxisIdeal.append(collectedXP)
 
@@ -943,7 +947,7 @@ def updateGraph(data, epilogue, drawEpilogue, plot):
     totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(data, epilogue, seasonIndex.get())
 
     if remainingDays >= 0 and remainingDays < duration:
-        divisor = remainingDays - BUFFER_DAYS + 1
+        divisor = remainingDays - settings["bufferDays"] + 1
         if divisor <= 0: divisor = 1
     
         dailyTotal = round((totalXPTotal - yAxisYou[index - offset]) / divisor)
@@ -995,7 +999,7 @@ def updateGraph(data, epilogue, drawEpilogue, plot):
     # Draw Buffer Zone
     # --------------------------------
 
-    plot.add_patch(Rectangle((duration - BUFFER_DAYS, 0), BUFFER_DAYS, totalXP, edgecolor="red", facecolor="red", alpha=0.1))
+    plot.add_patch(Rectangle((duration - settings["bufferDays"], 0), settings["bufferDays"], totalXP, edgecolor="red", facecolor="red", alpha=0.1))
     graph.draw()
 
     return yAxisYou, yAxisIdeal, yAxisDailyIdeal
@@ -1025,7 +1029,7 @@ def updateValues():
     for s in data["seasons"]:
         names.append(s["name"])
 
-    dailyProgress, dailyCollected, dailyRemaining, dailyTotal = core.calcDailyValues(data, epilogueVar.get(), seasonIndex.get())
+    dailyProgress, dailyCollected, dailyRemaining, dailyTotal = core.calcDailyValues(data, epilogueVar.get(), seasonIndex.get(), settings)
     if dailyProgress == -1 and dailyCollected == -1 and dailyRemaining == -1 and dailyTotal == -1 and seasonIndex.get() == len(data["seasons"]) - 1:
         seasonDiag = newSeasonDiag.NewSeasonDiag(root, "New season", forbiddenNames=names)
         if seasonDiag.seasonName == None or int(seasonDiag.remainingDays) == None:
@@ -1037,7 +1041,7 @@ def updateValues():
         updateValues()
         return
 
-    dailyProgress, dailyCollected, dailyRemaining, dailyTotal = core.calcDailyValues(data, epilogueVar.get(), len(data["seasons"]) - 1)
+    dailyProgress, dailyCollected, dailyRemaining, dailyTotal = core.calcDailyValues(data, epilogueVar.get(), len(data["seasons"]) - 1, settings)
 
     if(dailyProgress > 100): dailyProgress = 100
     if(dailyRemaining < 0): dailyRemaining = 0

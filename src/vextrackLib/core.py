@@ -28,7 +28,7 @@ def convertDataFormat(data):
 #  Calculate Values
 # ================================
 
-def calcDailyValues(completeData, epilogue, seasonIndex):
+def calcDailyValues(completeData, epilogue, seasonIndex, settings):
     data = completeData["seasons"][seasonIndex]
     done = False
 
@@ -45,9 +45,9 @@ def calcDailyValues(completeData, epilogue, seasonIndex):
     
     remainingXP = totalXP - collectedXP
 
-    divisor = remainingDays - BUFFER_DAYS
-    if divisor >= -BUFFER_DAYS and divisor <= 0: divisor = 1
-    elif divisor < -BUFFER_DAYS: done = True
+    divisor = remainingDays - settings["bufferDays"]
+    if divisor >= -settings["bufferDays"] and divisor <= 0: divisor = 1
+    elif divisor < -settings["bufferDays"]: done = True
 
     if done: return -1, -1, -1, -1
    

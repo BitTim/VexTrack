@@ -612,6 +612,21 @@ def seasonSelectorCallback(choice):
 
     updateValues()
 
+def defaultSettingsCallback():
+    global settings
+
+    res = messagebox.askquestion("Default Settings", "Are you sure you want to revert to default settings?")
+    if res == "yes":
+        initSettings()
+        settings = loadSettings()
+        updateSettings()
+
+def applySettingsCallback():
+    pass
+
+def aboutCallback():
+    pass
+
 # --------------------------------
 #  Init
 # --------------------------------
@@ -1006,6 +1021,10 @@ def updateGraph(data, epilogue, drawEpilogue, plot):
 
     return yAxisYou, yAxisIdeal, yAxisDailyIdeal
 
+# TODO: Implement updateSettings() to update UI
+def updateSettings():
+    pass
+
 def updateValues():
     data = core.readData()
     drawEpilogue = False
@@ -1126,9 +1145,6 @@ addXPBtn.pack(padx=8, pady=0, side=tk.RIGHT)
 resetBtn = ttk.Button(buttonContainer, text="Add Goal", command=addGoalCallback)
 resetBtn.pack(padx=8, pady=0, side=tk.RIGHT)
 
-resetBtn = ttk.Button(buttonContainer, text="Reset", command=resetCallback)
-resetBtn.pack(padx=8, pady=0, side=tk.RIGHT)
-
 epilogueVar = IntVar()
 epilogueCheck = ttk.Checkbutton(buttonContainer, text="Epilogue", onvalue=1, offvalue=0, variable=epilogueVar, command=updateValues)
 epilogueCheck.pack(padx=8, pady=0, side=tk.RIGHT)
@@ -1139,16 +1155,16 @@ editBTN.pack(side=tk.RIGHT, fill="both", expand=True)
 delBTN = ttk.Button(historyBtnContainer, text="Delete Element", command=deleteElementCallback)
 delBTN.pack(side=tk.LEFT, fill="both", expand=True)
 
-resetDataSettingBtn = ttk.Button(settingsBtnContainer, text="Reset Data")
+resetDataSettingBtn = ttk.Button(settingsBtnContainer, text="Reset Data", command=resetCallback)
 resetDataSettingBtn.pack(side=tk.LEFT, fill="both", expand=True)
 
-resetSettingsBtn = ttk.Button(settingsBtnContainer, text="Default settings")
+resetSettingsBtn = ttk.Button(settingsBtnContainer, text="Default settings", command=defaultSettingsCallback)
 resetSettingsBtn.pack(side=tk.LEFT, fill="both", expand=True)
 
-aboutSettingBtn = ttk.Button(settingsBtnContainer, text="About")
+aboutSettingBtn = ttk.Button(settingsBtnContainer, text="About", command=aboutCallback)
 aboutSettingBtn.pack(side=tk.LEFT, fill="both", expand=True)
 
-applySettingBtn = ttk.Button(settingsBtnContainer, text="Apply")
+applySettingBtn = ttk.Button(settingsBtnContainer, text="Apply", command=applySettingsCallback)
 applySettingBtn.pack(side=tk.LEFT, fill="both", expand=True)
 
 # ================================

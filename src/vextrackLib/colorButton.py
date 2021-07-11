@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import colorchooser
 
 class ColorButton(Frame):
-    def __init__(self, container, command=None, color="#ff0000", *args, **kwargs):
+    def __init__(self, container, color="#ff0000", command=None, *args, **kwargs):
         super().__init__(container, *args, **kwargs)
         self.color = color
         self.command = command
@@ -19,9 +19,11 @@ class ColorButton(Frame):
         self.hovering = state
 
     def onClick(self, event):
-        self.color = colorchooser.askcolor(title="Select Color", color=self.color)[1]
-        self.configure(bg=self.color)
-        
+        color = colorchooser.askcolor(title="Select Color", color=self.color)[1]
+        if color != None:
+            self.color = color
+            self.configure(bg=self.color)
+
         if self.command != None: self.command()
     
     def setValues(self, color, command=None):

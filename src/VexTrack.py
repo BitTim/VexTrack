@@ -361,12 +361,13 @@ history.column(1, anchor="w")
 history.column(2, anchor="e")
 history.column(3, anchor="e")
 
-if settings["useHistoryColors"]:
+if settings["useHistoryColors"] == 1:
     history.tag_configure("none", background=settings["noneBackground"], foreground=settings["noneForeground"])
     history.tag_configure("win", background=settings["winBackground"], foreground=settings["winForeground"])
     history.tag_configure("loss", background=settings["lossBackground"], foreground=settings["lossForeground"])
     history.tag_configure("draw", background=settings["drawBackground"], foreground=settings["drawForeground"])
-    history.tag_configure("selected", background=settings["selectedBackground"], foreground=settings["selectedForeground"])
+
+history.tag_configure("selected", background=settings["selectedBackground"], foreground=settings["selectedForeground"])
 
 # Create history Scrollbar
 historyScrollbar = Scrollbar(historyListContainer, orient=VERTICAL, command=history.yview)
@@ -460,56 +461,57 @@ bufferDaysSettingVar = IntVar()
 ttk.Label(settingsContainer, text="Buffer Days:").grid(padx=8, pady=2, columnspan=2, column=0, row=0, sticky="we")
 bufferDaysSettingEntry = ttk.Entry(settingsContainer, textvariable=bufferDaysSettingVar)
 bufferDaysSettingEntry.grid(padx=8, pady=2, columnspan=2, column=2, row=0, sticky="we")
+bufferDaysSettingEntry.delete(0)
+bufferDaysSettingEntry.insert(0, settings["bufferDays"])
 
 enableColorsSettingVar = IntVar()
 ttk.Label(settingsContainer, text="Enable colors in history:").grid(padx=8, pady=2, columnspan=2, column=0, row=1, sticky="we")
 enableColorsSettingCheck = ttk.Checkbutton(settingsContainer, onvalue=1, offvalue=0, variable=enableColorsSettingVar)
 enableColorsSettingCheck.grid(padx=8, pady=2, columnspan=2, column=2, row=1, sticky="we")
+enableColorsSettingVar.set(settings["useHistoryColors"])
 
 ttk.Label(settingsContainer, text="Win Background:").grid(padx=8, pady=2, column=0, row=2, sticky="we")
-winBackgroundSettingBtn = colorButton.ColorButton(settingsContainer)
+winBackgroundSettingBtn = colorButton.ColorButton(settingsContainer, settings["winBackground"])
 winBackgroundSettingBtn.grid(padx=8, pady=2, column=1, row=2, sticky="we")
 
 ttk.Label(settingsContainer, text="Win Foreground:").grid(padx=8, pady=2, column=2, row=2, sticky="we")
-winForegroundSettingBtn = colorButton.ColorButton(settingsContainer)
+winForegroundSettingBtn = colorButton.ColorButton(settingsContainer, settings["winForeground"])
 winForegroundSettingBtn.grid(padx=8, pady=2, column=3, row=2, sticky="we")
 
 ttk.Label(settingsContainer, text="Loss Background:").grid(padx=8, pady=2, column=0, row=3, sticky="we")
-lossBackgroundSettingBtn = colorButton.ColorButton(settingsContainer)
+lossBackgroundSettingBtn = colorButton.ColorButton(settingsContainer, settings["lossBackground"])
 lossBackgroundSettingBtn.grid(padx=8, pady=2, column=1, row=3, sticky="we")
 
 ttk.Label(settingsContainer, text="Loss Foreground:").grid(padx=8, pady=2, column=2, row=3, sticky="we")
-lossForegroundSettingBtn = colorButton.ColorButton(settingsContainer)
+lossForegroundSettingBtn = colorButton.ColorButton(settingsContainer, settings["lossForeground"])
 lossForegroundSettingBtn.grid(padx=8, pady=2, column=3, row=3, sticky="we")
 
 ttk.Label(settingsContainer, text="Draw Background:").grid(padx=8, pady=2, column=0, row=4, sticky="we")
-drawBackgroundSettingBtn = colorButton.ColorButton(settingsContainer)
+drawBackgroundSettingBtn = colorButton.ColorButton(settingsContainer, settings["drawBackground"])
 drawBackgroundSettingBtn.grid(padx=8, pady=2, column=1, row=4, sticky="we")
 
 ttk.Label(settingsContainer, text="Draw Foreground:").grid(padx=8, pady=2, column=2, row=4, sticky="we")
-drawForegroundSettingBtn = colorButton.ColorButton(settingsContainer)
+drawForegroundSettingBtn = colorButton.ColorButton(settingsContainer, settings["drawForeground"])
 drawForegroundSettingBtn.grid(padx=8, pady=2, column=3, row=4, sticky="we")
 
 ttk.Label(settingsContainer, text="None Background:").grid(padx=8, pady=2, column=0, row=5, sticky="we")
-noneBackgroundSettingBtn = colorButton.ColorButton(settingsContainer)
+noneBackgroundSettingBtn = colorButton.ColorButton(settingsContainer, settings["noneBackground"])
 noneBackgroundSettingBtn.grid(padx=8, pady=2, column=1, row=5, sticky="we")
 
 ttk.Label(settingsContainer, text="None Foreground:").grid(padx=8, pady=2, column=2, row=5, sticky="we")
-noneForegroundSettingBtn = colorButton.ColorButton(settingsContainer)
+noneForegroundSettingBtn = colorButton.ColorButton(settingsContainer, settings["noneForeground"])
 noneForegroundSettingBtn.grid(padx=8, pady=2, column=3, row=5, sticky="we")
 
 ttk.Label(settingsContainer, text="Selected Background:").grid(padx=8, pady=2, column=0, row=6, sticky="we")
-selectedBackgroundSettingBtn = colorButton.ColorButton(settingsContainer)
+selectedBackgroundSettingBtn = colorButton.ColorButton(settingsContainer, settings["selectedBackground"])
 selectedBackgroundSettingBtn.grid(padx=8, pady=2, column=1, row=6, sticky="we")
 
 ttk.Label(settingsContainer, text="Selected Foreground:").grid(padx=8, pady=2, column=2, row=6, sticky="we")
-selectedForegroundSettingBtn = colorButton.ColorButton(settingsContainer)
+selectedForegroundSettingBtn = colorButton.ColorButton(settingsContainer, settings["selectedForeground"])
 selectedForegroundSettingBtn.grid(padx=8, pady=2, column=3, row=6, sticky="we")
 
 settingsBtnContainer = tk.Frame(settingsTab)
 settingsBtnContainer.pack(fill="x")
-
-# bufferDaysSettingVar.set(settings["bufferDays"])
 
 # ================================
 #  Functions
@@ -1104,7 +1106,11 @@ def updateValues():
     seasonSelector.pack(padx=8, pady=8, side=tk.LEFT, fill="both", expand=True)
 
     updateSeasons(data)
-    
+
+# ================================
+#  Settings Callbacks
+# ================================
+
 # ================================
 #  Buttons
 # ================================

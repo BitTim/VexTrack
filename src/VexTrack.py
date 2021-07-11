@@ -5,7 +5,7 @@ from vars import *
 import json
 import os
 
-from vextrackLib import core, addXPDiag as xpDiag, addGoalDiag as goalDiag, goalContainer, newSeasonDiag, seasonContainer
+from vextrackLib import core, addXPDiag as xpDiag, addGoalDiag as goalDiag, goalContainer, newSeasonDiag, seasonContainer, colorButton
 from updaterLib import core as uCore
 
 from tkinter import *
@@ -447,14 +447,63 @@ settingsScrollableContainer = ScrollableFrame(settingsTab)
 settingsContainer = settingsScrollableContainer.scrollableFrame
 settingsScrollableContainer.pack(fill="both", expand=True)
 
-bufferDaysSettingContainer = ttk.Frame(settingsContainer)
-bufferDaysSettingContainer.pack(padx=8, pady=8, side=tk.LEFT)
-
-ttk.Label(bufferDaysSettingContainer, text="Buffer Days:").pack(padx=1, pady=0, side=tk.LEFT)
+settingsContainer.grid_columnconfigure(0, weight=1)
+settingsContainer.grid_columnconfigure(1, weight=1)
+settingsContainer.grid_columnconfigure(2, weight=1)
+settingsContainer.grid_columnconfigure(3, weight=1)
 
 bufferDaysSettingVar = IntVar()
-bufferDaysSettingEntry = ttk.Entry(bufferDaysSettingContainer, textvariable=bufferDaysSettingVar)
-bufferDaysSettingEntry.pack(padx=1, pady=0, side=tk.LEFT)
+ttk.Label(settingsContainer, text="Buffer Days:").grid(padx=8, pady=2, columnspan=2, column=0, row=0, sticky="we")
+bufferDaysSettingEntry = ttk.Entry(settingsContainer, textvariable=bufferDaysSettingVar)
+bufferDaysSettingEntry.grid(padx=8, pady=2, columnspan=2, column=2, row=0, sticky="we")
+
+enableColorsSettingVar = IntVar()
+ttk.Label(settingsContainer, text="Enable colors in history:").grid(padx=8, pady=2, columnspan=2, column=0, row=1, sticky="we")
+enableColorsSettingCheck = ttk.Checkbutton(settingsContainer, onvalue=1, offvalue=0, variable=enableColorsSettingVar)
+enableColorsSettingCheck.grid(padx=8, pady=2, columnspan=2, column=2, row=1, sticky="we")
+
+bufferDaysSettingVar = IntVar()
+ttk.Label(settingsContainer, text="Win Background:").grid(padx=8, pady=2, column=0, row=2, sticky="we")
+bufferDaysSettingEntry = colorButton.ColorButton(settingsContainer)
+bufferDaysSettingEntry.grid(padx=8, pady=2, column=1, row=2, sticky="we")
+
+bufferDaysSettingVar = IntVar()
+ttk.Label(settingsContainer, text="Win Foreground:").grid(padx=8, pady=2, column=2, row=2, sticky="we")
+bufferDaysSettingEntry = colorButton.ColorButton(settingsContainer)
+bufferDaysSettingEntry.grid(padx=8, pady=2, column=3, row=2, sticky="we")
+
+bufferDaysSettingVar = IntVar()
+ttk.Label(settingsContainer, text="Loss Background:").grid(padx=8, pady=2, column=0, row=3, sticky="we")
+bufferDaysSettingEntry = colorButton.ColorButton(settingsContainer)
+bufferDaysSettingEntry.grid(padx=8, pady=2, column=1, row=3, sticky="we")
+
+bufferDaysSettingVar = IntVar()
+ttk.Label(settingsContainer, text="Loss Foreground:").grid(padx=8, pady=2, column=2, row=3, sticky="we")
+bufferDaysSettingEntry = colorButton.ColorButton(settingsContainer)
+bufferDaysSettingEntry.grid(padx=8, pady=2, column=3, row=3, sticky="we")
+
+bufferDaysSettingVar = IntVar()
+ttk.Label(settingsContainer, text="Draw Background:").grid(padx=8, pady=2, column=0, row=4, sticky="we")
+bufferDaysSettingEntry = colorButton.ColorButton(settingsContainer)
+bufferDaysSettingEntry.grid(padx=8, pady=2, column=1, row=4, sticky="we")
+
+bufferDaysSettingVar = IntVar()
+ttk.Label(settingsContainer, text="Draw Foreground:").grid(padx=8, pady=2, column=2, row=4, sticky="we")
+bufferDaysSettingEntry = colorButton.ColorButton(settingsContainer)
+bufferDaysSettingEntry.grid(padx=8, pady=2, column=3, row=4, sticky="we")
+
+bufferDaysSettingVar = IntVar()
+ttk.Label(settingsContainer, text="None Background:").grid(padx=8, pady=2, column=0, row=5, sticky="we")
+bufferDaysSettingEntry = colorButton.ColorButton(settingsContainer)
+bufferDaysSettingEntry.grid(padx=8, pady=2, column=1, row=5, sticky="we")
+
+bufferDaysSettingVar = IntVar()
+ttk.Label(settingsContainer, text="None Foreground:").grid(padx=8, pady=2, column=2, row=5, sticky="we")
+bufferDaysSettingEntry = colorButton.ColorButton(settingsContainer)
+bufferDaysSettingEntry.grid(padx=8, pady=2, column=3, row=5, sticky="we")
+
+settingsBtnContainer = tk.Frame(settingsTab)
+settingsBtnContainer.pack(fill="x")
 
 # bufferDaysSettingVar.set(BUFFER_DAYS)
 
@@ -523,12 +572,12 @@ def deleteElementCallback():
 def gcRemoveCallback(index):
     res = messagebox.askquestion("Remove Goal", "Are you sure, that you want to remove this goal?\nName: " + goalContainers[index].name)
     if res == "yes":
-        gcRemove(index)
+        gcRemove(goalContainers[index].index, index)
 
 def gcEditCallback(index):
     editDiag = goalDiag.AddGoalDiag(root, "Edit Goal", name=goalContainers[index].name, amount=goalContainers[index].amount, color=goalContainers[index].color, edit=True)
     if editDiag.changeStartXP != None and (editDiag.name != goalContainers[index].name or editDiag.xpAmount != goalContainers[index].amount or editDiag.color != goalContainers[index].color or editDiag.changeStartXP == True):
-        gcEdit(index, editDiag.changeStartXP, editDiag.name, int(editDiag.xpAmount), editDiag.color)
+        gcEdit(goalContainers[index].index, index, editDiag.changeStartXP, editDiag.name, int(editDiag.xpAmount), editDiag.color)
 
 def seasonRemoveCallback(index):
     res = messagebox.askquestion("Remove Season", "Are you sure, that you want to remove this season?\nName: " + seasonContainers[index].name)
@@ -717,34 +766,34 @@ def deleteElement(index):
     core.writeData(data)
     updateValues()
 
-def gcRemove(index):
+def gcRemove(dataIndex, index):
     data = core.readData()
 
-    data["goals"].pop(index)
+    data["goals"].pop(dataIndex)
     goalContainers[index].destroy()
     goalContainers.pop(index)
 
     core.writeData(data)
     updateValues()
 
-def gcEdit(index, changeStartXP, name, amount, color):
+def gcEdit(dataIndex, index, changeStartXP, name, amount, color):
     data = core.readData()
     totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(data, epilogueVar.get(), len(data["seasons"]) - 1)
 
     completed = False
-    if data["goals"][index]["remaining"] <= 0: completed = True
+    if data["goals"][dataIndex]["remaining"] <= 0: completed = True
 
-    data["goals"][index]["name"] = name
-    if changeStartXP: data["goals"][index]["startXP"] = totalXPCollected
-    data["goals"][index]["remaining"] = amount
-    data["goals"][index]["color"] = color
+    data["goals"][dataIndex]["name"] = name
+    if changeStartXP: data["goals"][dataIndex]["startXP"] = totalXPCollected
+    data["goals"][dataIndex]["remaining"] = amount
+    data["goals"][dataIndex]["color"] = color
 
     goalContainers[index].updateGoal(name, amount, color)
 
-    if data["goals"][index]["remaining"] > 0 and completed:
-        messagebox.showinfo("Sorry", "You have no longer completed the goal: " + data["goals"][index]["name"])
-    elif data["goals"][index]["remaining"] <= 0 and not completed:
-        messagebox.showinfo("Congratulations", "Congratulations! You have completed the goal: " + str(data["goals"][index]["name"]))
+    if data["goals"][dataIndex]["remaining"] > 0 and completed:
+        messagebox.showinfo("Sorry", "You have no longer completed the goal: " + data["goals"][dataIndex]["name"])
+    elif data["goals"][dataIndex]["remaining"] <= 0 and not completed:
+        messagebox.showinfo("Congratulations", "Congratulations! You have completed the goal: " + str(data["goals"][dataIndex]["name"]))
 
     core.writeData(data)
     updateValues()
@@ -811,7 +860,7 @@ def updateGoals(data, plot, collectedXP):
         plot.annotate(data["goals"][i]["name"], (0, collectedXP + data["goals"][i]["remaining"]), xytext=(-3, collectedXP + data["goals"][i]["remaining"] + 5000), color=data["goals"][i]["color"], alpha=alpha)
 
         if j >= len(goalContainers):
-            gc = goalContainer.GoalContainer(statsContainer, data["goals"][i]["name"], data["goals"][i]["remaining"], color=data["goals"][i]["color"])
+            gc = goalContainer.GoalContainer(statsContainer, i, data["goals"][i]["name"], data["goals"][i]["remaining"], color=data["goals"][i]["color"])
             gc.pack(padx=8, pady=8, fill="x")
             goalContainers.append(gc)
         
@@ -1079,6 +1128,18 @@ editBTN.pack(side=tk.RIGHT, fill="both", expand=True)
 
 delBTN = ttk.Button(historyBtnContainer, text="Delete Element", command=deleteElementCallback)
 delBTN.pack(side=tk.LEFT, fill="both", expand=True)
+
+resetDataSettingBtn = ttk.Button(settingsBtnContainer, text="Reset Data")
+resetDataSettingBtn.pack(side=tk.LEFT, fill="both", expand=True)
+
+resetSettingsBtn = ttk.Button(settingsBtnContainer, text="Default settings")
+resetSettingsBtn.pack(side=tk.LEFT, fill="both", expand=True)
+
+aboutSettingBtn = ttk.Button(settingsBtnContainer, text="About")
+aboutSettingBtn.pack(side=tk.LEFT, fill="both", expand=True)
+
+applySettingBtn = ttk.Button(settingsBtnContainer, text="Apply")
+applySettingBtn.pack(side=tk.LEFT, fill="both", expand=True)
 
 # ================================
 #  Main Loop

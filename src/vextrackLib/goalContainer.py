@@ -2,9 +2,10 @@ from tkinter import *
 from tkinter import ttk
 
 class GoalContainer(ttk.LabelFrame):
-    def __init__(self, container, name="", amount=0, color="#ff0000", *args, **kwargs):
+    def __init__(self, container, index, name="", amount=0, color="#ff0000", *args, **kwargs):
         super().__init__(container, *args, **kwargs)
         self.name = name
+        self.index = index
         self.amount = amount
         self.color = color
         self.configure(text=self.name)

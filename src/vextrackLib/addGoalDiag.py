@@ -1,5 +1,6 @@
 from tkinter import * 
-from tkinter import simpledialog, messagebox, ttk, colorchooser
+from tkinter import simpledialog, messagebox, ttk
+from vextrackLib import colorButton
 
 class AddGoalDiag(simpledialog.Dialog):
     def __init__(self, parent, title, name=None, amount=None, color="#FF0000", edit=False):
@@ -11,8 +12,7 @@ class AddGoalDiag(simpledialog.Dialog):
         super().__init__(parent, title)
 
     def changeColor(self):
-        self.color = colorchooser.askcolor(title="Choose Color", color=self.color)[1]
-        self.colorPreview.configure(bg=self.color)
+        self.color = self.colorBtn.color
 
     def body(self, frame):
         self.iconbitmap("VexTrack.exe")
@@ -30,11 +30,9 @@ class AddGoalDiag(simpledialog.Dialog):
         if self.xpAmount != None: self.xpAmountBox.insert(0, self.xpAmount)
 
         ttk.Label(frame, text="Color").grid(padx=8, pady=4, column=0, row=2, sticky="w")
-        self.colorPreview = Frame(frame, width=16, height=16, bg=self.color)
-        self.colorPreview.grid(padx=8, pady=4, column=1, row=2, sticky="w")
 
-        colorBtn = ttk.Button(frame, text="Change Color", command=self.changeColor)
-        colorBtn.grid(padx=8, pady=4, column=2, row=2, sticky="e")
+        self.colorBtn = colorButton.ColorButton(frame, color=self.color, command=self.changeColor)
+        self.colorBtn.grid(padx=8, pady=4, column=2, row=2, sticky="we")
 
         self.changeStartXPVar = IntVar()
 

@@ -7,22 +7,27 @@ class InitDiag(simpledialog.Dialog):
         self.activeBPLevel = None
         self.cXP = None
         self.remainingDays = None
+        self.seasonName = None
         super().__init__(parent, title)
 
     def body(self, frame):
         self.iconbitmap("VexTrack.exe")
 
-        ttk.Label(frame, text="Active Battlepass Level").grid(padx=8, pady=4, column=0, row=0, sticky="w")
-        self.activeBPLevelBox = ttk.Entry(frame, width=32)
-        self.activeBPLevelBox.grid(padx=8, pady=2, columnspan=2, column=1, row=0, sticky="w")
+        ttk.Label(frame, text="Season Name").grid(padx=8, pady=4, column=0, row=0, sticky="w")
+        self.seasonNameBox = ttk.Entry(frame, width=32)
+        self.seasonNameBox.grid(padx=8, pady=2, columnspan=2, column=1, row=0, sticky="w")
 
-        ttk.Label(frame, text="Battlepass Level Progress").grid(padx=8, pady=4, column=0, row=1, sticky="w")
-        self.cXPBox = ttk.Entry(frame, width=32)
-        self.cXPBox.grid(padx=8, pady=2, columnspan=2, column=1, row=1, sticky="w")
-
-        ttk.Label(frame, text="Remaining Days in Season").grid(padx=8, pady=4, column=0, row=2, sticky="w")
+        ttk.Label(frame, text="Remaining Days in Season").grid(padx=8, pady=4, column=0, row=1, sticky="w")
         self.remainingDaysBox = ttk.Entry(frame, width=32)
-        self.remainingDaysBox.grid(padx=8, pady=2, columnspan=2, column=1, row=2, sticky="w")
+        self.remainingDaysBox.grid(padx=8, pady=2, columnspan=2, column=1, row=1, sticky="w")
+
+        ttk.Label(frame, text="Active Battlepass Level").grid(padx=8, pady=4, column=0, row=2, sticky="w")
+        self.activeBPLevelBox = ttk.Entry(frame, width=32)
+        self.activeBPLevelBox.grid(padx=8, pady=2, columnspan=2, column=1, row=2, sticky="w")
+
+        ttk.Label(frame, text="Battlepass Level Progress").grid(padx=8, pady=4, column=0, row=3, sticky="w")
+        self.cXPBox = ttk.Entry(frame, width=32)
+        self.cXPBox.grid(padx=8, pady=2, columnspan=2, column=1, row=3, sticky="w")
 
         return frame
     
@@ -45,6 +50,11 @@ class InitDiag(simpledialog.Dialog):
         
         if self.remainingDays < 1:
             messagebox.showerror("Invalid Input", "Remaining days cannot be less then 1")
+            return
+        
+        self.seasonName = self.seasonNameBox.get()
+        if self.seasonName == None:
+            messagebox.showerror("Invalid Input", "Season Name cannot be empty")
             return
 
         self.destroy()

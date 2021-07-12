@@ -1,11 +1,12 @@
 import tkinter as tk
 from vextrackLib.initDiag import InitDiag
 from vextrackLib.scrollableFrame import ScrollableFrame
-import vars
+from vars import *
 import json
 import os
 
-from vextrackLib import core, addXPDiag as xpDiag, addGoalDiag as goalDiag, goalContainer
+from vextrackLib import core, addXPDiag as xpDiag, addGoalDiag as goalDiag, goalContainer, newSeasonDiag, seasonContainer, colorButton, aboutDiag
+from vextrackLib.settings import *
 from updaterLib import core as uCore
 
 from tkinter import *
@@ -18,20 +19,26 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.patches import Rectangle
 
-windowSize = vars.WINDOW_GEOMETRY.split("x")
+windowSize = WINDOW_GEOMETRY.split("x")
 newUpdaterVersion = uCore.checkNewVersion("Updater")
-versionString, _, _ = uCore.getVersionString(vars.APP_NAME)
+versionString, _, _ = uCore.getVersionString(APP_NAME)
+
+settings = loadSettings()
+updatingSettingsUI = False
 
 root = tk.Tk()
-root.title(vars.APP_NAME + " " + versionString)
+root.title(APP_NAME + " " + versionString)
 root.iconbitmap("VexTrack.exe")
-root.geometry(vars.WINDOW_GEOMETRY)
+root.geometry(WINDOW_GEOMETRY)
 root.minsize(int(windowSize[0]), int(windowSize[1]))
 
 if newUpdaterVersion == True:
     root.iconify()
     root.update()
     root.deiconify()
+
+seasonIndex = IntVar()
+seasonNameVar = StringVar()
 
 # ================================
 #  Tabbed View
@@ -41,10 +48,14 @@ notebook = ttk.Notebook(root)
 graphTab = Frame(notebook)
 statsTab = Frame(notebook)
 historyTab = Frame(notebook)
+seasonsTab = Frame(notebook)
+settingsTab = Frame(notebook)
 
 notebook.add(graphTab, text="Graph")
-notebook.add(statsTab, text="Stats")
+notebook.add(statsTab, text="Goals / Stats")
 notebook.add(historyTab, text="History")
+notebook.add(seasonsTab, text="Seasons")
+notebook.add(settingsTab, text="Settings")
 notebook.pack(padx=8, pady=8, fill="both", expand=True)
 
 # --------------------------------
@@ -308,6 +319,7 @@ levelTotalLabel.pack(padx=1, pady=0, side=tk.LEFT)
 # ................................
 
 goalContainers = []
+seasonContainers = []
 
 # --------------------------------
 #  History
@@ -349,12 +361,6 @@ history.heading(3, text="Timestamp", anchor="e")
 history.column(1, anchor="w")
 history.column(2, anchor="e")
 history.column(3, anchor="e")
-
-history.tag_configure("none", background=vars.NONE_BG_COLOR, foreground=vars.NONE_FG_COLOR)
-history.tag_configure("win", background=vars.WIN_BG_COLOR, foreground=vars.WIN_FG_COLOR)
-history.tag_configure("loss", background=vars.LOSS_BG_COLOR, foreground=vars.LOSS_FG_COLOR)
-history.tag_configure("draw", background=vars.DRAW_BG_COLOR, foreground=vars.DRAW_FG_COLOR)
-history.tag_configure("selected", background=vars.SELECTED_BG_COLOR, foreground=vars.SELECTED_FG_COLOR)
 
 # Create history Scrollbar
 historyScrollbar = Scrollbar(historyListContainer, orient=VERTICAL, command=history.yview)
@@ -424,6 +430,87 @@ dailyTotalLabel = ttk.Label(dailyTotalContainer, text="99999")
 dailyTotalLabel.pack(padx=1, pady=0, side=tk.LEFT)
 
 # ================================
+#  Seasons
+# ================================
+
+seasonsScrollableContainer = ScrollableFrame(seasonsTab)
+seasonsContainer = seasonsScrollableContainer.scrollableFrame
+seasonsScrollableContainer.pack(fill="both", expand=True)
+
+# ================================
+#  Settings
+# ================================
+
+settingsScrollableContainer = ScrollableFrame(settingsTab)
+settingsContainer = settingsScrollableContainer.scrollableFrame
+settingsScrollableContainer.pack(fill="both", expand=True)
+
+settingsContainer.grid_columnconfigure(0, weight=1)
+settingsContainer.grid_columnconfigure(1, weight=1)
+settingsContainer.grid_columnconfigure(2, weight=1)
+settingsContainer.grid_columnconfigure(3, weight=1)
+
+bufferDaysSettingVar = StringVar()
+ttk.Label(settingsContainer, text="Buffer Days:").grid(padx=8, pady=2, columnspan=2, column=0, row=0, sticky="we")
+bufferDaysSettingEntry = ttk.Entry(settingsContainer, textvariable=bufferDaysSettingVar)
+bufferDaysSettingEntry.grid(padx=8, pady=2, columnspan=2, column=2, row=0, sticky="we")
+
+enableColorsSettingVar = IntVar()
+ttk.Label(settingsContainer, text="Enable colors in history:").grid(padx=8, pady=2, columnspan=2, column=0, row=1, sticky="we")
+enableColorsSettingCheck = ttk.Checkbutton(settingsContainer, onvalue=1, offvalue=0, variable=enableColorsSettingVar)
+enableColorsSettingCheck.grid(padx=8, pady=2, columnspan=2, column=2, row=1, sticky="we")
+enableColorsSettingVar.set(settings["useHistoryColors"])
+
+ttk.Label(settingsContainer, text="Win Background:").grid(padx=8, pady=2, column=0, row=2, sticky="we")
+winBackgroundSettingBtn = colorButton.ColorButton(settingsContainer, settings["winBackground"])
+winBackgroundSettingBtn.grid(padx=8, pady=2, column=1, row=2, sticky="we")
+
+ttk.Label(settingsContainer, text="Win Foreground:").grid(padx=8, pady=2, column=2, row=2, sticky="we")
+winForegroundSettingBtn = colorButton.ColorButton(settingsContainer, settings["winForeground"])
+winForegroundSettingBtn.grid(padx=8, pady=2, column=3, row=2, sticky="we")
+
+ttk.Label(settingsContainer, text="Loss Background:").grid(padx=8, pady=2, column=0, row=3, sticky="we")
+lossBackgroundSettingBtn = colorButton.ColorButton(settingsContainer, settings["lossBackground"])
+lossBackgroundSettingBtn.grid(padx=8, pady=2, column=1, row=3, sticky="we")
+
+ttk.Label(settingsContainer, text="Loss Foreground:").grid(padx=8, pady=2, column=2, row=3, sticky="we")
+lossForegroundSettingBtn = colorButton.ColorButton(settingsContainer, settings["lossForeground"])
+lossForegroundSettingBtn.grid(padx=8, pady=2, column=3, row=3, sticky="we")
+
+ttk.Label(settingsContainer, text="Draw Background:").grid(padx=8, pady=2, column=0, row=4, sticky="we")
+drawBackgroundSettingBtn = colorButton.ColorButton(settingsContainer, settings["drawBackground"])
+drawBackgroundSettingBtn.grid(padx=8, pady=2, column=1, row=4, sticky="we")
+
+ttk.Label(settingsContainer, text="Draw Foreground:").grid(padx=8, pady=2, column=2, row=4, sticky="we")
+drawForegroundSettingBtn = colorButton.ColorButton(settingsContainer, settings["drawForeground"])
+drawForegroundSettingBtn.grid(padx=8, pady=2, column=3, row=4, sticky="we")
+
+ttk.Label(settingsContainer, text="None Background:").grid(padx=8, pady=2, column=0, row=5, sticky="we")
+noneBackgroundSettingBtn = colorButton.ColorButton(settingsContainer, settings["noneBackground"])
+noneBackgroundSettingBtn.grid(padx=8, pady=2, column=1, row=5, sticky="we")
+
+ttk.Label(settingsContainer, text="None Foreground:").grid(padx=8, pady=2, column=2, row=5, sticky="we")
+noneForegroundSettingBtn = colorButton.ColorButton(settingsContainer, settings["noneForeground"])
+noneForegroundSettingBtn.grid(padx=8, pady=2, column=3, row=5, sticky="we")
+
+ttk.Label(settingsContainer, text="Selected Background:").grid(padx=8, pady=2, column=0, row=6, sticky="we")
+selectedBackgroundSettingBtn = colorButton.ColorButton(settingsContainer, settings["selectedBackground"])
+selectedBackgroundSettingBtn.grid(padx=8, pady=2, column=1, row=6, sticky="we")
+
+ttk.Label(settingsContainer, text="Selected Foreground:").grid(padx=8, pady=2, column=2, row=6, sticky="we")
+selectedForegroundSettingBtn = colorButton.ColorButton(settingsContainer, settings["selectedForeground"])
+selectedForegroundSettingBtn.grid(padx=8, pady=2, column=3, row=6, sticky="we")
+
+ignoreInactiveDaysSettingVar = IntVar()
+ttk.Label(settingsContainer, text="Ignore inactive days in certain statistics:").grid(padx=8, pady=2, columnspan=2, column=0, row=7, sticky="we")
+ignoreInactiveDaysSettingCheck = ttk.Checkbutton(settingsContainer, onvalue=1, offvalue=0, variable=ignoreInactiveDaysSettingVar)
+ignoreInactiveDaysSettingCheck.grid(padx=8, pady=2, columnspan=2, column=2, row=7, sticky="we")
+ignoreInactiveDaysSettingVar.set(settings["ignoreInactiveDays"])
+
+settingsBtnContainer = tk.Frame(settingsTab)
+settingsBtnContainer.pack(fill="x")
+
+# ================================
 #  Functions
 # ================================
 
@@ -448,14 +535,14 @@ def addGoalCallback():
     updateValues()
 
 def resetCallback():
-    res = messagebox.askquestion("Reset config", "Are you sure you want to reset your config? This will remove all progress")
+    res = messagebox.askquestion("Reset data", "Are you sure you want to reset your data? This will remove all progress")
     if res == "yes":
         initDiag = InitDiag(root, "Reset Config")
 
-        if initDiag.activeBPLevel != None and initDiag.cXP != None and initDiag.remainingDays != None:
-            initConfig(int(initDiag.activeBPLevel), int(initDiag.cXP), int(initDiag.remainingDays))
+        if initDiag.activeBPLevel != None or initDiag.cXP != None or initDiag.remainingDays != None or initDiag.seasonName != None:
+            initData(initDiag.seasonName, int(initDiag.activeBPLevel), int(initDiag.cXP), int(initDiag.remainingDays))
         else:
-            messagebox.showinfo("Reset Config", "Cancelled, previous config has not been removed")
+            messagebox.showinfo("Reset data", "Cancelled, previous data has not been removed")
 
         updateValues()
         return
@@ -488,12 +575,51 @@ def deleteElementCallback():
 def gcRemoveCallback(index):
     res = messagebox.askquestion("Remove Goal", "Are you sure, that you want to remove this goal?\nName: " + goalContainers[index].name)
     if res == "yes":
-        gcRemove(index)
+        gcRemove(goalContainers[index].index, index)
 
 def gcEditCallback(index):
     editDiag = goalDiag.AddGoalDiag(root, "Edit Goal", name=goalContainers[index].name, amount=goalContainers[index].amount, color=goalContainers[index].color, edit=True)
     if editDiag.changeStartXP != None and (editDiag.name != goalContainers[index].name or editDiag.xpAmount != goalContainers[index].amount or editDiag.color != goalContainers[index].color or editDiag.changeStartXP == True):
-        gcEdit(index, editDiag.changeStartXP, editDiag.name, int(editDiag.xpAmount), editDiag.color)
+        gcEdit(goalContainers[index].index, index, editDiag.changeStartXP, editDiag.name, int(editDiag.xpAmount), editDiag.color)
+
+def seasonRemoveCallback(index):
+    res = messagebox.askquestion("Remove Season", "Are you sure, that you want to remove this season?\nName: " + seasonContainers[index].name)
+    if res == "yes":
+        seasonRemove(index)
+
+def seasonEditCallback(index):
+    data = core.readData()
+    names = []
+    for s in data["seasons"]:
+        names.append(s["name"])
+
+    editDiag = newSeasonDiag.NewSeasonDiag(root, "Edit Season", name=seasonContainers[index].name, forbiddenNames=names, remainingDays=seasonContainers[index].remainingDays, edit=True, ended=1 if seasonContainers[index].remainingDays <= 0 else 0)
+    if editDiag.seasonName != seasonContainers[index].name or editDiag.remainingDays != seasonContainers[index].remainingDays:
+        seasonEdit(index, editDiag.seasonName, editDiag.remainingDays, editDiag.ended)
+
+def seasonSelectorCallback(choice):
+    data = core.readData()
+    seasonName = seasonNameVar.get()
+
+    i = 0
+    for s in data["seasons"]:
+        if s["name"] == seasonName:
+            seasonIndex.set(i)
+        i += 1
+
+    updateValues()
+
+def defaultSettingsCallback():
+    global settings
+
+    res = messagebox.askquestion("Default Settings", "Are you sure you want to revert to default settings?")
+    if res == "yes":
+        initSettings()
+        settings = loadSettings()
+        updateValues(True)
+
+def aboutCallback():
+    aboutDiag.AboutDiag(root, "About", uCore.getVersionString(APP_NAME)[0], uCore.getVersionString("Updater")[0])
 
 # --------------------------------
 #  Init
@@ -502,222 +628,334 @@ def gcEditCallback(index):
 def init():
     runInit = False
 
-    if not os.path.exists(os.path.dirname(vars.CONFIG_PATH)):
-        os.mkdir(os.path.dirname(vars.CONFIG_PATH))
+    if not os.path.exists(os.path.dirname(DATA_PATH)):
+        os.mkdir(os.path.dirname(DATA_PATH))
         runInit = True
 
-    if not os.path.exists(vars.CONFIG_PATH):
-        f = open(vars.CONFIG_PATH, "x")
-        f.close()
-        runInit = True
-
-    if not runInit and os.stat(vars.CONFIG_PATH).st_size == 0:
-        runInit = True
+    if not os.path.exists(DATA_PATH) or os.stat(DATA_PATH).st_size == 0:
+        if os.path.exists(OLD_DATA_PATH):
+            data = None
+            with open(OLD_DATA_PATH, "r") as f:
+                data = f.read()
+            with open(DATA_PATH + ".bak", "w") as f:
+                f.write(data)
+            
+            newData = core.convertDataFormat(json.loads(data))
+            core.writeData(newData)
+            
+            os.remove(OLD_DATA_PATH)
+        else:
+            f = open(DATA_PATH, "x")
+            f.close()
+            runInit = True
     
     if runInit:
         initDiag = InitDiag(root, "Initialization")
 
-        if initDiag.activeBPLevel== None and initDiag.cXP == None and initDiag.remainingDays == None:
-            messagebox.showerror("Initialization", "Initial config has to be created")
+        if initDiag.activeBPLevel == None or initDiag.cXP == None or initDiag.remainingDays == None or initDiag.seasonName == None:
+            messagebox.showerror("Initialization", "Initial data has to be created")
             exit()
         
-        initConfig(int(initDiag.activeBPLevel), int(initDiag.cXP), int(initDiag.remainingDays))
+        initData(initDiag.seasonName, int(initDiag.activeBPLevel), int(initDiag.cXP), int(initDiag.remainingDays))
+    
+    data = core.readData()
+    seasonIndex.set(len(data["seasons"]) - 1)
+    seasonNameVar.set(data["seasons"][seasonIndex.get()]["name"])
+
+    bufferDaysSettingEntry.delete(0, len(str(bufferDaysSettingVar.get())))
+    bufferDaysSettingEntry.insert(0, settings["bufferDays"])
 
 # --------------------------------
 #  Update Values
 # --------------------------------
 
-def initConfig(activeBPLevel, cXP, remainingDays):
+def initData(seasonName, activeBPLevel, cXP, remainingDays):
     delta = timedelta(int(remainingDays) + 1)
     seasonEndDate = datetime.today() + delta
     seasonEndDateStr = seasonEndDate.strftime("%d.%m.%Y")
 
-    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues({"activeBPLevel": int(activeBPLevel), "cXP": int(cXP)}, 0)
+    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues({"seasons": [{"activeBPLevel": int(activeBPLevel), "cXP": int(cXP)}]}, 0, 0)
 
-    config = {"activeBPLevel": int(activeBPLevel), "cXP": int(cXP), "seasonEndDate": seasonEndDateStr, "history": [{"time": datetime.now().timestamp(), "description": "Initialization", "amount": int(totalXPCollected)}]}
-    core.writeConfig(vars.CONFIG_PATH, config)
+    data = {"seasons": [{"name": seasonName, "activeBPLevel": int(activeBPLevel), "cXP": int(cXP), "endDate": seasonEndDateStr, "xpHistory": [{"time": datetime.now().timestamp(), "description": "Initialization", "amount": int(totalXPCollected)}]}]}
+    core.writeData(data)
+
+def updateSettings():
+    if updatingSettingsUI: return
+
+    bufferDaysSetting = bufferDaysSettingVar.get()
+    updateBufferDays = True
+
+    data = core.readData()
+    seasonEndDate = datetime.strptime(data["seasons"][seasonIndex.get()]["endDate"], "%d.%m.%Y").date()
+    dateDelta = seasonEndDate - datetime.fromtimestamp(data["seasons"][seasonIndex.get()]["xpHistory"][0]["time"]).date()
+    duration = dateDelta.days
+
+    try:
+        bufferDaysSetting = int(bufferDaysSetting)
+        if bufferDaysSetting < 0: bufferDaysSettingEntry.delete(0)
+        if bufferDaysSetting >= duration: bufferDaysSettingEntry.delete(len(str(bufferDaysSetting)) - 1)
+    except:
+        bufferDaysSettingEntry.delete(len(str(bufferDaysSetting)) - 1)
+
+    bufferDaysSetting = bufferDaysSettingVar.get()
+
+    try:
+        settings["bufferDays"] = int(bufferDaysSetting)
+    except:
+        updateBufferDays = False
+    
+    settings["useHistoryColors"] = enableColorsSettingVar.get()
+    settings["ignoreInactiveDays"] = ignoreInactiveDaysSettingVar.get()
+
+    settings["winBackground"] = winBackgroundSettingBtn.color
+    settings["winForeground"] = winForegroundSettingBtn.color
+    settings["lossBackground"] = lossBackgroundSettingBtn.color
+    settings["lossForeground"] = lossForegroundSettingBtn.color
+    settings["drawBackground"] = drawBackgroundSettingBtn.color
+    settings["drawForeground"] = drawForegroundSettingBtn.color
+    settings["noneBackground"] = noneBackgroundSettingBtn.color
+    settings["noneForeground"] = noneForegroundSettingBtn.color
+    settings["selectedBackground"] = selectedBackgroundSettingBtn.color
+    settings["selectedForeground"] = selectedForegroundSettingBtn.color
+
+    updateValues(updateBufferDays)
+    saveSettings(settings)
 
 def addXP(description, amount):
-    config = core.readConfig(vars.CONFIG_PATH)
-    config["history"].append({"time": datetime.now().timestamp(), "description": description, "amount": int(amount)})
-    config["cXP"] += amount
+    data = core.readData()
 
-    while config["cXP"] >= vars.LEVEL2_OFFSET + vars.NUM_XP_PER_LEVEL * config["activeBPLevel"]:
-        config["cXP"] -= vars.LEVEL2_OFFSET + vars.NUM_XP_PER_LEVEL * config["activeBPLevel"]
-        config["activeBPLevel"] += 1
-        messagebox.showinfo("Congratulations", "Congratulations! You have unlocked Battlepass Level " + str(config["activeBPLevel"] - 1))
+    data["seasons"][len(data["seasons"]) - 1]["xpHistory"].append({"time": datetime.now().timestamp(), "description": description, "amount": int(amount)})
+    data["seasons"][len(data["seasons"]) - 1]["cXP"] += amount
 
-    if not "goals" in config: config["goals"] = []
+    while data["seasons"][len(data["seasons"]) - 1]["cXP"] >= LEVEL2_OFFSET + NUM_XP_PER_LEVEL * data["seasons"][len(data["seasons"]) - 1]["activeBPLevel"]:
+        data["seasons"][len(data["seasons"]) - 1]["cXP"] -= LEVEL2_OFFSET + NUM_XP_PER_LEVEL * data["seasons"][len(data["seasons"]) - 1]["activeBPLevel"]
+        data["seasons"][len(data["seasons"]) - 1]["activeBPLevel"] += 1
+        messagebox.showinfo("Congratulations", "Congratulations! You have unlocked Battlepass Level " + str(data["seasons"][len(data["seasons"]) - 1]["activeBPLevel"] - 1))
 
-    for i in range(0, len(config["goals"])):
+    if not "goals" in data: data["goals"] = []
+
+    for i in range(0, len(data["goals"])):
         completed = False
-        if config["goals"][i]["remaining"] <= 0: completed = True
+        if data["goals"][i]["remaining"] <= 0: completed = True
 
-        config["goals"][i]["remaining"] -= amount
+        data["goals"][i]["remaining"] -= amount
 
-        if config["goals"][i]["remaining"] <= 0 and not completed:
-            messagebox.showinfo("Congratulations", "Congratulations! You have completed the goal: " + str(config["goals"][i]["name"]))
+        if data["goals"][i]["remaining"] <= 0 and not completed:
+            messagebox.showinfo("Congratulations", "Congratulations! You have completed the goal: " + str(data["goals"][i]["name"]))
         
-    core.writeConfig(vars.CONFIG_PATH, config)
+    core.writeData(data)
 
 def addGoal(name, amount, color):
-    config = core.readConfig(vars.CONFIG_PATH)
+    data = core.readData()
 
-    if not "goals" in config:
-        config["goals"] = []
+    if not "goals" in data:
+        data["goals"] = []
 
-    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(config, epilogueVar.get())
-    config["goals"].append({"name": name, "remaining": amount, "startXP": totalXPCollected,"color": color})
-    core.writeConfig(vars.CONFIG_PATH, config)
+    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(data, epilogueVar.get(), len(data["seasons"]) - 1)
+    data["goals"].append({"name": name, "remaining": amount, "startXP": totalXPCollected,"color": color})
+    core.writeData(data)
 
 def editElement(index, description, amount):
-    config = core.readConfig(vars.CONFIG_PATH)
-    historyLen = len(config["history"])
+    data = core.readData()
+    historyLen = len(data["seasons"][seasonIndex.get()]["xpHistory"])
 
-    prevBPLevel = config["activeBPLevel"]
+    prevBPLevel = data["seasons"][seasonIndex.get()]["activeBPLevel"]
 
     index = historyLen - 1 - index
-    prevAmount = config["history"][index]["amount"]
-    config["history"][index]["description"] = description
-    config["history"][index]["amount"] = amount
+    prevAmount = data["seasons"][seasonIndex.get()]["xpHistory"][index]["amount"]
+    data["seasons"][seasonIndex.get()]["xpHistory"][index]["description"] = description
+    data["seasons"][seasonIndex.get()]["xpHistory"][index]["amount"] = amount
 
-    if not "goals" in config: config["goals"] = []
+    if not "goals" in data: data["goals"] = []
     completedGoals = []
-    for i in range(0, len(config["goals"])):
-        if config["goals"][i]["remaining"] <= 0: completedGoals.append(i)
-        config["goals"][i]["remaining"] -= amount - prevAmount
+    incompleteGoals = []
+    for i in range(0, len(data["goals"])):
+        if data["goals"][i]["remaining"] <= 0: completedGoals.append(i)
+        else: incompleteGoals.append(i)
+        data["goals"][i]["remaining"] -= amount - prevAmount
 
-    config = core.recalcXP(config)
-    deltaBP = prevBPLevel - config["activeBPLevel"]
+    data["seasons"][seasonIndex.get()] = core.recalcXP(data, seasonIndex.get())
+    deltaBP = prevBPLevel - data["seasons"][seasonIndex.get()]["activeBPLevel"]
     
-    if deltaBP > 0:
-        for i in range(0, deltaBP, 1):
-            messagebox.showinfo("Sorry", "You have lost Battlepass Level " + str(prevBPLevel - i - 1))
-    elif deltaBP < 0:
-        for i in range(0, deltaBP, -1):
-            messagebox.showinfo("Congratulations", "Congratulations! You have unlocked Battlepass Level " + str(-1 * i + prevBPLevel))
+    if seasonIndex.get() == len(data["seasons"]) - 1:
+        if deltaBP > 0:
+            for i in range(0, deltaBP, 1):
+                messagebox.showinfo("Sorry", "You have lost Battlepass Level " + str(prevBPLevel - i - 1))
+        elif deltaBP < 0:
+            for i in range(0, deltaBP, -1):
+                messagebox.showinfo("Congratulations", "Congratulations! You have unlocked Battlepass Level " + str(-1 * i + prevBPLevel))
 
     for cg in completedGoals:
-        if config["goals"][cg]["remaining"] > 0:
-            messagebox.showinfo("Sorry", "You have no longer completed the goal: " + config["goals"][cg]["name"])
+        if data["goals"][cg]["remaining"] > 0:
+            messagebox.showinfo("Sorry", "You have no longer completed the goal: " + data["goals"][cg]["name"])
+    for ig in incompleteGoals:
+        if data["goals"][ig]["remaining"] < 0:
+            messagebox.showinfo("Congratulations", "Congratulations! You have completed the goal: " + data["goals"][ig]["name"])
 
-
-    core.writeConfig(vars.CONFIG_PATH, config)
+    core.writeData(data)
     updateValues()
 
 def deleteElement(index):
-    config = core.readConfig(vars.CONFIG_PATH)
-    historyLen = len(config["history"])
+    data = core.readData()
+    historyLen = len(data["seasons"][seasonIndex.get()]["xpHistory"])
 
-    prevBPLevel = config["activeBPLevel"]
+    prevBPLevel = data["seasons"][seasonIndex.get()]["activeBPLevel"]
 
     index = historyLen - 1 - index
-    amount = config["history"][index]["amount"]
-    config["history"].pop(index)
+    amount = data["seasons"][seasonIndex.get()]["xpHistory"][index]["amount"]
+    data["seasons"][seasonIndex.get()]["xpHistory"].pop(index)
 
-    if not "goals" in config: config["goals"] = []
+    if not "goals" in data: data["goals"] = []
     completedGoals = []
-    for i in range(0, len(config["goals"])):
-        if config["goals"][i]["remaining"] <= 0: completedGoals.append(i)
-        config["goals"][i]["remaining"] += amount
+    for i in range(0, len(data["goals"])):
+        if data["goals"][i]["remaining"] <= 0: completedGoals.append(i)
+        data["goals"][i]["remaining"] += amount
 
-    config = core.recalcXP(config)
-    deltaBP = prevBPLevel - config["activeBPLevel"]
+    data["seasons"][seasonIndex.get()] = core.recalcXP(data, seasonIndex.get())
+    deltaBP = prevBPLevel - data["seasons"][seasonIndex.get()]["activeBPLevel"]
 
-    if deltaBP > 0:
-        for i in range(0, deltaBP, 1):
-            messagebox.showinfo("Sorry", "You have lost Battlepass Level " + str(prevBPLevel - i - 1))
-    elif deltaBP < 0:
-        for i in range(0, deltaBP, -1):
-            messagebox.showinfo("Congratulations", "Congratulations! You have unlocked Battlepass Level " + str(-1 * i + prevBPLevel))
+    if seasonIndex.get() == len(data["seasons"]) - 1:
+        if deltaBP > 0:
+            for i in range(0, deltaBP, 1):
+                messagebox.showinfo("Sorry", "You have lost Battlepass Level " + str(prevBPLevel - i - 1))
 
     for cg in completedGoals:
-        if config["goals"][cg]["remaining"] > 0:
-            messagebox.showinfo("Sorry", "You have no longer completed the goal: " + config["goals"][cg]["name"])
+        if data["goals"][cg]["remaining"] > 0:
+            messagebox.showinfo("Sorry", "You have no longer completed the goal: " + data["goals"][cg]["name"])
 
-    core.writeConfig(vars.CONFIG_PATH, config)
+    core.writeData(data)
     updateValues()
 
-def gcRemove(index):
-    config = core.readConfig(vars.CONFIG_PATH)
+def gcRemove(dataIndex, index):
+    data = core.readData()
 
-    config["goals"].pop(index)
+    data["goals"].pop(dataIndex)
     goalContainers[index].destroy()
     goalContainers.pop(index)
 
-    core.writeConfig(vars.CONFIG_PATH, config)
+    core.writeData(data)
     updateValues()
 
-def gcEdit(index, changeStartXP, name, amount, color):
-    config = core.readConfig(vars.CONFIG_PATH)
-    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(config, epilogueVar.get())
+def gcEdit(dataIndex, index, changeStartXP, name, amount, color):
+    data = core.readData()
+    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(data, epilogueVar.get(), len(data["seasons"]) - 1)
 
     completed = False
-    if config["goals"][index]["remaining"] <= 0: completed = True
+    if data["goals"][dataIndex]["remaining"] <= 0: completed = True
 
-    config["goals"][index]["name"] = name
-    if changeStartXP: config["goals"][index]["startXP"] = totalXPCollected
-    config["goals"][index]["remaining"] = amount
-    config["goals"][index]["color"] = color
+    data["goals"][dataIndex]["name"] = name
+    if changeStartXP: data["goals"][dataIndex]["startXP"] = totalXPCollected
+    data["goals"][dataIndex]["remaining"] = amount
+    data["goals"][dataIndex]["color"] = color
 
     goalContainers[index].updateGoal(name, amount, color)
 
-    if config["goals"][index]["remaining"] > 0 and completed:
-        messagebox.showinfo("Sorry", "You have no longer completed the goal: " + config["goals"][index]["name"])
-    elif config["goals"][index]["remaining"] <= 0 and not completed:
-        messagebox.showinfo("Congratulations", "Congratulations! You have completed the goal: " + str(config["goals"][index]["name"]))
+    if data["goals"][dataIndex]["remaining"] > 0 and completed:
+        messagebox.showinfo("Sorry", "You have no longer completed the goal: " + data["goals"][dataIndex]["name"])
+    elif data["goals"][dataIndex]["remaining"] <= 0 and not completed:
+        messagebox.showinfo("Congratulations", "Congratulations! You have completed the goal: " + str(data["goals"][dataIndex]["name"]))
 
-    core.writeConfig(vars.CONFIG_PATH, config)
+    core.writeData(data)
     updateValues()
 
-def updateGoals(config, plot, collectedXP):
-    if not "goals" in config:
-        config["goals"] = []
+def seasonRemove(index):
+    data = core.readData()
 
-    for i in range(0, len(config["goals"])):
+    data["seasons"].pop(index)
+    seasonContainers[index].destroy()
+    seasonContainers.pop(index)
+
+    core.writeData(data)
+    updateValues()
+
+def seasonEdit(index, name, remaining, ended):
+    data = core.readData()
+    
+    data["seasons"][index]["name"] = name
+    if not ended: data["seasons"][index]["endDate"] = datetime.strftime(date.today() + timedelta(days=remaining), "%d.%m.%Y")
+    seasonContainers[index].setValues(name, remaining)
+
+    core.writeData(data)
+    updateValues()
+
+def updateSeasons(data):
+    global seasonContainers
+
+    for i in range(0, len(data["seasons"])):
+        if i >= len(seasonContainers):
+            sc = seasonContainer.SeasonContainer(seasonsContainer, data["seasons"][i]["name"])
+            sc.pack(padx=8, pady=8, fill="x")
+            seasonContainers.append(sc)
+
+        totalProgress, _, _, _ = core.calcTotalValues(data, epilogueVar.get(), i)
+
+        seasonEndDate = datetime.strptime(data["seasons"][i]["endDate"], "%d.%m.%Y").date()
+        dateDelta = seasonEndDate - date.today()
+        remainingDays = dateDelta.days
+        if remainingDays < 0: remainingDays = 0
+
+        seasonContainers[i].updateValues(totalProgress, remainingDays)
+        seasonContainers[i].removeBtn.configure(command=lambda k=i: seasonRemoveCallback(k))
+        seasonContainers[i].editBtn.configure(command=lambda k=i: seasonEditCallback(k))
+
+def updateGoals(data, plot, collectedXP):
+    global goalContainers
+
+    if not "goals" in data:
+        data["goals"] = []
+
+    if len(data["goals"]) == 0:
+        for index in range(0, len(goalContainers)):
+            goalContainers[index].destroy()
+        goalContainers = []
+
+    j = 0
+    for i in range(0, len(data["goals"])):
         alpha = 0.75
 
-        if collectedXP + config["goals"][i]["remaining"] <= 0: continue
-        if config["goals"][i]["remaining"] <= 0: alpha = 0.15
+        if collectedXP + data["goals"][i]["remaining"] <= 0: continue
+        if data["goals"][i]["remaining"] <= 0: alpha = 0.15
 
-        plot.axhline(collectedXP + config["goals"][i]["remaining"], color=config["goals"][i]["color"], alpha=alpha, linestyle="-")
-        plot.annotate(config["goals"][i]["name"], (0, collectedXP + config["goals"][i]["remaining"]), xytext=(-3, collectedXP + config["goals"][i]["remaining"] + 5000), color=config["goals"][i]["color"], alpha=alpha)
+        plot.axhline(collectedXP + data["goals"][i]["remaining"], color=data["goals"][i]["color"], alpha=alpha, linestyle="-")
+        plot.annotate(data["goals"][i]["name"], (0, collectedXP + data["goals"][i]["remaining"]), xytext=(-3, collectedXP + data["goals"][i]["remaining"] + 5000), color=data["goals"][i]["color"], alpha=alpha)
 
-        if i >= len(goalContainers):
-            gc = goalContainer.GoalContainer(statsContainer, config["goals"][i]["name"], config["goals"][i]["remaining"], color=config["goals"][i]["color"])
+        if j >= len(goalContainers):
+            gc = goalContainer.GoalContainer(statsContainer, i, data["goals"][i]["name"], data["goals"][i]["remaining"], color=data["goals"][i]["color"])
             gc.pack(padx=8, pady=8, fill="x")
             goalContainers.append(gc)
         
-        collectedInGoal = collectedXP - config["goals"][i]["startXP"]
+        collectedInGoal = collectedXP - data["goals"][i]["startXP"]
         if collectedInGoal < 0:
-            config["goals"][i]["startXP"] += collectedInGoal
+            data["goals"][i]["startXP"] += collectedInGoal
             collectedInGoal = 0
 
-        totalInGoal = collectedInGoal + config["goals"][i]["remaining"]
+        totalInGoal = collectedInGoal + data["goals"][i]["remaining"]
 
         goalProgress = round(collectedInGoal / totalInGoal * 100)
         if goalProgress > 100: goalProgress = 100
 
-        goalContainers[i].setValues(goalProgress, collectedInGoal, config["goals"][i]["remaining"] if config["goals"][i]["remaining"] > 0 else 0, totalInGoal)
-        goalContainers[i].removeBtn.configure(command=lambda j=i: gcRemoveCallback(j))
-        goalContainers[i].editBtn.configure(command=lambda j=i: gcEditCallback(j))
+        goalContainers[j].setValues(goalProgress, collectedInGoal, data["goals"][i]["remaining"] if data["goals"][i]["remaining"] > 0 else 0, totalInGoal)
+        goalContainers[j].removeBtn.configure(command=lambda k=j: gcRemoveCallback(k))
+        goalContainers[j].editBtn.configure(command=lambda k=j: gcEditCallback(k))
 
-def updateGraph(config, epilogue, drawEpilogue, plot):
+        j += 1
+
+def updateGraph(data, epilogue, drawEpilogue, plot):
     plot.clear()
     timeAxis = []
     
-    seasonEndDate = datetime.strptime(config["seasonEndDate"], "%d.%m.%Y")
-    dateDelta = seasonEndDate - datetime.fromtimestamp(config["history"][0]["time"])
+    seasonEndDate = datetime.strptime(data["seasons"][seasonIndex.get()]["endDate"], "%d.%m.%Y").date()
+    dateDelta = seasonEndDate - datetime.fromtimestamp(data["seasons"][seasonIndex.get()]["xpHistory"][0]["time"]).date()
     duration = dateDelta.days
     timeAxis = range(0, duration + 1)
 
     yAxisIdeal = []
 
-    totalXP = core.cumulativeSum(vars.NUM_BPLEVELS, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL) + epilogue * vars.NUM_EPLOGUE_LEVELS * vars.NUM_EPLOGUE_XP_PER_LEVEL
-    collectedXP = config["history"][0]["amount"]
+    totalXP = core.cumulativeSum(NUM_BPLEVELS, LEVEL2_OFFSET, NUM_XP_PER_LEVEL) + epilogue * NUM_EPLOGUE_LEVELS * NUM_EPLOGUE_XP_PER_LEVEL
+    collectedXP = data["seasons"][seasonIndex.get()]["xpHistory"][0]["amount"]
     
     remainingXP = totalXP - collectedXP
-    originalDaily = round(remainingXP / (duration - vars.BUFFER_DAYS))
+    originalDaily = round(remainingXP / (duration - settings["bufferDays"]))
 
     yAxisIdeal.append(collectedXP)
 
@@ -728,10 +966,10 @@ def updateGraph(config, epilogue, drawEpilogue, plot):
     plot.plot(timeAxis, yAxisIdeal, color='gray', label='Ideal', linestyle="-")
 
     yAxisYou = []
-    prevDate = date.fromtimestamp(config["history"][0]["time"])
+    prevDate = date.fromtimestamp(data["seasons"][seasonIndex.get()]["xpHistory"][0]["time"])
     index = -1
 
-    for h in config["history"]:
+    for h in data["seasons"][seasonIndex.get()]["xpHistory"]:
         currDate = date.fromtimestamp(h["time"])
         if currDate == prevDate and index != -1:
             yAxisYou[index] = yAxisYou[index] + int(h["amount"])
@@ -749,99 +987,155 @@ def updateGraph(config, epilogue, drawEpilogue, plot):
             yAxisYou.append(int(h["amount"]) + prevValue)
             index += 1
 
-    deltaDate = date.today() - prevDate
+    if date.today() < seasonEndDate: deltaDate = date.today() - prevDate
+    else: deltaDate = seasonEndDate - prevDate
     for i in range(0, deltaDate.days): yAxisYou.append(yAxisYou[len(yAxisYou) - 1])
 
     yAxisDailyIdeal = []
 
-    dateDelta = seasonEndDate - datetime.now()
+    dateDelta = seasonEndDate - date.today()
     remainingDays = dateDelta.days
     dayDelta = duration - remainingDays
 
-    if date.fromtimestamp(config["history"][len(config["history"]) - 1]["time"]) == date.today(): offset = 1
+    if date.fromtimestamp(data["seasons"][seasonIndex.get()]["xpHistory"][len(data["seasons"][seasonIndex.get()]["xpHistory"]) - 1]["time"]) == date.today(): offset = 1
     else: offset = 0
 
-    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(config, epilogue)
-    dailyTotal = round((totalXPTotal - yAxisYou[index - offset]) / (remainingDays - vars.BUFFER_DAYS + 1))
+    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(data, epilogue, seasonIndex.get())
 
-    yAxisDailyIdeal.append(yAxisYou[index - offset])
+    if remainingDays >= 0 and remainingDays < duration:
+        divisor = remainingDays - settings["bufferDays"] + 1
+        if divisor <= 0: divisor = 1
+    
+        dailyTotal = round((totalXPTotal - yAxisYou[index - offset]) / divisor)
+        yAxisDailyIdeal.append(yAxisYou[index - offset])
 
-    for i in range(1, remainingDays + 2):
-        yAxisDailyIdeal.append(yAxisDailyIdeal[i - 1] + dailyTotal)
-        if yAxisDailyIdeal[i] > totalXP: yAxisDailyIdeal[i] = totalXP
+        for i in range(1, remainingDays + 2):
+            yAxisDailyIdeal.append(yAxisDailyIdeal[i - 1] + dailyTotal)
+            if yAxisDailyIdeal[i] > totalXP: yAxisDailyIdeal[i] = totalXP
 
-    plot.plot(timeAxis[dayDelta - 1:], yAxisDailyIdeal, color='skyblue', label='Daily Ideal', alpha=1, linestyle="--")
+        plot.plot(timeAxis[dayDelta - 1:], yAxisDailyIdeal, color='skyblue', label='Daily Ideal', alpha=1, linestyle="--")
+    
     plot.plot(timeAxis[:len(yAxisYou)], yAxisYou, color='red', label='You', linewidth=3)
-    plot.plot(dayDelta, totalXPCollected, color='darkred', label="Now", marker="o", markersize=5)
 
     plot.set_xticks(range(0, duration + 1, 5), minor=True)
     plot.tick_params(which="both", top=False, bottom=False, left=False, right=False, labelleft=False)
     plot.grid(axis="x", color="lightgray", which="both", linestyle=":")
 
+    if remainingDays >= 0: plot.plot(dayDelta, yAxisIdeal[dayDelta], color='black', label="Now", marker="o", markersize=5)
+    if remainingDays >= 0 and remainingDays < duration: plot.plot(dayDelta, yAxisDailyIdeal[1], color='blue', label="Now", marker="o", markersize=5)
+    if remainingDays >= 0: plot.plot(dayDelta, totalXPCollected, color='darkred', label="Now", marker="o", markersize=5)
+
     # --------------------------------
     # Draw lines for battlepass unlocks
     # --------------------------------
 
-    for i in range(0, vars.NUM_BPLEVELS + 1, 1):
+    for i in range(0, NUM_BPLEVELS + 1, 1):
         alpha = 0.5
-        neededXP = core.cumulativeSum(i, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL)
+        neededXP = core.cumulativeSum(i, LEVEL2_OFFSET, NUM_XP_PER_LEVEL)
 
         if totalXPCollected >= neededXP: alpha = 0.05
         plot.axhline(neededXP, color="lightgray", alpha=alpha, linestyle="-")
 
-    for i in range(0, vars.NUM_BPLEVELS + 1, 5):
+    for i in range(0, NUM_BPLEVELS + 1, 5):
         alpha = 0.5
-        neededXP = core.cumulativeSum(i, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL)
+        neededXP = core.cumulativeSum(i, LEVEL2_OFFSET, NUM_XP_PER_LEVEL)
 
         if totalXPCollected >= neededXP: alpha = 0.05
         plot.axhline(neededXP, color="limegreen", alpha=alpha, linestyle="-")
     
     if epilogue or drawEpilogue:
-        for i in range(1, vars.NUM_EPLOGUE_LEVELS + 1, 1):
+        for i in range(1, NUM_EPLOGUE_LEVELS + 1, 1):
             alpha = 0.5
-            neededXP = core.cumulativeSum(vars.NUM_BPLEVELS, vars.LEVEL2_OFFSET, vars.NUM_XP_PER_LEVEL) + i * vars.NUM_EPLOGUE_XP_PER_LEVEL
+            neededXP = core.cumulativeSum(NUM_BPLEVELS, LEVEL2_OFFSET, NUM_XP_PER_LEVEL) + i * NUM_EPLOGUE_XP_PER_LEVEL
 
             if totalXPCollected >= neededXP: alpha = 0.05
 
             plot.axhline(neededXP, color="orange", alpha=alpha, linestyle="-")
     
-    updateGoals(config, plot, totalXPCollected)
+    updateGoals(data, plot, totalXPCollected)
 
     # --------------------------------
     # Draw Buffer Zone
     # --------------------------------
 
-    plot.add_patch(Rectangle((duration - vars.BUFFER_DAYS, 0), vars.BUFFER_DAYS, totalXP, edgecolor="red", facecolor="red", alpha=0.1))
+    plot.add_patch(Rectangle((duration - settings["bufferDays"], 0), settings["bufferDays"], totalXP, edgecolor="red", facecolor="red", alpha=0.1))
     graph.draw()
 
     return yAxisYou, yAxisIdeal, yAxisDailyIdeal
 
-def updateValues():
-    config = core.readConfig(vars.CONFIG_PATH)
+def updateSettingsUI(updateBufferDays):
+    global updatingSettingsUI
+    updatingSettingsUI = True
+
+    if updateBufferDays:
+        bufferDaysSettingEntry.delete(0, len(str(bufferDaysSettingVar.get())))
+        bufferDaysSettingEntry.insert(0, settings["bufferDays"])
+    enableColorsSettingVar.set(settings["useHistoryColors"])
+    ignoreInactiveDaysSettingVar.set(settings["ignoreInactiveDays"])
+
+    winBackgroundSettingBtn.setValues(color=settings["winBackground"])
+    winForegroundSettingBtn.setValues(color=settings["winForeground"])
+    lossBackgroundSettingBtn.setValues(color=settings["lossBackground"])
+    lossForegroundSettingBtn.setValues(color=settings["lossForeground"])
+    drawBackgroundSettingBtn.setValues(color=settings["drawBackground"])
+    drawForegroundSettingBtn.setValues(color=settings["drawForeground"])
+    noneBackgroundSettingBtn.setValues(color=settings["noneBackground"])
+    noneForegroundSettingBtn.setValues(color=settings["noneForeground"])
+    selectedBackgroundSettingBtn.setValues(color=settings["selectedBackground"])
+    selectedForegroundSettingBtn.setValues(color=settings["selectedForeground"])
+
+    if settings["useHistoryColors"] == 1:
+        history.tag_configure("none", background=settings["noneBackground"], foreground=settings["noneForeground"])
+        history.tag_configure("win", background=settings["winBackground"], foreground=settings["winForeground"])
+        history.tag_configure("loss", background=settings["lossBackground"], foreground=settings["lossForeground"])
+        history.tag_configure("draw", background=settings["drawBackground"], foreground=settings["drawForeground"])
+    
+    history.tag_configure("selected", background=settings["selectedBackground"], foreground=settings["selectedForeground"])
+    updatingSettingsUI = False
+
+def updateValues(updateBufferDays=True):
+    data = core.readData()
     drawEpilogue = False
 
-    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(config, 0)
+    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(data, 0, seasonIndex.get())
 
-    if not "goals" in config: config["goals"] = []
+    if not "goals" in data: data["goals"] = []
 
     largestGoalRemaining = 0
-    for g in config["goals"]:
+    for g in data["goals"]:
         if g["remaining"] + totalXPCollected > largestGoalRemaining: largestGoalRemaining = g["remaining"] + totalXPCollected
 
-    if config["activeBPLevel"] > 50:
-        epilogueCheck.config(state=DISABLED)
+    if data["seasons"][seasonIndex.get()]["activeBPLevel"] > 50:
+        epilogueCheck.configure(state=DISABLED)
         epilogueVar.set(1)
     else:
-        epilogueCheck.config(state=NORMAL)
+        epilogueCheck.configure(state=NORMAL)
     
     if largestGoalRemaining > totalXPTotal:
         drawEpilogue = True
 
-    dailyProgress, dailyCollected, dailyRemaining, dailyTotal = core.calcDailyValues(config, epilogueVar.get())
+    names = []
+    for s in data["seasons"]:
+        names.append(s["name"])
+
+    dailyProgress, dailyCollected, dailyRemaining, dailyTotal = core.calcDailyValues(data, epilogueVar.get(), seasonIndex.get(), settings)
+    if dailyProgress == -1 and dailyCollected == -1 and dailyRemaining == -1 and dailyTotal == -1 and seasonIndex.get() == len(data["seasons"]) - 1:
+        seasonDiag = newSeasonDiag.NewSeasonDiag(root, "New season", forbiddenNames=names)
+        if seasonDiag.seasonName == None or int(seasonDiag.remainingDays) == None:
+            messagebox.showerror("New Season", "New Season has to be created")
+            exit()
+        
+        core.startNewSeason(seasonDiag.seasonName, seasonDiag.remainingDays)
+        seasonIndex.set(len(data["seasons"]))
+        updateValues()
+        return
+
+    dailyProgress, dailyCollected, dailyRemaining, dailyTotal = core.calcDailyValues(data, epilogueVar.get(), len(data["seasons"]) - 1, settings)
+
     if(dailyProgress > 100): dailyProgress = 100
     if(dailyRemaining < 0): dailyRemaining = 0
 
-    yAxisYou, yAxisIdeal, yAxisDailyIdeal = updateGraph(config, epilogueVar.get(), drawEpilogue, graphPlot)
+    yAxisYou, yAxisIdeal, yAxisDailyIdeal = updateGraph(data,epilogueVar.get(), drawEpilogue, graphPlot)
 
     dailyBar["value"] = dailyProgress
     dailyPercentageLabel["text"] = str(dailyProgress) + "%"
@@ -849,14 +1143,14 @@ def updateValues():
     dailyRemainingLabel["text"] = str(dailyRemaining) + " XP"
     dailyTotalLabel["text"] = str(dailyTotal) + " XP"
 
-    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(config, epilogueVar.get())
+    totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(data, epilogueVar.get(), seasonIndex.get())
     totalXPBar["value"] = totalXPProgress
     totalXPPercentageLabel["text"] = str(totalXPProgress) + "%"
     totalCollectedLabel["text"] = str(totalXPCollected) + " XP"
     totalRemainingLabel["text"] = str(totalXPRemaining) + " XP"
     totalTotalLabel["text"] = str(totalXPTotal) + " XP"
 
-    bpProgress, bpCollected, bpActive, bpRemaining, bpTotal = core.calcBattlepassValues(config, epilogueVar.get())
+    bpProgress, bpCollected, bpActive, bpRemaining, bpTotal = core.calcBattlepassValues(data, epilogueVar.get(), seasonIndex.get())
     bpBar["value"] = bpProgress
     bpPercentageLabel["text"] = str(bpProgress) + "%"
     bpPreviousUnlockLabel["text"] = str(bpCollected) + " Levels"
@@ -864,14 +1158,14 @@ def updateValues():
     bpRemainingLabel["text"] = str(bpRemaining) + " Levels"
     bpTotalLabel["text"] = str(bpTotal) + " Levels"
 
-    levelProgress, levelCollected, levelRemaining, levelTotal = core.calcLevelValues(config, epilogueVar.get())
+    levelProgress, levelCollected, levelRemaining, levelTotal = core.calcLevelValues(data, epilogueVar.get(), seasonIndex.get())
     levelBar["value"] = levelProgress
     levelPercentageLabel["text"] = str(levelProgress) + "%"
     levelCollectedLabel["text"] = str(levelCollected) + " XP"
     levelRemainingLabel["text"] = str(levelRemaining) + " XP"
     levelTotalLabel["text"] = str(levelTotal) + " XP"
 
-    miscRemainigDays, miscAverage, miscDeviationIdeal, miscDeviationDaily, miscStrongestDayDate, miscStrongestDayAmount, miscWeakestDayDate, miscWeakestDayAmount = core.calcMiscValues(config, yAxisYou, yAxisIdeal, yAxisDailyIdeal, epilogueVar.get())
+    miscRemainigDays, miscAverage, miscDeviationIdeal, miscDeviationDaily, miscStrongestDayDate, miscStrongestDayAmount, miscWeakestDayDate, miscWeakestDayAmount = core.calcMiscValues(data, yAxisYou, yAxisIdeal, yAxisDailyIdeal, epilogueVar.get(), seasonIndex.get(), settings)
     miscRemainingDaysLabel["text"] = str(miscRemainigDays) + " Days"
     miscAverageLabel["text"] = str(miscAverage) + " XP"
     miscIdealDeviationLabel["text"] = str(miscDeviationIdeal) + " XP"
@@ -880,17 +1174,52 @@ def updateValues():
     miscStrongestDayAmountLabel["text"] = str(miscStrongestDayAmount) + " XP"
     miscWeakestDayDateLabel["text"] = str(miscWeakestDayDate)
     miscWeakestDayAmountLabel["text"] = str(miscWeakestDayAmount) + " XP"
+    
+    updateSettingsUI(updateBufferDays)
 
     history.delete(*history.get_children())
-    for i in range(len(config["history"]) - 1, -1, -1):
-        desc = config["history"][i]["description"]
+    xpHistoryData = data["seasons"][seasonIndex.get()]["xpHistory"]
+
+    for i in range(len(xpHistoryData) - 1, -1, -1):
+        desc = xpHistoryData[i]["description"]
         tag = core.getScoreTag(desc)
         
-        history.insert("", "end", values=(desc, str(config["history"][i]["amount"]) + " XP", datetime.fromtimestamp(config["history"][i]["time"]).strftime("%d.%m.%Y %H:%M")), tags=(tag))
+        history.insert("", "end", values=(desc, str(xpHistoryData[i]["amount"]) + " XP", datetime.fromtimestamp(xpHistoryData[i]["time"]).strftime("%d.%m.%Y %H:%M")), tags=(tag))
     
+    seasonNames = [""] + names
+
+    global seasonSelector
+    if seasonSelector != None: seasonSelector.destroy()
+
+    seasonSelector = ttk.OptionMenu(root, seasonNameVar, *seasonNames, command=seasonSelectorCallback)
+    seasonSelector.pack(padx=8, pady=8, side=tk.LEFT, fill="both", expand=True)
+
+    updateSeasons(data)
+
+# ================================
+#  Settings Callbacks
+# ================================
+
+bufferDaysSettingVar.trace("w", lambda a, b, c: updateSettings())
+enableColorsSettingCheck.configure(command=lambda: updateSettings())
+ignoreInactiveDaysSettingCheck.configure(command=lambda: updateSettings())
+
+winBackgroundSettingBtn.setValues(command=lambda: updateSettings())
+winForegroundSettingBtn.setValues(command=lambda: updateSettings())
+lossBackgroundSettingBtn.setValues(command=lambda: updateSettings())
+lossForegroundSettingBtn.setValues(command=lambda: updateSettings())
+drawBackgroundSettingBtn.setValues(command=lambda: updateSettings())
+drawForegroundSettingBtn.setValues(command=lambda: updateSettings())
+noneBackgroundSettingBtn.setValues(command=lambda: updateSettings())
+noneForegroundSettingBtn.setValues(command=lambda: updateSettings())
+selectedBackgroundSettingBtn.setValues(command=lambda: updateSettings())
+selectedForegroundSettingBtn.setValues(command=lambda: updateSettings())
+
 # ================================
 #  Buttons
 # ================================
+
+seasonSelector = None
 
 buttonContainer = ttk.Frame(root)
 buttonContainer.pack(padx=8, pady=8, side=tk.RIGHT, fill="both", expand=True)
@@ -899,9 +1228,6 @@ addXPBtn = ttk.Button(buttonContainer, text="Add XP", command=addXPCallback)
 addXPBtn.pack(padx=8, pady=0, side=tk.RIGHT)
 
 resetBtn = ttk.Button(buttonContainer, text="Add Goal", command=addGoalCallback)
-resetBtn.pack(padx=8, pady=0, side=tk.RIGHT)
-
-resetBtn = ttk.Button(buttonContainer, text="Reset", command=resetCallback)
 resetBtn.pack(padx=8, pady=0, side=tk.RIGHT)
 
 epilogueVar = IntVar()
@@ -914,11 +1240,20 @@ editBTN.pack(side=tk.RIGHT, fill="both", expand=True)
 delBTN = ttk.Button(historyBtnContainer, text="Delete Element", command=deleteElementCallback)
 delBTN.pack(side=tk.LEFT, fill="both", expand=True)
 
+resetSettingsBtn = ttk.Button(settingsBtnContainer, text="Default settings", command=defaultSettingsCallback)
+resetSettingsBtn.pack(side=tk.LEFT, fill="both", expand=True)
+
+resetDataSettingBtn = ttk.Button(settingsBtnContainer, text="Reset Data", command=resetCallback)
+resetDataSettingBtn.pack(side=tk.LEFT, fill="both", expand=True)
+
+aboutSettingBtn = ttk.Button(settingsBtnContainer, text="About", command=aboutCallback)
+aboutSettingBtn.pack(side=tk.LEFT, fill="both", expand=True)
+
 # ================================
 #  Main Loop
 # ================================
 
-os.startfile(vars.UPDATER_PATH)
+os.startfile(UPDATER_PATH)
 init()
 
 while dailyBar == None:

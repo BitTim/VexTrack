@@ -142,13 +142,17 @@ def checkNewVersion(softwareName):
     versionString, legacyMode, ignoredVersions = getVersionString(softwareName)
     versionNumber = versionString.split("v")[1]
     
-    response = requests.get("https://api.github.com/repos/" + GITHUB_USER + "/" + GITHUB_REPO + "/releases", headers={"Authorization": TOKEN})
+    response = requests.get("https://api.github.com/repos/" + GITHUB_USER + "/" + GITHUB_REPO + "/releases")
     releases = response.json()
 
     if "message" in releases:
-        messagebox.showerror("Ratelimit reached", "Updater could not fetch new version of " + softwareName + ":\nYou have reached your rate limit. Try again later")
-        root.destroy()
-        return False
+        response = requests.get("https://api.github.com/repos/" + GITHUB_USER + "/" + GITHUB_REPO + "/releases", headers={"Authorization": TOKEN})
+        releases = response.json()
+
+        if "message" in releases:
+            messagebox.showerror("Ratelimit reached", "Updater could not fetch new version of " + softwareName + ":\nYou have reached your rate limit. Try again later")
+            root.destroy()
+            return False
 
     for r in releases:
         tokenized = r["name"].split()

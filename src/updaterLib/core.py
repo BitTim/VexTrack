@@ -8,6 +8,7 @@ from vars import *
 from tokenString import *
 import json
 import time
+from vextrackLib import settings
 
 root = Tk()
 root.withdraw()
@@ -139,16 +140,22 @@ def checkNewVersion(softwareName):
     isNewVersion = False
     legacyMode = False
 
+    setts = settings.loadSettings()
+
     versionString, legacyMode, ignoredVersions = getVersionString(softwareName)
     versionNumber = versionString.split("v")[1]
     
-    response = requests.get("https://api.github.com/repos/" + GITHUB_USER + "/" + GITHUB_REPO + "/releases", headers={"Authorization": TOKEN})
+    response = requests.get("https://api.github.com/repos/" + GITHUB_USER + "/" + GITHUB_REPO + "/releases")
     releases = response.json()
 
     if "message" in releases:
-        messagebox.showerror("Ratelimit reached", "Updater could not fetch new version of " + softwareName + ":\nYou have reached your rate limit. Try again later")
-        root.destroy()
-        return False
+        response = requests.get("https://api.github.com/repos/" + GITHUB_USER + "/" + GITHUB_REPO + "/releases", headers={"Authorization": TOKEN})
+        releases = response.json()
+
+        if "message" in releases:
+            messagebox.showerror("Ratelimit reached", "Updater could not fetch new version of " + softwareName + ":\nYou have reached your rate limit. Try again later")
+            root.destroy()
+            return False
 
     for r in releases:
         tokenized = r["name"].split()
@@ -160,6 +167,8 @@ def checkNewVersion(softwareName):
             if versionNumber > latestVersionNumber: break
 
             if versionNumber < latestVersionNumber:
+                if r["prerelease"] and setts["ignorePrereleases"] == 1: continue
+
                 res = messagebox.askquestion("Updater", "A new version of " + softwareName + " is available: " + latestVersionString + "\nDo you want to update?")
 
                 if res == "yes":
@@ -178,10 +187,11 @@ def checkNewVersion(softwareName):
                     
                     if r["prerelease"]: warnings.append("- This release is a pre-release")
 
-                    warningDiagInstance = warningDiag.WarningDiag(root, "Warnings", warnings)
-                    if warningDiagInstance.response == "no":
-                        ignoreVersion(latestVersionString, softwareName, legacyMode)
-                        break
+                    if len(warnings) != 0:
+                        warningDiagInstance = warningDiag.WarningDiag(root, "Warnings", warnings)
+                        if warningDiagInstance.response == "no":
+                            ignoreVersion(latestVersionString, softwareName, legacyMode)
+                            break
 
                     downloadNewVersion(latestVersionString, softwareName, legacyMode, r["tag_name"])
                     changelogDiag.ChangelogDiag(root, "Changelog", changelog)

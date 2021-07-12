@@ -7,6 +7,7 @@ defaultSettings = {
     "bufferDays": DEFAULT_BUFFER_DAYS,
     "useHistoryColors": DEFAULT_USE_HISTORY_COLORS,
     "ignoreInactiveDays": DEFAULT_IGNORE_INACTIVE_DAYS,
+    "ignorePrereleases": DEFAULT_IGNORE_PRERELEASES,
     "winBackground": DEFAULT_WIN_BG_COLOR,
     "winForeground": DEFAULT_WIN_FG_COLOR,
     "lossBackground": DEFAULT_LOSS_BG_COLOR,

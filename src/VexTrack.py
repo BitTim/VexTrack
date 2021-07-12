@@ -1016,11 +1016,14 @@ def updateGraph(data, epilogue, drawEpilogue, plot):
         plot.plot(timeAxis[dayDelta - 1:], yAxisDailyIdeal, color='skyblue', label='Daily Ideal', alpha=1, linestyle="--")
     
     plot.plot(timeAxis[:len(yAxisYou)], yAxisYou, color='red', label='You', linewidth=3)
-    if remainingDays >= 0: plot.plot(dayDelta, totalXPCollected, color='darkred', label="Now", marker="o", markersize=5)
 
     plot.set_xticks(range(0, duration + 1, 5), minor=True)
     plot.tick_params(which="both", top=False, bottom=False, left=False, right=False, labelleft=False)
     plot.grid(axis="x", color="lightgray", which="both", linestyle=":")
+
+    if remainingDays >= 0: plot.plot(dayDelta, yAxisIdeal[dayDelta], color='black', label="Now", marker="o", markersize=5)
+    if remainingDays >= 0 and remainingDays < duration: plot.plot(dayDelta, yAxisDailyIdeal[1], color='blue', label="Now", marker="o", markersize=5)
+    if remainingDays >= 0: plot.plot(dayDelta, totalXPCollected, color='darkred', label="Now", marker="o", markersize=5)
 
     # --------------------------------
     # Draw lines for battlepass unlocks

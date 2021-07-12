@@ -178,10 +178,11 @@ def checkNewVersion(softwareName):
                     
                     if r["prerelease"]: warnings.append("- This release is a pre-release")
 
-                    warningDiagInstance = warningDiag.WarningDiag(root, "Warnings", warnings)
-                    if warningDiagInstance.response == "no":
-                        ignoreVersion(latestVersionString, softwareName, legacyMode)
-                        break
+                    if len(warnings) != 0:
+                        warningDiagInstance = warningDiag.WarningDiag(root, "Warnings", warnings)
+                        if warningDiagInstance.response == "no":
+                            ignoreVersion(latestVersionString, softwareName, legacyMode)
+                            break
 
                     downloadNewVersion(latestVersionString, softwareName, legacyMode, r["tag_name"])
                     changelogDiag.ChangelogDiag(root, "Changelog", changelog)

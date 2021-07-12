@@ -25,8 +25,8 @@ def downloadNewVersion(versionString, softwareName, legacyMode, tag):
     if not os.path.exists("VexTrack.png"):
         r = requests.get("https://github.com/" + GITHUB_USER + "/" + GITHUB_REPO + "/releases/download/util/VexTrack.png")
     
-    with open("VexTrack.png", "wb") as f:
-        f.write(r.content)
+        with open("VexTrack.png", "wb") as f:
+            f.write(r.content)
 
     url = "https://github.com/" + GITHUB_USER + "/" + GITHUB_REPO + "/releases/download/" + tag + "/" + softwareName + ".exe"
     r = requests.get(url, stream=True)
@@ -49,7 +49,10 @@ def downloadNewVersion(versionString, softwareName, legacyMode, tag):
     
     failed = False
     with open(softwareName + ".exe", 'r') as f:
-        if f.read() == "Not Found": failed = True
+        try:
+            if f.read() == "Not Found": failed = True
+        except:
+            failed = False
 
     if failed:
         messagebox.showerror("Update Failed", "Update of " + softwareName + " failed. Reverting to previous version")

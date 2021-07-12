@@ -22,11 +22,11 @@ def downloadNewVersion(versionString, softwareName, legacyMode, tag):
     with open(softwareName + ".exe.bak", 'wb') as f:
         f.write(oldExec)
 
-    if not os.path.exists(softwareName + ".png"):
-        r = requests.get("https://github.com/" + GITHUB_USER + "/" + GITHUB_REPO + "/releases/download/util/" + softwareName + ".png")
+    if not os.path.exists("VexTrack.png"):
+        r = requests.get("https://github.com/" + GITHUB_USER + "/" + GITHUB_REPO + "/releases/download/util/VexTrack.png")
     
-    with open(softwareName + ".png", "wb") as f:
-        f.write(r)
+    with open("VexTrack.png", "wb") as f:
+        f.write(r.content)
 
     url = "https://github.com/" + GITHUB_USER + "/" + GITHUB_REPO + "/releases/download/" + tag + "/" + softwareName + ".exe"
     r = requests.get(url, stream=True)

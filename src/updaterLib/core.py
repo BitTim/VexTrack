@@ -8,6 +8,7 @@ from vars import *
 from tokenString import *
 import json
 import time
+from vextrackLib import settings
 
 root = Tk()
 root.withdraw()
@@ -139,6 +140,8 @@ def checkNewVersion(softwareName):
     isNewVersion = False
     legacyMode = False
 
+    setts = settings.loadSettings()
+
     versionString, legacyMode, ignoredVersions = getVersionString(softwareName)
     versionNumber = versionString.split("v")[1]
     
@@ -164,6 +167,8 @@ def checkNewVersion(softwareName):
             if versionNumber > latestVersionNumber: break
 
             if versionNumber < latestVersionNumber:
+                if r["prerelease"] and setts["ignorePrereleases"] == 1: continue
+
                 res = messagebox.askquestion("Updater", "A new version of " + softwareName + " is available: " + latestVersionString + "\nDo you want to update?")
 
                 if res == "yes":

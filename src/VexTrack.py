@@ -507,6 +507,12 @@ ignoreInactiveDaysSettingCheck = ttk.Checkbutton(settingsContainer, onvalue=1, o
 ignoreInactiveDaysSettingCheck.grid(padx=8, pady=2, columnspan=2, column=2, row=7, sticky="we")
 ignoreInactiveDaysSettingVar.set(settings["ignoreInactiveDays"])
 
+ignorePrereleasesSettingVar = IntVar()
+ttk.Label(settingsContainer, text="Ignore pre-releases:").grid(padx=8, pady=2, columnspan=2, column=0, row=8, sticky="we")
+ignorePrereleasesSettingCheck = ttk.Checkbutton(settingsContainer, onvalue=1, offvalue=0, variable=ignorePrereleasesSettingVar)
+ignorePrereleasesSettingCheck.grid(padx=8, pady=2, columnspan=2, column=2, row=8, sticky="we")
+ignorePrereleasesSettingVar.set(settings["ignorePrereleases"])
+
 settingsBtnContainer = tk.Frame(settingsTab)
 settingsBtnContainer.pack(fill="x")
 
@@ -706,6 +712,7 @@ def updateSettings():
     
     settings["useHistoryColors"] = enableColorsSettingVar.get()
     settings["ignoreInactiveDays"] = ignoreInactiveDaysSettingVar.get()
+    settings["ignorePrereleases"] = ignorePrereleasesSettingVar.get()
 
     settings["winBackground"] = winBackgroundSettingBtn.color
     settings["winForeground"] = winForegroundSettingBtn.color
@@ -1072,6 +1079,7 @@ def updateSettingsUI(updateBufferDays):
         bufferDaysSettingEntry.insert(0, settings["bufferDays"])
     enableColorsSettingVar.set(settings["useHistoryColors"])
     ignoreInactiveDaysSettingVar.set(settings["ignoreInactiveDays"])
+    ignorePrereleasesSettingVar.set(settings["ignorePrereleases"])
 
     winBackgroundSettingBtn.setValues(color=settings["winBackground"])
     winForegroundSettingBtn.setValues(color=settings["winForeground"])
@@ -1203,6 +1211,7 @@ def updateValues(updateBufferDays=True):
 bufferDaysSettingVar.trace("w", lambda a, b, c: updateSettings())
 enableColorsSettingCheck.configure(command=lambda: updateSettings())
 ignoreInactiveDaysSettingCheck.configure(command=lambda: updateSettings())
+ignorePrereleasesSettingCheck.configure(command=lambda: updateSettings())
 
 winBackgroundSettingBtn.setValues(command=lambda: updateSettings())
 winForegroundSettingBtn.setValues(command=lambda: updateSettings())

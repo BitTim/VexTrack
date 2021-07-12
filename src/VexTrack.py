@@ -501,6 +501,12 @@ ttk.Label(settingsContainer, text="Selected Foreground:").grid(padx=8, pady=2, c
 selectedForegroundSettingBtn = colorButton.ColorButton(settingsContainer, settings["selectedForeground"])
 selectedForegroundSettingBtn.grid(padx=8, pady=2, column=3, row=6, sticky="we")
 
+ignoreInactiveDaysSettingVar = IntVar()
+ttk.Label(settingsContainer, text="Ignore inactive days in certain statistics:").grid(padx=8, pady=2, columnspan=2, column=0, row=7, sticky="we")
+ignoreInactiveDaysSettingCheck = ttk.Checkbutton(settingsContainer, onvalue=1, offvalue=0, variable=ignoreInactiveDaysSettingVar)
+ignoreInactiveDaysSettingCheck.grid(padx=8, pady=2, columnspan=2, column=2, row=7, sticky="we")
+ignoreInactiveDaysSettingVar.set(settings["ignoreInactiveDays"])
+
 settingsBtnContainer = tk.Frame(settingsTab)
 settingsBtnContainer.pack(fill="x")
 
@@ -699,6 +705,7 @@ def updateSettings():
         updateBufferDays = False
     
     settings["useHistoryColors"] = enableColorsSettingVar.get()
+    settings["ignoreInactiveDays"] = ignoreInactiveDaysSettingVar.get()
 
     settings["winBackground"] = winBackgroundSettingBtn.color
     settings["winForeground"] = winForegroundSettingBtn.color
@@ -1061,6 +1068,7 @@ def updateSettingsUI(updateBufferDays):
         bufferDaysSettingEntry.delete(0, len(str(bufferDaysSettingVar.get())))
         bufferDaysSettingEntry.insert(0, settings["bufferDays"])
     enableColorsSettingVar.set(settings["useHistoryColors"])
+    ignoreInactiveDaysSettingVar.set(settings["ignoreInactiveDays"])
 
     winBackgroundSettingBtn.setValues(color=settings["winBackground"])
     winForegroundSettingBtn.setValues(color=settings["winForeground"])
@@ -1154,7 +1162,7 @@ def updateValues(updateBufferDays=True):
     levelRemainingLabel["text"] = str(levelRemaining) + " XP"
     levelTotalLabel["text"] = str(levelTotal) + " XP"
 
-    miscRemainigDays, miscAverage, miscDeviationIdeal, miscDeviationDaily, miscStrongestDayDate, miscStrongestDayAmount, miscWeakestDayDate, miscWeakestDayAmount = core.calcMiscValues(data, yAxisYou, yAxisIdeal, yAxisDailyIdeal, epilogueVar.get(), seasonIndex.get())
+    miscRemainigDays, miscAverage, miscDeviationIdeal, miscDeviationDaily, miscStrongestDayDate, miscStrongestDayAmount, miscWeakestDayDate, miscWeakestDayAmount = core.calcMiscValues(data, yAxisYou, yAxisIdeal, yAxisDailyIdeal, epilogueVar.get(), seasonIndex.get(), settings)
     miscRemainingDaysLabel["text"] = str(miscRemainigDays) + " Days"
     miscAverageLabel["text"] = str(miscAverage) + " XP"
     miscIdealDeviationLabel["text"] = str(miscDeviationIdeal) + " XP"
@@ -1191,6 +1199,7 @@ def updateValues(updateBufferDays=True):
 
 bufferDaysSettingVar.trace("w", lambda a, b, c: updateSettings())
 enableColorsSettingCheck.configure(command=lambda: updateSettings())
+ignoreInactiveDaysSettingCheck.configure(command=lambda: updateSettings())
 
 winBackgroundSettingBtn.setValues(command=lambda: updateSettings())
 winForegroundSettingBtn.setValues(command=lambda: updateSettings())

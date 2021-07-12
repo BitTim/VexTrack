@@ -103,7 +103,7 @@ def calcLevelValues(completeData, epilogue, seasonIndex):
 
     return levelProgress, levelCollected, levelRemaining, levelTotal
 
-def calcMiscValues(completeData, yAxisYou, yAxisIdeal, yAxisDailyIdeal, epilogue, seasonIndex):
+def calcMiscValues(completeData, yAxisYou, yAxisIdeal, yAxisDailyIdeal, epilogue, seasonIndex, settings):
     data = completeData["seasons"][seasonIndex]
     
     seasonEndDate = datetime.strptime(data["endDate"], "%d.%m.%Y")
@@ -126,9 +126,10 @@ def calcMiscValues(completeData, yAxisYou, yAxisIdeal, yAxisDailyIdeal, epilogue
         else:
             deltaDate = (currDate - prevDate)
 
-            for i in range(1, deltaDate.days):
-                dailyXP.append({"date": (prevDate + timedelta(days=i)).strftime("%d.%m.%Y"), "amount": 0})
-                index += 1
+            if settings["ignoreInactiveDays"] == 0:
+                for i in range(1, deltaDate.days):
+                    dailyXP.append({"date": (prevDate + timedelta(days=i)).strftime("%d.%m.%Y"), "amount": 0})
+                    index += 1
 
             dailyXP.append({"date": currDate.strftime("%d.%m.%Y"), "amount": int(h["amount"])})
 

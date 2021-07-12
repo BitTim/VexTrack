@@ -5,7 +5,7 @@ from vars import *
 import json
 import os
 
-from vextrackLib import core, addXPDiag as xpDiag, addGoalDiag as goalDiag, goalContainer, newSeasonDiag, seasonContainer, colorButton
+from vextrackLib import core, addXPDiag as xpDiag, addGoalDiag as goalDiag, goalContainer, newSeasonDiag, seasonContainer, colorButton, aboutDiag
 from vextrackLib.settings import *
 from updaterLib import core as uCore
 
@@ -619,7 +619,7 @@ def defaultSettingsCallback():
         updateValues(True)
 
 def aboutCallback():
-    pass
+    aboutDiag.AboutDiag(root, "About", uCore.getVersionString(APP_NAME)[0], uCore.getVersionString("Updater")[0])
 
 # --------------------------------
 #  Init

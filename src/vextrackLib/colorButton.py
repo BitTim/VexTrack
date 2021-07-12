@@ -26,7 +26,8 @@ class ColorButton(Frame):
 
         if self.command != None: self.command()
     
-    def setValues(self, color, command=None):
+    def setValues(self, color=None, command=None):
         if command != None: self.command = command
-        self.color = color
-        self.configure(bg=self.color)
+        if color != None:
+            self.color = color
+            self.configure(bg=self.color)

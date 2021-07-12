@@ -24,6 +24,7 @@ newUpdaterVersion = uCore.checkNewVersion("Updater")
 versionString, _, _ = uCore.getVersionString(APP_NAME)
 
 settings = loadSettings()
+updatingSettingsUI = False
 
 root = tk.Tk()
 root.title(APP_NAME + " " + versionString)
@@ -361,14 +362,6 @@ history.column(1, anchor="w")
 history.column(2, anchor="e")
 history.column(3, anchor="e")
 
-if settings["useHistoryColors"] == 1:
-    history.tag_configure("none", background=settings["noneBackground"], foreground=settings["noneForeground"])
-    history.tag_configure("win", background=settings["winBackground"], foreground=settings["winForeground"])
-    history.tag_configure("loss", background=settings["lossBackground"], foreground=settings["lossForeground"])
-    history.tag_configure("draw", background=settings["drawBackground"], foreground=settings["drawForeground"])
-
-history.tag_configure("selected", background=settings["selectedBackground"], foreground=settings["selectedForeground"])
-
 # Create history Scrollbar
 historyScrollbar = Scrollbar(historyListContainer, orient=VERTICAL, command=history.yview)
 historyScrollbar.pack(side=tk.LEFT, fill="y")
@@ -457,12 +450,10 @@ settingsContainer.grid_columnconfigure(1, weight=1)
 settingsContainer.grid_columnconfigure(2, weight=1)
 settingsContainer.grid_columnconfigure(3, weight=1)
 
-bufferDaysSettingVar = IntVar()
+bufferDaysSettingVar = StringVar()
 ttk.Label(settingsContainer, text="Buffer Days:").grid(padx=8, pady=2, columnspan=2, column=0, row=0, sticky="we")
 bufferDaysSettingEntry = ttk.Entry(settingsContainer, textvariable=bufferDaysSettingVar)
 bufferDaysSettingEntry.grid(padx=8, pady=2, columnspan=2, column=2, row=0, sticky="we")
-bufferDaysSettingEntry.delete(0)
-bufferDaysSettingEntry.insert(0, settings["bufferDays"])
 
 enableColorsSettingVar = IntVar()
 ttk.Label(settingsContainer, text="Enable colors in history:").grid(padx=8, pady=2, columnspan=2, column=0, row=1, sticky="we")
@@ -619,10 +610,7 @@ def defaultSettingsCallback():
     if res == "yes":
         initSettings()
         settings = loadSettings()
-        updateSettings()
-
-def applySettingsCallback():
-    pass
+        updateValues(True)
 
 def aboutCallback():
     pass
@@ -668,6 +656,9 @@ def init():
     seasonIndex.set(len(data["seasons"]) - 1)
     seasonNameVar.set(data["seasons"][seasonIndex.get()]["name"])
 
+    bufferDaysSettingEntry.delete(0, len(str(bufferDaysSettingVar.get())))
+    bufferDaysSettingEntry.insert(0, settings["bufferDays"])
+
 # --------------------------------
 #  Update Values
 # --------------------------------
@@ -681,6 +672,47 @@ def initData(seasonName, activeBPLevel, cXP, remainingDays):
 
     data = {"seasons": [{"name": seasonName, "activeBPLevel": int(activeBPLevel), "cXP": int(cXP), "endDate": seasonEndDateStr, "xpHistory": [{"time": datetime.now().timestamp(), "description": "Initialization", "amount": int(totalXPCollected)}]}]}
     core.writeData(data)
+
+def updateSettings():
+    if updatingSettingsUI: return
+
+    bufferDaysSetting = bufferDaysSettingVar.get()
+    updateBufferDays = True
+
+    data = core.readData()
+    seasonEndDate = datetime.strptime(data["seasons"][seasonIndex.get()]["endDate"], "%d.%m.%Y").date()
+    dateDelta = seasonEndDate - datetime.fromtimestamp(data["seasons"][seasonIndex.get()]["xpHistory"][0]["time"]).date()
+    duration = dateDelta.days
+
+    try:
+        bufferDaysSetting = int(bufferDaysSetting)
+        if bufferDaysSetting < 0: bufferDaysSettingEntry.delete(0)
+        if bufferDaysSetting >= duration: bufferDaysSettingEntry.delete(len(str(bufferDaysSetting)) - 1)
+    except:
+        bufferDaysSettingEntry.delete(len(str(bufferDaysSetting)) - 1)
+
+    bufferDaysSetting = bufferDaysSettingVar.get()
+
+    try:
+        settings["bufferDays"] = int(bufferDaysSetting)
+    except:
+        updateBufferDays = False
+    
+    settings["useHistoryColors"] = enableColorsSettingVar.get()
+
+    settings["winBackground"] = winBackgroundSettingBtn.color
+    settings["winForeground"] = winForegroundSettingBtn.color
+    settings["lossBackground"] = lossBackgroundSettingBtn.color
+    settings["lossForeground"] = lossForegroundSettingBtn.color
+    settings["drawBackground"] = drawBackgroundSettingBtn.color
+    settings["drawForeground"] = drawForegroundSettingBtn.color
+    settings["noneBackground"] = noneBackgroundSettingBtn.color
+    settings["noneForeground"] = noneForegroundSettingBtn.color
+    settings["selectedBackground"] = selectedBackgroundSettingBtn.color
+    settings["selectedForeground"] = selectedForegroundSettingBtn.color
+
+    updateValues(updateBufferDays)
+    saveSettings(settings)
 
 def addXP(description, amount):
     data = core.readData()
@@ -1021,11 +1053,36 @@ def updateGraph(data, epilogue, drawEpilogue, plot):
 
     return yAxisYou, yAxisIdeal, yAxisDailyIdeal
 
-# TODO: Implement updateSettings() to update UI
-def updateSettings():
-    pass
+def updateSettingsUI(updateBufferDays):
+    global updatingSettingsUI
+    updatingSettingsUI = True
 
-def updateValues():
+    if updateBufferDays:
+        bufferDaysSettingEntry.delete(0, len(str(bufferDaysSettingVar.get())))
+        bufferDaysSettingEntry.insert(0, settings["bufferDays"])
+    enableColorsSettingVar.set(settings["useHistoryColors"])
+
+    winBackgroundSettingBtn.setValues(color=settings["winBackground"])
+    winForegroundSettingBtn.setValues(color=settings["winForeground"])
+    lossBackgroundSettingBtn.setValues(color=settings["lossBackground"])
+    lossForegroundSettingBtn.setValues(color=settings["lossForeground"])
+    drawBackgroundSettingBtn.setValues(color=settings["drawBackground"])
+    drawForegroundSettingBtn.setValues(color=settings["drawForeground"])
+    noneBackgroundSettingBtn.setValues(color=settings["noneBackground"])
+    noneForegroundSettingBtn.setValues(color=settings["noneForeground"])
+    selectedBackgroundSettingBtn.setValues(color=settings["selectedBackground"])
+    selectedForegroundSettingBtn.setValues(color=settings["selectedForeground"])
+
+    if settings["useHistoryColors"] == 1:
+        history.tag_configure("none", background=settings["noneBackground"], foreground=settings["noneForeground"])
+        history.tag_configure("win", background=settings["winBackground"], foreground=settings["winForeground"])
+        history.tag_configure("loss", background=settings["lossBackground"], foreground=settings["lossForeground"])
+        history.tag_configure("draw", background=settings["drawBackground"], foreground=settings["drawForeground"])
+    
+    history.tag_configure("selected", background=settings["selectedBackground"], foreground=settings["selectedForeground"])
+    updatingSettingsUI = False
+
+def updateValues(updateBufferDays=True):
     data = core.readData()
     drawEpilogue = False
 
@@ -1106,6 +1163,8 @@ def updateValues():
     miscStrongestDayAmountLabel["text"] = str(miscStrongestDayAmount) + " XP"
     miscWeakestDayDateLabel["text"] = str(miscWeakestDayDate)
     miscWeakestDayAmountLabel["text"] = str(miscWeakestDayAmount) + " XP"
+    
+    updateSettingsUI(updateBufferDays)
 
     history.delete(*history.get_children())
     xpHistoryData = data["seasons"][seasonIndex.get()]["xpHistory"]
@@ -1129,6 +1188,20 @@ def updateValues():
 # ================================
 #  Settings Callbacks
 # ================================
+
+bufferDaysSettingVar.trace("w", lambda a, b, c: updateSettings())
+enableColorsSettingCheck.configure(command=lambda: updateSettings())
+
+winBackgroundSettingBtn.setValues(command=lambda: updateSettings())
+winForegroundSettingBtn.setValues(command=lambda: updateSettings())
+lossBackgroundSettingBtn.setValues(command=lambda: updateSettings())
+lossForegroundSettingBtn.setValues(command=lambda: updateSettings())
+drawBackgroundSettingBtn.setValues(command=lambda: updateSettings())
+drawForegroundSettingBtn.setValues(command=lambda: updateSettings())
+noneBackgroundSettingBtn.setValues(command=lambda: updateSettings())
+noneForegroundSettingBtn.setValues(command=lambda: updateSettings())
+selectedBackgroundSettingBtn.setValues(command=lambda: updateSettings())
+selectedForegroundSettingBtn.setValues(command=lambda: updateSettings())
 
 # ================================
 #  Buttons
@@ -1155,17 +1228,14 @@ editBTN.pack(side=tk.RIGHT, fill="both", expand=True)
 delBTN = ttk.Button(historyBtnContainer, text="Delete Element", command=deleteElementCallback)
 delBTN.pack(side=tk.LEFT, fill="both", expand=True)
 
-resetDataSettingBtn = ttk.Button(settingsBtnContainer, text="Reset Data", command=resetCallback)
-resetDataSettingBtn.pack(side=tk.LEFT, fill="both", expand=True)
-
 resetSettingsBtn = ttk.Button(settingsBtnContainer, text="Default settings", command=defaultSettingsCallback)
 resetSettingsBtn.pack(side=tk.LEFT, fill="both", expand=True)
 
+resetDataSettingBtn = ttk.Button(settingsBtnContainer, text="Reset Data", command=resetCallback)
+resetDataSettingBtn.pack(side=tk.LEFT, fill="both", expand=True)
+
 aboutSettingBtn = ttk.Button(settingsBtnContainer, text="About", command=aboutCallback)
 aboutSettingBtn.pack(side=tk.LEFT, fill="both", expand=True)
-
-applySettingBtn = ttk.Button(settingsBtnContainer, text="Apply", command=applySettingsCallback)
-applySettingBtn.pack(side=tk.LEFT, fill="both", expand=True)
 
 # ================================
 #  Main Loop

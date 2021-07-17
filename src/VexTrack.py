@@ -904,7 +904,7 @@ def updateSeasons(data):
 
         seasonEndDate = datetime.strptime(data["seasons"][i]["endDate"], "%d.%m.%Y").date()
         dateDelta = seasonEndDate - date.today()
-        remainingDays = dateDelta.days
+        remainingDays = dateDelta.days - 1
         if remainingDays < 0: remainingDays = 0
 
         seasonContainers[i].updateValues(totalProgress, remainingDays)

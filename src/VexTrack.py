@@ -362,6 +362,12 @@ history.column(1, anchor="w")
 history.column(2, anchor="e")
 history.column(3, anchor="e")
 
+history.tag_configure("none", background=settings["noneBackground"], foreground=settings["noneForeground"])
+history.tag_configure("win", background=settings["winBackground"], foreground=settings["winForeground"])
+history.tag_configure("loss", background=settings["lossBackground"], foreground=settings["lossForeground"])
+history.tag_configure("draw", background=settings["drawBackground"], foreground=settings["drawForeground"])
+history.tag_configure("selected", background=settings["selectedBackground"], foreground=settings["selectedForeground"])
+
 # Create history Scrollbar
 historyScrollbar = Scrollbar(historyListContainer, orient=VERTICAL, command=history.yview)
 historyScrollbar.pack(side=tk.LEFT, fill="y")
@@ -1092,13 +1098,6 @@ def updateSettingsUI(updateBufferDays):
     selectedBackgroundSettingBtn.setValues(color=settings["selectedBackground"])
     selectedForegroundSettingBtn.setValues(color=settings["selectedForeground"])
 
-    if settings["useHistoryColors"] == 1:
-        history.tag_configure("none", background=settings["noneBackground"], foreground=settings["noneForeground"])
-        history.tag_configure("win", background=settings["winBackground"], foreground=settings["winForeground"])
-        history.tag_configure("loss", background=settings["lossBackground"], foreground=settings["lossForeground"])
-        history.tag_configure("draw", background=settings["drawBackground"], foreground=settings["drawForeground"])
-    
-    history.tag_configure("selected", background=settings["selectedBackground"], foreground=settings["selectedForeground"])
     updatingSettingsUI = False
 
 def updateValues(updateBufferDays=True):
@@ -1191,7 +1190,8 @@ def updateValues(updateBufferDays=True):
     for i in range(len(xpHistoryData) - 1, -1, -1):
         desc = xpHistoryData[i]["description"]
         tag = core.getScoreTag(desc)
-        
+
+        if settings["useHistoryColors"] == 0: tag = "none"
         history.insert("", "end", values=(desc, str(xpHistoryData[i]["amount"]) + " XP", datetime.fromtimestamp(xpHistoryData[i]["time"]).strftime("%d.%m.%Y %H:%M")), tags=(tag))
     
     seasonNames = [""] + names

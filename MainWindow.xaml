@@ -1,0 +1,139 @@
+﻿<Window x:Class="VexTrack.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VexTrack"
+		xmlns:viewModel="clr-namespace:VexTrack.MVVM.ViewModel"
+        mc:Ignorable="d"
+        Title="MainWindow"
+		Height="780" Width="872"
+		ResizeMode="NoResize"
+		WindowStyle="None"
+		Background="Transparent"
+		AllowsTransparency="True">
+
+	<Window.DataContext>
+		<viewModel:MainViewModel/>
+	</Window.DataContext>
+	
+	<Border Background="White"
+			CornerRadius="8">
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="232"/>
+				<ColumnDefinition/>
+			</Grid.ColumnDefinitions>
+
+			<Grid.RowDefinitions>
+				<RowDefinition Height="128"/>
+				<RowDefinition/>
+				<RowDefinition Height="128"/>
+			</Grid.RowDefinitions>
+
+			<Border CornerRadius="8"
+					Background="{StaticResource LightGray}"
+					BorderThickness="0"
+					Grid.RowSpan="3">
+				<Border.Effect>
+					<DropShadowEffect BlurRadius="16"
+									  ShadowDepth="2"
+									  Direction="-90"
+									  Opacity="0.3"/>
+				</Border.Effect>
+			</Border>
+			
+			<Grid Margin="16, 32">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="64"/>
+					<ColumnDefinition/>
+				</Grid.ColumnDefinitions>
+
+				<Grid.RowDefinitions>
+					<RowDefinition Height="32"/>
+					<RowDefinition Height="32"/>
+				</Grid.RowDefinitions>
+
+				<Image Grid.RowSpan="2"
+					   Source="Images/VexTrack.png"
+					   Width="64"
+					   Height="64"/>
+
+				<TextBlock Grid.Column="1"
+						   Text="VexTrack"
+						   VerticalAlignment="Bottom"
+						   HorizontalAlignment="Left"
+						   FontSize="20"
+						   FontWeight="Bold"
+						   Margin="16, 0"
+						   Foreground="{StaticResource DarkGray}"/>
+
+				<TextBlock Grid.Column="1"
+						   Grid.Row="1"
+						   Text="by BitTim"
+						   VerticalAlignment="Top"
+						   HorizontalAlignment="Left"
+						   FontSize="14"
+						   Margin="16, 0"
+						   Foreground="{StaticResource DarkGray}"/>
+			</Grid>
+
+			<StackPanel Grid.Row="1"
+						Margin="16, 0">
+				<RadioButton Content="Dashboard"
+							 GroupName="Menu"
+							 Height="62"
+							 Margin="0, 0, 0, 16"
+							 FontSize="16"
+							 IsChecked="True"
+							 Command="{Binding DashboardViewCommand}"
+							 Style="{StaticResource MenuButtonTheme}"/>
+
+				<RadioButton Content="Goals"
+							 GroupName="Menu"
+							 Height="62"
+							 Margin="0, 0, 0, 16"
+							 FontSize="16"
+							 Command="{Binding GoalViewCommand}"
+							 Style="{StaticResource MenuButtonTheme}"/>
+
+				<RadioButton Content="Seasons"
+							 GroupName="Menu"
+							 Height="62"
+							 Margin="0, 0, 0, 16"
+							 FontSize="16"
+							 Command="{Binding SeasonViewCommand}"
+							 Style="{StaticResource MenuButtonTheme}"/>
+
+				<RadioButton Content="History"
+							 GroupName="Menu"
+							 Height="62"
+							 Margin="0, 0, 0, 16"
+							 FontSize="16"
+							 Command="{Binding HistoryViewCommand}"
+							 Style="{StaticResource MenuButtonTheme}"/>
+			</StackPanel>
+
+			<StackPanel Grid.Row="2"
+						Margin="16, 0">
+				<TextBlock Text="Epilogue"
+						   Height="30"
+						   Margin="0, 0, 0, 16"
+						   VerticalAlignment="Center"
+						   FontSize="13"
+						   Foreground="{StaticResource DarkGray}"/>
+				<RadioButton Content="Settings"
+							 GroupName="Menu"
+							 Height="62"
+							 Margin="0, 0, 0, 16"
+							 FontSize="16"
+							 Command="{Binding SettingsViewCommand}"
+							 Style="{StaticResource MenuButtonTheme}"/>
+			</StackPanel>
+
+			<ContentControl Grid.Column="1"
+							Grid.RowSpan="3"
+							Content="{Binding CurrentView}"/>
+		</Grid>
+	</Border>
+</Window>

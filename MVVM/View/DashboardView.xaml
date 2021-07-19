@@ -1,0 +1,45 @@
+﻿<UserControl x:Class="VexTrack.MVVM.View.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VexTrack.MVVM.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="780"
+			 d:DesignWidth="640">
+    <StackPanel>
+		<TextBlock Text="Welcome back, User"
+				   Margin="16, 16, 16, 16"
+				   Foreground="{StaticResource DarkGray}"
+				   FontSize="36"
+				   FontWeight="Bold"/>
+
+		<Border CornerRadius="8"
+				Width="608"
+				Height="160"
+				Background="white"
+				BorderThickness="0"
+				Margin="16, 0, 16, 16">
+			<Border.Effect>
+				<DropShadowEffect BlurRadius="16"
+									  ShadowDepth="2"
+									  Direction="-90"
+									  Opacity="0.3"/>
+			</Border.Effect>
+		</Border>
+
+		<Border CornerRadius="8"
+				Width="608"
+				Height="512"
+				Background="white"
+				BorderThickness="0"
+				Margin="16, 0, 16, 16">
+			<Border.Effect>
+				<DropShadowEffect BlurRadius="16"
+									  ShadowDepth="2"
+									  Direction="-90"
+									  Opacity="0.3"/>
+			</Border.Effect>
+		</Border>
+	</StackPanel>
+</UserControl>

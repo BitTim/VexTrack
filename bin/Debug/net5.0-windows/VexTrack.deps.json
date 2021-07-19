@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v5.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v5.0": {
+      "VexTrack/1.7": {
+        "runtime": {
+          "VexTrack.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "VexTrack/1.7": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

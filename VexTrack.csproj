@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>VexTrack.ico</ApplicationIcon>
+    <Version>1.7</Version>
+    <Authors>BitTim</Authors>
+    <Description />
+    <PackageProjectUrl>https://github.com/BitTim/VexTrack</PackageProjectUrl>
+    <PackageIcon>VexTrack.png</PackageIcon>
+    <PackageIconUrl />
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <RepositoryUrl>https://github.com/BitTim/VexTrack</RepositoryUrl>
+    <RepositoryType>Git Repository</RepositoryType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="MVVM\Model\" />
+    <Folder Include="Fonts\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\VexTrack.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <None Include="LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>

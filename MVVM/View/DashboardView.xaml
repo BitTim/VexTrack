@@ -24,28 +24,16 @@
 
 		<Border Grid.Row="1"
 				CornerRadius="8"
-				Background="{StaticResource Background}"
-				BorderThickness="0"
+				BorderBrush="{StaticResource Shade}"
+				BorderThickness="2"
 				Margin="16, 0, 16, 16">
-			<Border.Effect>
-				<DropShadowEffect BlurRadius="16"
-									  ShadowDepth="2"
-									  Direction="-90"
-									  Opacity="0.3"/>
-			</Border.Effect>
 		</Border>
 
 		<Border CornerRadius="8"
 				Grid.Row="2"
-				Background="{StaticResource Background}"
-				BorderThickness="0"
+				BorderBrush="{StaticResource Shade}"
+				BorderThickness="2"
 				Margin="16, 0, 16, 16">
-			<Border.Effect>
-				<DropShadowEffect BlurRadius="16"
-									  ShadowDepth="2"
-									  Direction="-90"
-									  Opacity="0.3"/>
-			</Border.Effect>
 		</Border>
 	</Grid>
 </UserControl>

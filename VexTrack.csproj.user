@@ -57,6 +57,12 @@
     <Page Update="Theme\MenuButtonTheme.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Theme\ScrollBarTheme.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Theme\ScrollViewerTheme.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Theme\TitleBarButtonTheme.xaml">
       <SubType>Designer</SubType>
     </Page>

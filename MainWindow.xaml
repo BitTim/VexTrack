@@ -211,7 +211,7 @@
 			
 			<ContentControl Grid.Column="1"
 							Grid.Row="1"
-							Grid.RowSpan="3"
+							Grid.RowSpan="4"
 							Content="{Binding CurrentView}"/>
 		</Grid>
 	</Border>

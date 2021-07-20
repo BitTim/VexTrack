@@ -49,7 +49,7 @@ namespace VexTrack.MVVM.ViewModel
 			SettingsViewCommand = new RelayCommand(o => { CurrentView = SettingsVM; });
 
 			TrackingDataHelper trackingHelper = new TrackingDataHelper();
-			trackingHelper.loadData("dat/data.json");
+			trackingHelper.loadData(@"dat/data.json");
 		}
 	}
 }

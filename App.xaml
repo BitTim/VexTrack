@@ -5,11 +5,17 @@
 			 xmlns:viewModel="clr-namespace:VexTrack.MVVM.ViewModel"
 			 xmlns:view="clr-namespace:VexTrack.MVVM.View"
              StartupUri="MainWindow.xaml">
+	
 	<Application.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="Theme/Colors.xaml"/>
+				<ResourceDictionary Source="Theme/LightTheme.xaml"/>
+
+				<ResourceDictionary Source="Theme/Icons.xaml"/>
+
 				<ResourceDictionary Source="Theme/MenuButtonTheme.xaml"/>
+				<ResourceDictionary Source="Theme/TitleBarButtonTheme.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 
 			<DataTemplate DataType="{x:Type viewModel:DashboardViewModel}">

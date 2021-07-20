@@ -7,17 +7,24 @@
              mc:Ignorable="d" 
              d:DesignHeight="780"
 			 d:DesignWidth="640">
-    <StackPanel>
+    <Grid HorizontalAlignment="Stretch"
+				VerticalAlignment="Stretch">
+
+		<Grid.RowDefinitions>
+			<RowDefinition Height="80"/>
+			<RowDefinition Height="160"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+		
 		<TextBlock Text="Welcome back, User"
 				   Margin="16, 16, 16, 16"
-				   Foreground="{StaticResource DarkGray}"
+				   Foreground="{StaticResource Foreground}"
 				   FontSize="36"
 				   FontWeight="Bold"/>
 
-		<Border CornerRadius="8"
-				Width="608"
-				Height="160"
-				Background="white"
+		<Border Grid.Row="1"
+				CornerRadius="8"
+				Background="{StaticResource Background}"
 				BorderThickness="0"
 				Margin="16, 0, 16, 16">
 			<Border.Effect>
@@ -29,9 +36,8 @@
 		</Border>
 
 		<Border CornerRadius="8"
-				Width="608"
-				Height="512"
-				Background="white"
+				Grid.Row="2"
+				Background="{StaticResource Background}"
 				BorderThickness="0"
 				Margin="16, 0, 16, 16">
 			<Border.Effect>
@@ -41,5 +47,5 @@
 									  Opacity="0.3"/>
 			</Border.Effect>
 		</Border>
-	</StackPanel>
+	</Grid>
 </UserControl>

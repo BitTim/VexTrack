@@ -1,0 +1,12 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	
+	<SolidColorBrush x:Key="Background" Color="{StaticResource LightBG}"/>
+	<SolidColorBrush x:Key="Shade" Color="{StaticResource LightShade}"/>
+	<SolidColorBrush x:Key="Foreground" Color="{StaticResource LightFG}"/>
+
+	<LinearGradientBrush x:Key="AccMono">
+		<GradientStop Color="{StaticResource MonoLight1}" Offset="0.0"/>
+		<GradientStop Color="{StaticResource MonoLight2}" Offset="1.0"/>
+	</LinearGradientBrush>
+</ResourceDictionary>

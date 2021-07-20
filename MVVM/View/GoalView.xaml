@@ -9,7 +9,7 @@
     <Grid>
 		<TextBlock Text="Goals"
 				   Margin="16, 16, 16, 16"
-				   Foreground="{StaticResource DarkGray}"
+				   Foreground="{StaticResource Foreground}"
 				   FontSize="36"
 				   FontWeight="Bold"/>
 	</Grid>

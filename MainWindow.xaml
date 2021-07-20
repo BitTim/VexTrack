@@ -7,8 +7,8 @@
 		xmlns:viewModel="clr-namespace:VexTrack.MVVM.ViewModel"
         mc:Ignorable="d"
         Title="MainWindow"
-		Height="780" Width="872"
-		ResizeMode="NoResize"
+		Height="812" Width="872"
+		MinHeight="812" MinWidth="872"
 		WindowStyle="None"
 		Background="Transparent"
 		AllowsTransparency="True">
@@ -16,8 +16,12 @@
 	<Window.DataContext>
 		<viewModel:MainViewModel/>
 	</Window.DataContext>
+
+	<WindowChrome.WindowChrome>
+		<WindowChrome CaptionHeight="32"/>
+	</WindowChrome.WindowChrome>
 	
-	<Border Background="White"
+	<Border Background="{StaticResource Background}"
 			CornerRadius="8">
 		<Grid>
 			<Grid.ColumnDefinitions>
@@ -26,15 +30,74 @@
 			</Grid.ColumnDefinitions>
 
 			<Grid.RowDefinitions>
-				<RowDefinition Height="128"/>
+				<RowDefinition Height="32"/>
+				<RowDefinition Height="96"/>
 				<RowDefinition/>
 				<RowDefinition Height="128"/>
 			</Grid.RowDefinitions>
 
+			<!-- Window Buttons -->
+
+			<Grid Grid.Column="1"
+				  VerticalAlignment="Top">
+				<StackPanel WindowChrome.IsHitTestVisibleInChrome="True"
+							VerticalAlignment="Center"
+							HorizontalAlignment="Right"
+							Orientation="Horizontal"
+							Height="32">
+					
+					<Button Grid.Column="2"
+							Click="OnMinimizeButtonClick"
+							RenderOptions.EdgeMode="Unspecified"
+							Style="{DynamicResource TitleBarButtonStyle}">
+						<Path Width="46"
+							  Height="32"
+							  Data="M 18,15 H 28"
+							  Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+							  StrokeThickness="1"
+							  RenderOptions.EdgeMode="Aliased"/>
+					</Button>
+					
+					<Button Name="maximizeButton"
+							Grid.Column="3"
+							Click="OnMaximizeRestoreButtonClick"
+							Style="{DynamicResource TitleBarButtonStyle}">
+						<Path Width="46"
+							  Height="32"
+							  Data="M 18.5,10.5 H 27.5 V 19.5 H 18.5 Z"
+							  Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+							  StrokeThickness="1" />
+					</Button>
+					
+					<Button Name="restoreButton"
+							Grid.Column="3"
+							Click="OnMaximizeRestoreButtonClick"
+							Style="{DynamicResource TitleBarButtonStyle}">
+						<Path Width="46"
+							  Height="32"
+							  Data="M 18.5,12.5 H 25.5 V 19.5 H 18.5 Z M 20.5,12.5 V 10.5 H 27.5 V 17.5 H 25.5"
+							  Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+							  StrokeThickness="1" />
+					</Button>
+					
+					<Button Grid.Column="4"
+							Click="OnCloseButtonClick"
+							Style="{DynamicResource TitleBarCloseButtonStyle}">
+						<Path Width="46"
+							  Height="32"
+							  Data="M 18,11 27,20 M 18,20 27,11"
+							  Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+							  StrokeThickness="1" />
+					</Button>
+				</StackPanel>
+			</Grid>
+			
+			<!-- Navgation Bar Background -->
+			
 			<Border CornerRadius="8"
-					Background="{StaticResource LightGray}"
+					Background="{DynamicResource Shade}"
 					BorderThickness="0"
-					Grid.RowSpan="3">
+					Grid.RowSpan="4">
 				<Border.Effect>
 					<DropShadowEffect BlurRadius="16"
 									  ShadowDepth="2"
@@ -43,7 +106,10 @@
 				</Border.Effect>
 			</Border>
 			
-			<Grid Margin="16, 32">
+			<!-- Logo -->
+			
+			<Grid Margin="16, 32"
+				  Grid.RowSpan="2">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="64"/>
 					<ColumnDefinition/>
@@ -66,7 +132,7 @@
 						   FontSize="20"
 						   FontWeight="Bold"
 						   Margin="16, 0"
-						   Foreground="{StaticResource DarkGray}"/>
+						   Foreground="{DynamicResource Foreground}"/>
 
 				<TextBlock Grid.Column="1"
 						   Grid.Row="1"
@@ -75,10 +141,12 @@
 						   HorizontalAlignment="Left"
 						   FontSize="14"
 						   Margin="16, 0"
-						   Foreground="{StaticResource DarkGray}"/>
+						   Foreground="{DynamicResource Foreground}"/>
 			</Grid>
 
-			<StackPanel Grid.Row="1"
+			<!-- Upper Navigation Bar -->
+			
+			<StackPanel Grid.Row="2"
 						Margin="16, 0">
 				<RadioButton Content="Dashboard"
 							 GroupName="Menu"
@@ -87,7 +155,7 @@
 							 FontSize="16"
 							 IsChecked="True"
 							 Command="{Binding DashboardViewCommand}"
-							 Style="{StaticResource MenuButtonTheme}"/>
+							 Style="{DynamicResource MenuButtonTheme}"/>
 
 				<RadioButton Content="Goals"
 							 GroupName="Menu"
@@ -95,7 +163,7 @@
 							 Margin="0, 0, 0, 16"
 							 FontSize="16"
 							 Command="{Binding GoalViewCommand}"
-							 Style="{StaticResource MenuButtonTheme}"/>
+							 Style="{DynamicResource MenuButtonTheme}"/>
 
 				<RadioButton Content="Seasons"
 							 GroupName="Menu"
@@ -103,7 +171,7 @@
 							 Margin="0, 0, 0, 16"
 							 FontSize="16"
 							 Command="{Binding SeasonViewCommand}"
-							 Style="{StaticResource MenuButtonTheme}"/>
+							 Style="{DynamicResource MenuButtonTheme}"/>
 
 				<RadioButton Content="History"
 							 GroupName="Menu"
@@ -111,27 +179,32 @@
 							 Margin="0, 0, 0, 16"
 							 FontSize="16"
 							 Command="{Binding HistoryViewCommand}"
-							 Style="{StaticResource MenuButtonTheme}"/>
+							 Style="{DynamicResource MenuButtonTheme}"/>
 			</StackPanel>
 
-			<StackPanel Grid.Row="2"
+			<!-- Lower Navigation Bar -->
+			
+			<StackPanel Grid.Row="3"
 						Margin="16, 0">
 				<TextBlock Text="Epilogue"
 						   Height="30"
 						   Margin="0, 0, 0, 16"
 						   VerticalAlignment="Center"
 						   FontSize="13"
-						   Foreground="{StaticResource DarkGray}"/>
+						   Foreground="{DynamicResource Foreground}"/>
 				<RadioButton Content="Settings"
 							 GroupName="Menu"
 							 Height="62"
 							 Margin="0, 0, 0, 16"
 							 FontSize="16"
 							 Command="{Binding SettingsViewCommand}"
-							 Style="{StaticResource MenuButtonTheme}"/>
+							 Style="{DynamicResource MenuButtonTheme}"/>
 			</StackPanel>
 
+			<!-- Content -->
+			
 			<ContentControl Grid.Column="1"
+							Grid.Row="1"
 							Grid.RowSpan="3"
 							Content="{Binding CurrentView}"/>
 		</Grid>

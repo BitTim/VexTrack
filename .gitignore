@@ -15,3 +15,4 @@ compile.bat
 tokenString.py
 bin/
 obj/
+.vs/

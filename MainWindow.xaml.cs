@@ -22,6 +22,8 @@ namespace VexTrack
         public MainWindow()
 		{
 			InitializeComponent();
+
+			this.StateChanged += Window_StateChanged;
 			Window_StateChanged(this, null);
 		}
 
@@ -137,8 +139,6 @@ namespace VexTrack
 			{
 				this.WindowState = WindowState.Maximized;
 			}
-
-			Window_StateChanged(this, null);
 		}
 
 		private void OnCloseButtonClick(object sender, RoutedEventArgs e)
@@ -152,11 +152,13 @@ namespace VexTrack
 			{
 				this.maximizeButton.Visibility = Visibility.Collapsed;
 				this.restoreButton.Visibility = Visibility.Visible;
+				this.MainBorder.CornerRadius = new CornerRadius(0);
 			}
-			else
+			else if(this.WindowState == WindowState.Normal)
 			{
 				this.maximizeButton.Visibility = Visibility.Visible;
 				this.restoreButton.Visibility = Visibility.Collapsed;
+				this.MainBorder.CornerRadius = new CornerRadius(8);
 			}
 		}
 

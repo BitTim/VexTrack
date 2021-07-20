@@ -22,7 +22,8 @@
 	</WindowChrome.WindowChrome>
 	
 	<Border Background="{StaticResource Background}"
-			CornerRadius="8">
+			CornerRadius="8"
+			x:Name="MainBorder">
 		<Grid>
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="232"/>

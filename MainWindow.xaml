@@ -191,12 +191,26 @@
 			
 			<StackPanel Grid.Row="3"
 						Margin="16, 0">
-				<TextBlock Text="Epilogue"
-						   Height="30"
-						   Margin="0, 0, 0, 16"
-						   VerticalAlignment="Center"
-						   FontSize="13"
-						   Foreground="{DynamicResource Foreground}"/>
+				<Grid Margin="0, 0, 0, 16">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition/>
+						<ColumnDefinition/>
+					</Grid.ColumnDefinitions>
+					
+					<TextBlock Text="Epilogue"
+							   FontSize="14"
+							   VerticalAlignment="Center"
+							   Foreground="{DynamicResource Foreground}"/>
+
+					<CheckBox Grid.Column="1"
+							  HorizontalAlignment="Right"
+							  VerticalAlignment="Center"
+							  Height="30"
+							  Width="50"
+							  FontSize="14"
+							  Style="{DynamicResource CheckBoxTheme}"/>
+				</Grid>
+				
 				<RadioButton Content="Settings"
 							 GroupName="Menu"
 							 Height="62"

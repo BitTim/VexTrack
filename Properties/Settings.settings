@@ -5,5 +5,8 @@
     <Setting Name="Theme" Type="System.String" Scope="User">
       <Value Profile="(Default)">Light</Value>
     </Setting>
+    <Setting Name="AccentColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">AccBlue</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

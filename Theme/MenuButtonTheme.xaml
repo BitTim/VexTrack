@@ -1,7 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-					xmlns:ext="clr-namespace:VexTrack.MVVM.MarkupExtensions">
-	
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
 	<Style BasedOn="{StaticResource {x:Type ToggleButton}}"
 		   TargetType="{x:Type RadioButton}"
 		   x:Key="MenuButtonTheme">
@@ -30,6 +29,12 @@
 										<ColumnDefinition Width="56"/>
 										<ColumnDefinition Width="*"/>
 									</Grid.ColumnDefinitions>
+
+									<Path Width="24" Height="24"
+										  Grid.Column="0"
+										  x:Name="Icon"
+										  Fill="{TemplateBinding Foreground}"
+										  Data="{TemplateBinding Tag}"/>
 
 									<TextBlock Text="{TemplateBinding Content}"
 											   Grid.Column="1"

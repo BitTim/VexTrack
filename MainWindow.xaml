@@ -145,15 +145,17 @@
 			</Grid>
 
 			<!-- Upper Navigation Bar -->
-			
+
 			<StackPanel Grid.Row="2"
 						Margin="16, 0">
+
 				<RadioButton Content="Dashboard"
 							 GroupName="Menu"
 							 Height="62"
 							 Margin="0, 0, 0, 16"
 							 FontSize="16"
 							 IsChecked="True"
+							 Tag="{Binding Source={StaticResource DashboardIcon}, Path=Data}"
 							 Command="{Binding DashboardViewCommand}"
 							 Style="{DynamicResource MenuButtonTheme}"/>
 
@@ -162,6 +164,7 @@
 							 Height="62"
 							 Margin="0, 0, 0, 16"
 							 FontSize="16"
+							 Tag="{Binding Source={StaticResource GoalIcon}, Path=Data}"
 							 Command="{Binding GoalViewCommand}"
 							 Style="{DynamicResource MenuButtonTheme}"/>
 
@@ -170,6 +173,7 @@
 							 Height="62"
 							 Margin="0, 0, 0, 16"
 							 FontSize="16"
+							 Tag="{Binding Source={StaticResource SeasonIcon}, Path=Data}"
 							 Command="{Binding SeasonViewCommand}"
 							 Style="{DynamicResource MenuButtonTheme}"/>
 
@@ -178,6 +182,7 @@
 							 Height="62"
 							 Margin="0, 0, 0, 16"
 							 FontSize="16"
+							 Tag="{Binding Source={StaticResource HistoryIcon}, Path=Data}"
 							 Command="{Binding HistoryViewCommand}"
 							 Style="{DynamicResource MenuButtonTheme}"/>
 			</StackPanel>
@@ -197,6 +202,7 @@
 							 Height="62"
 							 Margin="0, 0, 0, 16"
 							 FontSize="16"
+							 Tag="{Binding Source={StaticResource SettingsIcon}, Path=Data}"
 							 Command="{Binding SettingsViewCommand}"
 							 Style="{DynamicResource MenuButtonTheme}"/>
 			</StackPanel>

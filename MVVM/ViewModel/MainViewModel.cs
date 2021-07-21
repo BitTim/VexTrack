@@ -48,8 +48,7 @@ namespace VexTrack.MVVM.ViewModel
 			HistoryViewCommand = new RelayCommand(o => { CurrentView = HistoryVM; });
 			SettingsViewCommand = new RelayCommand(o => { CurrentView = SettingsVM; });
 
-			TrackingDataHelper trackingHelper = new TrackingDataHelper();
-			trackingHelper.loadData(@"dat/data.json");
+			TrackingDataHelper.LoadData();
 		}
 	}
 }

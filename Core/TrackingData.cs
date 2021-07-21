@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using Newtonsoft.Json.Linq;
 
@@ -60,11 +57,11 @@ namespace VexTrack.Core
 		}
 	}
 
-	class TrackingDataHelper
+	static class TrackingDataHelper
 	{
-		public TrackingData Tracking { get; set; }
+		public static TrackingData Data { get; set; }
 
-		public void initData(string path, string seasonName, string seasonEndDate, int activeBPLevel, int cXP)
+		public static void InitData(string seasonName, string seasonEndDate, int activeBPLevel, int cXP)
 		{
 			List<Goal> goals = new();
 			List<Season> seasons = new();
@@ -73,19 +70,66 @@ namespace VexTrack.Core
 			history.Add(new HistoryEntry(DateTimeOffset.Now.ToUnixTimeSeconds(), "Initialization", cXP, null));
 			seasons.Add(new Season(seasonName, seasonEndDate, activeBPLevel, cXP, history));
 
-			Tracking = new TrackingData(goals, seasons);
-			saveData(path);
+			Data = new TrackingData(goals, seasons);
+			SaveData();
 		}
 
-		public void loadData(string path)
+		public static void ConvertData()
 		{
-			if (!File.Exists(path) || File.ReadAllText(path) == "")
+			string rawJSON = File.ReadAllText(Constants.LegacyDataPath);
+			JObject jo = JObject.Parse(rawJSON);
+
+			List<Goal> goals = new();
+			foreach (JObject goal in jo["goals"])
 			{
-				//TODO: Convert Legacy config.json to data.json
-				initData(path, "First Season", "01.01.1970", 2, 0);
+				string gName = (string)goal["name"];
+				int remaining = (int)goal["remaining"];
+				int startXP = (int)goal["startXP"];
+				string color = (string)goal["color"];
+
+				goals.Add(new Goal(gName, remaining, startXP, color));
 			}
 
-			string rawJSON = File.ReadAllText(path);
+			List<Season> seasons = new();
+
+			string name = "First Season";
+			string endDate = (string)jo["endDate"];
+			int activeBPLevel = (int)jo["activeBPLevel"];
+			int cXP = (int)jo["cXP"];
+
+			List<HistoryEntry> history = new();
+			foreach (JObject historyEntry in jo["history"])
+			{
+				long time = (long)historyEntry["time"];
+				string description = (string)historyEntry["description"];
+				int amount = (int)historyEntry["amount"];
+				string map = (string)historyEntry["map"];
+
+				history.Add(new HistoryEntry(time, description, amount, map));
+			}
+
+			seasons.Add(new Season(name, endDate, activeBPLevel, cXP, history));
+			Data = new TrackingData(goals, seasons);
+
+			File.Move(Constants.LegacyDataPath, Constants.LegacyDataPath + ".bak");
+			SaveData();
+		}
+
+		public static void LoadData()
+		{
+			if (!File.Exists(Constants.DataPath) || File.ReadAllText(Constants.DataPath) == "")
+			{
+				if (File.Exists(Constants.LegacyDataPath))
+				{
+					ConvertData();
+					return;
+				}
+
+				InitData("First Season", "01.01.1970", 2, 0);
+				return;
+			}
+
+			string rawJSON = File.ReadAllText(Constants.DataPath);
 			JObject jo = JObject.Parse(rawJSON);
 
 			List<Goal> goals = new();
@@ -125,15 +169,15 @@ namespace VexTrack.Core
 				seasons.Add(new Season(name, endDate, activeBPLevel, cXP, history));
 			}
 
-			Tracking = new TrackingData(goals, seasons);
+			Data = new TrackingData(goals, seasons);
 		}
 
-		public void saveData(string path)
+		public static void SaveData()
 		{
 			JObject jo = new();
 
 			JArray goals = new();
-			foreach(Goal goal in Tracking.Goals)
+			foreach(Goal goal in Data.Goals)
 			{
 				JObject goalObj = new();
 				goalObj.Add("name", goal.Name);
@@ -147,7 +191,7 @@ namespace VexTrack.Core
 			jo.Add("goals", goals);
 
 			JArray seasons = new();
-			foreach (Season season in Tracking.Seasons)
+			foreach (Season season in Data.Seasons)
 			{
 				JObject seasonObj = new();
 				seasonObj.Add("name", season.Name);
@@ -173,15 +217,15 @@ namespace VexTrack.Core
 
 			jo.Add("seasons", seasons);
 
-			if (!File.Exists(path))
+			if (!File.Exists(Constants.DataPath))
 			{
-				int sep = path.LastIndexOf("/");
+				int sep = Constants.DataPath.LastIndexOf("/");
 
-				Directory.CreateDirectory(path.Substring(0, sep));
-				File.CreateText(path).Close();
+				Directory.CreateDirectory(Constants.DataPath.Substring(0, sep));
+				File.CreateText(Constants.DataPath).Close();
 			}
 
-			File.WriteAllText(path, jo.ToString());
+			File.WriteAllText(Constants.DataPath, jo.ToString());
 		}
 	}
 }

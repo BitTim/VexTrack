@@ -22,7 +22,15 @@ namespace VexTrack.MVVM.ViewModel
 			List<HistoryEntry> history = TrackingDataHelper.Data.Seasons.Last<Season>().History;
 			foreach (HistoryEntry he in history)
 			{
-				View.AddHistoryEntryButton(he.Description, he.Amount);
+				string result = HistoryDataCalc.CalcHistoryResult(he.Description);
+
+				string backgroundKey = "";
+				if (result == "Win" || result == "Loss") backgroundKey = result + "Color";
+
+				string foregroundKey = "";
+				if (result == "Win" || result == "Loss") foregroundKey = "White";
+
+				View.AddHistoryEntryButton(he.Description, he.Amount, backgroundKey, foregroundKey);
 			}
 		}
 

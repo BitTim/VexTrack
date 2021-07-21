@@ -30,9 +30,11 @@ namespace VexTrack.MVVM.View
 			vm.RegisterView(this);
 		}
 
-		public void AddHistoryEntryButton(string description, int amount)
+		public void AddHistoryEntryButton(string description, int amount, string backgroundKey = "", string foregroundKey = "")
 		{
 			HistoryEntryButtonModel child = new(description, amount);
+			if (backgroundKey != "") child.Background = (Brush)FindResource(backgroundKey);
+			if (foregroundKey != "") child.Foreground = (Brush)FindResource(foregroundKey);
 			ContentContainer.Children.Insert(0, child);
 		}
 	}

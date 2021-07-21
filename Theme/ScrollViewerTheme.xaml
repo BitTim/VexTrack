@@ -116,12 +116,13 @@
 									<RowDefinition Height="Auto"/>
 								</Grid.RowDefinitions>
 
-								<ScrollBar x:Name="PART_VerticalSCrollBar"
+								<ScrollBar x:Name="PART_VerticalScrollBar"
 										   Grid.Column="1"
-										   Minimum="0.0"
+										   AutomationProperties.AutomationId="VerticalScrollBar"
+										   Minimum="0"
 										   Maximum="{TemplateBinding ScrollableHeight}"
 										   ViewportSize="{TemplateBinding ViewportHeight}"
-										   Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=VerticalOffset, Mode=OneWay}"
+										   Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
 										   Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
 										   Margin="0, 1, -2, 1"/>
 							</Grid>

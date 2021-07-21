@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using VexTrack.Core;
 using VexTrack.MVVM.Model;
 using VexTrack.MVVM.ViewModel;
 
@@ -22,12 +23,16 @@ namespace VexTrack.MVVM.View
 	/// </summary>
 	public partial class HistoryView : UserControl
 	{
+		private RelayCommand HistoryButtonClick { get; set; }
+
 		public HistoryView()
 		{
 			InitializeComponent();
 
 			var vm = (HistoryViewModel)DataContext;
 			vm.RegisterView(this);
+
+			HistoryButtonClick = new RelayCommand(vm.OnHistoryButtonClick);
 		}
 
 		public void AddHistoryEntryButton(string description, int amount, string backgroundKey = "", string foregroundKey = "")
@@ -35,6 +40,9 @@ namespace VexTrack.MVVM.View
 			HistoryEntryButtonModel child = new(description, amount);
 			if (backgroundKey != "") child.Background = (Brush)FindResource(backgroundKey);
 			if (foregroundKey != "") child.Foreground = (Brush)FindResource(foregroundKey);
+
+			child.Command = HistoryButtonClick;
+			child.CommandParameter = ContentContainer.Children.Count;
 			ContentContainer.Children.Insert(0, child);
 		}
 	}

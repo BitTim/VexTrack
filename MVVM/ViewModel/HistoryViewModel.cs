@@ -13,7 +13,7 @@ namespace VexTrack.MVVM.ViewModel
 {
 	class HistoryViewModel : ObservableObject
 	{
-		HistoryView View { get; set; }
+		private HistoryView View { get; set; }
 
 		public void Update()
 		{
@@ -38,6 +38,11 @@ namespace VexTrack.MVVM.ViewModel
 		{
 			View = view;
 			Update();
+		}
+
+		public void OnHistoryButtonClick(object parameter)
+		{
+			int index = (int)parameter;
 		}
 	}
 }

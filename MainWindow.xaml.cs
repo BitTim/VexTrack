@@ -152,13 +152,21 @@ namespace VexTrack
 			{
 				this.maximizeButton.Visibility = Visibility.Collapsed;
 				this.restoreButton.Visibility = Visibility.Visible;
+
 				this.MainBorder.CornerRadius = new CornerRadius(0);
+				this.ShadowBorder.CornerRadius = new CornerRadius(0);
+				this.MainBorder.Margin = new Thickness(0);
+				this.ShadowBorder.Margin = new Thickness(0);
 			}
 			else if(this.WindowState == WindowState.Normal)
 			{
 				this.maximizeButton.Visibility = Visibility.Visible;
 				this.restoreButton.Visibility = Visibility.Collapsed;
+
 				this.MainBorder.CornerRadius = new CornerRadius(8);
+				this.ShadowBorder.CornerRadius = new CornerRadius(8);
+				this.MainBorder.Margin = new Thickness(16);
+				this.ShadowBorder.Margin = new Thickness(16);
 			}
 		}
 

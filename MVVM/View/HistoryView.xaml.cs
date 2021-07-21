@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using VexTrack.MVVM.Model;
+using VexTrack.MVVM.ViewModel;
 
 namespace VexTrack.MVVM.View
 {
@@ -23,6 +25,15 @@ namespace VexTrack.MVVM.View
 		public HistoryView()
 		{
 			InitializeComponent();
+
+			var vm = (HistoryViewModel)DataContext;
+			vm.RegisterView(this);
+		}
+
+		public void AddHistoryEntryButton(string description, int amount)
+		{
+			HistoryEntryButtonModel child = new(description, amount);
+			ContentContainer.Children.Insert(0, child);
 		}
 	}
 }

@@ -45,7 +45,7 @@ namespace VexTrack.MVVM.ViewModel
 			DashboardViewCommand = new RelayCommand(o => { CurrentView = DashboardVM; });
 			GoalViewCommand = new RelayCommand(o => { CurrentView = GoalVM; });
 			SeasonViewCommand = new RelayCommand(o => { CurrentView = SeasonVM; });
-			HistoryViewCommand = new RelayCommand(o => { CurrentView = HistoryVM; });
+			HistoryViewCommand = new RelayCommand(o => { CurrentView = HistoryVM; HistoryVM.Update(); });
 			SettingsViewCommand = new RelayCommand(o => { CurrentView = SettingsVM; });
 
 			TrackingDataHelper.LoadData();

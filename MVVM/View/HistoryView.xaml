@@ -3,10 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:VexTrack.MVVM.View"
+             xmlns:local="clr-namespace:VexTrack"
+             xmlns:vm="clr-namespace:VexTrack.MVVM.ViewModel"
+			 xmlns:model="clr-namespace:VexTrack.MVVM.Model"
              mc:Ignorable="d" 
              d:DesignHeight="780" d:DesignWidth="640">
-    <Grid>
+
+	<UserControl.DataContext>
+		<vm:HistoryViewModel/>
+	</UserControl.DataContext>
+	
+	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="80"/>
 			<RowDefinition/>
@@ -21,9 +28,8 @@
 		<ScrollViewer Grid.Row="1"
 					  Style="{DynamicResource ScrollViewerTheme}"
 					  Margin="16">
-			<StackPanel>
-				
-			</StackPanel>
+			<StackPanel x:Name="ContentContainer"
+						Margin="0, 8, 0, 0"/>
 		</ScrollViewer>
 	</Grid>
 </UserControl>

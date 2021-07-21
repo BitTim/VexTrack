@@ -48,6 +48,9 @@
     <Page Update="Theme\DarkTheme.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Theme\HistoryButtonTheme.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Theme\Icons.xaml">
       <SubType>Designer</SubType>
     </Page>

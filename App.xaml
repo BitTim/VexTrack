@@ -18,6 +18,7 @@
 				<ResourceDictionary Source="Theme/TitleBarButtonTheme.xaml"/>
 				<ResourceDictionary Source="Theme/CheckBoxTheme.xaml"/>
 
+				<ResourceDictionary Source="Theme/HistoryButtonTheme.xaml"/>
 				<ResourceDictionary Source="Theme/ScrollViewerTheme.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 

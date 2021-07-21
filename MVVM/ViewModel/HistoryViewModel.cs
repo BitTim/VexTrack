@@ -19,6 +19,11 @@ namespace VexTrack.MVVM.ViewModel
 		{
 			if (View == null) return;
 
+			if (View.AreCommandsSet == false)
+			{
+				View.SetCommands(OnHistoryButtonClick);
+			}
+
 			List<HistoryEntry> history = TrackingDataHelper.Data.Seasons.Last<Season>().History;
 			foreach (HistoryEntry he in history)
 			{
@@ -43,6 +48,8 @@ namespace VexTrack.MVVM.ViewModel
 		public void OnHistoryButtonClick(object parameter)
 		{
 			int index = (int)parameter;
+
+			//TODO: Add Info Card view and fill with info for this entry
 		}
 	}
 }

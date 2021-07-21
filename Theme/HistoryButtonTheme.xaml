@@ -53,16 +53,11 @@
 			</Setter>
 
 			<Setter Property = "Background" Value = "{DynamicResource Background}"/>
-			<Setter Property = "Foreground" Value = "{DynamicResource Foreground}"/>
 		</Style.Setters>
 
 		<Style.Triggers>
 			<Trigger Property="IsMouseOver" Value="True">
 				<Setter Property="Background" Value="{DynamicResource Shade}"/>
-			</Trigger>
-
-			<Trigger Property="IsPressed" Value="True">
-				<Setter Property="Background" Value="{DynamicResource AccBlue}"/>
 			</Trigger>
 		</Style.Triggers>
 	</Style>

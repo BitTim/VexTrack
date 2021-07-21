@@ -42,6 +42,7 @@ namespace VexTrack.MVVM.Model
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(HistoryEntryButtonModel), new FrameworkPropertyMetadata(typeof(HistoryEntryButtonModel)));
 		}
 
+		public HistoryEntryButtonModel() { }
 		public HistoryEntryButtonModel(string description, int amount)
 		{
 			Description = description;

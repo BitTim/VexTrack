@@ -23,6 +23,7 @@ namespace VexTrack.MVVM.View
 	/// </summary>
 	public partial class HistoryView : UserControl
 	{
+		public bool AreCommandsSet { get; set; }
 		private RelayCommand HistoryButtonClick { get; set; }
 
 		public HistoryView()
@@ -31,8 +32,12 @@ namespace VexTrack.MVVM.View
 
 			var vm = (HistoryViewModel)DataContext;
 			vm.RegisterView(this);
+		}
 
-			HistoryButtonClick = new RelayCommand(vm.OnHistoryButtonClick);
+		public void SetCommands(Action<object> historyButtonClick)
+		{
+			HistoryButtonClick = new RelayCommand(historyButtonClick);
+			AreCommandsSet = true;
 		}
 
 		public void AddHistoryEntryButton(string description, int amount, string backgroundKey = "", string foregroundKey = "")

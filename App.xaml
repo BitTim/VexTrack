@@ -3,7 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:VexTrack"
 			 xmlns:viewModel="clr-namespace:VexTrack.MVVM.ViewModel"
+			 xmlns:popupViewModel="clr-namespace:VexTrack.MVVM.ViewModel.Popups"
 			 xmlns:view="clr-namespace:VexTrack.MVVM.View"
+			 xmlns:popupView="clr-namespace:VexTrack.MVVM.View.Popups"
              StartupUri="MainWindow.xaml">
 	
 	<Application.Resources>
@@ -17,11 +19,14 @@
 				<ResourceDictionary Source="Theme/MenuButtonTheme.xaml"/>
 				<ResourceDictionary Source="Theme/TitleBarButtonTheme.xaml"/>
 				<ResourceDictionary Source="Theme/CheckBoxTheme.xaml"/>
+				<ResourceDictionary Source="Theme/ButtonTheme.xaml"/>
 
 				<ResourceDictionary Source="Theme/HistoryButtonTheme.xaml"/>
 				<ResourceDictionary Source="Theme/ScrollViewerTheme.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 
+			<!-- Pages -->
+			
 			<DataTemplate DataType="{x:Type viewModel:DashboardViewModel}">
 				<view:DashboardView/>
 			</DataTemplate>
@@ -42,6 +47,11 @@
 				<view:SettingsView/>
 			</DataTemplate>
 
+			<!-- Popups -->
+			
+			<DataTemplate DataType="{x:Type popupViewModel:HistoryEntryPopupViewModel}">
+				<popupView:HistoryEntryPopup/>
+			</DataTemplate>
 		</ResourceDictionary>
-    </Application.Resources>
+	</Application.Resources>
 </Application>

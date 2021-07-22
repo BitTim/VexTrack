@@ -8,48 +8,56 @@ using System.Windows.Controls;
 using VexTrack.Core;
 using VexTrack.MVVM.Model;
 using VexTrack.MVVM.View;
+using VexTrack.MVVM.ViewModel.Popups;
 
 namespace VexTrack.MVVM.ViewModel
 {
 	class HistoryViewModel : ObservableObject
 	{
-		private HistoryView View { get; set; }
+		public RelayCommand HistoryButtonClick { get; set; }
+		private HistoryEntryPopupViewModel HEPopup { get; set; }
+		private MainViewModel MainVM { get; set; }
 
-		public void Update()
-		{
-			if (View == null) return;
-
-			if (View.AreCommandsSet == false)
+		private ObservableCollection<HistoryEntryData> _entries = new();
+		public ObservableCollection<HistoryEntryData> Entries { get => _entries;
+			set
 			{
-				View.SetCommands(OnHistoryButtonClick);
-			}
-
-			List<HistoryEntry> history = TrackingDataHelper.Data.Seasons.Last<Season>().History;
-			foreach (HistoryEntry he in history)
-			{
-				string result = HistoryDataCalc.CalcHistoryResult(he.Description);
-
-				string backgroundKey = "";
-				if (result == "Win" || result == "Loss") backgroundKey = result + "Color";
-
-				string foregroundKey = "";
-				if (result == "Win" || result == "Loss") foregroundKey = "White";
-
-				View.AddHistoryEntryButton(he.Description, he.Amount, backgroundKey, foregroundKey);
+				if (_entries != value)
+				{
+					_entries = value;
+					OnPropertyChanged();
+				}
 			}
 		}
 
-		public void RegisterView(HistoryView view)
+		public HistoryViewModel()
 		{
-			View = view;
+			MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
+			HEPopup = new();
+			ViewModelManager.ViewModels.Add("HEPopup", HEPopup);
+
+			HistoryButtonClick = new RelayCommand(OnHistoryButtonClick);
+
 			Update();
+		}
+
+		public void Update()
+		{
+			Entries.Clear();
+
+			foreach (HistoryEntry he in TrackingDataHelper.Data.Seasons.Last<Season>().History)
+			{
+				string result = HistoryDataCalc.CalcHistoryResult(he.Description);
+				Entries.Insert(0, new HistoryEntryData(Entries.Count, he.Description, he.Time, he.Amount, he.Map, result));
+			}
 		}
 
 		public void OnHistoryButtonClick(object parameter)
 		{
-			int index = (int)parameter;
+			int index = Entries.Count - (int)parameter - 1;
 
-			//TODO: Add Info Card view and fill with info for this entry
+			HEPopup.SetData(Entries[index]);
+			MainVM.CurrentPopup = HEPopup;
 		}
 	}
 }

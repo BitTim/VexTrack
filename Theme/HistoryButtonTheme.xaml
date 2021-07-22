@@ -1,7 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					xmlns:local="clr-namespace:VexTrack.MVVM.Model"
-					xmlns:extension="clr-namespace:VexTrack.MVVM.Extensions"
 					xmlns:conv="clr-namespace:VexTrack.MVVM.Converter">
 
 	<conv:StyledIntConverter x:Key="styledIntConv"/>
@@ -28,8 +27,32 @@
 								</Border.Effect>
 							</Border>
 
-							<Border x:Name="PART_ContentBorder"
+							<Border x:Name="PART_HoverBorder"
+									Background="{DynamicResource Foreground}"
+									Opacity="0"
 									CornerRadius="8">
+								<Border.Triggers>
+									<EventTrigger RoutedEvent="UIElement.MouseEnter">
+										<BeginStoryboard>
+											<Storyboard Storyboard.TargetProperty="Opacity">
+												<DoubleAnimation From="0" To="0.2" Duration="00:00:00.10"/>
+											</Storyboard>
+										</BeginStoryboard>
+									</EventTrigger>
+
+									<EventTrigger RoutedEvent="UIElement.MouseLeave">
+										<BeginStoryboard>
+											<Storyboard Storyboard.TargetProperty="Opacity">
+												<DoubleAnimation From="0.2" To="0" Duration="00:00:00.10"/>
+											</Storyboard>
+										</BeginStoryboard>
+									</EventTrigger>
+								</Border.Triggers>
+							</Border>
+
+							<Border x:Name="PART_ContentBorder"
+									CornerRadius="8"
+									IsHitTestVisible="False">
 								<Grid>
 									<TextBlock x:Name="PART_DescriptionTextBlock"
 											   HorizontalAlignment="Left"
@@ -51,14 +74,6 @@
 					</ControlTemplate>
 				</Setter.Value>
 			</Setter>
-
-			<Setter Property = "Background" Value = "{DynamicResource Background}"/>
 		</Style.Setters>
-
-		<Style.Triggers>
-			<Trigger Property="IsMouseOver" Value="True">
-				<Setter Property="Background" Value="{DynamicResource Shade}"/>
-			</Trigger>
-		</Style.Triggers>
 	</Style>
 </ResourceDictionary>

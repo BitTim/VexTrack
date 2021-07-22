@@ -22,6 +22,7 @@ namespace VexTrack.MVVM.ViewModel
 		public SettingsViewModel SettingsVM { get; set; }
 
 		private object _currentView;
+		private object _currentPopup = null;
 
 		public object CurrentView
 		{
@@ -32,23 +33,46 @@ namespace VexTrack.MVVM.ViewModel
 			}
 		}
 
+		public object CurrentPopup
+		{
+			get { return _currentPopup; }
+			set
+			{
+				_currentPopup = value;
+				OnPropertyChanged();
+			}
+		}
+
 		public MainViewModel()
 		{
+			TrackingDataHelper.LoadData();
+
+			ViewModelManager.ViewModels.Add("Main", this);
+
 			DashboardVM = new DashboardViewModel();
 			GoalVM = new GoalViewModel();
 			SeasonVM = new SeasonViewModel();
 			HistoryVM = new HistoryViewModel();
 			SettingsVM = new SettingsViewModel();
 
+			ViewModelManager.ViewModels.Add("Dashboard", DashboardVM);
+			ViewModelManager.ViewModels.Add("Goal", GoalVM);
+			ViewModelManager.ViewModels.Add("Season", SeasonVM);
+			ViewModelManager.ViewModels.Add("History", HistoryVM);
+			ViewModelManager.ViewModels.Add("Settings", SettingsVM);
+
 			CurrentView = DashboardVM;
 
 			DashboardViewCommand = new RelayCommand(o => { CurrentView = DashboardVM; });
 			GoalViewCommand = new RelayCommand(o => { CurrentView = GoalVM; });
 			SeasonViewCommand = new RelayCommand(o => { CurrentView = SeasonVM; });
-			HistoryViewCommand = new RelayCommand(o => { CurrentView = HistoryVM; HistoryVM.Update(); });
+			HistoryViewCommand = new RelayCommand(o => { CurrentView = HistoryVM; });
 			SettingsViewCommand = new RelayCommand(o => { CurrentView = SettingsVM; });
+		}
 
-			TrackingDataHelper.LoadData();
+		public void OnPopupBorderClick()
+		{
+			CurrentPopup = null;
 		}
 	}
 }

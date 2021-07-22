@@ -4,15 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VexTrack"
-             xmlns:vm="clr-namespace:VexTrack.MVVM.ViewModel"
 			 xmlns:model="clr-namespace:VexTrack.MVVM.Model"
+			 xmlns:conv="clr-namespace:VexTrack.MVVM.Converter"
+			 xmlns:vm="clr-namespace:VexTrack.MVVM.ViewModel"
              mc:Ignorable="d" 
              d:DesignHeight="780" d:DesignWidth="640">
 
-	<UserControl.DataContext>
-		<vm:HistoryViewModel/>
-	</UserControl.DataContext>
-	
+	<UserControl.Resources>
+		<conv:HistoryResultToResourceKeyConverter x:Key="historyKeyConv"/>
+	</UserControl.Resources>
+
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="80"/>
@@ -28,8 +29,20 @@
 		<ScrollViewer Grid.Row="1"
 					  Style="{DynamicResource ScrollViewerTheme}"
 					  Margin="16">
-			<StackPanel x:Name="ContentContainer"
-						Margin="0, 8, 0, 0"/>
+			<ItemsControl x:Name="ContentContainer"
+						Margin="0, 8, 0, 0"
+						  ItemsSource="{Binding Entries}">
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<model:HistoryEntryButtonModel Description="{Binding Path=Description}"
+													   Amount="{Binding Path=Amount}"
+													   Background="{Binding Path=Result, Converter={StaticResource historyKeyConv}, ConverterParameter=Background}"
+													   Foreground="{Binding Path=Result, Converter={StaticResource historyKeyConv}, ConverterParameter=Foreground}"
+													   Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.HistoryButtonClick}"
+													   CommandParameter="{Binding Path=Index}"/>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
 		</ScrollViewer>
 	</Grid>
 </UserControl>

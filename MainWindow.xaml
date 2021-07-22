@@ -4,7 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VexTrack"
-		xmlns:viewModel="clr-namespace:VexTrack.MVVM.ViewModel"
+		xmlns:vm="clr-namespace:VexTrack.MVVM.ViewModel"
+		xmlns:conv="clr-namespace:VexTrack.MVVM.Converter"
         mc:Ignorable="d"
         Title="MainWindow"
 		Height="812" Width="872"
@@ -13,16 +14,20 @@
 		Background="Transparent"
 		AllowsTransparency="True">
 
+	<Window.Resources>
+		<conv:NullToVisibilityConverter x:Key="NullToVisibleConv"/>
+	</Window.Resources>
+	
 	<Window.DataContext>
-		<viewModel:MainViewModel/>
+		<vm:MainViewModel/>
 	</Window.DataContext>
-
+	
 	<WindowChrome.WindowChrome>
 		<WindowChrome CaptionHeight="48"/>
 	</WindowChrome.WindowChrome>
 
 	<Grid>
-		<Border Background="{StaticResource Background}"
+		<Border Background="{DynamicResource Background}"
 				CornerRadius="8"
 				x:Name="ShadowBorder"
 				Margin="16">
@@ -236,12 +241,26 @@
 				</StackPanel>
 
 				<!-- Content -->
-			
+
 				<ContentControl Grid.Column="1"
 								Grid.Row="1"
 								Grid.RowSpan="4"
 								Content="{Binding CurrentView}"/>
+
 			</Grid>
 		</Border>
+
+		<!-- Popups -->
+		
+		<Border Background="{DynamicResource Black}"
+				CornerRadius="8"
+				x:Name="PopupBorder"
+				Margin="16"
+				Opacity="0.75"
+				Visibility="{Binding CurrentPopup, Converter={StaticResource NullToVisibleConv}}"
+				MouseLeftButtonUp="PopupBorder_MouseLeftButtonUp">
+		</Border>
+
+		<ContentControl Content="{Binding CurrentPopup}"/>
 	</Grid>
 </Window>

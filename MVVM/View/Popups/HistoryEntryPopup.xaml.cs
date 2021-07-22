@@ -12,21 +12,19 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using VexTrack.Core;
-using VexTrack.MVVM.Model;
 using VexTrack.MVVM.ViewModel;
 
-namespace VexTrack.MVVM.View
+namespace VexTrack.MVVM.View.Popups
 {
 	/// <summary>
-	/// Interaction logic for HistoryView.xaml
+	/// Interaction logic for HistoryEntryPopup.xaml
 	/// </summary>
-	public partial class HistoryView : UserControl
+	public partial class HistoryEntryPopup : UserControl
 	{
-		public HistoryView()
+		public HistoryEntryPopup()
 		{
 			InitializeComponent();
-			this.DataContext = ViewModelManager.ViewModels["History"];
+			this.DataContext = ViewModelManager.ViewModels["HEPopup"];
 		}
 	}
 }

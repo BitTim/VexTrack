@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using VexTrack.MVVM.ViewModel;
 
 namespace VexTrack
 {
@@ -155,8 +156,10 @@ namespace VexTrack
 
 				this.MainBorder.CornerRadius = new CornerRadius(0);
 				this.ShadowBorder.CornerRadius = new CornerRadius(0);
+				this.PopupBorder.CornerRadius = new CornerRadius(0);
 				this.MainBorder.Margin = new Thickness(0);
 				this.ShadowBorder.Margin = new Thickness(0);
+				this.PopupBorder.Margin = new Thickness(0);
 			}
 			else if(this.WindowState == WindowState.Normal)
 			{
@@ -165,14 +168,22 @@ namespace VexTrack
 
 				this.MainBorder.CornerRadius = new CornerRadius(8);
 				this.ShadowBorder.CornerRadius = new CornerRadius(8);
+				this.PopupBorder.CornerRadius = new CornerRadius(8);
 				this.MainBorder.Margin = new Thickness(16);
 				this.ShadowBorder.Margin = new Thickness(16);
+				this.PopupBorder.Margin = new Thickness(16);
 			}
 		}
 
 		private void Window_StateChanged(object sender, EventArgs e)
 		{
 			this.RefreshMaximizeRestoreButton();
+		}
+
+		private void PopupBorder_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+		{
+			var vm = (MainViewModel)DataContext;
+			vm.OnPopupBorderClick();
 		}
 	}
 }

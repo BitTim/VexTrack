@@ -32,4 +32,19 @@ namespace VexTrack.Core
 			return "";
 		}
 	}
+
+	public class HistoryEntryData
+	{
+		public int Index { get; set; }
+		public string Description { get; set; }
+		public long Time { get; set; }
+		public int Amount { get; set; }
+		public string Map { get; set; }
+		public string Result { get; set; }
+
+		public HistoryEntryData(int index, string description, long time, int amount, string map, string result)
+		{
+			(Index, Description, Time, Amount, Map, Result) = (index, description, time, amount, map, result);
+		}
+	}
 }

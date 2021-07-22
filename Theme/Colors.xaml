@@ -2,13 +2,15 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
 	<SolidColorBrush x:Key="White" Color="White"/>
+	<SolidColorBrush x:Key="Black" Color="Black"/>
+	<SolidColorBrush x:Key="Transparent" Color="Transparent"/>
 
 	<Color x:Key="LightBG">#FFFFFF</Color>
-	<Color x:Key="LightShade">#F2F2F2</Color>
+	<Color x:Key="LightShade">#e5e5e5</Color>
 	<Color x:Key="LightFG">#515151</Color>
 
 	<Color x:Key="DarkBG">#404040</Color>
-	<Color x:Key="DarkShade">#242424</Color>
+	<Color x:Key="DarkShade">#333333</Color>
 	<Color x:Key="DarkFG">#FFFFFF</Color>
 
 	<Color x:Key="Blue1">#1684FC</Color>
@@ -69,8 +71,8 @@
 		<GradientStop Color="{StaticResource Purple1}" Offset="0.0"/>
 		<GradientStop Color="{StaticResource Purple2}" Offset="1.0"/>
 	</LinearGradientBrush>
-	
-	
+
+
 
 	<LinearGradientBrush x:Key="WinColor">
 		<GradientStop Color="{StaticResource WinColor1}" Offset="0.0"/>

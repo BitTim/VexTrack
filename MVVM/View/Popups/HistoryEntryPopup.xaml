@@ -57,7 +57,7 @@
 							   Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
 							   Margin="0, 0, 0, 4"/>
 
-					<TextBlock Text="Result"
+					<TextBlock Text="Gained XP"
 							   Grid.Row="1"
 							   Grid.Column="0"
 							   FontSize="14"
@@ -65,7 +65,7 @@
 							   Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
 							   Margin="0, 0, 0, 4"/>
 
-					<TextBlock Text="Gained XP"
+					<TextBlock Text="Result"
 							   Grid.Row="2"
 							   Grid.Column="0"
 							   FontSize="14"
@@ -90,14 +90,14 @@
 							   Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
 							   Margin="0, 0, 0, 4"/>
 
-					<TextBlock Text="{Binding Result}"
+					<TextBlock Text="{Binding Amount}"
 							   Grid.Row="1"
 							   Grid.Column="1"
 							   FontSize="14"
 							   Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
 							   Margin="0, 0, 0, 4"/>
 
-					<TextBlock Text="{Binding Amount}"
+					<TextBlock Text="{Binding Result}"
 							   Grid.Row="2"
 							   Grid.Column="1"
 							   FontSize="14"

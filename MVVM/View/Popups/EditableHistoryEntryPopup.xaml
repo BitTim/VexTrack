@@ -43,11 +43,11 @@
 					</Grid.ColumnDefinitions>
 
 					<Grid.RowDefinitions>
-						<RowDefinition Height="22"/>
-						<RowDefinition Height="22"/>
-						<RowDefinition Height="22"/>
-						<RowDefinition Height="22"/>
-						<RowDefinition Height="22"/>
+						<RowDefinition Height="26"/>
+						<RowDefinition Height="26"/>
+						<RowDefinition Height="26"/>
+						<RowDefinition Height="26"/>
+						<RowDefinition Height="26"/>
 					</Grid.RowDefinitions>
 
 					<TextBlock Text="Description"
@@ -56,7 +56,7 @@
 							   FontSize="14"
 							   FontWeight="Bold"
 							   Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
-							   Margin="0, 0, 0, 4"/>
+							   Margin="0, 0, 0, 8"/>
 
 					<TextBlock Text="Time"
 							   Grid.Row="1"
@@ -64,7 +64,7 @@
 							   FontSize="14"
 							   FontWeight="Bold"
 							   Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
-							   Margin="0, 0, 0, 4"/>
+							   Margin="0, 0, 0, 8"/>
 
 					<TextBlock Text="Gained XP"
 							   Grid.Row="2"
@@ -72,7 +72,7 @@
 							   FontSize="14"
 							   FontWeight="Bold"
 							   Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
-							   Margin="0, 0, 0, 4"/>
+							   Margin="0, 0, 0, 8"/>
 
 					<TextBlock Text="Result"
 							   Grid.Row="3"
@@ -80,7 +80,7 @@
 							   FontSize="14"
 							   FontWeight="Bold"
 							   Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
-							   Margin="0, 0, 0, 4"/>
+							   Margin="0, 0, 0, 8"/>
 
 					<TextBlock Text="Map"
 							   Grid.Row="4"
@@ -88,7 +88,7 @@
 							   FontSize="14"
 							   FontWeight="Bold"
 							   Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
-							   Margin="0, 0, 0, 4"/>
+							   Margin="0, 0, 0, 8"/>
 
 					
 					
@@ -97,35 +97,39 @@
 							   Grid.Column="1"
 							   FontSize="14"
 							   Foreground="{DynamicResource Foreground}"
-							   Margin="0, 0, 0, 4"/>
+							   Margin="0, 0, 0, 8"
+							 Style="{DynamicResource TextBoxTheme}"/>
 
 					<TextBox Text="{Binding Time, Converter={StaticResource TimestampConv}, ConverterParameter=False}"
 							   Grid.Row="1"
 							   Grid.Column="1"
 							   FontSize="14"
 							   Foreground="{DynamicResource Foreground}"
-							   Margin="0, 0, 0, 4"/>
+							   Margin="0, 0, 0, 8"
+							 Style="{DynamicResource TextBoxTheme}"/>
 
 					<TextBox Text="{Binding Amount}"
 							   Grid.Row="2"
 							   Grid.Column="1"
 							   FontSize="14"
 							   Foreground="{DynamicResource Foreground}"
-							   Margin="0, 0, 0, 4"/>
+							   Margin="0, 0, 0, 8"
+							 Style="{DynamicResource TextBoxTheme}"/>
 
 					<TextBlock Text="{Binding Result}"
 							   Grid.Row="3"
 							   Grid.Column="1"
 							   FontSize="14"
 							   Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
-							   Margin="0, 0, 0, 4"/>
+							   Margin="0, 0, 0, 8"/>
 
 					<TextBox Text="{Binding Map}"
 							   Grid.Row="4"
 							   Grid.Column="1"
 							   FontSize="14"
 							   Foreground="{DynamicResource Foreground}"
-							   Margin="0, 0, 0, 4"/>
+							   Margin="0, 0, 0, 8"
+							 Style="{DynamicResource TextBoxTheme}"/>
 				</Grid>
 
 				<Grid Grid.Row="2"

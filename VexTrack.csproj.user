@@ -75,6 +75,9 @@
     <Page Update="Theme\CheckBoxTheme.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Theme\TextBoxTheme.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Theme\TitleBarButtonTheme.xaml">
       <SubType>Designer</SubType>
     </Page>

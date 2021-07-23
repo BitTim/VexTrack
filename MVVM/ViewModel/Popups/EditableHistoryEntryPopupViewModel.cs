@@ -70,6 +70,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			});
 		}
 		
+		// TODO: Add Input validation
 		public void SetTile(string title)
 		{
 			Title = title;

@@ -92,41 +92,39 @@
 
 					
 					
-					<!-- Change TextBlock to TextBox / InputBox -->
-					
-					<TextBlock Text="{Binding Description}"
-							   Grid.Row="1"
-							   Grid.Column="1"
-							   FontSize="14"
-							   Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
-							   Margin="0, 0, 0, 4"/>
-					
-					<TextBlock Text="{Binding Time, Converter={StaticResource TimestampConv}, ConverterParameter=False}"
+					<TextBox Text="{Binding Description}"
 							   Grid.Row="0"
 							   Grid.Column="1"
 							   FontSize="14"
-							   Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
+							   Foreground="{DynamicResource Foreground}"
 							   Margin="0, 0, 0, 4"/>
 
-					<TextBlock Text="{Binding Amount}"
+					<TextBox Text="{Binding Time, Converter={StaticResource TimestampConv}, ConverterParameter=False}"
 							   Grid.Row="1"
 							   Grid.Column="1"
 							   FontSize="14"
-							   Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
+							   Foreground="{DynamicResource Foreground}"
 							   Margin="0, 0, 0, 4"/>
 
-					<TextBlock Text="{Binding Result}"
+					<TextBox Text="{Binding Amount}"
 							   Grid.Row="2"
 							   Grid.Column="1"
 							   FontSize="14"
-							   Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
+							   Foreground="{DynamicResource Foreground}"
 							   Margin="0, 0, 0, 4"/>
 
-					<TextBlock Text="{Binding Map}"
+					<TextBlock Text="{Binding Result}"
 							   Grid.Row="3"
 							   Grid.Column="1"
 							   FontSize="14"
 							   Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
+							   Margin="0, 0, 0, 4"/>
+
+					<TextBox Text="{Binding Map}"
+							   Grid.Row="4"
+							   Grid.Column="1"
+							   FontSize="14"
+							   Foreground="{DynamicResource Foreground}"
 							   Margin="0, 0, 0, 4"/>
 				</Grid>
 
@@ -147,7 +145,7 @@
 							Style="{DynamicResource ButtonTheme}"
 							Command="{Binding OnBackClicked}"/>
 
-					<Button Content="Edit"
+					<Button Content="Apply"
 							Grid.Column="1"
 							Background="{DynamicResource Background}"
 							Foreground="{DynamicResource Foreground}"
@@ -156,8 +154,7 @@
 							HorizontalAlignment="Right"
 							VerticalAlignment="Bottom"
 							Style="{DynamicResource ButtonTheme}"
-							Command="{Binding OnEditClicked}"/>
-					</StackPanel>
+							Command="{Binding OnApplyClicked}"/>
 				</Grid>
 			</Grid>
 		</Border>

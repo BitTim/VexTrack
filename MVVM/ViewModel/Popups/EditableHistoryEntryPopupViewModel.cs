@@ -7,28 +7,84 @@ using VexTrack.Core;
 
 namespace VexTrack.MVVM.ViewModel.Popups
 {
-    class EditableHistoryEntryPopupViewModel
-    {
-    		public string Title { get; set; }
-    
-    		<!-- Add OnPropertyChanged to setters -->
-    
-        public string Description { get; set; }
-		public long Time { get; set; }
-		public int Amount { get; set; }
-		public string Map { get; set; }
-		public string Result { get; set; }
+    class EditableHistoryEntryPopupViewModel : BasePopupViewModel
+	{
+		public RelayCommand OnBackClicked { get; set; }
+		public RelayCommand OnApplyClicked { get; set; }
 
-		private MainViewModel MainVM { get; set; }
+		public string Title { get; set; }
+		public int Index { get; set; }
 
-		public HistoryEntryPopupViewModel()
+		private string _description;
+		private long _time;
+		private int _amount;
+		private string _map;
+
+		public string Description { get => _description;
+			set
+			{
+				_description = value;
+				OnPropertyChanged();
+				OnPropertyChanged(nameof(Result));
+			}
+		}
+		public long Time
 		{
-			MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
+			get => _time;
+			set
+			{
+				_time = value;
+				OnPropertyChanged();
+			}
+		}
+		public int Amount
+		{
+			get => _amount;
+			set
+			{
+				_amount = value;
+				OnPropertyChanged();
+			}
+		}
+		public string Map
+		{
+			get => _map;
+			set
+			{
+				_map = value;
+				OnPropertyChanged();
+			}
+		}
+
+		public string Result => HistoryDataCalc.CalcHistoryResult(Description);
+
+		public EditableHistoryEntryPopupViewModel(string Title)
+		{
+			CanCancel = true;
+			SetTile(Title);
+
+			OnBackClicked = new RelayCommand(o => { if (CanCancel) Close(); });
+			OnApplyClicked = new RelayCommand(o => {
+				TrackingDataHelper.EditHistoryEntry(TrackingDataHelper.CurrentSeasonIndex, Index, new HistoryEntry(Time, Description, Amount, Map));
+				Close();
+			});
 		}
 		
 		public void SetTile(string title)
 		{
 			Title = title;
+		}
+
+		public void SetData(HistoryEntryData data)
+		{
+			Index = data.Index;
+
+			Description = data.Description;
+			Time = data.Time;
+			Amount = data.Amount;
+			Map = data.Map;
+
+			IsInitialized = true;
 		}
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json.Linq;
+using VexTrack.MVVM.ViewModel;
 
 namespace VexTrack.Core
 {
@@ -60,6 +61,7 @@ namespace VexTrack.Core
 	static class TrackingDataHelper
 	{
 		public static TrackingData Data { get; set; }
+		public static int CurrentSeasonIndex { get => Data.Seasons.Count - 1; }
 
 		public static void InitData(string seasonName, string seasonEndDate, int activeBPLevel, int cXP)
 		{
@@ -226,6 +228,36 @@ namespace VexTrack.Core
 			}
 
 			File.WriteAllText(Constants.DataPath, jo.ToString());
+		}
+
+		public static void CallUpdate()
+		{
+			SaveData();
+			MainViewModel MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
+			MainVM.Update();
+		}
+
+		public static HistoryEntry GetHistoryEntry(int season, int index)
+		{
+			return Data.Seasons[season].History[index];
+		}
+
+		public static void AddHistoryEntry(int season, int index, HistoryEntry data)
+		{
+			Data.Seasons[season].History.Add(data);
+			CallUpdate();
+		}
+
+		public static void RemoveHistoryEntry(int season, int index)
+		{
+			Data.Seasons[season].History.RemoveAt(index);
+			CallUpdate();
+		}
+
+		public static void EditHistoryEntry(int season, int index, HistoryEntry data)
+		{
+			Data.Seasons[season].History[index] = data;
+			CallUpdate();
 		}
 	}
 }

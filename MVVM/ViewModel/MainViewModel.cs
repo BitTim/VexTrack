@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VexTrack.Core;
+using VexTrack.MVVM.ViewModel.Popups;
 
 namespace VexTrack.MVVM.ViewModel
 {
@@ -22,7 +23,9 @@ namespace VexTrack.MVVM.ViewModel
 		public SettingsViewModel SettingsVM { get; set; }
 
 		private object _currentView;
-		private object _currentPopup = null;
+
+		private BasePopupViewModel _currentPopup = null;
+		private List<BasePopupViewModel> _popupQueue = new();
 
 		public object CurrentView
 		{
@@ -33,12 +36,22 @@ namespace VexTrack.MVVM.ViewModel
 			}
 		}
 
-		public object CurrentPopup
+		public BasePopupViewModel CurrentPopup
 		{
 			get { return _currentPopup; }
 			set
 			{
 				_currentPopup = value;
+				OnPropertyChanged();
+			}
+		}
+
+		public List<BasePopupViewModel> PopupQueue
+		{
+			get { return _popupQueue; }
+			set
+			{
+				_popupQueue = value;
 				OnPropertyChanged();
 			}
 		}
@@ -70,9 +83,32 @@ namespace VexTrack.MVVM.ViewModel
 			SettingsViewCommand = new RelayCommand(o => { CurrentView = SettingsVM; });
 		}
 
+		public void Update()
+		{
+			HistoryVM.Update();
+		}
+
+		public void QueuePopup(BasePopupViewModel popup)
+		{
+			PopupQueue.Add(popup);
+			CurrentPopup = PopupQueue.Last();
+			popup.IsOpen = true;
+		}
+
+		public void DequeuePopup(BasePopupViewModel popup)
+		{
+			PopupQueue.Remove(popup);
+
+			if (PopupQueue.Count == 0) CurrentPopup = null;
+			else CurrentPopup = PopupQueue.Last();
+
+			popup.IsOpen = false;
+		}
+
 		public void OnPopupBorderClick()
 		{
-			CurrentPopup = null;
+			if (PopupQueue.Count != 0 && PopupQueue.Last().CanCancel == false) return;
+			DequeuePopup(PopupQueue.Last());
 		}
 	}
 }

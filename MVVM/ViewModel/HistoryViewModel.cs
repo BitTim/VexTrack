@@ -33,6 +33,7 @@ namespace VexTrack.MVVM.ViewModel
 		public HistoryViewModel()
 		{
 			MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
+
 			HEPopup = new();
 			ViewModelManager.ViewModels.Add("HEPopup", HEPopup);
 
@@ -48,8 +49,11 @@ namespace VexTrack.MVVM.ViewModel
 			foreach (HistoryEntry he in TrackingDataHelper.Data.Seasons.Last<Season>().History)
 			{
 				string result = HistoryDataCalc.CalcHistoryResult(he.Description);
-				Entries.Insert(0, new HistoryEntryData(Entries.Count, he.Description, he.Time, he.Amount, he.Map, result));
+				Entries.Insert(0, new HistoryEntryData(Entries.Count, TrackingDataHelper.CurrentSeasonIndex, he.Description, he.Time, he.Amount, he.Map, result));
 			}
+
+			if (HEPopup.IsInitialized) HEPopup.SetData(Entries[Entries.Count - HEPopup.Index - 1]);
+			else HEPopup.Close();
 		}
 
 		public void OnHistoryButtonClick(object parameter)
@@ -57,7 +61,7 @@ namespace VexTrack.MVVM.ViewModel
 			int index = Entries.Count - (int)parameter - 1;
 
 			HEPopup.SetData(Entries[index]);
-			MainVM.CurrentPopup = HEPopup;
+			MainVM.QueuePopup(HEPopup);
 		}
 	}
 }

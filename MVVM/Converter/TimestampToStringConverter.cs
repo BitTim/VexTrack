@@ -26,7 +26,11 @@ namespace VexTrack.MVVM.Converter
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			throw new NotImplementedException();
+			string str = value as string;
+			str += " +00:00";
+			DateTimeOffset dto = DateTimeOffset.Parse(str);
+
+			return dto.ToUnixTimeSeconds();
 		}
 	}
 }

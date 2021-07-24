@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json.Linq;
 using VexTrack.MVVM.ViewModel;
 
@@ -8,15 +9,16 @@ namespace VexTrack.Core
 {
 	class HistoryEntry
 	{
+		public string UUID { get; set; }
 		public long Time { get; set; }
 		public string Description { get; set; }
 		public int Amount { get; set; }
 
 		public string Map { get; set; }
 
-		public HistoryEntry(long time, string desc, int amount, string map)
+		public HistoryEntry(string uuid, long time, string desc, int amount, string map)
 		{
-			(Time, Description, Amount, Map) = (time, desc, amount, map);
+			(UUID, Time, Description, Amount, Map) = (uuid, time, desc, amount, map);
 		}
 	}
 
@@ -35,15 +37,16 @@ namespace VexTrack.Core
 
 	class Season
 	{
+		public string UUID { get; set; }
 		public string Name { get; set; }
 		public string EndDate { get; set; }
 		public int ActiveBPLevel { get; set; }
 		public int CXP { get; set; }
 		public List<HistoryEntry> History { get; set; }
 
-		public Season(string name, string endDate, int activeBPLevel, int cXP, List<HistoryEntry> history)
+		public Season(string uuid, string name, string endDate, int activeBPLevel, int cXP, List<HistoryEntry> history)
 		{
-			(Name, EndDate, ActiveBPLevel, CXP, History) = (name, endDate, activeBPLevel, cXP, history);
+			(UUID, Name, EndDate, ActiveBPLevel, CXP, History) = (uuid, name, endDate, activeBPLevel, cXP, history);
 		}
 	}
 
@@ -69,8 +72,8 @@ namespace VexTrack.Core
 			List<Season> seasons = new();
 
 			List<HistoryEntry> history = new();
-			history.Add(new HistoryEntry(DateTimeOffset.Now.ToUnixTimeSeconds(), "Initialization", cXP, null));
-			seasons.Add(new Season(seasonName, seasonEndDate, activeBPLevel, cXP, history));
+			history.Add(new HistoryEntry(Guid.NewGuid().ToString(), DateTimeOffset.Now.ToUnixTimeSeconds(), "Initialization", cXP, null));
+			seasons.Add(new Season(Guid.NewGuid().ToString(), seasonName, seasonEndDate, activeBPLevel, cXP, history));
 
 			Data = new TrackingData(goals, seasons);
 			SaveData();
@@ -94,6 +97,7 @@ namespace VexTrack.Core
 
 			List<Season> seasons = new();
 
+			//TODO: Display dialog before setting Season Name
 			string name = "First Season";
 			string endDate = (string)jo["endDate"];
 			int activeBPLevel = (int)jo["activeBPLevel"];
@@ -107,10 +111,10 @@ namespace VexTrack.Core
 				int amount = (int)historyEntry["amount"];
 				string map = (string)historyEntry["map"];
 
-				history.Add(new HistoryEntry(time, description, amount, map));
+				history.Add(new HistoryEntry(Guid.NewGuid().ToString(), time, description, amount, map));
 			}
 
-			seasons.Add(new Season(name, endDate, activeBPLevel, cXP, history));
+			seasons.Add(new Season(Guid.NewGuid().ToString(), name, endDate, activeBPLevel, cXP, history));
 			Data = new TrackingData(goals, seasons);
 
 			File.Move(Constants.LegacyDataPath, Constants.LegacyDataPath + ".bak");
@@ -146,6 +150,7 @@ namespace VexTrack.Core
 
 			List<Season> seasons = new();
 			foreach (JObject season in jo["seasons"]) {
+				string sUUID = (string)season["uuid"];
 				string name = (string)season["name"];
 				string endDate = (string)season["endDate"];
 				int activeBPLevel = (int)season["activeBPLevel"];
@@ -160,15 +165,18 @@ namespace VexTrack.Core
 				List<HistoryEntry> history = new();
 				foreach(JObject historyEntry in season[historyKey])
 				{
-					long time = (long)historyEntry["time"];
+					string hUUID = (string)historyEntry["uuid"];
 					string description = (string)historyEntry["description"];
+					long time = (long)historyEntry["time"];
 					int amount = (int)historyEntry["amount"];
 					string map = (string)historyEntry["map"];
 
-					history.Add(new HistoryEntry(time, description, amount, map));
+					if (hUUID == null) hUUID = Guid.NewGuid().ToString();
+					history.Add(new HistoryEntry(hUUID, time, description, amount, map));
 				}
 
-				seasons.Add(new Season(name, endDate, activeBPLevel, cXP, history));
+				if (sUUID == null) sUUID = Guid.NewGuid().ToString();
+				seasons.Add(new Season(sUUID, name, endDate, activeBPLevel, cXP, history));
 			}
 
 			Data = new TrackingData(goals, seasons);
@@ -196,6 +204,7 @@ namespace VexTrack.Core
 			foreach (Season season in Data.Seasons)
 			{
 				JObject seasonObj = new();
+				seasonObj.Add("uuid", season.UUID);
 				seasonObj.Add("name", season.Name);
 				seasonObj.Add("endDate", season.EndDate);
 				seasonObj.Add("activeBPLevel", season.ActiveBPLevel);
@@ -205,8 +214,9 @@ namespace VexTrack.Core
 				foreach (HistoryEntry historyEntry in season.History)
 				{
 					JObject historyEntryObj = new();
-					historyEntryObj.Add("time", historyEntry.Time);
+					historyEntryObj.Add("uuid", historyEntry.UUID);
 					historyEntryObj.Add("description", historyEntry.Description);
+					historyEntryObj.Add("time", historyEntry.Time);
 					historyEntryObj.Add("amount", historyEntry.Amount);
 					historyEntryObj.Add("map", historyEntry.Map);
 
@@ -232,6 +242,12 @@ namespace VexTrack.Core
 
 		public static void CallUpdate()
 		{
+			for (int i = 0; i < Data.Seasons.Count; i++)
+			{
+				List<HistoryEntry> SortedHistory = Data.Seasons[i].History.OrderBy(h => h.Time).ToList();
+				Data.Seasons[i].History = SortedHistory;
+			}
+			
 			SaveData();
 			MainViewModel MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
 			MainVM.Update();
@@ -242,7 +258,7 @@ namespace VexTrack.Core
 			return Data.Seasons[season].History[index];
 		}
 
-		public static void AddHistoryEntry(int season, int index, HistoryEntry data)
+		public static void AddHistoryEntry(int season, HistoryEntry data)
 		{
 			Data.Seasons[season].History.Add(data);
 			CallUpdate();

@@ -10,10 +10,12 @@ namespace VexTrack.MVVM.ViewModel.Popups
     class EditableHistoryEntryPopupViewModel : BasePopupViewModel
 	{
 		public RelayCommand OnBackClicked { get; set; }
-		public RelayCommand OnApplyClicked { get; set; }
+		public RelayCommand OnDoneClicked { get; set; }
 
 		public string Title { get; set; }
 		public int Index { get; set; }
+		public string UUID { get; set; }
+		public bool EditMode { get; set; }
 
 		private string _description;
 		private long _time;
@@ -58,28 +60,44 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 		public string Result => HistoryDataCalc.CalcHistoryResult(Description);
 
-		public EditableHistoryEntryPopupViewModel(string Title)
+		public EditableHistoryEntryPopupViewModel()
 		{
 			CanCancel = true;
-			SetTile(Title);
 
 			OnBackClicked = new RelayCommand(o => { if (CanCancel) Close(); });
-			OnApplyClicked = new RelayCommand(o => {
-				TrackingDataHelper.EditHistoryEntry(TrackingDataHelper.CurrentSeasonIndex, Index, new HistoryEntry(Time, Description, Amount, Map));
+			OnDoneClicked = new RelayCommand(o => {
+				if(EditMode) TrackingDataHelper.EditHistoryEntry(TrackingDataHelper.CurrentSeasonIndex, Index, new HistoryEntry(UUID, Time, Description, Amount, Map));
+				else TrackingDataHelper.AddHistoryEntry(TrackingDataHelper.CurrentSeasonIndex, new HistoryEntry(UUID, Time, Description, Amount, Map));
 				Close();
 			});
 		}
 		
-		// TODO: Add Input validation
-		public void SetTile(string title)
+		public void SetParameters(string title, bool editMode)
 		{
 			Title = title;
+			EditMode = editMode;
+
+			if (!EditMode) InitData();
+		}
+
+		public void InitData()
+		{
+			Time = DateTimeOffset.Now.ToUnixTimeSeconds();
+
+			Index = -1;
+			UUID = Guid.NewGuid().ToString();
+			Description = "";
+			Amount = 0;
+			Map = "";
+
+			IsInitialized = true;
 		}
 
 		public void SetData(HistoryEntryData data)
 		{
 			Index = data.Index;
 
+			UUID = data.UUID;
 			Description = data.Description;
 			Time = data.Time;
 			Amount = data.Amount;

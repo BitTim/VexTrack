@@ -16,7 +16,7 @@ namespace VexTrack.MVVM.Converter
 			string noTime = (string)parameter;
 
 			string str = "";
-			DateTimeOffset dt = DateTimeOffset.FromUnixTimeSeconds(timestamp);
+			DateTimeOffset dt = DateTimeOffset.FromUnixTimeSeconds(timestamp).ToLocalTime();
 
 			if (noTime.ToLower() == "true") str = dt.ToString("d");
 			else str = dt.ToString("g");
@@ -27,8 +27,9 @@ namespace VexTrack.MVVM.Converter
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			string str = value as string;
-			str += " +00:00";
-			DateTimeOffset dto = DateTimeOffset.Parse(str);
+
+			DateTimeOffset dto;
+			if (DateTimeOffset.TryParse(str, out dto) == false) return DateTimeOffset.Now.ToUnixTimeSeconds();
 
 			return dto.ToUnixTimeSeconds();
 		}

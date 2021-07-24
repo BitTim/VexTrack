@@ -44,5 +44,13 @@
 				</ItemsControl.ItemTemplate>
 			</ItemsControl>
 		</ScrollViewer>
+
+		<Button Grid.Row="0"
+				Width="48" Height="48"
+				HorizontalAlignment="Right"
+				VerticalAlignment="Center"
+				Margin="0, 0, 16, 0"
+				Style="{DynamicResource AddButtonTheme}"
+				Command="{Binding OnAddClicked}"/>
 	</Grid>
 </UserControl>

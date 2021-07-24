@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:VexTrack.MVVM.View.Popups"
 			 xmlns:vm="clr-namespace:VexTrack.MVVM.ViewModel.Popups"
 			 xmlns:conv="clr-namespace:VexTrack.MVVM.Converter"
+			 xmlns:validation="clr-namespace:VexTrack.MVVM.Validation"
              mc:Ignorable="d" 
              d:DesignHeight="812" d:DesignWidth="872">
 
@@ -13,14 +14,14 @@
 		<conv:HistoryResultToResourceKeyConverter x:Key="ResultToKeyConv"/>
 		<conv:TimestampToStringConverter x:Key="TimestampConv"/>
 	</UserControl.Resources>
-	
+
 	<Grid Height="Auto"
 		  Width="640"
 		  VerticalAlignment="Center">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
-		
+
 		<Border Background="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Background}"
 				CornerRadius="8">
 			<Grid Margin="16">
@@ -29,7 +30,7 @@
 					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
-				
+
 				<TextBlock Text="{Binding Title}"
 						   FontSize="20"
 						   FontWeight="Bold"
@@ -43,11 +44,11 @@
 					</Grid.ColumnDefinitions>
 
 					<Grid.RowDefinitions>
-						<RowDefinition Height="26"/>
-						<RowDefinition Height="26"/>
-						<RowDefinition Height="26"/>
-						<RowDefinition Height="26"/>
-						<RowDefinition Height="26"/>
+						<RowDefinition Height="30"/>
+						<RowDefinition Height="30"/>
+						<RowDefinition Height="30"/>
+						<RowDefinition Height="30"/>
+						<RowDefinition Height="30"/>
 					</Grid.RowDefinitions>
 
 					<TextBlock Text="Description"
@@ -90,46 +91,72 @@
 							   Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
 							   Margin="0, 0, 0, 8"/>
 
-					
-					
-					<TextBox Text="{Binding Description}"
+
+
+					<TextBox Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
 							   Grid.Row="0"
 							   Grid.Column="1"
 							   FontSize="14"
-							   Foreground="{DynamicResource Foreground}"
 							   Margin="0, 0, 0, 8"
+							 Height="22"
 							 Style="{DynamicResource TextBoxTheme}"/>
 
-					<TextBox Text="{Binding Time, Converter={StaticResource TimestampConv}, ConverterParameter=False}"
-							   Grid.Row="1"
-							   Grid.Column="1"
-							   FontSize="14"
-							   Foreground="{DynamicResource Foreground}"
-							   Margin="0, 0, 0, 8"
-							 Style="{DynamicResource TextBoxTheme}"/>
+					<TextBox x:Name="PART_DateTimeBox"
+							 Grid.Row="1"
+							 Grid.Column="1"
+							 FontSize="14"
+							 Margin="0, 0, 0, 8"
+							 Height="22"
+							 Style="{DynamicResource TextBoxTheme}">
+						<TextBox.Text>
+							<Binding Path="Time"
+									 Converter="{StaticResource TimestampConv}"
+									 ConverterParameter="False"
+									 ValidatesOnNotifyDataErrors="True"
+									 ValidatesOnDataErrors="True"
+									 NotifyOnValidationError="True">
+								<Binding.ValidationRules>
+									<validation:DateTimeValidation ValidatesOnTargetUpdated="True"/>
+								</Binding.ValidationRules>
+							</Binding>
+						</TextBox.Text>
+					</TextBox>
 
-					<TextBox Text="{Binding Amount}"
-							   Grid.Row="2"
-							   Grid.Column="1"
-							   FontSize="14"
-							   Foreground="{DynamicResource Foreground}"
-							   Margin="0, 0, 0, 8"
-							 Style="{DynamicResource TextBoxTheme}"/>
+					<TextBox x:Name="PART_AmountBox"
+							 Grid.Row="2"
+							 Grid.Column="1"
+							 FontSize="14"
+							 Margin="0, 0, 0, 8"
+							 Height="22"
+							 Style="{DynamicResource TextBoxTheme}">
+						<TextBox.Text>
+							<Binding Path="Amount"
+									 UpdateSourceTrigger="PropertyChanged"
+									 ValidatesOnNotifyDataErrors="True"
+									 ValidatesOnDataErrors="True"
+									 NotifyOnValidationError="True">
+								<Binding.ValidationRules>
+									<validation:NumericValidationRule ValidatesOnTargetUpdated="True"/>
+								</Binding.ValidationRules>
+							</Binding>
+						</TextBox.Text>
+					</TextBox>
 
-					<TextBlock Text="{Binding Result}"
+					<TextBlock Text="{Binding Result, UpdateSourceTrigger=PropertyChanged}"
 							   Grid.Row="3"
 							   Grid.Column="1"
 							   FontSize="14"
 							   Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
-							   Margin="0, 0, 0, 8"/>
+							   Margin="0, 0, 0, 8"
+							 Height="22"/>
 
-					<TextBox Text="{Binding Map}"
+					<TextBox Text="{Binding Map, UpdateSourceTrigger=PropertyChanged}"
 							   Grid.Row="4"
 							   Grid.Column="1"
 							   FontSize="14"
-							   Foreground="{DynamicResource Foreground}"
 							   Margin="0, 0, 0, 8"
-							 Style="{DynamicResource TextBoxTheme}"/>
+							 Style="{DynamicResource TextBoxTheme}"
+							 Height="22"/>
 				</Grid>
 
 				<Grid Grid.Row="2"
@@ -149,7 +176,7 @@
 							Style="{DynamicResource ButtonTheme}"
 							Command="{Binding OnBackClicked}"/>
 
-					<Button Content="Apply"
+					<Button Content="Done"
 							Grid.Column="1"
 							Background="{DynamicResource Background}"
 							Foreground="{DynamicResource Foreground}"
@@ -158,9 +185,10 @@
 							HorizontalAlignment="Right"
 							VerticalAlignment="Bottom"
 							Style="{DynamicResource ButtonTheme}"
-							Command="{Binding OnApplyClicked}"/>
+							Command="{Binding OnDoneClicked}">
+					</Button>
 				</Grid>
 			</Grid>
 		</Border>
-    </Grid>
+	</Grid>
 </UserControl>

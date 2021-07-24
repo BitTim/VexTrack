@@ -15,7 +15,9 @@ namespace VexTrack.MVVM.ViewModel
 	class HistoryViewModel : ObservableObject
 	{
 		public RelayCommand HistoryButtonClick { get; set; }
+		public RelayCommand OnAddClicked { get; set; }
 		private HistoryEntryPopupViewModel HEPopup { get; set; }
+		private EditableHistoryEntryPopupViewModel EditableHEPopup { get; set; }
 		private MainViewModel MainVM { get; set; }
 
 		private ObservableCollection<HistoryEntryData> _entries = new();
@@ -34,10 +36,17 @@ namespace VexTrack.MVVM.ViewModel
 		{
 			MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
 
+			EditableHEPopup = new();
+			ViewModelManager.ViewModels.Add("EditableHEPopup", EditableHEPopup);
+
 			HEPopup = new();
 			ViewModelManager.ViewModels.Add("HEPopup", HEPopup);
 
 			HistoryButtonClick = new RelayCommand(OnHistoryButtonClick);
+			OnAddClicked = new RelayCommand(o => {
+				EditableHEPopup.SetParameters("Add History Entry", false);
+				MainVM.QueuePopup(EditableHEPopup);
+			});
 
 			Update();
 		}
@@ -49,10 +58,10 @@ namespace VexTrack.MVVM.ViewModel
 			foreach (HistoryEntry he in TrackingDataHelper.Data.Seasons.Last<Season>().History)
 			{
 				string result = HistoryDataCalc.CalcHistoryResult(he.Description);
-				Entries.Insert(0, new HistoryEntryData(Entries.Count, TrackingDataHelper.CurrentSeasonIndex, he.Description, he.Time, he.Amount, he.Map, result));
+				Entries.Insert(0, new HistoryEntryData(Entries.Count, TrackingDataHelper.CurrentSeasonIndex, he.UUID, he.Description, he.Time, he.Amount, he.Map, result));
 			}
 
-			if (HEPopup.IsInitialized) HEPopup.SetData(Entries[Entries.Count - HEPopup.Index - 1]);
+			if (HEPopup.IsInitialized) HEPopup.SetData(Entries.Where(e => e.UUID == HEPopup.UUID).FirstOrDefault());
 			else HEPopup.Close();
 		}
 

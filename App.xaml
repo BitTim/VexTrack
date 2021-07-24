@@ -21,6 +21,7 @@
 				<ResourceDictionary Source="Theme/CheckBoxTheme.xaml"/>
 				<ResourceDictionary Source="Theme/ButtonTheme.xaml"/>
 				<ResourceDictionary Source="Theme/TextBoxTheme.xaml"/>
+				<ResourceDictionary Source="Theme/AddButtonTheme.xaml"/>
 
 				<ResourceDictionary Source="Theme/HistoryButtonTheme.xaml"/>
 				<ResourceDictionary Source="Theme/ScrollViewerTheme.xaml"/>

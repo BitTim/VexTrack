@@ -10,6 +10,8 @@ namespace VexTrack.Core
 	{
 		public static string CalcHistoryResult(string description)
 		{
+			if (description == "" || description == null) return "";
+
 			string[] splitDesc = description.Split(" ");
 			string scoreStr = "";
 
@@ -17,19 +19,20 @@ namespace VexTrack.Core
 			{
 				if(!token.Contains("-")) { continue; }
 				scoreStr = token;
+
+				if (scoreStr == "") return "";
+
+				string[] scoreTokens = scoreStr.Split("-");
+				if (scoreTokens.Length != 2) return "";
+				if (scoreTokens[0] == "" || scoreTokens[1] == "") return "";
+
+				int[] scoreComponents = { int.Parse(scoreTokens[0]), int.Parse(scoreTokens[1]) };
+
+				if (scoreComponents[0] > scoreComponents[1]) return "Win";
+				if (scoreComponents[0] < scoreComponents[1]) return "Loss";
+				if (scoreComponents[0] == scoreComponents[1]) return "Draw";
 			}
 
-			if (scoreStr == "") return "";
-
-			string[] scoreTokens = scoreStr.Split("-");
-			if (scoreTokens.Length != 2) return "";
-			if (scoreTokens[0] == "" || scoreTokens[1] == "") return "";
-
-			int[] scoreComponents = { int.Parse(scoreTokens[0]), int.Parse(scoreTokens[1]) };
-
-			if (scoreComponents[0] > scoreComponents[1]) return "Win";
-			if (scoreComponents[0] < scoreComponents[1]) return "Loss";
-			if (scoreComponents[0] == scoreComponents[1]) return "Draw";
 			return "";
 		}
 	}
@@ -38,15 +41,16 @@ namespace VexTrack.Core
 	{
 		public int Index { get; set; }
 		public int SeasonIndex { get; set; }
+		public string UUID { get; set; }
 		public string Description { get; set; }
 		public long Time { get; set; }
 		public int Amount { get; set; }
 		public string Map { get; set; }
 		public string Result { get; set; }
 
-		public HistoryEntryData(int index, int season, string description, long time, int amount, string map, string result)
+		public HistoryEntryData(int index, int season, string uuid, string description, long time, int amount, string map, string result)
 		{
-			(Index, SeasonIndex, Description, Time, Amount, Map, Result) = (index, season, description, time, amount, map, result);
+			(Index, SeasonIndex, UUID, Description, Time, Amount, Map, Result) = (index, season, uuid, description, time, amount, map, result);
 		}
 	}
 }

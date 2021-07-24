@@ -16,11 +16,11 @@ namespace VexTrack.MVVM.Validation
             string strValue = Convert.ToString(value);
 
             if (string.IsNullOrEmpty(strValue))
-                return new ValidationResult(false, $"This field cannot be empty");
+                return new ValidationResult(false, $"This field cannot be empty, last known value will be used");
             bool canConvert = false;
-            
+
             canConvert = int.TryParse(strValue, out _);
-            return canConvert ? new ValidationResult(true, null) : new ValidationResult(false, $"Input must be a number");
+            return canConvert ? new ValidationResult(true, null) : new ValidationResult(false, $"Input must be a number, last known value will be used");
         }
-	}
+    }
 }

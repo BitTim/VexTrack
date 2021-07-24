@@ -176,7 +176,8 @@
 							Style="{DynamicResource ButtonTheme}"
 							Command="{Binding OnBackClicked}"/>
 
-					<Button Content="Done"
+					<Button x:Name="PART_DoneButton"
+							Content="Done"
 							Grid.Column="1"
 							Background="{DynamicResource Background}"
 							Foreground="{DynamicResource Foreground}"

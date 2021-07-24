@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using VexTrack.MVVM.ViewModel;
+using VexTrack.MVVM.ViewModel.Popups;
 
 namespace VexTrack.MVVM.View.Popups
 {

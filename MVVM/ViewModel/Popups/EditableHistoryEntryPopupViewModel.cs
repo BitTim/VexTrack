@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VexTrack.Core;
+using VexTrack.MVVM.Validation;
 
 namespace VexTrack.MVVM.ViewModel.Popups
 {
@@ -71,7 +72,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 				Close();
 			});
 		}
-		
+
 		public void SetParameters(string title, bool editMode)
 		{
 			Title = title;

@@ -9,6 +9,9 @@ namespace VexTrack.MVVM.ViewModel
 {
 	class GoalViewModel : ObservableObject
 	{
+		public RelayCommand ProgressButtonClick { get; set; }
+		public RelayCommand OnAddClicked { get; set; }
+
 		public void Update()
 		{
 

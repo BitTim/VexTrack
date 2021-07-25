@@ -18,12 +18,15 @@ namespace VexTrack.MVVM.Model
 	public class ProgressArcModel : Control
 	{
 		public static DependencyProperty ShowPercentageProperty = DependencyProperty.Register("ShowPercentage", typeof(bool), typeof(ProgressArcModel), new PropertyMetadata(true, OnPropertyChanged));
+		public static DependencyProperty OffsetProperty = DependencyProperty.Register("Offset", typeof(Point), typeof(ProgressArcModel), new PropertyMetadata(new Point(4, 4), OnPropertyChanged));
 
+		public static DependencyProperty BackgroundOriginProperty = DependencyProperty.Register("BackgroundOrigin", typeof(Point), typeof(ProgressArcModel), new PropertyMetadata(new Point(62, 0)));
 		public static DependencyProperty BackgroundStartPointProperty = DependencyProperty.Register("BackgroundStartPoint", typeof(Point), typeof(ProgressArcModel), new PropertyMetadata(new Point(62, 0)));
 		public static DependencyProperty BackgroundEndPointProperty = DependencyProperty.Register("BackgroundEndPoint", typeof(Point), typeof(ProgressArcModel), new PropertyMetadata(new Point(61.99, 0)));
 		public static DependencyProperty BackgroundRadiusProperty = DependencyProperty.Register("BackgroundRadius", typeof(Size), typeof(ProgressArcModel), new PropertyMetadata(new Size(62, 62)));
 		public static DependencyProperty BackgroundThicknessProperty = DependencyProperty.Register("BackgroundThickness", typeof(double), typeof(ProgressArcModel), new PropertyMetadata(8.0));
 
+		public static DependencyProperty ForegroundOriginProperty = DependencyProperty.Register("ForegroundOrigin", typeof(Point), typeof(ProgressArcModel), new PropertyMetadata(new Point(62, 0)));
 		public static DependencyProperty ForegroundStartPointProperty = DependencyProperty.Register("ForegroundStartPoint", typeof(Point), typeof(ProgressArcModel), new PropertyMetadata(new Point(62, 0)));
 		public static DependencyProperty ForegroundEndPointProperty = DependencyProperty.Register("ForegroundEndPoint", typeof(Point), typeof(ProgressArcModel), new PropertyMetadata(new Point(62, 0)));
 		public static DependencyProperty ForegroundRadiusProperty = DependencyProperty.Register("ForegroundRadius", typeof(Size), typeof(ProgressArcModel), new PropertyMetadata(new Size(62, 62)));
@@ -43,6 +46,20 @@ namespace VexTrack.MVVM.Model
 			set => SetValue(ShowPercentageProperty, value);
 		}
 
+		public Point Offset
+		{
+			get => (Point)GetValue(OffsetProperty);
+			set => SetValue(OffsetProperty, value);
+		}
+
+
+
+		public Point BackgroundOrigin
+		{
+			get => (Point)GetValue(BackgroundOriginProperty);
+			set => SetValue(BackgroundOriginProperty, value);
+		}
+		
 		public Point BackgroundStartPoint
 		{
 			get => (Point)GetValue(BackgroundStartPointProperty);
@@ -65,6 +82,13 @@ namespace VexTrack.MVVM.Model
 		{
 			get => (double)GetValue(BackgroundThicknessProperty);
 			set => SetValue(BackgroundThicknessProperty, value);
+		}
+
+
+		public Point ForegroundOrigin
+		{
+			get => (Point)GetValue(ForegroundOriginProperty);
+			set => SetValue(ForegroundOriginProperty, value);
 		}
 
 		public Point ForegroundStartPoint
@@ -153,19 +177,26 @@ namespace VexTrack.MVVM.Model
 		{
 			if (Value > MaxValue) Value = MaxValue;
 			if (Value < MinValue) Value = MinValue;
-
+			
 			double percent = (Value - MinValue) * 100 / (MaxValue - MinValue);
-			double angle = percent / 100 * 360;
 
+			double angle = percent / 100 * 360;
 			angle = angle == 360 ? 359.99 : angle;
 			ForegroundAngle = angle;
-			double angleInRadians = angle * Math.PI / 180;
 
-			double rad = ForegroundRadius.Width;
-			double px = rad + (Math.Sin(angleInRadians) * rad);
-			double py = rad + (-Math.Cos(angleInRadians) * rad);
+			double px = 0;
+			double py = 0;
 
-			ForegroundEndPoint = new Point(px, py);
+			(px, py) = CalcPointFromProgress(percent);
+
+			ForegroundEndPoint = new Point(px + Offset.X, py + Offset.Y);
+
+			ForegroundStartPoint = new Point(ForegroundOrigin.X + Offset.X, ForegroundOrigin.Y + Offset.Y);
+			BackgroundStartPoint = new Point(BackgroundOrigin.X + Offset.X, BackgroundOrigin.Y + Offset.Y);
+
+			(px, py) = CalcPointFromProgress(100);
+
+			BackgroundEndPoint = new Point(px + Offset.X, py + Offset.Y);
 
 			if (Color == "") ForegroundBrush = (Brush)Application.Current.FindResource("Accent");
 			else
@@ -173,6 +204,20 @@ namespace VexTrack.MVVM.Model
 				Brush brush = (SolidColorBrush)new BrushConverter().ConvertFrom(Color);
 				ForegroundBrush = brush;
 			}
+		}
+
+		public (double, double) CalcPointFromProgress(double percent)
+		{
+			double angle = percent / 100 * 360;
+
+			angle = angle == 360 ? 359.99 : angle;
+			double angleInRadians = angle * Math.PI / 180;
+
+			double rad = ForegroundRadius.Width;
+			double px = rad + (Math.Sin(angleInRadians) * rad);
+			double py = rad + (-Math.Cos(angleInRadians) * rad);
+
+			return (px, py);
 		}
 	}
 }

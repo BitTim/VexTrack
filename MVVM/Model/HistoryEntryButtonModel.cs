@@ -34,9 +34,6 @@ namespace VexTrack.MVVM.Model
 			set => SetValue(AmountProperty, value);
 		}
 
-		private TextBlock DescriptionTextBlock { get; set; }
-		private TextBlock AmountTextBlock { get; set; }
-
 		static HistoryEntryButtonModel()
 		{
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(HistoryEntryButtonModel), new FrameworkPropertyMetadata(typeof(HistoryEntryButtonModel)));
@@ -47,14 +44,6 @@ namespace VexTrack.MVVM.Model
 		{
 			Description = description;
 			Amount = amount.ToString();
-		}
-
-		public override void OnApplyTemplate()
-		{
-			DescriptionTextBlock = (TextBlock)Template.FindName("PART_DescriptionTextBlock", this);
-			AmountTextBlock = (TextBlock)Template.FindName("PART_AmountTextBlock", this);
-
-			base.OnApplyTemplate();
 		}
 	}
 }

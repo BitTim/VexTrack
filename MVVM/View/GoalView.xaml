@@ -19,8 +19,26 @@
 				   FontSize="36"
 				   FontWeight="Bold"/>
 
-		<model:ProgressArcModel Grid.Row="1"
-								Value="69"
-								Symbol="%"/>
+		<ScrollViewer Grid.Row="1"
+					  Style="{DynamicResource ScrollViewerTheme}"
+					  Margin="16">
+			<ItemsControl x:Name="ContentContainer"
+						  HorizontalAlignment="Center"
+						  Margin="-8, 0, 0, 0">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<WrapPanel/>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+			</ItemsControl>
+		</ScrollViewer>
+
+		<Button Grid.Row="0"
+				Width="48" Height="48"
+				HorizontalAlignment="Right"
+				VerticalAlignment="Center"
+				Margin="0, 0, 16, 0"
+				Style="{DynamicResource AddButtonTheme}"
+				Command="{Binding OnAddClicked}"/>
 	</Grid>
 </UserControl>

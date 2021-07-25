@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using VexTrack.MVVM.ViewModel;
 
 namespace VexTrack.MVVM.View
 {
@@ -23,6 +24,7 @@ namespace VexTrack.MVVM.View
 		public SeasonView()
 		{
 			InitializeComponent();
+			this.DataContext = ViewModelManager.ViewModels["Season"];
 		}
 	}
 }

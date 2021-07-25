@@ -19,6 +19,7 @@ namespace VexTrack.Core
 			ret.Remaining = ret.Total - ret.Collected;
 			ret.Progress = CalcUtil.CalcProgress(ret.Total, ret.Collected);
 			ret.Active = -1;
+			ret.StartXP = -1;
 
 			return ret;
 		}
@@ -34,6 +35,7 @@ namespace VexTrack.Core
 			ret.Remaining = ret.Total - ret.Collected;
 			ret.Progress = CalcUtil.CalcProgress(ret.Total, ret.Collected);
 			ret.Active = activeLevel;
+			ret.StartXP = -1;
 
 			return ret;
 		}
@@ -53,6 +55,7 @@ namespace VexTrack.Core
 			ret.Remaining = ret.Total - ret.Collected;
 			ret.Progress = CalcUtil.CalcProgress(ret.Total, ret.Collected);
 			ret.Active = -1;
+			ret.StartXP = -1;
 
 			return ret;
 		}
@@ -71,6 +74,7 @@ namespace VexTrack.Core
 			ret.Progress = CalcUtil.CalcProgress(ret.Total, ret.Collected);
 			ret.Active = -1;
 			ret.Color = goalData.Color;
+			ret.StartXP = goalData.StartXP;
 
 			return ret;
 		}
@@ -85,6 +89,7 @@ namespace VexTrack.Core
 		public int Remaining { get; set; }
 		public int Total { get; set; }
 		public string Color { get; set; }
+		public int StartXP { get; set; }
 		public int Active { get; set; }
 
 		public GoalEntryData(string uuid)
@@ -92,9 +97,9 @@ namespace VexTrack.Core
 			UUID = uuid;
 		}
 
-		public GoalEntryData(string uuid, string title, double progress, int collected, int remaining, int total, string color, int active = -1)
+		public GoalEntryData(string uuid, string title, double progress, int collected, int remaining, int total, string color, int startXP = -1, int active = -1)
 		{
-			(UUID, Title, Progress, Collected, Remaining, Total, Color, Active) = (uuid, title, progress, collected, remaining, total, color, active);
+			(UUID, Title, Progress, Collected, Remaining, Total, Color, StartXP, Active) = (uuid, title, progress, collected, remaining, total, color, startXP, active);
 		}
 	}
 }

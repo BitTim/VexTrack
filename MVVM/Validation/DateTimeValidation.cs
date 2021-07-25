@@ -10,7 +10,6 @@ namespace VexTrack.MVVM.Validation
 {
     public class DateTimeValidation : ValidationRule
     {
-        public Type ValidationType { get; set; }
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
             string strValue = Convert.ToString(value);

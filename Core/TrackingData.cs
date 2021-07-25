@@ -290,7 +290,7 @@ namespace VexTrack.Core
 
 
 
-		public static void AddFoal(Goal data)
+		public static void AddGoal(Goal data)
 		{
 			Data.Goals.Add(data);
 			CallUpdate();
@@ -302,7 +302,7 @@ namespace VexTrack.Core
 			CallUpdate();
 		}
 
-		public static void EditHistoryEntry(string uuid, Goal data)
+		public static void EditGoal(string uuid, Goal data)
 		{
 			Data.Goals[Data.Goals.FindIndex(g => g.UUID == uuid)] = data;
 			CallUpdate();

@@ -8,9 +8,9 @@ namespace VexTrack.Core
 {
 	public static class GoalDataCalc
 	{
-		public static GoalEntryData CalcTotalGoal(int index, string uuid, int activeLevel, int cxp)
+		public static GoalEntryData CalcTotalGoal(string uuid, int activeLevel, int cxp)
 		{
-			GoalEntryData ret = new(index, uuid);
+			GoalEntryData ret = new(uuid);
 
 			ret.Title = "Total XP";
 
@@ -18,13 +18,14 @@ namespace VexTrack.Core
 			ret.Collected = CalcUtil.CalcTotalCollected(activeLevel, cxp);
 			ret.Remaining = ret.Total - ret.Collected;
 			ret.Progress = CalcUtil.CalcProgress(ret.Total, ret.Collected);
+			ret.Active = -1;
 
 			return ret;
 		}
 
-		public static GoalEntryData CalcBattlepassGoal(int index, string uuid, int activeLevel)
+		public static GoalEntryData CalcBattlepassGoal(string uuid, int activeLevel)
 		{
-			GoalEntryData ret = new(index, uuid);
+			GoalEntryData ret = new(uuid);
 
 			ret.Title = "Battlepass";
 
@@ -37,9 +38,9 @@ namespace VexTrack.Core
 			return ret;
 		}
 
-		public static GoalEntryData CalcLevelGoal(int index, string uuid, int activeLevel, int cxp)
+		public static GoalEntryData CalcLevelGoal(string uuid, int activeLevel, int cxp)
 		{
-			GoalEntryData ret = new(index, uuid);
+			GoalEntryData ret = new(uuid);
 
 			int total;
 			if (activeLevel - 1 <= Constants.BattlepassLevels) total = Constants.Level2Offset + Constants.XPPerLevel * activeLevel;
@@ -51,13 +52,14 @@ namespace VexTrack.Core
 			ret.Collected = cxp;
 			ret.Remaining = ret.Total - ret.Collected;
 			ret.Progress = CalcUtil.CalcProgress(ret.Total, ret.Collected);
+			ret.Active = -1;
 
 			return ret;
 		}
 
-		public static GoalEntryData CalcUserGoal(int index, Goal goalData, int activeLevel, int cxp)
+		public static GoalEntryData CalcUserGoal(Goal goalData, int activeLevel, int cxp)
 		{
-			GoalEntryData ret = new(index, goalData.UUID);
+			GoalEntryData ret = new(goalData.UUID);
 
 			int totalCollected = CalcUtil.CalcTotalCollected(activeLevel, cxp);
 
@@ -67,6 +69,7 @@ namespace VexTrack.Core
 			ret.Collected = totalCollected - goalData.StartXP;
 			ret.Remaining = goalData.Remaining;
 			ret.Progress = CalcUtil.CalcProgress(ret.Total, ret.Collected);
+			ret.Active = -1;
 			ret.Color = goalData.Color;
 
 			return ret;
@@ -75,7 +78,6 @@ namespace VexTrack.Core
 
 	public class GoalEntryData
 	{
-		public int Index { get; set; }
 		public string UUID { get; set; }
 		public string Title { get; set; }
 		public double Progress { get; set; }
@@ -85,14 +87,14 @@ namespace VexTrack.Core
 		public string Color { get; set; }
 		public int Active { get; set; }
 
-		public GoalEntryData(int index, string uuid)
+		public GoalEntryData(string uuid)
 		{
-			(Index, UUID) = (index, uuid);
+			UUID = uuid;
 		}
 
-		public GoalEntryData(int index, string uuid, string title, double progress, int collected, int remaining, int total, string color, int active = -1)
+		public GoalEntryData(string uuid, string title, double progress, int collected, int remaining, int total, string color, int active = -1)
 		{
-			(Index, UUID, Title, Progress, Collected, Remaining, Total, Color, Active) = (index, uuid, title, progress, collected, remaining, total, color, active);
+			(UUID, Title, Progress, Collected, Remaining, Total, Color, Active) = (uuid, title, progress, collected, remaining, total, color, active);
 		}
 	}
 }

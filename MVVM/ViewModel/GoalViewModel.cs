@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VexTrack.Core;
+using VexTrack.MVVM.ViewModel.Popups;
 
 namespace VexTrack.MVVM.ViewModel
 {
@@ -13,6 +14,8 @@ namespace VexTrack.MVVM.ViewModel
 		public RelayCommand BuiltinGoalButtonClick { get; set; }
 		public RelayCommand UserGoalButtonClick { get; set; }
 		public RelayCommand OnAddClicked { get; set; }
+
+		public GoalPopupViewModel GoalPopup { get; set; }
 
 		private string TotalGoalUUID = Guid.NewGuid().ToString();
 		private string BattlepassGoalUUID = Guid.NewGuid().ToString();
@@ -52,6 +55,12 @@ namespace VexTrack.MVVM.ViewModel
 		{
 			MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
 
+			//EditableGoalPopup = new();
+			//ViewModelManager.ViewModels.Add("EditableGoalPopup", EditableGoalPopup);
+
+			GoalPopup = new();
+			ViewModelManager.ViewModels.Add("GoalPopup", GoalPopup);
+
 			BuiltinGoalButtonClick = new RelayCommand(OnBuiltinGoalButtonClick);
 			UserGoalButtonClick = new RelayCommand(OnUserGoalButtonClick);
 			OnAddClicked = new RelayCommand(o => { });
@@ -64,24 +73,43 @@ namespace VexTrack.MVVM.ViewModel
 			BuiltinEntries.Clear();
 			UserEntries.Clear();
 
-			BuiltinEntries.Add(GoalDataCalc.CalcTotalGoal(BuiltinEntries.Count, TotalGoalUUID, TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP));
-			BuiltinEntries.Add(GoalDataCalc.CalcBattlepassGoal(BuiltinEntries.Count, TotalGoalUUID, TrackingDataHelper.CurrentSeasonData.ActiveBPLevel));
-			BuiltinEntries.Add(GoalDataCalc.CalcLevelGoal(BuiltinEntries.Count, TotalGoalUUID, TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP));
+			BuiltinEntries.Add(GoalDataCalc.CalcTotalGoal(TotalGoalUUID, TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP));
+			BuiltinEntries.Add(GoalDataCalc.CalcBattlepassGoal(BattlepassGoalUUID, TrackingDataHelper.CurrentSeasonData.ActiveBPLevel));
+			BuiltinEntries.Add(GoalDataCalc.CalcLevelGoal(LevelGoalUUID, TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP));
 
 			foreach (Goal g in TrackingDataHelper.Data.Goals)
 			{
-				UserEntries.Add(GoalDataCalc.CalcUserGoal(UserEntries.Count, g, TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP));
+				UserEntries.Add(GoalDataCalc.CalcUserGoal(g, TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP));
 			}
+
+			if (GoalPopup.IsInitialized)
+			{
+				GoalEntryData ged;
+
+				if (BuiltinEntries.Where(e => e.UUID == GoalPopup.UUID).Count() > 0) ged = BuiltinEntries.Where(e => e.UUID == GoalPopup.UUID).FirstOrDefault();
+				else ged = UserEntries.Where(e => e.UUID == GoalPopup.UUID).FirstOrDefault();
+
+				GoalPopup.SetData(ged);
+			}
+			else GoalPopup.Close();
 		}
 
 		public void OnBuiltinGoalButtonClick(object parameter)
 		{
+			string uuid = (string)parameter;
 
+			GoalPopup.SetFlags(false, false);
+			GoalPopup.SetData(BuiltinEntries.Where(e => e.UUID == uuid).First());
+			MainVM.QueuePopup(GoalPopup);
 		}
 
 		public void OnUserGoalButtonClick(object parameter)
 		{
+			string uuid = (string)parameter;
 
+			GoalPopup.SetFlags(true, true);
+			GoalPopup.SetData(UserEntries.Where(e => e.UUID == uuid).First());
+			MainVM.QueuePopup(GoalPopup);
 		}
 	}
 }

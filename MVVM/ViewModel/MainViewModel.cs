@@ -86,6 +86,7 @@ namespace VexTrack.MVVM.ViewModel
 		public void Update()
 		{
 			HistoryVM.Update();
+			GoalVM.Update();
 		}
 
 		public void QueuePopup(BasePopupViewModel popup)

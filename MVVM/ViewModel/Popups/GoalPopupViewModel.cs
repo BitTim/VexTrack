@@ -25,6 +25,9 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public int Active { get; set; }
 		public string Color { get; set; }
 
+		public bool CanDelete { get; set; }
+		public bool CanEdit { get; set; }
+
 		public GoalPopupViewModel()
 		{
 			//EditableGoalPopup = (EditableGoalPopupViewModel)ViewModelManager.ViewModels["EditableGoalPopup"];
@@ -42,28 +45,32 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			});
 		}
 
-		//public void SetData(HistoryEntryData data)
-		//{
-		//	RawData = data;
+		public void SetFlags(bool canDelete, bool canEdit)
+		{
+			CanDelete = canDelete;
+			CanEdit = canEdit;
+		}
 
-		//	Index = data.Index;
-		//	UUID = data.UUID;
-		//	Description = data.Description;
-		//	Time = data.Time;
-		//	Amount = data.Amount;
-		//	Map = data.Map;
-		//	Result = data.Result;
+		public void SetData(GoalEntryData data)
+		{
+			RawData = data;
 
-		//	if (Result == "") Result = "-";
-		//	if (Map == "" || Map == null) Map = "-";
+			UUID = data.UUID;
+			Title = data.Title;
+			Collected = data.Collected;
+			Remaining = data.Remaining;
+			Total = data.Total;
+			Progress = data.Progress;
+			Active = data.Active;
+			Color = data.Color;
 
-		//	IsInitialized = true;
-		//}
+			IsInitialized = true;
+		}
 
-		//public override void Close()
-		//{
-		//	EditableHEPopup.Close();
-		//	base.Close();
-		//}
+		public override void Close()
+		{
+			//EditableGoalPopup.Close();
+			base.Close();
+		}
 	}
 }

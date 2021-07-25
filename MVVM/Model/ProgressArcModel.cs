@@ -198,7 +198,7 @@ namespace VexTrack.MVVM.Model
 
 			BackgroundEndPoint = new Point(px + Offset.X, py + Offset.Y);
 
-			if (Color == "") ForegroundBrush = (Brush)Application.Current.FindResource("Accent");
+			if (Color == "" || Color == null) ForegroundBrush = (Brush)Application.Current.FindResource("Accent");
 			else
 			{
 				Brush brush = (SolidColorBrush)new BrushConverter().ConvertFrom(Color);

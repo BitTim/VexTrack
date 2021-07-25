@@ -52,7 +52,7 @@
 							<model:ProgressButtonModel Title="{Binding Path=Title}"
 													   Value="{Binding Path=Progress}"
 													   Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.BuiltinGoalButtonClick}"
-													   CommandParameter="{Binding Path=Index}"
+													   CommandParameter="{Binding Path=UUID}"
 													   Margin="8, 8, 0, 0"/>
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
@@ -81,7 +81,7 @@
 													   Value="{Binding Path=Progress}"
 													   Color="{Binding Path=Color}"
 													   Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.UserGoalButtonClick}"
-													   CommandParameter="{Binding Path=Index}"
+													   CommandParameter="{Binding Path=UUID}"
 													   Margin="8, 8, 0, 0"/>
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>

@@ -24,7 +24,7 @@
 
 							<Border CornerRadius="15">
 								<Ellipse Width="30" Height="30"
-										 Fill="{DynamicResource Foreground}"
+										 Fill="{TemplateBinding Foreground}"
 										 StrokeThickness="0"
 										 HorizontalAlignment="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Tag, Mode=OneWay}">
 									<Ellipse.Effect>
@@ -41,6 +41,7 @@
 			</Setter>
 
 			<Setter Property="Background" Value="{DynamicResource Background}"/>
+			<Setter Property="Foreground" Value="{DynamicResource Foreground}"/>
 			<Setter Property="BorderThickness" Value="0"/>
 			<Setter Property="Tag" Value="Left"/>
 		</Style.Setters>
@@ -49,6 +50,7 @@
 			<Trigger Property="IsChecked" Value="True">
 				<Setter Property="Background" Value="{DynamicResource Accent}"/>
 				<Setter Property="Tag" Value="Right"/>
+				<Setter Property="Foreground" Value="{StaticResource White}"/>
 			</Trigger>
 
 			<MultiTrigger>

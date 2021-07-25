@@ -4,13 +4,23 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VexTrack.MVVM.View"
+             xmlns:model="clr-namespace:VexTrack.MVVM.Model"
              mc:Ignorable="d" 
              d:DesignHeight="780" d:DesignWidth="640">
     <Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="80"/>
+			<RowDefinition/>
+		</Grid.RowDefinitions>
+		
 		<TextBlock Text="Goals"
 				   Margin="16, 16, 16, 16"
 				   Foreground="{StaticResource Foreground}"
 				   FontSize="36"
 				   FontWeight="Bold"/>
+
+		<model:ProgressArcModel Grid.Row="1"
+								Value="69"
+								Symbol="%"/>
 	</Grid>
 </UserControl>

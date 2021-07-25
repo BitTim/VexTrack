@@ -75,6 +75,9 @@
     <Page Update="Theme\MenuButtonTheme.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Theme\ProgressArcTheme.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Theme\ScrollViewerTheme.xaml">
       <SubType>Designer</SubType>
     </Page>

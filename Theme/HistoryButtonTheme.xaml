@@ -21,9 +21,9 @@
 									CornerRadius="8">
 								<Border.Effect>
 									<DropShadowEffect BlurRadius="8"
-									  ShadowDepth="2"
-									  Direction="-90"
-									  Opacity="0.3"/>
+													  ShadowDepth="2"
+													  Direction="-90"
+													  Opacity="0.3"/>
 								</Border.Effect>
 							</Border>
 

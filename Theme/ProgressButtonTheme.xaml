@@ -69,8 +69,7 @@
 															Value="{TemplateBinding Value}"
 															MinValue="{TemplateBinding MinValue}"
 															MaxValue="{TemplateBinding MaxValue}"
-															Color="{TemplateBinding Color}"
-															Margin="0, 0, 0, 8"/>
+															Color="{TemplateBinding Color}"/>
 								</Grid>
 							</Border>
 						</Grid>
@@ -81,7 +80,7 @@
 			<Setter Property="Foreground" Value="{DynamicResource Foreground}"/>
 			<Setter Property="Background" Value="{DynamicResource Background}"/>
 			<Setter Property="Width" Value="176"/>
-			<Setter Property="Height" Value="184"/>
+			<Setter Property="Height" Value="192"/>
 		</Style.Setters>
 	</Style>
 </ResourceDictionary>

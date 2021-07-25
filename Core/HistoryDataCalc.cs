@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VexTrack.Core
 {
-	static class HistoryDataCalc
+	public static class HistoryDataCalc
 	{
 		public static string CalcHistoryResult(string description)
 		{

@@ -22,15 +22,71 @@
 		<ScrollViewer Grid.Row="1"
 					  Style="{DynamicResource ScrollViewerTheme}"
 					  Margin="16">
-			<ItemsControl x:Name="ContentContainer"
-						  HorizontalAlignment="Center"
-						  Margin="-8, 0, 0, 0">
-				<ItemsControl.ItemsPanel>
-					<ItemsPanelTemplate>
-						<WrapPanel/>
-					</ItemsPanelTemplate>
-				</ItemsControl.ItemsPanel>
-			</ItemsControl>
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="40"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="40"/>
+					<RowDefinition Height="*"/>
+				</Grid.RowDefinitions>
+
+				<TextBlock Text="Builtin Goals"
+						   Grid.Row="0"
+						   Foreground="{StaticResource Foreground}"
+						   FontSize="20"
+						   Margin="8, 8, 0, 0"
+						   FontWeight="Bold"/>
+
+				<ItemsControl x:Name="BuiltinContentContainer"
+							  Grid.Row="1"
+							  Margin="4 0, 0, 24"
+							  ItemsSource="{Binding BuiltinEntries}">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<WrapPanel/>
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<model:ProgressButtonModel Title="{Binding Path=Title}"
+													   Value="{Binding Path=Progress}"
+													   Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.BuiltinGoalButtonClick}"
+													   CommandParameter="{Binding Path=Index}"
+													   Margin="8, 8, 0, 0"/>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+
+				<TextBlock Text="Custom Goals"
+						   Grid.Row="2"
+						   Foreground="{StaticResource Foreground}"
+						   FontSize="20"
+						   Margin="8, 8, 0, 0"
+						   FontWeight="Bold"/>
+				
+				<ItemsControl x:Name="CustomContentContainer"
+							  Grid.Row="3"
+							  Margin="4, 0, 0, 12"
+							  ItemsSource="{Binding UserEntries}">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<WrapPanel/>
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<model:ProgressButtonModel Title="{Binding Path=Title}"
+													   Value="{Binding Path=Progress}"
+													   Color="{Binding Path=Color}"
+													   Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.UserGoalButtonClick}"
+													   CommandParameter="{Binding Path=Index}"
+													   Margin="8, 8, 0, 0"/>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</Grid>
 		</ScrollViewer>
 
 		<Button Grid.Row="0"

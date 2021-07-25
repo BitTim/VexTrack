@@ -33,60 +33,62 @@
 										   Visibility="{Binding RelativeSource={x:Static RelativeSource.TemplatedParent}, Path=ShowPercentage, Converter={StaticResource BoolToVisibleConv}}"/>
 							</StackPanel>
 
-							<Path x:Name="PART_BackgroundArc"
-								  Stroke="{DynamicResource Shade}"
-								  StrokeThickness="{Binding RelativeSource={x:Static RelativeSource.TemplatedParent}, Path=BackgroundThickness}"
-								  StrokeStartLineCap="Round"
-								  StrokeEndLineCap="Round"
-								  Width="{TemplateBinding Width}"
-								  Height="{TemplateBinding Height}"
-								  VerticalAlignment="Center"
-								  HorizontalAlignment="Center">
-								<Path.Data>
-									<PathGeometry>
-										<PathFigure StartPoint="{Binding RelativeSource={x:Static RelativeSource.TemplatedParent}, Path=BackgroundStartPoint}">
-											<PathFigure.Segments>
-												<ArcSegment RotationAngle="0"
-															SweepDirection="Clockwise"
-															Size="{Binding RelativeSource={x:Static RelativeSource.TemplatedParent}, Path=BackgroundRadius}"
-															IsLargeArc="True"
-															Point="{Binding RelativeSource={x:Static RelativeSource.TemplatedParent}, Path=BackgroundEndPoint}"/>
-											</PathFigure.Segments>
-										</PathFigure>
-									</PathGeometry>
-								</Path.Data>
-							</Path>
+							<Canvas Margin="8, 8, 0, 0">
+								<Path x:Name="PART_BackgroundArc"
+									  Stroke="{DynamicResource Shade}"
+									  StrokeThickness="{Binding RelativeSource={x:Static RelativeSource.TemplatedParent}, Path=BackgroundThickness}"
+									  StrokeStartLineCap="Round"
+									  StrokeEndLineCap="Round"
+									  Width="{TemplateBinding Width}"
+									  Height="{TemplateBinding Height}"
+									  VerticalAlignment="Center"
+									  HorizontalAlignment="Center">
+									<Path.Data>
+										<PathGeometry>
+											<PathFigure StartPoint="{Binding RelativeSource={x:Static RelativeSource.TemplatedParent}, Path=BackgroundStartPoint}">
+												<PathFigure.Segments>
+													<ArcSegment RotationAngle="0"
+																SweepDirection="Clockwise"
+																Size="{Binding RelativeSource={x:Static RelativeSource.TemplatedParent}, Path=BackgroundRadius}"
+																IsLargeArc="True"
+																Point="{Binding RelativeSource={x:Static RelativeSource.TemplatedParent}, Path=BackgroundEndPoint}"/>
+												</PathFigure.Segments>
+											</PathFigure>
+										</PathGeometry>
+									</Path.Data>
+								</Path>
 
-							<Path x:Name="PART_ForegroundArc"
-								  Stroke="{Binding RelativeSource={x:Static RelativeSource.TemplatedParent}, Path=ForegroundBrush}"
-								  StrokeThickness="{Binding RelativeSource={x:Static RelativeSource.TemplatedParent}, Path=ForegroundThickness}"
-								  StrokeStartLineCap="Round"
-								  StrokeEndLineCap="Round"
-								  Width="{TemplateBinding Width}"
-								  Height="{TemplateBinding Height}"
-								  VerticalAlignment="Center"
-								  HorizontalAlignment="Center">
-								<Path.Data>
-									<PathGeometry>
-										<PathFigure StartPoint="{Binding RelativeSource={x:Static RelativeSource.TemplatedParent}, Path=ForegroundStartPoint}">
-											<PathFigure.Segments>
-												<ArcSegment RotationAngle="0"
-															SweepDirection="Clockwise"
-															Size="{Binding RelativeSource={x:Static RelativeSource.TemplatedParent}, Path=ForegroundRadius}"
-															IsLargeArc="{Binding RelativeSource={x:Static RelativeSource.TemplatedParent}, Path=ForegroundAngle, Converter={StaticResource AngleToIsLargeConv}}"
-															Point="{Binding RelativeSource={x:Static RelativeSource.TemplatedParent}, Path=ForegroundEndPoint}"/>
-											</PathFigure.Segments>
-										</PathFigure>
-									</PathGeometry>
-								</Path.Data>
+								<Path x:Name="PART_ForegroundArc"
+									  Stroke="{Binding RelativeSource={x:Static RelativeSource.TemplatedParent}, Path=ForegroundBrush}"
+									  StrokeThickness="{Binding RelativeSource={x:Static RelativeSource.TemplatedParent}, Path=ForegroundThickness}"
+									  StrokeStartLineCap="Round"
+									  StrokeEndLineCap="Round"
+									  Width="{TemplateBinding Width}"
+									  Height="{TemplateBinding Height}"
+									  VerticalAlignment="Center"
+									  HorizontalAlignment="Center">
+									<Path.Data>
+										<PathGeometry>
+											<PathFigure StartPoint="{Binding RelativeSource={x:Static RelativeSource.TemplatedParent}, Path=ForegroundStartPoint}">
+												<PathFigure.Segments>
+													<ArcSegment RotationAngle="0"
+																SweepDirection="Clockwise"
+																Size="{Binding RelativeSource={x:Static RelativeSource.TemplatedParent}, Path=ForegroundRadius}"
+																IsLargeArc="{Binding RelativeSource={x:Static RelativeSource.TemplatedParent}, Path=ForegroundAngle, Converter={StaticResource AngleToIsLargeConv}}"
+																Point="{Binding RelativeSource={x:Static RelativeSource.TemplatedParent}, Path=ForegroundEndPoint}"/>
+												</PathFigure.Segments>
+											</PathFigure>
+										</PathGeometry>
+									</Path.Data>
 
-								<Path.Effect>
-									<DropShadowEffect BlurRadius="8"
-													  ShadowDepth="2"
-													  Direction="-90"
-													  Opacity="0.3"/>
-								</Path.Effect>
-							</Path>
+									<Path.Effect>
+										<DropShadowEffect BlurRadius="8"
+														  ShadowDepth="2"
+														  Direction="-90"
+														  Opacity="0.3"/>
+									</Path.Effect>
+								</Path>
+							</Canvas>
 						</Grid>
 					</ControlTemplate>
 				</Setter.Value>
@@ -94,8 +96,8 @@
 
 			<Setter Property="Foreground" Value="{DynamicResource Foreground}"/>
 			<Setter Property="Background" Value="Transparent"/>
-			<Setter Property="Width" Value="132"/>
-			<Setter Property="Height" Value="132"/>
+			<Setter Property="Width" Value="148"/>
+			<Setter Property="Height" Value="148"/>
 		</Style.Setters>
 	</Style>
 </ResourceDictionary>

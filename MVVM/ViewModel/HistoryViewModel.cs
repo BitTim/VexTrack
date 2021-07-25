@@ -55,7 +55,7 @@ namespace VexTrack.MVVM.ViewModel
 		{
 			Entries.Clear();
 
-			foreach (HistoryEntry he in TrackingDataHelper.Data.Seasons.Last<Season>().History)
+			foreach (HistoryEntry he in TrackingDataHelper.CurrentSeasonData.History)
 			{
 				string result = HistoryDataCalc.CalcHistoryResult(he.Description);
 				Entries.Insert(0, new HistoryEntryData(Entries.Count, TrackingDataHelper.CurrentSeasonIndex, he.UUID, he.Description, he.Time, he.Amount, he.Map, result));

@@ -184,17 +184,17 @@ namespace VexTrack.MVVM.Model
 			angle = angle == 360 ? 359.99 : angle;
 			ForegroundAngle = angle;
 
-			double px = 0;
-			double py = 0;
+			double px;
+			double py;
 
-			(px, py) = CalcPointFromProgress(percent);
+			(px, py) = CalcPointFromProgress(percent, ForegroundRadius.Width);
 
 			ForegroundEndPoint = new Point(px + Offset.X, py + Offset.Y);
 
 			ForegroundStartPoint = new Point(ForegroundOrigin.X + Offset.X, ForegroundOrigin.Y + Offset.Y);
 			BackgroundStartPoint = new Point(BackgroundOrigin.X + Offset.X, BackgroundOrigin.Y + Offset.Y);
 
-			(px, py) = CalcPointFromProgress(100);
+			(px, py) = CalcPointFromProgress(100, BackgroundRadius.Width);
 
 			BackgroundEndPoint = new Point(px + Offset.X, py + Offset.Y);
 
@@ -206,14 +206,13 @@ namespace VexTrack.MVVM.Model
 			}
 		}
 
-		public (double, double) CalcPointFromProgress(double percent)
+		public (double, double) CalcPointFromProgress(double percent, double rad)
 		{
 			double angle = percent / 100 * 360;
 
 			angle = angle == 360 ? 359.99 : angle;
 			double angleInRadians = angle * Math.PI / 180;
 
-			double rad = ForegroundRadius.Width;
 			double px = rad + (Math.Sin(angleInRadians) * rad);
 			double py = rad + (-Math.Cos(angleInRadians) * rad);
 

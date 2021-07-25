@@ -7,7 +7,7 @@ using VexTrack.MVVM.ViewModel;
 
 namespace VexTrack.Core
 {
-	class HistoryEntry
+	public class HistoryEntry
 	{
 		public string UUID { get; set; }
 		public long Time { get; set; }
@@ -22,20 +22,21 @@ namespace VexTrack.Core
 		}
 	}
 
-	class Goal
+	public class Goal
 	{
+		public string UUID { get; set; }
 		public string Name { get; set; }
 		public int Remaining { get; set; }
 		public int StartXP { get; set; }
 		public string Color { get; set; }
 
-		public Goal(string name, int remaining, int startXP, string color)
+		public Goal(string uuid, string name, int remaining, int startXP, string color)
 		{
-			(Name, Remaining, StartXP, Color) = (name, remaining, startXP, color);
+			(UUID, Name, Remaining, StartXP, Color) = (uuid, name, remaining, startXP, color);
 		}
 	}
 
-	class Season
+	public class Season
 	{
 		public string UUID { get; set; }
 		public string Name { get; set; }
@@ -50,7 +51,7 @@ namespace VexTrack.Core
 		}
 	}
 
-	class TrackingData
+	public class TrackingData
 	{
 		public List<Goal> Goals { get; set; }
 		public List<Season> Seasons { get; set; }
@@ -61,10 +62,11 @@ namespace VexTrack.Core
 		}
 	}
 
-	static class TrackingDataHelper
+	public static class TrackingDataHelper
 	{
 		public static TrackingData Data { get; set; }
 		public static int CurrentSeasonIndex { get => Data.Seasons.Count - 1; }
+		public static Season CurrentSeasonData { get => Data.Seasons.Last(); }
 
 		public static void InitData(string seasonName, string seasonEndDate, int activeBPLevel, int cXP)
 		{
@@ -92,7 +94,7 @@ namespace VexTrack.Core
 				int startXP = (int)goal["startXP"];
 				string color = (string)goal["color"];
 
-				goals.Add(new Goal(gName, remaining, startXP, color));
+				goals.Add(new Goal(Guid.NewGuid().ToString(), gName, remaining, startXP, color));
 			}
 
 			List<Season> seasons = new();
@@ -140,12 +142,14 @@ namespace VexTrack.Core
 
 			List<Goal> goals = new();
 			foreach(JObject goal in jo["goals"]) {
+				string uuid = (string)goal["uuid"];
 				string name = (string)goal["name"];
 				int remaining = (int)goal["remaining"];
 				int startXP = (int)goal["startXP"];
 				string color = (string)goal["color"];
 
-				goals.Add(new Goal(name, remaining, startXP, color));
+				if (uuid == null) uuid = Guid.NewGuid().ToString();
+				goals.Add(new Goal(uuid, name, remaining, startXP, color));
 			}
 
 			List<Season> seasons = new();
@@ -190,6 +194,7 @@ namespace VexTrack.Core
 			foreach(Goal goal in Data.Goals)
 			{
 				JObject goalObj = new();
+				goalObj.Add("uuid", goal.UUID);
 				goalObj.Add("name", goal.Name);
 				goalObj.Add("remaining", goal.Remaining);
 				goalObj.Add("startXP", goal.StartXP);

@@ -65,7 +65,7 @@ namespace VexTrack.Core
 	public static class TrackingDataHelper
 	{
 		public static TrackingData Data { get; set; }
-		public static int CurrentSeasonIndex { get => Data.Seasons.Count - 1; }
+		public static string CurrentSeasonUUID { get => Data.Seasons.Last().UUID; }
 		public static Season CurrentSeasonData { get => Data.Seasons.Last(); }
 
 		public static void InitData(string seasonName, string seasonEndDate, int activeBPLevel, int cXP)
@@ -258,26 +258,53 @@ namespace VexTrack.Core
 			MainVM.Update();
 		}
 
+
+
+
 		public static HistoryEntry GetHistoryEntry(int season, int index)
 		{
 			return Data.Seasons[season].History[index];
 		}
 
-		public static void AddHistoryEntry(int season, HistoryEntry data)
+		public static void AddHistoryEntry(string sUUID, HistoryEntry data)
 		{
-			Data.Seasons[season].History.Add(data);
+			Data.Seasons[Data.Seasons.FindIndex(s => s.UUID == sUUID)].History.Add(data);
 			CallUpdate();
 		}
 
-		public static void RemoveHistoryEntry(int season, int index)
+		public static void RemoveHistoryEntry(string sUUID, string hUUID)
 		{
-			Data.Seasons[season].History.RemoveAt(index);
+			Data.Seasons[Data.Seasons.FindIndex(s => s.UUID == sUUID)]
+				.History.RemoveAt(Data.Seasons[Data.Seasons.FindIndex(s => s.UUID == sUUID)]
+				.History.FindIndex(he => he.UUID == hUUID));
 			CallUpdate();
 		}
 
-		public static void EditHistoryEntry(int season, int index, HistoryEntry data)
+		public static void EditHistoryEntry(string sUUID, string hUUID, HistoryEntry data)
 		{
-			Data.Seasons[season].History[index] = data;
+			Data.Seasons[Data.Seasons.FindIndex(s => s.UUID == sUUID)]
+				.History[Data.Seasons[Data.Seasons.FindIndex(s => s.UUID == sUUID)]
+				.History.FindIndex(he => he.UUID == hUUID)] = data;
+			CallUpdate();
+		}
+
+
+
+		public static void AddFoal(Goal data)
+		{
+			Data.Goals.Add(data);
+			CallUpdate();
+		}
+
+		public static void RemoveGoal(string uuid)
+		{
+			Data.Goals.RemoveAt(Data.Goals.FindIndex(g => g.UUID == uuid));
+			CallUpdate();
+		}
+
+		public static void EditHistoryEntry(string uuid, Goal data)
+		{
+			Data.Goals[Data.Goals.FindIndex(g => g.UUID == uuid)] = data;
 			CallUpdate();
 		}
 	}

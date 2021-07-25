@@ -39,18 +39,17 @@ namespace VexTrack.Core
 
 	public class HistoryEntryData
 	{
-		public int Index { get; set; }
-		public int SeasonIndex { get; set; }
-		public string UUID { get; set; }
+		public string SUUID { get; set; }
+		public string HUUID { get; set; }
 		public string Description { get; set; }
 		public long Time { get; set; }
 		public int Amount { get; set; }
 		public string Map { get; set; }
 		public string Result { get; set; }
 
-		public HistoryEntryData(int index, int season, string uuid, string description, long time, int amount, string map, string result)
+		public HistoryEntryData(string sUUID, string hUUID, string description, long time, int amount, string map, string result)
 		{
-			(Index, SeasonIndex, UUID, Description, Time, Amount, Map, Result) = (index, season, uuid, description, time, amount, map, result);
+			(SUUID, HUUID, Description, Time, Amount, Map, Result) = (sUUID, hUUID, description, time, amount, map, result);
 		}
 	}
 }

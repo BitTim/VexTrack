@@ -58,18 +58,18 @@ namespace VexTrack.MVVM.ViewModel
 			foreach (HistoryEntry he in TrackingDataHelper.CurrentSeasonData.History)
 			{
 				string result = HistoryDataCalc.CalcHistoryResult(he.Description);
-				Entries.Insert(0, new HistoryEntryData(Entries.Count, TrackingDataHelper.CurrentSeasonIndex, he.UUID, he.Description, he.Time, he.Amount, he.Map, result));
+				Entries.Insert(0, new HistoryEntryData(TrackingDataHelper.CurrentSeasonUUID, he.UUID, he.Description, he.Time, he.Amount, he.Map, result));
 			}
 
-			if (HEPopup.IsInitialized) HEPopup.SetData(Entries.Where(e => e.UUID == HEPopup.UUID).FirstOrDefault());
+			if (HEPopup.IsInitialized) HEPopup.SetData(Entries.Where(e => e.HUUID == HEPopup.HUUID).FirstOrDefault());
 			else HEPopup.Close();
 		}
 
 		public void OnHistoryButtonClick(object parameter)
 		{
-			int index = Entries.Count - (int)parameter - 1;
+			string hUUID = (string)parameter;
 
-			HEPopup.SetData(Entries[index]);
+			HEPopup.SetData(Entries.Where(e => e.HUUID == hUUID).First());
 			MainVM.QueuePopup(HEPopup);
 		}
 	}

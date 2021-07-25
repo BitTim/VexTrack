@@ -39,7 +39,7 @@
 													   Background="{Binding Path=Result, Converter={StaticResource historyKeyConv}, ConverterParameter=Background}"
 													   Foreground="{Binding Path=Result, Converter={StaticResource historyKeyConv}, ConverterParameter=Foreground}"
 													   Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.HistoryButtonClick}"
-													   CommandParameter="{Binding Path=Index}"/>
+													   CommandParameter="{Binding Path=HUUID}"/>
 					</DataTemplate>
 				</ItemsControl.ItemTemplate>
 			</ItemsControl>

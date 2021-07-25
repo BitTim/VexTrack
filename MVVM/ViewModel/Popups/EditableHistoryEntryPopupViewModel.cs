@@ -14,8 +14,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public RelayCommand OnDoneClicked { get; set; }
 
 		public string Title { get; set; }
-		public int Index { get; set; }
-		public string UUID { get; set; }
+		public string SUUID { get; set; }
+		public string HUUID { get; set; }
 		public bool EditMode { get; set; }
 
 		private string _description;
@@ -67,8 +67,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 			OnBackClicked = new RelayCommand(o => { if (CanCancel) Close(); });
 			OnDoneClicked = new RelayCommand(o => {
-				if(EditMode) TrackingDataHelper.EditHistoryEntry(TrackingDataHelper.CurrentSeasonIndex, Index, new HistoryEntry(UUID, Time, Description, Amount, Map));
-				else TrackingDataHelper.AddHistoryEntry(TrackingDataHelper.CurrentSeasonIndex, new HistoryEntry(UUID, Time, Description, Amount, Map));
+				if(EditMode) TrackingDataHelper.EditHistoryEntry(SUUID, HUUID, new HistoryEntry(HUUID, Time, Description, Amount, Map));
+				else TrackingDataHelper.AddHistoryEntry(SUUID, new HistoryEntry(HUUID, Time, Description, Amount, Map));
 				Close();
 			});
 		}
@@ -85,8 +85,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		{
 			Time = DateTimeOffset.Now.ToUnixTimeSeconds();
 
-			Index = -1;
-			UUID = Guid.NewGuid().ToString();
+			SUUID = TrackingDataHelper.CurrentSeasonUUID;
+			HUUID = Guid.NewGuid().ToString();
 			Description = "";
 			Amount = 0;
 			Map = "";
@@ -96,9 +96,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 		public void SetData(HistoryEntryData data)
 		{
-			Index = data.Index;
-
-			UUID = data.UUID;
+			SUUID = data.SUUID;
+			HUUID = data.HUUID;
 			Description = data.Description;
 			Time = data.Time;
 			Amount = data.Amount;

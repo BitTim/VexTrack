@@ -15,8 +15,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		private EditableHistoryEntryPopupViewModel EditableHEPopup { get; set; }
 
 		private HistoryEntryData RawData { get; set; }
-		public int Index { get; set; }
-		public string UUID { get; set; }
+		public string SUUID { get; set; }
+		public string HUUID { get; set; }
 		public string Description { get; set; }
 		public long Time { get; set; }
 		public int Amount { get; set; }
@@ -36,7 +36,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			});
 			OnDeleteClicked = new RelayCommand(o => {
 				IsInitialized = false;
-				TrackingDataHelper.RemoveHistoryEntry(TrackingDataHelper.CurrentSeasonIndex, Index);
+				TrackingDataHelper.RemoveHistoryEntry(SUUID, HUUID);
 			});
 		}
 
@@ -44,8 +44,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		{
 			RawData = data;
 
-			Index = data.Index;
-			UUID = data.UUID;
+			SUUID = data.SUUID;
+			HUUID = data.HUUID;
 			Description = data.Description;
 			Time = data.Time;
 			Amount = data.Amount;

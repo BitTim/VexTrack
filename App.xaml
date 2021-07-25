@@ -12,7 +12,10 @@
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="Theme/Colors.xaml"/>
-				<ResourceDictionary Source="Theme/LightTheme.xaml"/>
+
+				<!-- Colors and Themes -->
+				<ResourceDictionary Source="Theme/AppTheme/LightTheme.xaml"/>
+				<ResourceDictionary Source="Theme/AccentColors/Teal.xaml"/>
 
 				<ResourceDictionary Source="Theme/Icons.xaml"/>
 

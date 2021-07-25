@@ -27,52 +27,11 @@
 	<Color x:Key="Red2">#d40058</Color>
 	<Color x:Key="Purple1">#8A16FC</Color>
 	<Color x:Key="Purple2">#ff00b9</Color>
-	<Color x:Key="MonoLight1">#515151</Color>
-	<Color x:Key="MonoLight2">#667178</Color>
-	<Color x:Key="MonoDark1">#838383</Color>
-	<Color x:Key="MonoDark2">#707b83</Color>
 
 	<Color x:Key="WinColor1">#66C2A9</Color>
 	<Color x:Key="WinColor2">#19b2b5</Color>
 	<Color x:Key="LossColor1">#F05C57</Color>
 	<Color x:Key="LossColor2">#e54c7c</Color>
-
-	<LinearGradientBrush x:Key="AccBlue">
-		<GradientStop Color="{StaticResource Blue1}" Offset="0.0"/>
-		<GradientStop Color="{StaticResource Blue2}" Offset="1.0"/>
-	</LinearGradientBrush>
-
-	<LinearGradientBrush x:Key="AccTeal">
-		<GradientStop Color="{StaticResource Teal1}" Offset="0.0"/>
-		<GradientStop Color="{StaticResource Teal2}" Offset="1.0"/>
-	</LinearGradientBrush>
-
-	<LinearGradientBrush x:Key="AccGreen">
-		<GradientStop Color="{StaticResource Green1}" Offset="0.0"/>
-		<GradientStop Color="{StaticResource Green2}" Offset="1.0"/>
-	</LinearGradientBrush>
-
-	<LinearGradientBrush x:Key="AccYellow">
-		<GradientStop Color="{StaticResource Yellow1}" Offset="0.0"/>
-		<GradientStop Color="{StaticResource Yellow2}" Offset="1.0"/>
-	</LinearGradientBrush>
-
-	<LinearGradientBrush x:Key="AccOrange">
-		<GradientStop Color="{StaticResource Orange1}" Offset="0.0"/>
-		<GradientStop Color="{StaticResource Orange2}" Offset="1.0"/>
-	</LinearGradientBrush>
-
-	<LinearGradientBrush x:Key="AccRed">
-		<GradientStop Color="{StaticResource Red1}" Offset="0.0"/>
-		<GradientStop Color="{StaticResource Red2}" Offset="1.0"/>
-	</LinearGradientBrush>
-
-	<LinearGradientBrush x:Key="AccPurple">
-		<GradientStop Color="{StaticResource Purple1}" Offset="0.0"/>
-		<GradientStop Color="{StaticResource Purple2}" Offset="1.0"/>
-	</LinearGradientBrush>
-
-
 
 	<LinearGradientBrush x:Key="WinColor">
 		<GradientStop Color="{StaticResource WinColor1}" Offset="0.0"/>
@@ -82,5 +41,10 @@
 	<LinearGradientBrush x:Key="LossColor">
 		<GradientStop Color="{StaticResource LossColor1}" Offset="0.0"/>
 		<GradientStop Color="{StaticResource LossColor2}" Offset="1.0"/>
+	</LinearGradientBrush>
+
+	<LinearGradientBrush x:Key="AccRed">
+		<GradientStop Color="{StaticResource Red1}" Offset="0.0"/>
+		<GradientStop Color="{StaticResource Red2}" Offset="1.0"/>
 	</LinearGradientBrush>
 </ResourceDictionary>

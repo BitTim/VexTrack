@@ -47,7 +47,7 @@
 
 		<Style.Triggers>
 			<Trigger Property="IsChecked" Value="True">
-				<Setter Property="Background" Value="{DynamicResource AccBlue}"/>
+				<Setter Property="Background" Value="{DynamicResource Accent}"/>
 				<Setter Property="Tag" Value="Right"/>
 			</Trigger>
 

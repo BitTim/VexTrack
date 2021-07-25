@@ -48,13 +48,16 @@
     <Page Update="MVVM\View\SettingsView.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Theme\AccentColors\Blue.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Theme\AddButtonTheme.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Theme\Colors.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Theme\DarkTheme.xaml">
+    <Page Update="Theme\AppTheme\DarkTheme.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Theme\HistoryButtonTheme.xaml">
@@ -63,7 +66,7 @@
     <Page Update="Theme\Icons.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Theme\LightTheme.xaml">
+    <Page Update="Theme\AppTheme\LightTheme.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Theme\ButtonTheme.xaml">

@@ -5,7 +5,7 @@
 		   TargetType="{x:Type Button}"
 		   BasedOn="{StaticResource {x:Type Button}}">
 		<Style.Setters>
-			<Setter Property="Background" Value="{DynamicResource AccBlue}"/>
+			<Setter Property="Background" Value="{DynamicResource Accent}"/>
 			<Setter Property="Foreground" Value="{DynamicResource White}"/>
 
 			<Setter Property="Template">

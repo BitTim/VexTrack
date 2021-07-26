@@ -4,6 +4,7 @@
 					xmlns:conv="clr-namespace:VexTrack.MVVM.Converter">
 
 	<conv:StyledIntConverter x:Key="styledIntConv"/>
+	<BooleanToVisibilityConverter x:Key="BoolToVisibleConv"/>
 
 	<Style TargetType="{x:Type local:ProgressButtonModel}"
 		   BasedOn="{StaticResource {x:Type Button}}">
@@ -56,7 +57,7 @@
 										<RowDefinition Height="36"/>
 										<RowDefinition Height="*"/>
 									</Grid.RowDefinitions>
-									
+
 									<TextBlock x:Name="PART_TitleTextBlock"
 											   HorizontalAlignment="Center"
 											   VerticalAlignment="Center"

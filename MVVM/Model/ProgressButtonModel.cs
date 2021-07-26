@@ -53,6 +53,8 @@ namespace VexTrack.MVVM.Model
 			set => SetValue(ColorProperty, value);
 		}
 
+		public bool IsCompleted { get => Value == MaxValue; }
+
 		static ProgressButtonModel()
 		{
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(ProgressButtonModel), new FrameworkPropertyMetadata(typeof(ProgressButtonModel)));

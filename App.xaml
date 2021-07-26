@@ -68,9 +68,13 @@
 				<popupView:GoalPopup/>
 			</DataTemplate>
 
-			<!--<DataTemplate DataType="{x:Type popupViewModel:EditableHistoryEntryPopupViewModel}">
-				<popupView:EditableHistoryEntryPopup/>
-			</DataTemplate>-->
+			<DataTemplate DataType="{x:Type popupViewModel:EditableGoalPopupViewModel}">
+				<popupView:EditableGoalPopup/>
+			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type popupViewModel:ProgressActivityPopupViewModel}">
+				<popupView:ProgressActivityPopup/>
+			</DataTemplate>
 		</ResourceDictionary>
 	</Application.Resources>
 </Application>

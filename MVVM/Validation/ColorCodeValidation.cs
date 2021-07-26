@@ -19,9 +19,16 @@ namespace VexTrack.MVVM.Validation
 				return new ValidationResult(false, $"This field cannot be empty, last known value will be used");
 			bool canConvert;
 
-			Brush brush = (SolidColorBrush)new BrushConverter().ConvertFrom(strValue);
+			try
+			{
+				Brush brush = (SolidColorBrush)new BrushConverter().ConvertFrom(strValue);
+				canConvert = true;
+			}
+			catch
+			{
+				canConvert = false;
+			}
 
-			canConvert = brush != null;
 			return canConvert ? new ValidationResult(true, null) : new ValidationResult(false, $"Input is not a valid color");
 		}
 	}

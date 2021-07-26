@@ -64,17 +64,14 @@ namespace VexTrack.Core
 		{
 			GoalEntryData ret = new(goalData.UUID);
 
-			int totalCollected = CalcUtil.CalcTotalCollected(activeLevel, cxp);
-
 			ret.Title = goalData.Name;
 
-			ret.Total = totalCollected + goalData.Remaining - goalData.StartXP;
-			ret.Collected = totalCollected - goalData.StartXP;
-			ret.Remaining = goalData.Remaining;
+			ret.Total = goalData.Total;
+			ret.Collected = goalData.Collected;
+			ret.Remaining = goalData.Total - goalData.Collected;
 			ret.Progress = CalcUtil.CalcProgress(ret.Total, ret.Collected);
 			ret.Active = -1;
 			ret.Color = goalData.Color;
-			ret.StartXP = goalData.StartXP;
 
 			return ret;
 		}

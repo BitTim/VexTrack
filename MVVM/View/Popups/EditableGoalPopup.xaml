@@ -45,6 +45,7 @@
 						<RowDefinition Height="30"/>
 						<RowDefinition Height="30"/>
 						<RowDefinition Height="30"/>
+						<RowDefinition Height="30"/>
 					</Grid.RowDefinitions>
 
 					<TextBlock Text="{Binding PopupTitle}"
@@ -62,7 +63,7 @@
 							   Foreground="{DynamicResource Foreground}"
 							   Margin="0, 0, 0, 8"/>
 
-					<TextBlock Text="Remaining XP"
+					<TextBlock Text="Collected XP"
 							   Grid.Row="2"
 							   Grid.Column="0"
 							   FontSize="14"
@@ -70,8 +71,16 @@
 							   Foreground="{DynamicResource Foreground}"
 							   Margin="0, 0, 0, 8"/>
 
-					<TextBlock Text="Color"
+					<TextBlock Text="Total XP"
 							   Grid.Row="3"
+							   Grid.Column="0"
+							   FontSize="14"
+							   FontWeight="Bold"
+							   Foreground="{DynamicResource Foreground}"
+							   Margin="0, 0, 0, 8"/>
+
+					<TextBlock Text="Color"
+							   Grid.Row="4"
 							   Grid.Column="0"
 							   FontSize="14"
 							   FontWeight="Bold"
@@ -88,7 +97,9 @@
 							 Height="22"
 							 Style="{DynamicResource TextBoxTheme}"/>
 
-					<TextBox x:Name="PART_RemainingBox"
+
+
+					<TextBox x:Name="PART_CollectedBox"
 							 Grid.Row="2"
 							 Grid.Column="1"
 							 FontSize="14"
@@ -96,7 +107,27 @@
 							 Height="22"
 							 Style="{DynamicResource TextBoxTheme}">
 						<TextBox.Text>
-							<Binding Path="Remaining"
+							<Binding Path="Collected"
+									 UpdateSourceTrigger="PropertyChanged"
+									 ValidatesOnNotifyDataErrors="True"
+									 ValidatesOnDataErrors="True"
+									 NotifyOnValidationError="True">
+								<Binding.ValidationRules>
+									<validation:NumericValidationRule ValidatesOnTargetUpdated="True"/>
+								</Binding.ValidationRules>
+							</Binding>
+						</TextBox.Text>
+					</TextBox>
+
+					<TextBox x:Name="PART_TotalBox"
+							 Grid.Row="3"
+							 Grid.Column="1"
+							 FontSize="14"
+							 Margin="0, 0, 0, 8"
+							 Height="22"
+							 Style="{DynamicResource TextBoxTheme}">
+						<TextBox.Text>
+							<Binding Path="Total"
 									 UpdateSourceTrigger="PropertyChanged"
 									 ValidatesOnNotifyDataErrors="True"
 									 ValidatesOnDataErrors="True"
@@ -109,7 +140,7 @@
 					</TextBox>
 
 					<TextBox x:Name="PART_ColorBox"
-							 Grid.Row="3"
+							 Grid.Row="4"
 							 Grid.Column="1"
 							 FontSize="14"
 							 Margin="0, 0, 0, 8"

@@ -22,6 +22,8 @@ namespace VexTrack.MVVM.ViewModel
 		public HistoryViewModel HistoryVM { get; set; }
 		public SettingsViewModel SettingsVM { get; set; }
 
+		public ProgressActivityPopupViewModel PAPopupVM { get; set; }
+
 		private object _currentView;
 
 		private BasePopupViewModel _currentPopup = null;
@@ -73,6 +75,9 @@ namespace VexTrack.MVVM.ViewModel
 			ViewModelManager.ViewModels.Add("Season", SeasonVM);
 			ViewModelManager.ViewModels.Add("History", HistoryVM);
 			ViewModelManager.ViewModels.Add("Settings", SettingsVM);
+
+			PAPopupVM = new ProgressActivityPopupViewModel();
+			ViewModelManager.ViewModels.Add("PAPopup", PAPopupVM);
 
 			CurrentView = DashboardVM;
 

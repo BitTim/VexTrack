@@ -12,7 +12,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public RelayCommand OnBackClicked { get; set; }
 		public RelayCommand OnEditClicked { get; set; }
 		public RelayCommand OnDeleteClicked { get; set; }
-		//private EditableGoalPopupViewModel EditableGoalPopup { get; set; }
+		private EditableGoalPopupViewModel EditableGoalPopup { get; set; }
 
 		private GoalEntryData RawData { get; set; }
 		public int Index { get; set; }
@@ -30,14 +30,14 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 		public GoalPopupViewModel()
 		{
-			//EditableGoalPopup = (EditableGoalPopupViewModel)ViewModelManager.ViewModels["EditableGoalPopup"];
+			EditableGoalPopup = (EditableGoalPopupViewModel)ViewModelManager.ViewModels["EditableGoalPopup"];
 			CanCancel = true;
 
 			OnBackClicked = new RelayCommand(o => { Close(); });
 			OnEditClicked = new RelayCommand(o => {
-				//EditableGoalPopup.SetParameters("Edit History Entry", true);
-				//EditableGoalPopup.SetData(RawData);
-				//MainVM.QueuePopup(EditableGoalPopup);
+				EditableGoalPopup.SetParameters("Edit Goal", true);
+				EditableGoalPopup.SetData(RawData);
+				MainVM.QueuePopup(EditableGoalPopup);
 			});
 			OnDeleteClicked = new RelayCommand(o => {
 				IsInitialized = false;
@@ -69,7 +69,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 		public override void Close()
 		{
-			//EditableGoalPopup.Close();
+			EditableGoalPopup.Close();
 			base.Close();
 		}
 	}

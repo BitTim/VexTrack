@@ -34,7 +34,7 @@ namespace VexTrack.Core
 			ret.Collected = activeLevel - 1;
 			ret.Remaining = ret.Total - ret.Collected;
 			ret.Progress = CalcUtil.CalcProgress(ret.Total, ret.Collected);
-			ret.Active = activeLevel;
+			ret.Active = activeLevel > Constants.BattlepassLevels + Constants.EpilogueLevels ? -1 : activeLevel;
 			ret.StartXP = -1;
 
 			return ret;
@@ -48,7 +48,7 @@ namespace VexTrack.Core
 			if (activeLevel - 1 <= Constants.BattlepassLevels) total = Constants.Level2Offset + Constants.XPPerLevel * activeLevel;
 			else total = Constants.XPPerEpilogueLevel;
 
-			ret.Title = "Active Level";
+			ret.Title = "Level " + (activeLevel > Constants.BattlepassLevels + Constants.EpilogueLevels ? (Constants.BattlepassLevels + Constants.EpilogueLevels).ToString() : activeLevel.ToString());
 
 			ret.Total = total;
 			ret.Collected = cxp;

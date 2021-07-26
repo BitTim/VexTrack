@@ -31,16 +31,12 @@
 				</Grid.RowDefinitions>
 
 				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="Auto"/>
 					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="Auto"/>
 				</Grid.ColumnDefinitions>
 
-				<model:ProgressArcModel Margin="8, 0, 32, 0"
-										Value="{Binding Progress}"
-										Color="{Binding Color}"/>
-
 				<Grid Grid.Row="0"
-					  Grid.Column="1"
+					  Grid.Column="0"
 					  Margin="0, 4, 0, 0">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*"/>
@@ -128,6 +124,11 @@
 							   Visibility="{Binding Active, Converter={StaticResource NegativeToVisibleConv}}"
 							   Margin="0, 0, 0, 4"/>
 				</Grid>
+
+				<model:ProgressArcModel Margin="32, 0, 4, 0"
+										Grid.Column="1"
+										Value="{Binding Progress}"
+										Color="{Binding Color}"/>
 
 				<Grid Grid.Row="1"
 					  Grid.ColumnSpan="2"

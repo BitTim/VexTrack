@@ -47,4 +47,16 @@
 		<GradientStop Color="{StaticResource Red1}" Offset="0.0"/>
 		<GradientStop Color="{StaticResource Red2}" Offset="1.0"/>
 	</LinearGradientBrush>
+
+	<LinearGradientBrush x:Key="HueColors" StartPoint="0, 0" EndPoint="0, 1">
+		<GradientStop Color="#ff0000" Offset="0.0"/>
+		<GradientStop Color="#ff0000" Offset="0.04"/>
+		<GradientStop Color="#ffff00" Offset="0.19"/>
+		<GradientStop Color="#00ff00" Offset="0.35"/>
+		<GradientStop Color="#00ffff" Offset="0.5"/>
+		<GradientStop Color="#0000ff" Offset="0.65"/>
+		<GradientStop Color="#ff00ff" Offset="0.81"/>
+		<GradientStop Color="#ff0000" Offset="0.96"/>
+		<GradientStop Color="#ff0000" Offset="1.0"/>
+	</LinearGradientBrush>
 </ResourceDictionary>

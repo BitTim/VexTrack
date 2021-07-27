@@ -72,6 +72,9 @@
     <Page Update="Theme\AddButtonTheme.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Theme\ColorPickerTheme.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Theme\Colors.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -79,6 +82,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Theme\HistoryButtonTheme.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Theme\HueSliderTheme.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Theme\Icons.xaml">

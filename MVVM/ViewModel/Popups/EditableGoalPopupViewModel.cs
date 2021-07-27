@@ -17,11 +17,15 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public int StartXP { get; set; }
 		public double Progress => CalcUtil.CalcProgress(Total, Collected);
 		public bool EditMode { get; set; }
+		
+
+		private string PrevColor { get; set; }
 
 		private string _title;
 		private int _total;
 		private int _collected;
 		private string _color;
+		private bool _useAccentColor;
 
 		public string Title
 		{
@@ -57,8 +61,23 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			get => _color;
 			set
 			{
+				PrevColor = _color;
 				_color = value;
 				OnPropertyChanged();
+			}
+		}
+
+		public bool UseAccentColor
+		{
+			get => _useAccentColor;
+			set
+			{
+				_useAccentColor = value;
+				if (value) Color = "";
+				else Color = PrevColor;
+
+				OnPropertyChanged();
+				OnPropertyChanged(Color);
 			}
 		}
 
@@ -89,6 +108,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			Total = 0;
 			Collected = 0;
 			Color = "#000000";
+			PrevColor = Color;
 
 			IsInitialized = true;
 		}
@@ -101,6 +121,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			Collected = data.Collected;
 			Color = data.Color;
 			StartXP = data.StartXP;
+			PrevColor = Color;
 
 			IsInitialized = true;
 		}

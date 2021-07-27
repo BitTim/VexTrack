@@ -4,10 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VexTrack.MVVM.View.Popups"
+             xmlns:conv="clr-namespace:VexTrack.MVVM.Converter"
 			 xmlns:validation="clr-namespace:VexTrack.MVVM.Validation"
 			 xmlns:model="clr-namespace:VexTrack.MVVM.Model"
 			 mc:Ignorable="d" 
              d:DesignHeight="812" d:DesignWidth="872">
+
+	<UserControl.Resources>
+		<conv:InvertedBooleanToVisibilityConverter x:Key="InvBoolToVisibileConv"/>
+	</UserControl.Resources>
 
 	<Grid Height="Auto"
 		  Width="640"
@@ -25,16 +30,12 @@
 				</Grid.RowDefinitions>
 
 				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="Auto"/>
 					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="Auto"/>
 				</Grid.ColumnDefinitions>
-
-				<model:ProgressArcModel Margin="8, 0, 32, 0"
-										Value="{Binding Progress}"
-										Color="{Binding Color}"/>
 				
 				<Grid Grid.Row="0"
-					  Grid.Column="1">
+					  Grid.Column="0">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*"/>
 						<ColumnDefinition Width="*"/>
@@ -46,6 +47,7 @@
 						<RowDefinition Height="30"/>
 						<RowDefinition Height="30"/>
 						<RowDefinition Height="30"/>
+						<RowDefinition Height="Auto"/>
 					</Grid.RowDefinitions>
 
 					<TextBlock Text="{Binding PopupTitle}"
@@ -139,26 +141,39 @@
 						</TextBox.Text>
 					</TextBox>
 
-					<TextBox x:Name="PART_ColorBox"
-							 Grid.Row="4"
-							 Grid.Column="1"
-							 FontSize="14"
-							 Margin="0, 0, 0, 8"
-							 Height="22"
-							 Style="{DynamicResource TextBoxTheme}">
-						<TextBox.Text>
-							<Binding Path="Color"
-									 UpdateSourceTrigger="PropertyChanged"
-									 ValidatesOnNotifyDataErrors="True"
-									 ValidatesOnDataErrors="True"
-									 NotifyOnValidationError="True">
-								<Binding.ValidationRules>
-									<validation:ColorCodeValidation ValidatesOnTargetUpdated="True"/>
-								</Binding.ValidationRules>
-							</Binding>
-						</TextBox.Text>
-					</TextBox>
+					<Grid Grid.Row="4"
+						  Grid.Column="1">
+
+						<TextBlock Text="Use Accent Color"
+								   Foreground="{DynamicResource Foreground}"
+								   FontSize="14"
+								   HorizontalAlignment="Left"
+								   VerticalAlignment="Center"
+								   Margin="8, 0, 0, 0"
+								   FontWeight="Bold"/>
+
+						<CheckBox Width="50" Height="30"
+								  x:Name="PART_AccentCheckBox"
+								  HorizontalAlignment="Right"
+								  IsChecked="{Binding UseAccentColor}"
+								  Style="{StaticResource CheckBoxTheme}"/>
+					</Grid>
+					
+					<model:ColorPickerModel Grid.Row="5"
+											Grid.Column="0"
+											Grid.ColumnSpan="2"
+											Margin="0, 8, 0, 0"
+											Visibility="{Binding UseAccentColor, Converter={StaticResource InvBoolToVisibileConv}, ConverterParameter=true}"
+											Hex="{Binding Color, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
 				</Grid>
+
+
+
+				<model:ProgressArcModel Margin="32, 0, 4, 0"
+										Grid.Column="1"
+										VerticalAlignment="Center"
+										Value="{Binding Progress}"
+										Color="{Binding Color, UpdateSourceTrigger=PropertyChanged}"/>
 
 				<Grid Grid.Row="1"
 					  Grid.ColumnSpan="2"

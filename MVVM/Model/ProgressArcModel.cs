@@ -34,7 +34,7 @@ namespace VexTrack.MVVM.Model
 		public static DependencyProperty ForegroundAngleProperty = DependencyProperty.Register("ForegroundAngle", typeof(double), typeof(ProgressArcModel), new PropertyMetadata(0.0));
 		public static DependencyProperty ForegroundBrushProperty = DependencyProperty.Register("ForegroundBrush", typeof(Brush), typeof(ProgressArcModel), new PropertyMetadata(Application.Current.FindResource("Accent")));
 
-		public static DependencyProperty ValueProperty = DependencyProperty.Register("Value", typeof(double), typeof(ProgressArcModel), new PropertyMetadata(0.0, OnPropertyChanged));
+		public static DependencyProperty ValueProperty = DependencyProperty.Register("Value", typeof(double), typeof(ProgressArcModel), new FrameworkPropertyMetadata(0.0, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnPropertyChanged));
 		public static DependencyProperty SymbolProperty = DependencyProperty.Register("Symbol", typeof(string), typeof(ProgressArcModel), new PropertyMetadata("%", OnPropertyChanged));
 		public static DependencyProperty MinValueProperty = DependencyProperty.Register("MinValue", typeof(double), typeof(ProgressArcModel), new PropertyMetadata(0.0, OnPropertyChanged));
 		public static DependencyProperty MaxValueProperty = DependencyProperty.Register("MaxValue", typeof(double), typeof(ProgressArcModel), new PropertyMetadata(100.0, OnPropertyChanged));
@@ -173,11 +173,16 @@ namespace VexTrack.MVVM.Model
 			}
 		}
 
+		private static bool _isUpdating = false;
+
 		public void Update()
 		{
+			if (_isUpdating) return;
+			_isUpdating = true;
+
 			if (Value > MaxValue) Value = MaxValue;
 			if (Value < MinValue) Value = MinValue;
-			
+
 			double percent = (Value - MinValue) * 100 / (MaxValue - MinValue);
 
 			double angle = percent / 100 * 360;
@@ -204,6 +209,8 @@ namespace VexTrack.MVVM.Model
 				Brush brush = (SolidColorBrush)new BrushConverter().ConvertFrom(Color);
 				ForegroundBrush = brush;
 			}
+
+			_isUpdating = false;
 		}
 
 		public (double, double) CalcPointFromProgress(double percent, double rad)

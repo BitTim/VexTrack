@@ -14,8 +14,8 @@
 				<ResourceDictionary Source="Theme/Colors.xaml"/>
 
 				<!-- Colors and Themes -->
-				<ResourceDictionary Source="Theme/AppTheme/DarkTheme.xaml"/>
-				<ResourceDictionary Source="Theme/AccentColors/Blue.xaml"/>
+				<ResourceDictionary Source="Theme/AppTheme/LightTheme.xaml"/>
+				<ResourceDictionary Source="Theme/AccentColors/Orange.xaml"/>
 
 				<ResourceDictionary Source="Theme/Icons.xaml"/>
 

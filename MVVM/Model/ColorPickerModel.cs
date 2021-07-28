@@ -211,7 +211,7 @@ namespace VexTrack.MVVM.Model
 			}
 			else if (source == "HEX")
 			{
-				if (Hex == "")
+				if (Hex == "" || Hex == null)
 				{
 					_isUpdating = false;
 					return;

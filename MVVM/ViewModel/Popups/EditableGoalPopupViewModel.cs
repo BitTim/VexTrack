@@ -15,7 +15,6 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public string PopupTitle { get; set; }
 		public string UUID { get; set; }
 		public int StartXP { get; set; }
-		public double Progress => CalcUtil.CalcProgress(Total, Collected);
 		public bool EditMode { get; set; }
 		
 
@@ -26,6 +25,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		private int _collected;
 		private string _color;
 		private bool _useAccentColor;
+		private double _progress;
 
 		public string Title
 		{
@@ -42,6 +42,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			set
 			{
 				_total = value;
+				RecalcProgress();
 				OnPropertyChanged();
 				OnPropertyChanged(nameof(Progress));
 			}
@@ -52,8 +53,18 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			set
 			{
 				_collected = value;
+				RecalcProgress();
 				OnPropertyChanged();
 				OnPropertyChanged(nameof(Progress));
+			}
+		}
+		public double Progress
+		{
+			get => _progress;
+			set
+			{
+				_progress = value;
+				OnPropertyChanged();
 			}
 		}
 		public string Color
@@ -74,7 +85,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			{
 				_useAccentColor = value;
 				if (value) Color = "";
-				else Color = PrevColor;
+				else if (PrevColor != null && PrevColor != "") Color = PrevColor;
+				else Color = "#000000";
 
 				OnPropertyChanged();
 				OnPropertyChanged(Color);
@@ -107,8 +119,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			Title = "";
 			Total = 0;
 			Collected = 0;
+			UseAccentColor = false;
 			Color = "#000000";
-			PrevColor = Color;
 
 			IsInitialized = true;
 		}
@@ -119,11 +131,16 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			Title = data.Title;
 			Total = data.Total;
 			Collected = data.Collected;
+			UseAccentColor = data.Color == "" ? true : false;
 			Color = data.Color;
 			StartXP = data.StartXP;
-			PrevColor = Color;
 
 			IsInitialized = true;
+		}
+
+		private void RecalcProgress()
+		{
+			Progress = CalcUtil.CalcProgress(Total, Collected);
 		}
 	}
 }

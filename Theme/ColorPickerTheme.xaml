@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					xmlns:local="clr-namespace:VexTrack.MVVM.Model"
+					xmlns:ap="clr-namespace:VexTrack.MVVM.Attached_Property"
 					xmlns:validation="clr-namespace:VexTrack.MVVM.Validation">
 
 	<Style TargetType="{x:Type local:ColorPickerModel}">
@@ -75,6 +76,7 @@
 										Value="{Binding RelativeSource={x:Static RelativeSource.TemplatedParent}, Path=Hue}"
 										IsDirectionReversed="True"
 										IsMoveToPointEnabled="True"
+										ap:SliderTools.MoveToPointOnDrag="True"
 										Style="{StaticResource HueSliderTheme}"/>
 							</Grid>
 

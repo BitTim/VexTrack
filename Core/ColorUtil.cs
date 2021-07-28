@@ -43,8 +43,8 @@ namespace VexTrack.Core
             if (hsv.h >= 300 && hsv.h < 360) (r, g, b) = (c, 0, x);
             if (hsv.h == 360)                (r, g, b) = (c, x, 0);
 
-            return Color.FromArgb(255, (int)((r + m) * 255),(int)((g + m) * 255), (int)((b + m) * 255));
-        }
+			return Color.FromArgb(255, (int)((r + m) * 255), (int)((g + m) * 255), (int)((b + m) * 255));
+		}
 
         public static float getValue(Color c)
         {

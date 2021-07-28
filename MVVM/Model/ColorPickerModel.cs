@@ -241,10 +241,15 @@ namespace VexTrack.MVVM.Model
 
 		private bool _mouseDown = false;
 
-		private void PART_ColorMatrix_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) { _mouseDown = false; }
+		private void PART_ColorMatrix_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+		{
+			_mouseDown = false;
+			Mouse.Capture(null);
+		}
 		private void PART_ColorMatrix_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 		{
 			_mouseDown = true;
+			Mouse.Capture(clickableBorder);
 			UpdateMouse(sender, e);
 		}
 
@@ -261,8 +266,8 @@ namespace VexTrack.MVVM.Model
 
 			if (mousePos.X < 0) mousePos.X = 0;
 			if (mousePos.X > dimensions.X) mousePos.X = dimensions.X;
-			if (mousePos.Y < 0) mousePos.X = 0;
-			if (mousePos.Y > dimensions.Y) mousePos.X = dimensions.Y;
+			if (mousePos.Y < 0) mousePos.Y = 0;
+			if (mousePos.Y > dimensions.Y) mousePos.Y = dimensions.Y;
 
 			Saturation = (float)mousePos.X / (float)dimensions.X;
 			Value = 1f - ((float)mousePos.Y / (float)dimensions.Y);

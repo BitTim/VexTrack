@@ -32,6 +32,7 @@
 				<ResourceDictionary Source="Theme/ScrollViewerTheme.xaml"/>
 				<ResourceDictionary Source="Theme/ProgressButtonTheme.xaml"/>
 				<ResourceDictionary Source="Theme/ColorPickerTheme.xaml"/>
+				<ResourceDictionary Source="Theme/TextWithUnitTheme.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 
 			<!-- Pages -->

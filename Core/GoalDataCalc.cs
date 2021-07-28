@@ -28,7 +28,7 @@ namespace VexTrack.Core
 		{
 			GoalEntryData ret = new(uuid);
 
-			ret.Title = "Battlepass";
+			ret.Title = "Battlepass Levels";
 
 			ret.Total = Constants.BattlepassLevels;
 			ret.Collected = activeLevel - 1;

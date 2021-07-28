@@ -114,6 +114,9 @@
     <Page Update="Theme\TextBoxTheme.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Theme\TextWithUnitTheme.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Theme\TitleBarButtonTheme.xaml">
       <SubType>Designer</SubType>
     </Page>

@@ -12,7 +12,7 @@ namespace VexTrack.MVVM.Converter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			string val = (string)value;
+			string val = value.ToString();
 			string param = (string)parameter;
 			string str = val + " " + param;
 			return str;

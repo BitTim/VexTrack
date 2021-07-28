@@ -18,6 +18,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public int Index { get; set; }
 		public string UUID { get; set; }
 		public string Title { get; set; }
+		public string Unit { get; set; }
 		public int Collected { get; set; }
 		public int Remaining { get; set; }
 		public int Total { get; set; }
@@ -51,7 +52,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			CanEdit = canEdit;
 		}
 
-		public void SetData(GoalEntryData data)
+		public void SetData(GoalEntryData data, string unit = " XP")
 		{
 			RawData = data;
 
@@ -63,6 +64,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			Progress = data.Progress;
 			Active = data.Active;
 			Color = data.Color;
+			Unit = unit;
 
 			IsInitialized = true;
 		}

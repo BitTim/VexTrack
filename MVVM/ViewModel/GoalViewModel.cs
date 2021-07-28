@@ -103,7 +103,7 @@ namespace VexTrack.MVVM.ViewModel
 			string uuid = (string)parameter;
 
 			GoalPopup.SetFlags(false, false);
-			GoalPopup.SetData(BuiltinEntries.Where(e => e.UUID == uuid).First());
+			GoalPopup.SetData(BuiltinEntries.Where(e => e.UUID == uuid).First(), uuid == BattlepassGoalUUID ? "" : " XP");
 			MainVM.QueuePopup(GoalPopup);
 		}
 

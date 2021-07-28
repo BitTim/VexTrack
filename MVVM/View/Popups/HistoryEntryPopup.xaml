@@ -90,7 +90,7 @@
 							   Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
 							   Margin="0, 0, 0, 4"/>
 
-					<TextBlock Text="{Binding Amount}"
+					<TextBlock Text="{Binding Amount, Converter={StaticResource styledIntConv}, ConverterParameter=XP}"
 							   Grid.Row="1"
 							   Grid.Column="1"
 							   FontSize="14"

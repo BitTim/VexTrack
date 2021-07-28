@@ -13,6 +13,11 @@
 		<BooleanToVisibilityConverter x:Key="BoolToVisibleConv"/>
 		<conv:NegativeIntToVisibilityConverter x:Key="NegativeToVisibleConv"/>
 		<conv:NegativeToZeroConverter x:Key="NegativeToZeroConv"/>
+
+		<conv:ValueConverterGroup x:Key="NonNegativeStylingConv">
+			<conv:NegativeToZeroConverter/>
+			<conv:StyledIntConverter/>
+		</conv:ValueConverterGroup>
 	</UserControl.Resources>
 
 	<Grid Height="Auto"
@@ -95,34 +100,30 @@
 
 
 
-					<TextBlock Text="{Binding Collected, Converter={StaticResource NegativeToZeroConv}}"
-							   Grid.Row="1"
-							   Grid.Column="1"
-							   FontSize="14"
-							   Foreground="{DynamicResource Foreground}"
-							   Margin="0, 0, 0, 4"/>
+					<model:TextWithUnit Text="{Binding Collected, Converter={StaticResource NegativeToZeroConv}}"
+										Unit="{Binding Unit}"
+										Grid.Row="1"
+										Grid.Column="1"
+										Margin="0, 0, 0, 4"/>
 
-					<TextBlock Text="{Binding Remaining, Converter={StaticResource NegativeToZeroConv}}"
-							   Grid.Row="2"
-							   Grid.Column="1"
-							   FontSize="14"
-							   Foreground="{DynamicResource Foreground}"
-							   Margin="0, 0, 0, 4"/>
+					<model:TextWithUnit Text="{Binding Remaining, Converter={StaticResource NegativeToZeroConv}}"
+										Unit="{Binding Unit}"
+										Grid.Row="2"
+										Grid.Column="1"
+										Margin="0, 0, 0, 4"/>
 
-					<TextBlock Text="{Binding Total}"
-							   Grid.Row="3"
-							   Grid.Column="1"
-							   FontSize="14"
-							   Foreground="{DynamicResource Foreground}"
-							   Margin="0, 0, 0, 4"/>
+					<model:TextWithUnit Text="{Binding Total}"
+										Unit="{Binding Unit}"
+										Grid.Row="3"
+										Grid.Column="1"
+										Margin="0, 0, 0, 4"/>
 
-					<TextBlock Text="{Binding Active}"
-							   Grid.Row="4"
-							   Grid.Column="1"
-							   FontSize="14"
-							   Foreground="{DynamicResource Foreground}"
-							   Visibility="{Binding Active, Converter={StaticResource NegativeToVisibleConv}}"
-							   Margin="0, 0, 0, 4"/>
+					<model:TextWithUnit Text="{Binding Active}"
+										Unit="{Binding Unit}"
+										Grid.Row="4"
+										Grid.Column="1"
+										Visibility="{Binding Active, Converter={StaticResource NegativeToVisibleConv}}"
+										Margin="0, 0, 0, 4"/>
 				</Grid>
 
 				<model:ProgressArcModel Margin="32, 0, 4, 0"

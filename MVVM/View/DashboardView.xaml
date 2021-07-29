@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:VexTrack.MVVM.View"
              xmlns:model="clr-namespace:VexTrack.MVVM.Model"
              xmlns:conv="clr-namespace:VexTrack.MVVM.Converter"
+			 xmlns:oxy="http://oxyplot.org/wpf"
              mc:Ignorable="d" 
              d:DesignHeight="780"
 			 d:DesignWidth="640">
@@ -117,6 +118,92 @@
 				BorderBrush="{StaticResource Shade}"
 				BorderThickness="2"
 				Margin="16, 0, 16, 16">
+			
+			<Grid Margin="8">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="*"/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+
+				<oxy:PlotView Model="{Binding Graph}"
+							  Background="{DynamicResource Background}"
+							  Foreground="{DynamicResource Foreground}"/>
+
+				<Grid Grid.Row="1"
+					   Margin="0, 8, 0, 0">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="22"/>
+						<RowDefinition Height="22"/>
+					</Grid.RowDefinitions>
+
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+
+					<TextBlock Text="Deviation from ideal"
+							   Grid.Row="0"
+							   Grid.Column="0"
+							   FontSize="14"
+							   FontWeight="Bold"
+							   Foreground="{DynamicResource Foreground}"
+							   Margin="0, 0, 0, 4"/>
+
+					<TextBlock Text="Deviation from daily"
+							   Grid.Row="1"
+							   Grid.Column="0"
+							   FontSize="14"
+							   FontWeight="Bold"
+							   Foreground="{DynamicResource Foreground}"
+							   Margin="0, 0, 0, 4"/>
+
+					<model:TextWithUnit Text="{Binding Collected, Converter={StaticResource NegativeToZeroConv}}"
+										Unit=" XP"
+										Grid.Row="0"
+										Grid.Column="1"
+										Margin="8, 0, 0, 4"/>
+
+					<model:TextWithUnit Text="{Binding Remaining, Converter={StaticResource NegativeToZeroConv}}"
+										Unit=" XP"
+										Grid.Row="1"
+										Grid.Column="1"
+										Margin="8, 0, 0, 4"/>
+
+
+
+					<TextBlock Text="Days until finish"
+							   Grid.Row="0"
+							   Grid.Column="2"
+							   FontSize="14"
+							   FontWeight="Bold"
+							   Foreground="{DynamicResource Foreground}"
+							   Margin="0, 0, 0, 4"/>
+
+					<TextBlock Text="Remaining Days"
+							   Grid.Row="1"
+							   Grid.Column="2"
+							   FontSize="14"
+							   FontWeight="Bold"
+							   Foreground="{DynamicResource Foreground}"
+							   Margin="0, 0, 0, 4"/>
+
+					<TextBlock Text=""
+							   Grid.Row="0"
+							   Grid.Column="3"
+							   FontSize="14"
+							   Foreground="{DynamicResource Foreground}"
+							   Margin="8, 0, 0, 4"/>
+
+					<TextBlock Text=""
+							   Grid.Row="0"
+							   Grid.Column="3"
+							   FontSize="14"
+							   Foreground="{DynamicResource Foreground}"
+							   Margin="8, 0, 0, 4"/>
+				</Grid>
+			</Grid>
 		</Border>
 
 		<Button Grid.Row="0"

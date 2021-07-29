@@ -80,6 +80,17 @@ namespace VexTrack.Core
 			return remainingDays;
 		}
 
+		public static int GetDuration(string sUUID)
+		{
+			DateTimeOffset endDate = DateTimeOffset.Parse(Data.Seasons.Find(s => s.UUID == sUUID).EndDate).ToLocalTime();
+			DateTimeOffset startDate = DateTimeOffset.FromUnixTimeSeconds(Data.Seasons.Find(s => s.UUID == sUUID).History.First().Time).ToLocalTime().Date;
+
+			int duration = (endDate - startDate).Days;
+			if (duration < 0) duration = 0;
+
+			return duration;
+		}
+
 		public static void InitData(string seasonName, string seasonEndDate, int activeBPLevel, int cXP)
 		{
 			List<Goal> goals = new();
@@ -365,10 +376,21 @@ namespace VexTrack.Core
 
 
 
-		public static HistoryEntry GetHistoryEntry(int season, int index)
+		public static HistoryEntry GetHistoryEntry(string sUUID, string hUUID)
 		{
-			return Data.Seasons[season].History[index];
+			return Data.Seasons.Find(s => s.UUID == sUUID).History.Find(h => h.UUID == hUUID);
 		}
+
+		public static HistoryEntry GetFirstHistoryEntry(string sUUID)
+		{
+			return Data.Seasons.Find(s => s.UUID == sUUID).History.First();
+		}
+
+		public static Season GetSeason(string sUUID)
+		{
+			return Data.Seasons.Find(s => s.UUID == sUUID);
+		}
+
 
 		public static void AddHistoryEntry(string sUUID, HistoryEntry data)
 		{

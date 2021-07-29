@@ -1,4 +1,6 @@
-﻿using System;
+﻿using OxyPlot;
+using OxyPlot.Series;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,6 +35,43 @@ namespace VexTrack.Core
 
 			return ret;
 		}
+
+		public static LineSeries CalcDailyIdeal()
+		{
+			LineSeries ret = new();
+
+
+
+			return ret;
+		}
+
+		/*
+		yAxisDailyIdeal = []
+
+		dateDelta = seasonEndDate - date.today()
+		remainingDays = dateDelta.days
+		dayDelta = duration - remainingDays
+
+		if date.fromtimestamp(data["seasons"][seasonIndex.get()]["xpHistory"][len(data["seasons"][seasonIndex.get()]["xpHistory"]) - 1]["time"]) == date.today(): offset = 1
+		else: offset = 0
+
+		totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(data, epilogue, seasonIndex.get())
+
+		if remainingDays >= 0 and remainingDays < duration:
+			divisor = remainingDays - settings["bufferDays"] + 1
+			if divisor <= 0: divisor = 1
+    
+			dailyTotal = round((totalXPTotal - yAxisYou[index - offset]) / divisor)
+			yAxisDailyIdeal.append(yAxisYou[index - offset])
+
+			for i in range(1, remainingDays + 2):
+				yAxisDailyIdeal.append(yAxisDailyIdeal[i - 1] + dailyTotal)
+				if yAxisDailyIdeal[i] > totalXP: yAxisDailyIdeal[i] = totalXP
+
+			plot.plot(timeAxis[dayDelta - 1:], yAxisDailyIdeal, color='skyblue', label='Daily Ideal', alpha=1, linestyle="--")
+    
+		plot.plot(timeAxis[:len(yAxisYou)], yAxisYou, color='red', label='You', linewidth=3)
+		 */
 	}
 
 	public class DailyData

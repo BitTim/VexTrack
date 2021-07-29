@@ -1,4 +1,6 @@
-﻿using System;
+﻿using OxyPlot;
+using OxyPlot.Series;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,6 +20,7 @@ namespace VexTrack.MVVM.ViewModel
 		private int _remaining;
 		private int _total;
 		private double _progress;
+		private PlotModel _graph;
 
 		public int Collected
 		{
@@ -56,7 +59,24 @@ namespace VexTrack.MVVM.ViewModel
 			}
 		}
 
-		public DashboardViewModel() { Update(); }
+		public PlotModel Graph
+		{
+			get => _graph;
+			set
+			{
+				_graph = value;
+				OnPropertyChanged();
+			}
+		}
+
+		public DashboardViewModel()
+		{
+			Graph = new PlotModel();
+			Graph.PlotAreaBorderColor = OxyColors.Transparent;
+
+			Update();
+		}
+
 		public void Update()
 		{
 			MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
@@ -68,6 +88,13 @@ namespace VexTrack.MVVM.ViewModel
 			Remaining = data.Remaining;
 			Total = data.Total;
 			Progress = data.Progress;
+
+			Graph.Series.Clear();
+
+			Graph.Series.Add(GraphCalc.CalcIdealGraph(TrackingDataHelper.CurrentSeasonUUID));
+			Graph.Series.Add(GraphCalc.CalcPerformanceGraph(TrackingDataHelper.CurrentSeasonUUID));
+
+			Graph.InvalidatePlot(true);
 
 			OnAddClicked = new RelayCommand(o => {
 				EditableHEPopup.SetParameters("Create History Entry", false);

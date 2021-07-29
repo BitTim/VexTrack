@@ -55,17 +55,13 @@ namespace VexTrack.MVVM.ViewModel
 		public GoalViewModel()
 		{
 			MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
-
-			EditableGoalPopup = new();
-			ViewModelManager.ViewModels.Add("EditableGoalPopup", EditableGoalPopup);
-
-			GoalPopup = new();
-			ViewModelManager.ViewModels.Add("GoalPopup", GoalPopup);
+			GoalPopup = (GoalPopupViewModel)ViewModelManager.ViewModels["GoalPopup"];
+			EditableGoalPopup = (EditableGoalPopupViewModel)ViewModelManager.ViewModels["EditableGoalPopup"];
 
 			BuiltinGoalButtonClick = new RelayCommand(OnBuiltinGoalButtonClick);
 			UserGoalButtonClick = new RelayCommand(OnUserGoalButtonClick);
 			OnAddClicked = new RelayCommand(o => {
-				EditableGoalPopup.SetParameters("Add Goal", false);
+				EditableGoalPopup.SetParameters("Create Goal", false);
 				MainVM.QueuePopup(EditableGoalPopup);
 			});
 

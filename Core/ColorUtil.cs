@@ -35,13 +35,14 @@ namespace VexTrack.Core
 
             float r = 0, g = 0, b = 0;
 
+            while (hsv.h >= 360) hsv.h -= 360;
+
             if (hsv.h >=   0 && hsv.h <  60) (r, g, b) = (c, x, 0);
             if (hsv.h >=  60 && hsv.h < 120) (r, g, b) = (x, c, 0);
             if (hsv.h >= 120 && hsv.h < 180) (r, g, b) = (0, c, x);
             if (hsv.h >= 180 && hsv.h < 240) (r, g, b) = (0, x, c);
             if (hsv.h >= 240 && hsv.h < 300) (r, g, b) = (x, 0, c);
             if (hsv.h >= 300 && hsv.h < 360) (r, g, b) = (c, 0, x);
-            if (hsv.h == 360)                (r, g, b) = (c, x, 0);
 
 			return Color.FromArgb(255, (int)((r + m) * 255), (int)((g + m) * 255), (int)((b + m) * 255));
 		}

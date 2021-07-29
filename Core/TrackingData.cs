@@ -69,6 +69,17 @@ namespace VexTrack.Core
 		public static string CurrentSeasonUUID { get => Data.Seasons.Last().UUID; }
 		public static Season CurrentSeasonData { get => Data.Seasons.Last(); }
 
+		public static int GetRemainingDays(string sUUID)
+		{
+			DateTimeOffset endDate = DateTimeOffset.Parse(Data.Seasons.Find(s => s.UUID == sUUID).EndDate).ToLocalTime();
+			DateTimeOffset today = DateTimeOffset.Now.ToLocalTime().Date;
+
+			int remainingDays = (endDate - today).Days;
+			if (remainingDays < 0) remainingDays = 0;
+
+			return remainingDays;
+		}
+
 		public static void InitData(string seasonName, string seasonEndDate, int activeBPLevel, int cXP)
 		{
 			List<Goal> goals = new();

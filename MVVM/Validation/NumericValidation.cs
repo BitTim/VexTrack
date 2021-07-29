@@ -18,8 +18,12 @@ namespace VexTrack.MVVM.Validation
                 return new ValidationResult(false, $"This field cannot be empty, last known value will be used");
             bool canConvert = false;
 
-            canConvert = int.TryParse(strValue, out _);
-            return canConvert ? new ValidationResult(true, null) : new ValidationResult(false, $"Input must be a number, last known value will be used");
+            int val;
+            canConvert = int.TryParse(strValue, out val);
+            if(!canConvert) return new ValidationResult(false, $"Input must be a number, last known value will be used");
+
+            if(val < 0) return new ValidationResult(false, $"Input cannot be negative");
+            return new ValidationResult(true, null);
         }
     }
 }

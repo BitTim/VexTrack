@@ -22,7 +22,11 @@ namespace VexTrack.MVVM.ViewModel
 		public HistoryViewModel HistoryVM { get; set; }
 		public SettingsViewModel SettingsVM { get; set; }
 
-		public ProgressActivityPopupViewModel PAPopupVM { get; set; }
+		private HistoryEntryPopupViewModel HEPopup { get; set; }
+		private EditableHistoryEntryPopupViewModel EditableHEPopup { get; set; }
+		private GoalPopupViewModel GoalPopup { get; set; }
+		private EditableGoalPopupViewModel EditableGoalPopup { get; set; }
+		private ProgressActivityPopupViewModel PAPopupVM { get; set; }
 
 		private object _currentView;
 
@@ -61,8 +65,26 @@ namespace VexTrack.MVVM.ViewModel
 		public MainViewModel()
 		{
 			TrackingDataHelper.LoadData();
-
 			ViewModelManager.ViewModels.Add("Main", this);
+
+
+
+			EditableHEPopup = new();
+			ViewModelManager.ViewModels.Add("EditableHEPopup", EditableHEPopup);
+
+			HEPopup = new();
+			ViewModelManager.ViewModels.Add("HEPopup", HEPopup);
+
+			EditableGoalPopup = new();
+			ViewModelManager.ViewModels.Add("EditableGoalPopup", EditableGoalPopup);
+
+			GoalPopup = new();
+			ViewModelManager.ViewModels.Add("GoalPopup", GoalPopup);
+
+			PAPopupVM = new ProgressActivityPopupViewModel();
+			ViewModelManager.ViewModels.Add("PAPopup", PAPopupVM);
+
+
 
 			DashboardVM = new DashboardViewModel();
 			GoalVM = new GoalViewModel();
@@ -76,9 +98,6 @@ namespace VexTrack.MVVM.ViewModel
 			ViewModelManager.ViewModels.Add("History", HistoryVM);
 			ViewModelManager.ViewModels.Add("Settings", SettingsVM);
 
-			PAPopupVM = new ProgressActivityPopupViewModel();
-			ViewModelManager.ViewModels.Add("PAPopup", PAPopupVM);
-
 			CurrentView = DashboardVM;
 
 			DashboardViewCommand = new RelayCommand(o => { CurrentView = DashboardVM; });
@@ -90,6 +109,7 @@ namespace VexTrack.MVVM.ViewModel
 
 		public void Update()
 		{
+			DashboardVM.Update();
 			HistoryVM.Update();
 			GoalVM.Update();
 		}

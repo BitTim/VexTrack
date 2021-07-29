@@ -35,16 +35,12 @@ namespace VexTrack.MVVM.ViewModel
 		public HistoryViewModel()
 		{
 			MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
-
-			EditableHEPopup = new();
-			ViewModelManager.ViewModels.Add("EditableHEPopup", EditableHEPopup);
-
-			HEPopup = new();
-			ViewModelManager.ViewModels.Add("HEPopup", HEPopup);
+			HEPopup = (HistoryEntryPopupViewModel)ViewModelManager.ViewModels["HEPopup"];
+			EditableHEPopup = (EditableHistoryEntryPopupViewModel)ViewModelManager.ViewModels["EditableHEPopup"];
 
 			HistoryButtonClick = new RelayCommand(OnHistoryButtonClick);
 			OnAddClicked = new RelayCommand(o => {
-				EditableHEPopup.SetParameters("Add History Entry", false);
+				EditableHEPopup.SetParameters("Create History Entry", false);
 				MainVM.QueuePopup(EditableHEPopup);
 			});
 

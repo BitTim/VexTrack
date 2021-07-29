@@ -13,11 +13,6 @@
 		<BooleanToVisibilityConverter x:Key="BoolToVisibleConv"/>
 		<conv:NegativeIntToVisibilityConverter x:Key="NegativeToVisibleConv"/>
 		<conv:NegativeToZeroConverter x:Key="NegativeToZeroConv"/>
-
-		<conv:ValueConverterGroup x:Key="NonNegativeStylingConv">
-			<conv:NegativeToZeroConverter/>
-			<conv:StyledIntConverter/>
-		</conv:ValueConverterGroup>
 	</UserControl.Resources>
 
 	<Grid Height="Auto"

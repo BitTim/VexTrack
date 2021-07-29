@@ -4,20 +4,27 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VexTrack.MVVM.View"
+             xmlns:model="clr-namespace:VexTrack.MVVM.Model"
+             xmlns:conv="clr-namespace:VexTrack.MVVM.Converter"
              mc:Ignorable="d" 
              d:DesignHeight="780"
 			 d:DesignWidth="640">
+
+	<UserControl.Resources>
+		<conv:NegativeToZeroConverter x:Key="NegativeToZeroConv"/>
+	</UserControl.Resources>
+	
     <Grid HorizontalAlignment="Stretch"
 				VerticalAlignment="Stretch">
 
 		<Grid.RowDefinitions>
 			<RowDefinition Height="80"/>
-			<RowDefinition Height="160"/>
+			<RowDefinition Height="182"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 		
 		<TextBlock Text="Welcome back, User"
-				   Margin="16, 16, 16, 16"
+				   Margin="16, 16, 80, 16"
 				   Foreground="{StaticResource Foreground}"
 				   FontSize="36"
 				   FontWeight="Bold"/>
@@ -27,6 +34,82 @@
 				BorderBrush="{StaticResource Shade}"
 				BorderThickness="2"
 				Margin="16, 0, 16, 16">
+
+			<Grid Margin="8">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
+
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="22"/>
+						<RowDefinition Height="22"/>
+						<RowDefinition Height="22"/>
+					</Grid.RowDefinitions>
+
+					<TextBlock Text="Daily Progress"
+							   Grid.Column="0"
+							   Grid.Row="0"
+							   Grid.ColumnSpan="2"
+							   FontSize="20"
+							   FontWeight="Bold"
+							   Foreground="{DynamicResource Foreground}"
+							   Margin="0, 0, 0, 16"/>
+
+					<TextBlock Text="Collected"
+							   Grid.Row="1"
+							   Grid.Column="0"
+							   FontSize="14"
+							   FontWeight="Bold"
+							   Foreground="{DynamicResource Foreground}"
+							   Margin="0, 0, 0, 4"/>
+
+					<TextBlock Text="Remaining"
+							   Grid.Row="2"
+							   Grid.Column="0"
+							   FontSize="14"
+							   FontWeight="Bold"
+							   Foreground="{DynamicResource Foreground}"
+							   Margin="0, 0, 0, 4"/>
+
+					<TextBlock Text="Total"
+							   Grid.Row="3"
+							   Grid.Column="0"
+							   FontSize="14"
+							   FontWeight="Bold"
+							   Foreground="{DynamicResource Foreground}"
+							   Margin="0, 0, 0, 4"/>
+
+					<model:TextWithUnit Text="{Binding Collected, Converter={StaticResource NegativeToZeroConv}}"
+										Unit=" XP"
+										Grid.Row="1"
+										Grid.Column="1"
+										Margin="0, 0, 0, 4"/>
+
+					<model:TextWithUnit Text="{Binding Remaining, Converter={StaticResource NegativeToZeroConv}}"
+										Unit=" XP"
+										Grid.Row="2"
+										Grid.Column="1"
+										Margin="0, 0, 0, 4"/>
+
+					<model:TextWithUnit Text="{Binding Total}"
+										Unit=" XP"
+										Grid.Row="3"
+										Grid.Column="1"
+										Margin="0, 0, 0, 4"/>
+				</Grid>
+
+				<model:ProgressArcModel x:Name="DailyProgressArc"
+										Value="{Binding Progress}"
+										Grid.Column="1"/>
+			</Grid>
 		</Border>
 
 		<Border CornerRadius="8"
@@ -35,5 +118,13 @@
 				BorderThickness="2"
 				Margin="16, 0, 16, 16">
 		</Border>
+
+		<Button Grid.Row="0"
+				Width="48" Height="48"
+				HorizontalAlignment="Right"
+				VerticalAlignment="Center"
+				Margin="0, 0, 16, 0"
+				Style="{DynamicResource AddButtonTheme}"
+				Command="{Binding OnAddClicked}"/>
 	</Grid>
 </UserControl>

@@ -17,5 +17,8 @@ namespace VexTrack.Core
 		public static readonly int XPPerLevel = 750;
 		public static readonly int XPPerEpilogueLevel = 36500;
 		public static readonly int Level2Offset = 500;
+
+		//TODO: Move this to Settings
+		public static readonly int BufferDays = 8;
 	}
 }

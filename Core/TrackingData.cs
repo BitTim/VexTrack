@@ -386,6 +386,11 @@ namespace VexTrack.Core
 			return Data.Seasons.Find(s => s.UUID == sUUID).History.First();
 		}
 
+		public static HistoryEntry GetLastHistoryEntry(string sUUID)
+		{
+			return Data.Seasons.Find(s => s.UUID == sUUID).History.Last();
+		}
+
 		public static Season GetSeason(string sUUID)
 		{
 			return Data.Seasons.Find(s => s.UUID == sUUID);

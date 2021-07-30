@@ -32,6 +32,7 @@ namespace VexTrack.Core
 			}
 
 			ret.Color = OxyColors.Gray;
+			ret.StrokeThickness = 2;
 			return ret;
 		}
 
@@ -77,6 +78,7 @@ namespace VexTrack.Core
 			foreach (int amount in dailyAmounts) ret.Points.Add(new DataPoint(idx++, amount));
 
 			ret.Color = OxyColors.Red;
+			ret.StrokeThickness = 4;
 			return ret;
 		}
 	}

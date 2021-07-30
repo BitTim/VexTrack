@@ -36,42 +36,61 @@ namespace VexTrack.Core
 			return ret;
 		}
 
-		public static LineSeries CalcDailyIdeal()
+		public static LineSeries CalcDailyIdeal(LineSeries performance)
 		{
 			LineSeries ret = new();
 
+			List<int> amounts = new();
+			int total = GoalDataCalc.CalcTotalGoal("", TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP).Total;
+			int bufferDays = Constants.BufferDays; //TODO: Move BufferDays to settings
+			int effectiveRemaining = TrackingDataHelper.GetRemainingDays(TrackingDataHelper.CurrentSeasonUUID) - bufferDays + 1;
+			if (effectiveRemaining <= 0) effectiveRemaining = 1;
 
+			int remainingDays = TrackingDataHelper.GetRemainingDays(TrackingDataHelper.CurrentSeasonUUID);
+			int duration = TrackingDataHelper.GetDuration(TrackingDataHelper.CurrentSeasonUUID);
+			int graphOffset = duration - remainingDays - 1;
 
+			int startOffset = 0;
+			DateTimeOffset today = DateTimeOffset.Now.ToLocalTime().Date;
+			DateTimeOffset lastEntryDate = DateTimeOffset.FromUnixTimeSeconds(TrackingDataHelper.GetLastHistoryEntry(TrackingDataHelper.CurrentSeasonUUID).Time).ToLocalTime().Date;
+			if (lastEntryDate == today) startOffset = 1;
+
+			int previousAmount = (int)performance.Points[performance.Points.Count - 1 - startOffset].Y;
+			int dailyTotal = (int)MathF.Round((total - previousAmount) / effectiveRemaining);
+			amounts.Add(previousAmount);
+
+			for(int i = 1; i < remainingDays + 2; i++)
+			{
+				int amount = amounts[i - 1] + dailyTotal;
+				if (amount > total) amount = total;
+				amounts.Add(amount);
+			}
+
+			int idx = 0;
+			foreach (int amount in amounts) ret.Points.Add(new DataPoint(graphOffset + idx++, amount));
+
+			ret.Color = OxyColors.SteelBlue;
+			ret.StrokeThickness = 2;
+			ret.LineStyle = LineStyle.Dash;
 			return ret;
 		}
 
-		/*
-		yAxisDailyIdeal = []
+		public static LineSeries CalcGraphPoint(LineSeries series, OxyColor color)
+		{
+			LineSeries ret = new();
 
-		dateDelta = seasonEndDate - date.today()
-		remainingDays = dateDelta.days
-		dayDelta = duration - remainingDays
+			int remainingDays = TrackingDataHelper.GetRemainingDays(TrackingDataHelper.CurrentSeasonUUID);
+			int duration = TrackingDataHelper.GetDuration(TrackingDataHelper.CurrentSeasonUUID);
+			int xPos = duration - remainingDays;
 
-		if date.fromtimestamp(data["seasons"][seasonIndex.get()]["xpHistory"][len(data["seasons"][seasonIndex.get()]["xpHistory"]) - 1]["time"]) == date.today(): offset = 1
-		else: offset = 0
+			ret.Points.Add(new DataPoint(xPos, series.Points.Find(p => p.X == xPos).Y));
 
-		totalXPProgress, totalXPCollected, totalXPRemaining, totalXPTotal = core.calcTotalValues(data, epilogue, seasonIndex.get())
+			ret.MarkerType = MarkerType.Circle;
+			ret.MarkerFill = color;
+			ret.MarkerSize = 4;
 
-		if remainingDays >= 0 and remainingDays < duration:
-			divisor = remainingDays - settings["bufferDays"] + 1
-			if divisor <= 0: divisor = 1
-    
-			dailyTotal = round((totalXPTotal - yAxisYou[index - offset]) / divisor)
-			yAxisDailyIdeal.append(yAxisYou[index - offset])
-
-			for i in range(1, remainingDays + 2):
-				yAxisDailyIdeal.append(yAxisDailyIdeal[i - 1] + dailyTotal)
-				if yAxisDailyIdeal[i] > totalXP: yAxisDailyIdeal[i] = totalXP
-
-			plot.plot(timeAxis[dayDelta - 1:], yAxisDailyIdeal, color='skyblue', label='Daily Ideal', alpha=1, linestyle="--")
-    
-		plot.plot(timeAxis[:len(yAxisYou)], yAxisYou, color='red', label='You', linewidth=3)
-		 */
+			return ret;
+		}
 	}
 
 	public class DailyData

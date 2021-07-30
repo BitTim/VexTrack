@@ -89,10 +89,23 @@ namespace VexTrack.MVVM.ViewModel
 			Total = data.Total;
 			Progress = data.Progress;
 
+			LineSeries ideal = GraphCalc.CalcIdealGraph(TrackingDataHelper.CurrentSeasonUUID);
+			LineSeries performance = GraphCalc.CalcPerformanceGraph(TrackingDataHelper.CurrentSeasonUUID);
+			LineSeries dailyIdeal = DashboardDataCalc.CalcDailyIdeal(performance);
+
+			LineSeries idealPoint = DashboardDataCalc.CalcGraphPoint(ideal, OxyColors.Silver);
+			LineSeries performancePoint = DashboardDataCalc.CalcGraphPoint(performance, OxyColors.Maroon);
+			LineSeries dailyIdealPoint = DashboardDataCalc.CalcGraphPoint(dailyIdeal, OxyColors.Navy);
+
 			Graph.Series.Clear();
 
-			Graph.Series.Add(GraphCalc.CalcIdealGraph(TrackingDataHelper.CurrentSeasonUUID));
-			Graph.Series.Add(GraphCalc.CalcPerformanceGraph(TrackingDataHelper.CurrentSeasonUUID));
+			Graph.Series.Add(ideal);
+			Graph.Series.Add(dailyIdeal);
+			Graph.Series.Add(performance);
+
+			Graph.Series.Add(idealPoint);
+			Graph.Series.Add(dailyIdealPoint);
+			Graph.Series.Add(performancePoint);
 
 			Graph.InvalidatePlot(true);
 

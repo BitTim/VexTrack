@@ -127,7 +127,9 @@
 
 				<oxy:PlotView Model="{Binding Graph}"
 							  Background="{DynamicResource Background}"
-							  Foreground="{DynamicResource Foreground}"/>
+							  Foreground="{DynamicResource Foreground}"
+							  Margin="0, 0, 0, 0">
+				</oxy:PlotView>
 
 				<Grid Grid.Row="1"
 					   Margin="0, 8, 0, 0">

@@ -79,7 +79,7 @@ namespace VexTrack.MVVM.ViewModel
 
 			foreach (Goal g in TrackingDataHelper.Data.Goals)
 			{
-				UserEntries.Add(GoalDataCalc.CalcUserGoal(g, TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP));
+				UserEntries.Add(GoalDataCalc.CalcUserGoal(g));
 			}
 
 			if (GoalPopup.IsInitialized)

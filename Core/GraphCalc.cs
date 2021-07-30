@@ -81,5 +81,29 @@ namespace VexTrack.Core
 			ret.StrokeThickness = 4;
 			return ret;
 		}
+
+		public static List<LineSeries> CalcBattlepassLevels(string sUUID)
+		{
+			List<LineSeries> ret = new();
+
+			for (int i = 0; i < Constants.BattlepassLevels + 1; i++)
+			{
+				LineSeries ls = new();
+				byte alpha = 128;
+				int val = CalcUtil.CumulativeSum(i, Constants.Level2Offset, Constants.XPPerLevel);
+
+				ls.Points.Add(new DataPoint(0, val));
+				ls.Points.Add(new DataPoint(TrackingDataHelper.GetDuration(sUUID), val));
+
+				if (CalcUtil.CalcTotalCollected(TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP) >= val) alpha = 13;
+
+				if (i % 5 == 0) ls.Color = OxyColor.FromAColor(alpha, OxyColors.LimeGreen);
+				else ls.Color = OxyColor.FromAColor(alpha, OxyColors.LightGray);
+
+				ret.Add(ls);
+			}
+
+			return ret;
+		}
 	}
 }

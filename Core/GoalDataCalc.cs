@@ -1,8 +1,13 @@
-﻿using System;
+﻿using OxyPlot;
+using OxyPlot.Annotations;
+using OxyPlot.Series;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
 
 namespace VexTrack.Core
 {
@@ -60,7 +65,7 @@ namespace VexTrack.Core
 			return ret;
 		}
 
-		public static GoalEntryData CalcUserGoal(Goal goalData, int activeLevel, int cxp)
+		public static GoalEntryData CalcUserGoal(Goal goalData)
 		{
 			GoalEntryData ret = new(goalData.UUID);
 
@@ -74,6 +79,44 @@ namespace VexTrack.Core
 			ret.Color = goalData.Color;
 
 			return ret;
+		}
+
+		public static (List<LineSeries>, List<PointAnnotation>) CalcGraphGoals(string sUUID)
+		{
+			List<LineSeries> lsret = new();
+			List<PointAnnotation> paret = new();
+
+			foreach(Goal g in TrackingDataHelper.Data.Goals)
+			{
+				LineSeries ls = new();
+				PointAnnotation pa = new();
+				byte alpha = 128;
+
+				GoalEntryData ge = CalcUserGoal(g);
+				int totalCollected = CalcUtil.CalcTotalCollected(TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP);
+				int val = totalCollected - ge.Collected + ge.Total;
+
+				if (val <= 0) continue;
+
+				ls.Points.Add(new DataPoint(0, val));
+				ls.Points.Add(new DataPoint(TrackingDataHelper.GetDuration(sUUID), val));
+
+				pa.Text = ge.Title;
+				pa.TextPosition = new DataPoint(0, val);
+
+				if (totalCollected >= val) alpha = 13;
+
+				LinearGradientBrush accent = (LinearGradientBrush)Application.Current.FindResource("Accent");
+
+				if (ge.Color == "") ge.Color = accent.GradientStops[0].Color.ToString();
+				ls.Color = OxyColor.FromAColor(alpha, OxyColor.Parse(ge.Color));
+				pa.TextColor = OxyColor.FromAColor(alpha, OxyColor.Parse(ge.Color));
+
+				lsret.Add(ls);
+				paret.Add(pa);
+			}
+
+			return (lsret, paret);
 		}
 	}
 

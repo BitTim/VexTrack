@@ -29,6 +29,7 @@ namespace VexTrack.MVVM.ViewModel
 		private ProgressActivityPopupViewModel PAPopupVM { get; set; }
 
 		private object _currentView;
+		private bool _epilogue;
 
 		private BasePopupViewModel _currentPopup = null;
 		private List<BasePopupViewModel> _popupQueue = new();
@@ -58,6 +59,16 @@ namespace VexTrack.MVVM.ViewModel
 			set
 			{
 				_popupQueue = value;
+				OnPropertyChanged();
+			}
+		}
+
+		public bool Epilogue
+		{
+			get => _epilogue;
+			set
+			{
+				_epilogue = value;
 				OnPropertyChanged();
 			}
 		}
@@ -109,7 +120,7 @@ namespace VexTrack.MVVM.ViewModel
 
 		public void Update()
 		{
-			DashboardVM.Update();
+			DashboardVM.Update(Epilogue);
 			HistoryVM.Update();
 			GoalVM.Update();
 		}

@@ -130,7 +130,7 @@ namespace VexTrack.MVVM.ViewModel
 
 			ApplyAxes();
 
-			Update();
+			Update(false);
 		}
 
 		private void ApplyAxes()
@@ -162,8 +162,10 @@ namespace VexTrack.MVVM.ViewModel
 			Graph.Axes.Add(yAxis);
 		}
 
-		public void Update()
+		public void Update(bool epilogue)
 		{
+			//TODO: Implement epilogue
+
 			MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
 			EditableHEPopup = (EditableHistoryEntryPopupViewModel)ViewModelManager.ViewModels["EditableHEPopup"];
 

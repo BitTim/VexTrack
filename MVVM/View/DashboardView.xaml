@@ -161,13 +161,13 @@
 							   Foreground="{DynamicResource Foreground}"
 							   Margin="0, 0, 0, 4"/>
 
-					<model:TextWithUnit Text="{Binding Collected, Converter={StaticResource NegativeToZeroConv}}"
+					<model:TextWithUnit Text="{Binding DeviationIdeal}"
 										Unit=" XP"
 										Grid.Row="0"
 										Grid.Column="1"
 										Margin="8, 0, 0, 4"/>
 
-					<model:TextWithUnit Text="{Binding Remaining, Converter={StaticResource NegativeToZeroConv}}"
+					<model:TextWithUnit Text="{Binding DeviationDaily}"
 										Unit=" XP"
 										Grid.Row="1"
 										Grid.Column="1"
@@ -191,15 +191,15 @@
 							   Foreground="{DynamicResource Foreground}"
 							   Margin="0, 0, 0, 4"/>
 
-					<TextBlock Text=""
+					<TextBlock Text="{Binding DaysFinished}"
 							   Grid.Row="0"
 							   Grid.Column="3"
 							   FontSize="14"
 							   Foreground="{DynamicResource Foreground}"
 							   Margin="8, 0, 0, 4"/>
 
-					<TextBlock Text=""
-							   Grid.Row="0"
+					<TextBlock Text="{Binding DaysRemaining}"
+							   Grid.Row="1"
 							   Grid.Column="3"
 							   FontSize="14"
 							   Foreground="{DynamicResource Foreground}"

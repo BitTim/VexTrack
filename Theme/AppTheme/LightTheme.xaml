@@ -7,6 +7,7 @@
 	<SolidColorBrush x:Key="Background" Color="{StaticResource LightBG}"/>
 	<SolidColorBrush x:Key="Shade" Color="{StaticResource LightShade}"/>
 	<SolidColorBrush x:Key="Foreground" Color="{StaticResource LightFG}"/>
+	<SolidColorBrush x:Key="GraphIdealPoint" Color="{StaticResource DarkShade}"/>
 
 	<LinearGradientBrush x:Key="AccMono">
 		<GradientStop Color="{StaticResource Mono1}" Offset="0.0"/>

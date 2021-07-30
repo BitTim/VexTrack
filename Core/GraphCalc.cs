@@ -1,10 +1,13 @@
 ﻿using OxyPlot;
+using OxyPlot.Annotations;
 using OxyPlot.Series;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
 
 namespace VexTrack.Core
 {
@@ -13,6 +16,8 @@ namespace VexTrack.Core
 		public static LineSeries CalcIdealGraph(string sUUID)
 		{
 			LineSeries ret = new();
+
+			SolidColorBrush Foreground = (SolidColorBrush)Application.Current.FindResource("Foreground");
 
 			int total = GoalDataCalc.CalcTotalGoal("", TrackingDataHelper.GetSeason(sUUID).ActiveBPLevel, TrackingDataHelper.GetSeason(sUUID).CXP).Total;
 			int bufferDays = Constants.BufferDays; //TODO: Move BufferDays to settings
@@ -31,8 +36,9 @@ namespace VexTrack.Core
 				ret.Points.Add(new DataPoint(i, value));
 			}
 
-			ret.Color = OxyColors.Gray;
+			ret.Color = OxyColor.FromArgb(Foreground.Color.A, Foreground.Color.R, Foreground.Color.G, Foreground.Color.B);
 			ret.StrokeThickness = 2;
+			ret.Title = "Ideal";
 			return ret;
 		}
 
@@ -79,6 +85,24 @@ namespace VexTrack.Core
 
 			ret.Color = OxyColors.Red;
 			ret.StrokeThickness = 4;
+			ret.Title = "Performance";
+			return ret;
+		}
+
+		public static RectangleAnnotation CalcBufferZone(string sUUID)
+		{
+			RectangleAnnotation ret = new();
+
+			int total = GoalDataCalc.CalcTotalGoal("", TrackingDataHelper.GetSeason(sUUID).ActiveBPLevel, TrackingDataHelper.GetSeason(sUUID).CXP).Total;
+			int bufferDays = Constants.BufferDays; //TODO: Move BufferDays to settings
+			int duration = TrackingDataHelper.GetDuration(sUUID);
+
+			ret.MinimumX = duration - bufferDays;
+			ret.MaximumX = duration;
+			ret.MinimumY = 0;
+			ret.MaximumY = total;
+
+			ret.Fill = OxyColor.FromAColor(64, OxyColors.Red);
 			return ret;
 		}
 

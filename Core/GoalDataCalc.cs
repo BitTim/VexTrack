@@ -81,15 +81,15 @@ namespace VexTrack.Core
 			return ret;
 		}
 
-		public static (List<LineSeries>, List<PointAnnotation>) CalcGraphGoals(string sUUID)
+		public static (List<LineSeries>, List<TextAnnotation>) CalcGraphGoals(string sUUID)
 		{
 			List<LineSeries> lsret = new();
-			List<PointAnnotation> paret = new();
+			List<TextAnnotation> taret = new();
 
 			foreach(Goal g in TrackingDataHelper.Data.Goals)
 			{
 				LineSeries ls = new();
-				PointAnnotation pa = new();
+				TextAnnotation ta = new();
 				byte alpha = 128;
 
 				GoalEntryData ge = CalcUserGoal(g);
@@ -101,8 +101,9 @@ namespace VexTrack.Core
 				ls.Points.Add(new DataPoint(0, val));
 				ls.Points.Add(new DataPoint(TrackingDataHelper.GetDuration(sUUID), val));
 
-				pa.Text = ge.Title;
-				pa.TextPosition = new DataPoint(0, val);
+				ta.Text = ge.Title;
+				ta.TextPosition = new DataPoint(TrackingDataHelper.GetDuration(sUUID) / 2, val);
+				ta.StrokeThickness = 0;
 
 				if (totalCollected >= val) alpha = 13;
 
@@ -110,13 +111,13 @@ namespace VexTrack.Core
 
 				if (ge.Color == "") ge.Color = accent.GradientStops[0].Color.ToString();
 				ls.Color = OxyColor.FromAColor(alpha, OxyColor.Parse(ge.Color));
-				pa.TextColor = OxyColor.FromAColor(alpha, OxyColor.Parse(ge.Color));
+				ta.TextColor = OxyColor.FromAColor(alpha, OxyColor.Parse(ge.Color));
 
 				lsret.Add(ls);
-				paret.Add(pa);
+				taret.Add(ta);
 			}
 
-			return (lsret, paret);
+			return (lsret, taret);
 		}
 	}
 

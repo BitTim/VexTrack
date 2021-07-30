@@ -72,6 +72,35 @@ namespace VexTrack.Core
 			ret.Color = OxyColors.SteelBlue;
 			ret.StrokeThickness = 2;
 			ret.LineStyle = LineStyle.Dash;
+			ret.Title = "Daily Ideal";
+			return ret;
+		}
+
+		public static LineSeries CalcAverageGraph()
+		{
+			LineSeries ret = new();
+
+			int total = GoalDataCalc.CalcTotalGoal("", TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP).Total;
+			int duration = TrackingDataHelper.GetDuration(TrackingDataHelper.CurrentSeasonUUID);
+			int daysPassed = duration - TrackingDataHelper.GetRemainingDays(TrackingDataHelper.CurrentSeasonUUID);
+			int totalCollected = CalcUtil.CalcTotalCollected(TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP);
+			int average = (int)MathF.Round(totalCollected / daysPassed);
+
+			if (totalCollected >= total) return ret;
+
+			ret.Points.Add(new DataPoint(daysPassed, totalCollected));
+
+			for (int i = daysPassed + 1; i < duration + 1; i++)
+			{
+				int amount = (int)ret.Points.Last().Y + average;
+				ret.Points.Add(new DataPoint(i, amount));
+				if (amount > total) break;
+			}
+
+			ret.Color = OxyColors.PaleVioletRed;
+			ret.StrokeThickness = 2;
+			ret.LineStyle = LineStyle.Dot;
+			ret.Title = "Average";
 			return ret;
 		}
 
@@ -90,6 +119,29 @@ namespace VexTrack.Core
 			ret.MarkerSize = 4;
 
 			return ret;
+		}
+
+		public static int CalcDaysFinished()
+		{
+			int daysFinished = 0;
+
+			int total = GoalDataCalc.CalcTotalGoal("", TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP).Total;
+			int duration = TrackingDataHelper.GetDuration(TrackingDataHelper.CurrentSeasonUUID);
+			int remainingDays = TrackingDataHelper.GetRemainingDays(TrackingDataHelper.CurrentSeasonUUID);
+			int daysPassed = duration - remainingDays;
+			int totalCollected = CalcUtil.CalcTotalCollected(TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP);
+			int average = (int)MathF.Round(totalCollected / daysPassed);
+
+			int val = totalCollected;
+			for (int i = 0; i < remainingDays + 1; i++)
+			{
+				val += average;
+				daysFinished = i + 1;
+
+				if (val >= total) break;
+			}
+
+			return daysFinished;
 		}
 	}
 

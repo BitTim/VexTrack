@@ -169,16 +169,16 @@ namespace VexTrack.MVVM.ViewModel
 			MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
 			EditableHEPopup = (EditableHistoryEntryPopupViewModel)ViewModelManager.ViewModels["EditableHEPopup"];
 
-			DailyData data = DashboardDataCalc.CalcDailyData();
+			DailyData data = DashboardDataCalc.CalcDailyData(epilogue);
 
 			Collected = data.Collected;
 			Remaining = data.Remaining;
 			Total = data.Total;
 			Progress = data.Progress;
 
-			(DeviationIdeal, DeviationDaily) = CalcGraph();
+			(DeviationIdeal, DeviationDaily) = CalcGraph(epilogue);
 			DaysRemaining = TrackingDataHelper.GetRemainingDays(TrackingDataHelper.CurrentSeasonUUID);
-			DaysFinished = DashboardDataCalc.CalcDaysFinished();
+			DaysFinished = DashboardDataCalc.CalcDaysFinished(epilogue);
 
 			OnAddClicked = new RelayCommand(o =>
 			{
@@ -187,25 +187,27 @@ namespace VexTrack.MVVM.ViewModel
 			});
 		}
 
-		private (int, int) CalcGraph()
+		private (int, int) CalcGraph(bool epilogue)
 		{
 			SolidColorBrush GraphIdealPoint = (SolidColorBrush)Application.Current.FindResource("GraphIdealPoint");
 
-			LineSeries ideal = GraphCalc.CalcIdealGraph(TrackingDataHelper.CurrentSeasonUUID);
+			LineSeries ideal = GraphCalc.CalcIdealGraph(TrackingDataHelper.CurrentSeasonUUID, epilogue);
 			LineSeries performance = GraphCalc.CalcPerformanceGraph(TrackingDataHelper.CurrentSeasonUUID);
-			LineSeries dailyIdeal = DashboardDataCalc.CalcDailyIdeal(performance);
-			LineSeries average = DashboardDataCalc.CalcAverageGraph();
+			LineSeries dailyIdeal = DashboardDataCalc.CalcDailyIdeal(performance, epilogue);
+			LineSeries average = DashboardDataCalc.CalcAverageGraph(epilogue);
 
 			LineSeries idealPoint = DashboardDataCalc.CalcGraphPoint(ideal, OxyColor.FromArgb(GraphIdealPoint.Color.A, GraphIdealPoint.Color.R, GraphIdealPoint.Color.G, GraphIdealPoint.Color.B));
 			LineSeries performancePoint = DashboardDataCalc.CalcGraphPoint(performance, OxyColors.Maroon);
 			LineSeries dailyIdealPoint = DashboardDataCalc.CalcGraphPoint(dailyIdeal, OxyColors.Navy);
 
-			RectangleAnnotation bufferZone = GraphCalc.CalcBufferZone(TrackingDataHelper.CurrentSeasonUUID);
+			RectangleAnnotation bufferZone = GraphCalc.CalcBufferZone(TrackingDataHelper.CurrentSeasonUUID, epilogue);
 
 			Graph.Series.Clear();
+			Graph.Annotations.Clear();
 
-			AddGraphLevels();
+			AddGraphLevels(epilogue);
 			AddGraphGoals();
+			UpdateYAxis(performance, epilogue);
 
 			Graph.Series.Add(ideal);
 			Graph.Series.Add(dailyIdeal);
@@ -220,8 +222,6 @@ namespace VexTrack.MVVM.ViewModel
 
 			Graph.InvalidatePlot(true);
 
-
-
 			int t = performance.Points.Count - 1;
 			int deviationIdeal = (int)performance.Points[t].Y - (int)ideal.Points[t].Y;
 			int deviationDaily = (int)performance.Points[t].Y - (int)dailyIdeal.Points[1].Y;
@@ -229,10 +229,23 @@ namespace VexTrack.MVVM.ViewModel
 			return (deviationIdeal, deviationDaily);
 		}
 
-		private void AddGraphLevels()
+		private void UpdateYAxis(LineSeries performance, bool epilogue)
+		{
+			int maximum = GoalDataCalc.CalcTotalGoal("", TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP, epilogue).Total * 2;
+			if (performance.Points.Last().Y >= maximum) maximum = (int)performance.Points.Last().Y + 20000;
+
+			Graph.Axes[1].AbsoluteMaximum = maximum;
+		}
+
+		private void AddGraphLevels(bool epilogue)
 		{
 			List<LineSeries> levels = GraphCalc.CalcBattlepassLevels(TrackingDataHelper.CurrentSeasonUUID);
 			foreach (LineSeries ls in levels) Graph.Series.Add(ls);
+
+			if (!epilogue) return;
+
+			List<LineSeries> epilogueLevels = GraphCalc.CalcEpilogueLevels(TrackingDataHelper.CurrentSeasonUUID);
+			foreach (LineSeries ls in epilogueLevels) Graph.Series.Add(ls);
 		}
 
 		private void AddGraphGoals()

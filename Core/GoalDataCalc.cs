@@ -13,13 +13,15 @@ namespace VexTrack.Core
 {
 	public static class GoalDataCalc
 	{
-		public static GoalEntryData CalcTotalGoal(string uuid, int activeLevel, int cxp)
+		public static GoalEntryData CalcTotalGoal(string uuid, int activeLevel, int cxp, bool epilogue)
 		{
 			GoalEntryData ret = new(uuid);
 
 			ret.Title = "Total XP";
 
 			ret.Total = CalcUtil.CumulativeSum(Constants.BattlepassLevels, Constants.Level2Offset, Constants.XPPerLevel);
+			if(epilogue) ret.Total += Constants.EpilogueLevels * Constants.XPPerEpilogueLevel;
+
 			ret.Collected = CalcUtil.CalcTotalCollected(activeLevel, cxp);
 			ret.Remaining = ret.Total - ret.Collected;
 			ret.Progress = CalcUtil.CalcProgress(ret.Total, ret.Collected);
@@ -29,13 +31,15 @@ namespace VexTrack.Core
 			return ret;
 		}
 
-		public static GoalEntryData CalcBattlepassGoal(string uuid, int activeLevel)
+		public static GoalEntryData CalcBattlepassGoal(string uuid, int activeLevel, bool epilogue)
 		{
 			GoalEntryData ret = new(uuid);
 
 			ret.Title = "Battlepass Levels";
 
 			ret.Total = Constants.BattlepassLevels;
+			if (epilogue) ret.Total += Constants.EpilogueLevels;
+
 			ret.Collected = activeLevel - 1;
 			ret.Remaining = ret.Total - ret.Collected;
 			ret.Progress = CalcUtil.CalcProgress(ret.Total, ret.Collected);

@@ -65,16 +65,16 @@ namespace VexTrack.MVVM.ViewModel
 				MainVM.QueuePopup(EditableGoalPopup);
 			});
 
-			Update();
+			Update(false);
 		}
 
-		public void Update()
+		public void Update(bool epilogue)
 		{
 			BuiltinEntries.Clear();
 			UserEntries.Clear();
 
-			BuiltinEntries.Add(GoalDataCalc.CalcTotalGoal(TotalGoalUUID, TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP));
-			BuiltinEntries.Add(GoalDataCalc.CalcBattlepassGoal(BattlepassGoalUUID, TrackingDataHelper.CurrentSeasonData.ActiveBPLevel));
+			BuiltinEntries.Add(GoalDataCalc.CalcTotalGoal(TotalGoalUUID, TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP, epilogue));
+			BuiltinEntries.Add(GoalDataCalc.CalcBattlepassGoal(BattlepassGoalUUID, TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, epilogue));
 			BuiltinEntries.Add(GoalDataCalc.CalcLevelGoal(LevelGoalUUID, TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP));
 
 			foreach (Goal g in TrackingDataHelper.Data.Goals)

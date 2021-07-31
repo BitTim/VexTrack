@@ -70,6 +70,7 @@ namespace VexTrack.MVVM.ViewModel
 			{
 				_epilogue = value;
 				OnPropertyChanged();
+				Update(true);
 			}
 		}
 
@@ -118,11 +119,12 @@ namespace VexTrack.MVVM.ViewModel
 			SettingsViewCommand = new RelayCommand(o => { CurrentView = SettingsVM; });
 		}
 
-		public void Update()
+		public void Update(bool epilogueOnly = false)
 		{
 			DashboardVM.Update(Epilogue);
-			HistoryVM.Update();
-			GoalVM.Update();
+			GoalVM.Update(Epilogue);
+
+			if(!epilogueOnly) HistoryVM.Update();
 		}
 
 		public void QueuePopup(BasePopupViewModel popup)

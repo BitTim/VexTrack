@@ -13,13 +13,13 @@ namespace VexTrack.Core
 {
 	public static class GraphCalc
 	{
-		public static LineSeries CalcIdealGraph(string sUUID)
+		public static LineSeries CalcIdealGraph(string sUUID, bool epilogue)
 		{
 			LineSeries ret = new();
 
 			SolidColorBrush Foreground = (SolidColorBrush)Application.Current.FindResource("Foreground");
 
-			int total = GoalDataCalc.CalcTotalGoal("", TrackingDataHelper.GetSeason(sUUID).ActiveBPLevel, TrackingDataHelper.GetSeason(sUUID).CXP).Total;
+			int total = GoalDataCalc.CalcTotalGoal("", TrackingDataHelper.GetSeason(sUUID).ActiveBPLevel, TrackingDataHelper.GetSeason(sUUID).CXP, epilogue).Total;
 			int bufferDays = Constants.BufferDays; //TODO: Move BufferDays to settings
 			int duration = TrackingDataHelper.GetDuration(sUUID);
 
@@ -89,11 +89,11 @@ namespace VexTrack.Core
 			return ret;
 		}
 
-		public static RectangleAnnotation CalcBufferZone(string sUUID)
+		public static RectangleAnnotation CalcBufferZone(string sUUID, bool epilogue)
 		{
 			RectangleAnnotation ret = new();
 
-			int total = GoalDataCalc.CalcTotalGoal("", TrackingDataHelper.GetSeason(sUUID).ActiveBPLevel, TrackingDataHelper.GetSeason(sUUID).CXP).Total;
+			int total = GoalDataCalc.CalcTotalGoal("", TrackingDataHelper.GetSeason(sUUID).ActiveBPLevel, TrackingDataHelper.GetSeason(sUUID).CXP, epilogue).Total;
 			int bufferDays = Constants.BufferDays; //TODO: Move BufferDays to settings
 			int duration = TrackingDataHelper.GetDuration(sUUID);
 
@@ -123,6 +123,29 @@ namespace VexTrack.Core
 
 				if (i % 5 == 0) ls.Color = OxyColor.FromAColor(alpha, OxyColors.LimeGreen);
 				else ls.Color = OxyColor.FromAColor(alpha, OxyColors.LightGray);
+
+				ret.Add(ls);
+			}
+
+			return ret;
+		}
+
+		public static List<LineSeries> CalcEpilogueLevels(string sUUID)
+		{
+			List<LineSeries> ret = new();
+
+			for (int i = 1; i < Constants.EpilogueLevels + 1; i++)
+			{
+				LineSeries ls = new();
+				byte alpha = 128;
+				int val = CalcUtil.CumulativeSum(Constants.BattlepassLevels, Constants.Level2Offset, Constants.XPPerLevel) + i * Constants.XPPerEpilogueLevel;
+
+				ls.Points.Add(new DataPoint(0, val));
+				ls.Points.Add(new DataPoint(TrackingDataHelper.GetDuration(sUUID), val));
+
+				if (CalcUtil.CalcTotalCollected(TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP) >= val) alpha = 13;
+
+				ls.Color = OxyColor.FromAColor(alpha, OxyColors.Gold);
 
 				ret.Add(ls);
 			}

@@ -123,6 +123,7 @@ namespace VexTrack.MVVM.ViewModel
 		{
 			DashboardVM.Update(Epilogue);
 			GoalVM.Update(Epilogue);
+			SeasonVM.Update(Epilogue);
 
 			if(!epilogueOnly) HistoryVM.Update();
 		}

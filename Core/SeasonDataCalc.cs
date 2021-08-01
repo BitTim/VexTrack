@@ -58,7 +58,7 @@ namespace VexTrack.Core
 			ret.Progress = totalData.Progress;
 			ret.Ended = ended;
 			ret.Average = average;
-			ret.RemainingDays = remainingDays;
+			ret.EndDate = DateTimeOffset.Parse(seasonData.EndDate).ToLocalTime().ToUnixTimeSeconds();
 			ret.StrongestAmount = strongestAmount;
 			ret.WeakestAmount = weakestAmount;
 			ret.StrongestDate = strongestDate;
@@ -94,7 +94,7 @@ namespace VexTrack.Core
 		public double Progress { get; set; }
 		public bool Ended { get; set; }
 		public int Average { get; set; }
-		public int RemainingDays { get; set; }
+		public long EndDate { get; set; }
 		public DateTimeOffset StrongestDate { get; set; }
 		public DateTimeOffset WeakestDate { get; set; }
 		public int StrongestAmount { get; set; }
@@ -106,9 +106,9 @@ namespace VexTrack.Core
 			UUID = uuid;
 		}
 
-		public SeasonEntryData(string uuid, string title, double progress, bool ended, int average, int remainingDays, DateTimeOffset strongestDate, DateTimeOffset weakestDate, int strongestAmount, int weakestAmount, List<HistoryEntry> History)
+		public SeasonEntryData(string uuid, string title, double progress, bool ended, int average, long endDate, DateTimeOffset strongestDate, DateTimeOffset weakestDate, int strongestAmount, int weakestAmount, List<HistoryEntry> history)
 		{
-			(UUID, Title, Progress, Ended, Average, RemainingDays, StrongestDate, WeakestDate, StrongestAmount, WeakestAmount, History) = (uuid, title, progress, ended, average, remainingDays, strongestDate, weakestDate, strongestAmount, weakestAmount, history);
+			(UUID, Title, Progress, Ended, Average, EndDate, StrongestDate, WeakestDate, StrongestAmount, WeakestAmount, History) = (uuid, title, progress, ended, average, endDate, strongestDate, weakestDate, strongestAmount, weakestAmount, history);
 		}
 	}
 }

@@ -75,6 +75,14 @@
 				<popupView:EditableGoalPopup/>
 			</DataTemplate>
 
+			<DataTemplate DataType="{x:Type popupViewModel:SeasonPopupViewModel}">
+				<popupView:SeasonPopup/>
+			</DataTemplate>
+
+			<!--<DataTemplate DataType="{x:Type popupViewModel:EditableSeasonPopupViewModel}">
+				<popupView:EditableSeasonPopup/>
+			</DataTemplate>-->
+
 			<DataTemplate DataType="{x:Type popupViewModel:ProgressActivityPopupViewModel}">
 				<popupView:ProgressActivityPopup/>
 			</DataTemplate>

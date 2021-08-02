@@ -20,6 +20,7 @@ namespace VexTrack.Core
 
 		//TODO: Move this to Settings
 		public static readonly int BufferDays = 8;
+		public static readonly bool IgnoreInitDay = true;
 		public static readonly bool IgnoreInactiveDays = true;
 	}
 }

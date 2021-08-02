@@ -101,6 +101,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			yAxis.TickStyle = TickStyle.None;
 			yAxis.TextColor = OxyColors.Transparent;
 
+			Graph.Axes.Clear();
 			Graph.Axes.Add(xAxis);
 			Graph.Axes.Add(yAxis);
 		}

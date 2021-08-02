@@ -27,11 +27,15 @@ namespace VexTrack.Core
 			int weakestAmount = -1;
 			DateTimeOffset strongestDate = new();
 			DateTimeOffset weakestDate = new();
-			DateTimeOffset prevDate = DateTimeOffset.FromUnixTimeSeconds(seasonData.History.First().Time).ToLocalTime().Date;
 
+			bool ignoreInitDay = Constants.IgnoreInitDay; //TODO: Move to settings
 			bool ignoreInactiveDays = Constants.IgnoreInactiveDays; //TODO: Move to settings
 
-			foreach(HistoryEntry he in seasonData.History)
+			List<HistoryEntry> history = seasonData.History;
+			if (ignoreInitDay) history.RemoveAt(0);
+			DateTimeOffset prevDate = DateTimeOffset.FromUnixTimeSeconds(history.First().Time).ToLocalTime().Date;
+
+			foreach(HistoryEntry he in history)
 			{
 				DateTimeOffset currDate = DateTimeOffset.FromUnixTimeSeconds(he.Time).ToLocalTime().Date;
 				if (currDate == prevDate)
@@ -42,7 +46,6 @@ namespace VexTrack.Core
 
 				(strongestAmount, weakestAmount, strongestDate, weakestDate) = EvaluateAmounts(currentDayAmount, strongestAmount, weakestAmount, prevDate, strongestDate, weakestDate);
 
-				prevDate = currDate;
 				currentDayAmount = 0;
 				currentDayAmount += he.Amount;
 
@@ -51,6 +54,8 @@ namespace VexTrack.Core
 					int gapSize = (currDate - prevDate).Days;
 					for (int i = 1; i < gapSize; i++) (strongestAmount, weakestAmount, strongestDate, weakestDate) = EvaluateAmounts(0, strongestAmount, weakestAmount, prevDate.AddDays(1), strongestDate, weakestDate);
 				}
+
+				prevDate = currDate;
 			}
 
 			ret.Title = seasonData.Name;

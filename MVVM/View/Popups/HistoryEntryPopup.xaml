@@ -140,6 +140,7 @@
 								VerticalAlignment="Bottom"
 								Style="{DynamicResource ButtonTheme}"
 								Command="{Binding OnDeleteClicked}"
+								Visibility="{Binding Deletable, Converter={StaticResource BoolToVisibleConv}}"
 								Margin="0, 0, 4, 0"/>
 						
 						<Button Content="Edit"

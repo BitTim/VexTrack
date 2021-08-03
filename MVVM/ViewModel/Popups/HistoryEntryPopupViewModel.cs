@@ -22,6 +22,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public int Amount { get; set; }
 		public string Map { get; set; }
 		public string Result { get; set; }
+		public bool Deletable { get; set; }
 
 		public HistoryEntryPopupViewModel()
 		{
@@ -40,9 +41,10 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			});
 		}
 
-		public void SetData(HistoryEntryData data)
+		public void SetData(HistoryEntryData data, string initUUID)
 		{
 			RawData = data;
+			Deletable = true;
 
 			SUUID = data.SUUID;
 			HUUID = data.HUUID;
@@ -54,6 +56,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 			if (Result == "") Result = "-";
 			if (Map == "" || Map == null) Map = "-";
+			if (data.HUUID == initUUID) Deletable = false;
 
 			IsInitialized = true;
 		}

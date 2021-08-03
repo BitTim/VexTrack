@@ -14,6 +14,8 @@ namespace VexTrack.MVVM.ViewModel
 {
 	class HistoryViewModel : ObservableObject
 	{
+		private string initUUID;
+
 		public RelayCommand HistoryButtonClick { get; set; }
 		public RelayCommand OnAddClicked { get; set; }
 		private HistoryEntryPopupViewModel HEPopup { get; set; }
@@ -57,7 +59,9 @@ namespace VexTrack.MVVM.ViewModel
 				Entries.Insert(0, new HistoryEntryData(TrackingDataHelper.CurrentSeasonUUID, he.UUID, he.Description, he.Time, he.Amount, he.Map, result));
 			}
 
-			if (HEPopup.IsInitialized) HEPopup.SetData(Entries.Where(e => e.HUUID == HEPopup.HUUID).FirstOrDefault());
+			initUUID = Entries.Last().HUUID;
+
+			if (HEPopup.IsInitialized) HEPopup.SetData(Entries.Where(e => e.HUUID == HEPopup.HUUID).FirstOrDefault(), initUUID);
 			else HEPopup.Close();
 		}
 
@@ -65,7 +69,7 @@ namespace VexTrack.MVVM.ViewModel
 		{
 			string hUUID = (string)parameter;
 
-			HEPopup.SetData(Entries.Where(e => e.HUUID == hUUID).First());
+			HEPopup.SetData(Entries.Where(e => e.HUUID == hUUID).First(), initUUID);
 			MainVM.QueuePopup(HEPopup);
 		}
 	}

@@ -32,7 +32,7 @@ namespace VexTrack.Core
 			bool ignoreInactiveDays = Constants.IgnoreInactiveDays; //TODO: Move to settings
 
 			List<HistoryEntry> history = seasonData.History;
-			if (ignoreInitDay) history.RemoveAt(0);
+			if (ignoreInitDay) history = seasonData.History.GetRange(1, seasonData.History.Count - 1);
 			DateTimeOffset prevDate = DateTimeOffset.FromUnixTimeSeconds(history.First().Time).ToLocalTime().Date;
 
 			foreach(HistoryEntry he in history)

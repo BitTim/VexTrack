@@ -69,9 +69,9 @@ namespace VexTrack.Core
 		public static string CurrentSeasonUUID { get => Data.Seasons.Last().UUID; }
 		public static Season CurrentSeasonData { get => Data.Seasons.Last(); }
 
-		public static int GetRemainingDays(string sUUID)
+		public static int GetRemainingDays(string sUUID, DateTimeOffset endDate = new(), bool overrideEndDate = false)
 		{
-			DateTimeOffset endDate = DateTimeOffset.Parse(Data.Seasons.Find(s => s.UUID == sUUID).EndDate).ToLocalTime();
+			if (!overrideEndDate) endDate = DateTimeOffset.Parse(Data.Seasons.Find(s => s.UUID == sUUID).EndDate).ToLocalTime();
 			DateTimeOffset today = DateTimeOffset.Now.ToLocalTime().Date;
 
 			int remainingDays = (endDate - today).Days;
@@ -441,6 +441,26 @@ namespace VexTrack.Core
 		public static void EditGoal(string uuid, Goal data)
 		{
 			Data.Goals[Data.Goals.FindIndex(g => g.UUID == uuid)] = data;
+			CallUpdate();
+		}
+
+
+
+		public static void AddSeason(Season data)
+		{
+			Data.Seasons.Add(data);
+			CallUpdate();
+		}
+
+		public static void RemoveSeason(string uuid)
+		{
+			Data.Seasons.RemoveAt(Data.Seasons.FindIndex(s => s.UUID == uuid));
+			CallUpdate();
+		}
+
+		public static void EditSeason(string uuid, Season data)
+		{
+			Data.Seasons[Data.Seasons.FindIndex(s => s.UUID == uuid)] = data;
 			CallUpdate();
 		}
 	}

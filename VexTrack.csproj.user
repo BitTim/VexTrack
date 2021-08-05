@@ -16,6 +16,9 @@
     <Compile Update="MVVM\View\HistoryView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="MVVM\View\Popups\EditableSeasonPopup.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="MVVM\View\Popups\ProgressActivityPopup.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -49,6 +52,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MVVM\View\HistoryView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="MVVM\View\Popups\EditableSeasonPopup.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MVVM\View\Popups\ProgressActivityPopup.xaml">

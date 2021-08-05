@@ -27,7 +27,7 @@ namespace VexTrack.MVVM.ViewModel
 		private GoalPopupViewModel GoalPopup { get; set; }
 		private EditableGoalPopupViewModel EditableGoalPopup { get; set; }
 		private SeasonPopupViewModel SeasonPopup { get; set; }
-		//private EditableSeasonPopupViewModel EditableSeasonPopup { get; set; }
+		private EditableSeasonPopupViewModel EditableSeasonPopup { get; set; }
 		private ProgressActivityPopupViewModel PAPopupVM { get; set; }
 
 		private object _currentView;
@@ -95,8 +95,8 @@ namespace VexTrack.MVVM.ViewModel
 			GoalPopup = new();
 			ViewModelManager.ViewModels.Add("GoalPopup", GoalPopup);
 
-			//EditableSeasonPopup = new();
-			//ViewModelManager.ViewModels.Add("EditableSeasonPopup", EditableSeasonPopup);
+			EditableSeasonPopup = new();
+			ViewModelManager.ViewModels.Add("EditableSeasonPopup", EditableSeasonPopup);
 
 			SeasonPopup = new();
 			ViewModelManager.ViewModels.Add("SeasonPopup", SeasonPopup);

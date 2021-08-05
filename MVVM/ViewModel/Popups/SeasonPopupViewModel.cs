@@ -18,7 +18,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public RelayCommand OnBackClicked { get; set; }
 		public RelayCommand OnEditClicked { get; set; }
 		public RelayCommand OnDeleteClicked { get; set; }
-		//private EditableSeasonPopupViewModel EditableSeasonPopup { get; set; }
+		private EditableSeasonPopupViewModel EditableSeasonPopup { get; set; }
 
 		private SeasonEntryData RawData { get; set; }
 		public string UUID { get; set; }
@@ -48,18 +48,18 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 		public SeasonPopupViewModel()
 		{
-			//EditableSeasonPopup = (EditableSeasonPopupViewModel)ViewModelManager.ViewModels["EditableSeasonPopup"];
+			EditableSeasonPopup = (EditableSeasonPopupViewModel)ViewModelManager.ViewModels["EditableSeasonPopup"];
 			CanCancel = true;
 
 			OnBackClicked = new RelayCommand(o => { Close(); });
 			OnEditClicked = new RelayCommand(o => {
-				//EditableSeasonPopup.SetParameters("Edit Season", true);
-				//EditableSeasonPopup.SetData(RawData);
-				//MainVM.QueuePopup(EditableSeasonPopup);
+				EditableSeasonPopup.SetParameters("Edit Season", true);
+				EditableSeasonPopup.SetData(RawData);
+				MainVM.QueuePopup(EditableSeasonPopup);
 			});
 			OnDeleteClicked = new RelayCommand(o => {
 				IsInitialized = false;
-				//TrackingDataHelper.RemoveSeason(UUID);
+				TrackingDataHelper.RemoveSeason(UUID);
 			});
 
 			SolidColorBrush Foreground = (SolidColorBrush)Application.Current.FindResource("Foreground");
@@ -181,7 +181,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 		public override void Close()
 		{
-			//EditableSeasonPopup.Close();
+			EditableSeasonPopup.Close();
 			base.Close();
 		}
 	}

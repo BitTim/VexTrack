@@ -21,6 +21,8 @@ namespace VexTrack.MVVM.Converter
 			if (noTime.ToLower() == "true") str = dt.ToString("d");
 			else str = dt.ToString("g");
 
+			if (str == "01.01.0001") str = "-";
+
 			return str;
 		}
 

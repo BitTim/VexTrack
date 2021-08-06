@@ -24,6 +24,7 @@ namespace VexTrack.MVVM.ViewModel
 		private int _remaining;
 		private int _total;
 		private double _progress;
+		private string _seasonName;
 		private int _deviationIdeal;
 		private int _deviationDaily;
 		private int _daysFinished;
@@ -63,6 +64,15 @@ namespace VexTrack.MVVM.ViewModel
 			set
 			{
 				_progress = value;
+				OnPropertyChanged();
+			}
+		}
+		public string SeasonName
+		{
+			get => _seasonName;
+			set
+			{
+				_seasonName = value;
 				OnPropertyChanged();
 			}
 		}
@@ -164,8 +174,6 @@ namespace VexTrack.MVVM.ViewModel
 
 		public void Update(bool epilogue)
 		{
-			//TODO: Implement epilogue
-
 			MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
 			EditableHEPopup = (EditableHistoryEntryPopupViewModel)ViewModelManager.ViewModels["EditableHEPopup"];
 
@@ -176,6 +184,7 @@ namespace VexTrack.MVVM.ViewModel
 			Total = data.Total;
 			Progress = data.Progress;
 
+			SeasonName = TrackingDataHelper.CurrentSeasonData.Name;
 			(DeviationIdeal, DeviationDaily) = CalcGraph(epilogue);
 			DaysRemaining = TrackingDataHelper.GetRemainingDays(TrackingDataHelper.CurrentSeasonUUID);
 			DaysFinished = DashboardDataCalc.CalcDaysFinished(epilogue);
@@ -203,10 +212,12 @@ namespace VexTrack.MVVM.ViewModel
 			RectangleAnnotation bufferZone = GraphCalc.CalcBufferZone(TrackingDataHelper.CurrentSeasonUUID, epilogue);
 
 			Graph.Series.Clear();
+			Graph.Axes.Clear();
 			Graph.Annotations.Clear();
 
 			AddGraphLevels(epilogue);
 			AddGraphGoals();
+			ApplyAxes();
 			UpdateYAxis(performance, epilogue);
 
 			Graph.Series.Add(ideal);

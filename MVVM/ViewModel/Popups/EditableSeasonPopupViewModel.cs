@@ -56,10 +56,16 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 			OnBackClicked = new RelayCommand(o => { if (CanCancel) Close(); });
 			OnDoneClicked = new RelayCommand(o => {
+				CanCancel = true;
+				MainVM.InterruptUpdate = false;
+
 				string endDate = DateTimeOffset.FromUnixTimeSeconds(EndDate).ToLocalTime().Date.ToString("d");
+				List<HistoryEntry> initList = new();
+				initList.Add(new HistoryEntry(Guid.NewGuid().ToString(), DateTimeOffset.Now.ToUnixTimeSeconds(), "Initialization", 0, ""));
 
 				if (EditMode) TrackingDataHelper.EditSeason(UUID, new Season(UUID, Name, endDate, TrackingDataHelper.GetSeason(UUID).ActiveBPLevel, TrackingDataHelper.GetSeason(UUID).CXP, TrackingDataHelper.GetSeason(UUID).History));
-				else TrackingDataHelper.AddSeason(new Season(UUID, Name, endDate, 2, 0, new List<HistoryEntry>()));
+				else TrackingDataHelper.AddSeason(new Season(UUID, Name, endDate, 2, 0, initList));
+
 				Close();
 			});
 		}

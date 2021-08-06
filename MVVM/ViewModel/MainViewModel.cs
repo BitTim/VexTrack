@@ -36,6 +36,9 @@ namespace VexTrack.MVVM.ViewModel
 		private BasePopupViewModel _currentPopup = null;
 		private List<BasePopupViewModel> _popupQueue = new();
 
+		public bool ViewModelsInitialized = false;
+		public bool InterruptUpdate = false;
+
 		public object CurrentView
 		{
 			get { return _currentView; }
@@ -78,7 +81,6 @@ namespace VexTrack.MVVM.ViewModel
 
 		public MainViewModel()
 		{
-			TrackingDataHelper.LoadData();
 			ViewModelManager.ViewModels.Add("Main", this);
 
 
@@ -106,6 +108,14 @@ namespace VexTrack.MVVM.ViewModel
 
 
 
+			TrackingDataHelper.LoadData();
+			InitViewModels();
+		}
+
+		private void InitViewModels()
+		{
+			if (InterruptUpdate) return;
+
 			DashboardVM = new DashboardViewModel();
 			GoalVM = new GoalViewModel();
 			SeasonVM = new SeasonViewModel();
@@ -125,10 +135,15 @@ namespace VexTrack.MVVM.ViewModel
 			SeasonViewCommand = new RelayCommand(o => { CurrentView = SeasonVM; });
 			HistoryViewCommand = new RelayCommand(o => { CurrentView = HistoryVM; });
 			SettingsViewCommand = new RelayCommand(o => { CurrentView = SettingsVM; });
+
+			ViewModelsInitialized = true;
 		}
 
 		public void Update(bool epilogueOnly = false)
 		{
+			if (InterruptUpdate) return;
+			if (!ViewModelsInitialized) InitViewModels();
+
 			DashboardVM.Update(Epilogue);
 			GoalVM.Update(Epilogue);
 			SeasonVM.Update(Epilogue);

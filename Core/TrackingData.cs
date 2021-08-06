@@ -66,8 +66,22 @@ namespace VexTrack.Core
 	public static class TrackingDataHelper
 	{
 		public static TrackingData Data { get; set; }
-		public static string CurrentSeasonUUID { get => Data.Seasons.Last().UUID; }
-		public static Season CurrentSeasonData { get => Data.Seasons.Last(); }
+		public static string CurrentSeasonUUID
+		{
+			get
+			{
+				if (Data != null) return Data.Seasons.Last().UUID;
+				else return null;
+			}
+		}
+		public static Season CurrentSeasonData
+		{
+			get
+			{
+				if (Data != null) return Data.Seasons.Last();
+				else return null;
+			}
+		}
 
 		public static int GetRemainingDays(string sUUID, DateTimeOffset endDate = new(), bool overrideEndDate = false)
 		{
@@ -123,9 +137,8 @@ namespace VexTrack.Core
 
 			List<Season> seasons = new();
 
-			//TODO: Display dialog before setting Season Name
 			string name = "First Season";
-			string endDate = (string)jo["endDate"];
+			string endDate = (string)jo["seasonEndDate"];
 			int activeBPLevel = (int)jo["activeBPLevel"];
 			int cXP = (int)jo["cXP"];
 
@@ -145,6 +158,17 @@ namespace VexTrack.Core
 
 			File.Move(Constants.LegacyDataPath, Constants.LegacyDataPath + ".bak");
 			SaveData();
+
+
+
+			EditableSeasonPopupViewModel EditableSeasonPopup = (EditableSeasonPopupViewModel)ViewModelManager.ViewModels["EditableSeasonPopup"];
+			MainViewModel MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
+
+			EditableSeasonPopup.CanCancel = false;
+			EditableSeasonPopup.SetParameters("Edit Season", true);
+			EditableSeasonPopup.SetData(SeasonDataCalc.CalcSeason(seasons.Last(), false));
+
+			MainVM.QueuePopup(EditableSeasonPopup);
 		}
 
 		public static void LoadData()
@@ -222,6 +246,8 @@ namespace VexTrack.Core
 				if (uuid == null) uuid = Guid.NewGuid().ToString();
 				goals.Add(new Goal(uuid, name, total, collected, color));
 			}
+
+			if (seasons.Count == 0) SeasonCreatePopup();
 
 			Data = new TrackingData(goals, seasons);
 			if (reSave) SaveData();
@@ -455,6 +481,7 @@ namespace VexTrack.Core
 		public static void RemoveSeason(string uuid)
 		{
 			Data.Seasons.RemoveAt(Data.Seasons.FindIndex(s => s.UUID == uuid));
+			if(Data.Seasons.Count == 0 || GetActiveSeasons().Count == 0) SeasonCreatePopup();
 			CallUpdate();
 		}
 
@@ -462,6 +489,33 @@ namespace VexTrack.Core
 		{
 			Data.Seasons[Data.Seasons.FindIndex(s => s.UUID == uuid)] = data;
 			CallUpdate();
+		}
+
+
+
+		public static void SeasonCreatePopup()
+		{
+			EditableSeasonPopupViewModel EditableSeasonPopup = (EditableSeasonPopupViewModel)ViewModelManager.ViewModels["EditableSeasonPopup"];
+			MainViewModel MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
+
+			EditableSeasonPopup.CanCancel = false;
+			EditableSeasonPopup.SetParameters("Create Season", false);
+
+			MainVM.InterruptUpdate = true;
+			MainVM.QueuePopup(EditableSeasonPopup);
+		}
+
+		public static List<string> GetActiveSeasons()
+		{
+			List<string> activeSeasons = new();
+			DateTimeOffset today = DateTimeOffset.Now.ToLocalTime().Date;
+
+			foreach(Season s in Data.Seasons)
+			{
+				if (DateTimeOffset.Parse(s.EndDate).ToLocalTime().Date > today) activeSeasons.Add(s.UUID);
+			}
+
+			return activeSeasons;
 		}
 	}
 }

@@ -18,8 +18,8 @@ namespace VexTrack.Core
 			int bufferDays = Constants.BufferDays; //TODO: Move BufferDays to settings
 			int idealRemainingDays = TrackingDataHelper.GetRemainingDays(TrackingDataHelper.CurrentSeasonUUID) - bufferDays;
 
-			if (idealRemainingDays >= -bufferDays && idealRemainingDays <= 0) idealRemainingDays = 1;
-			else if (idealRemainingDays < -bufferDays) _ = 0; //TODO: Insert trigger for creation of new season here
+			if (idealRemainingDays > -bufferDays && idealRemainingDays <= 0) idealRemainingDays = 1;
+			else if (idealRemainingDays <= -bufferDays && idealRemainingDays <= 0) TrackingDataHelper.SeasonCreatePopup();
 
 			int dailyColected = 0;
 			foreach(HistoryEntry h in TrackingDataHelper.CurrentSeasonData.History)
@@ -55,7 +55,8 @@ namespace VexTrack.Core
 			DateTimeOffset lastEntryDate = DateTimeOffset.FromUnixTimeSeconds(TrackingDataHelper.GetLastHistoryEntry(TrackingDataHelper.CurrentSeasonUUID).Time).ToLocalTime().Date;
 			if (lastEntryDate == today) startOffset = 1;
 
-			int previousAmount = (int)performance.Points[performance.Points.Count - 1 - startOffset].Y;
+			int previousAmount = 0;
+			if (performance.Points.Count > 1) previousAmount = (int)performance.Points[performance.Points.Count - 1 - startOffset].Y;
 			int dailyTotal = (int)MathF.Round((total - previousAmount) / effectiveRemaining);
 			amounts.Add(previousAmount);
 
@@ -84,7 +85,7 @@ namespace VexTrack.Core
 			int duration = TrackingDataHelper.GetDuration(TrackingDataHelper.CurrentSeasonUUID);
 			int daysPassed = duration - TrackingDataHelper.GetRemainingDays(TrackingDataHelper.CurrentSeasonUUID);
 			int totalCollected = CalcUtil.CalcTotalCollected(TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP);
-			int average = (int)MathF.Round(totalCollected / daysPassed);
+			int average = (int)MathF.Round(totalCollected / (daysPassed + 1));
 
 			if (totalCollected >= total) return ret;
 
@@ -130,7 +131,7 @@ namespace VexTrack.Core
 			int remainingDays = TrackingDataHelper.GetRemainingDays(TrackingDataHelper.CurrentSeasonUUID);
 			int daysPassed = duration - remainingDays;
 			int totalCollected = CalcUtil.CalcTotalCollected(TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP);
-			int average = (int)MathF.Round(totalCollected / daysPassed);
+			int average = (int)MathF.Round(totalCollected / (daysPassed + 1));
 
 			int val = totalCollected;
 			for (int i = 0; i < remainingDays + 1; i++)

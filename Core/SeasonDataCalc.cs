@@ -20,7 +20,7 @@ namespace VexTrack.Core
 
 			int remainingDays = TrackingDataHelper.GetRemainingDays(ret.UUID);
 			int daysPassed = TrackingDataHelper.GetDuration(ret.UUID) - remainingDays;
-			int average = (int)MathF.Round(totalData.Collected / daysPassed);
+			int average = (int)MathF.Round(totalData.Collected / (daysPassed + 1));
 
 			int currentDayAmount = 0;
 			int strongestAmount = 0;
@@ -33,29 +33,32 @@ namespace VexTrack.Core
 
 			List<HistoryEntry> history = seasonData.History;
 			if (ignoreInitDay) history = seasonData.History.GetRange(1, seasonData.History.Count - 1);
-			DateTimeOffset prevDate = DateTimeOffset.FromUnixTimeSeconds(history.First().Time).ToLocalTime().Date;
-
-			foreach(HistoryEntry he in history)
+			if (history.Count > 0)
 			{
-				DateTimeOffset currDate = DateTimeOffset.FromUnixTimeSeconds(he.Time).ToLocalTime().Date;
-				if (currDate == prevDate)
+				DateTimeOffset prevDate = DateTimeOffset.FromUnixTimeSeconds(history.First().Time).ToLocalTime().Date;
+
+				foreach (HistoryEntry he in history)
 				{
+					DateTimeOffset currDate = DateTimeOffset.FromUnixTimeSeconds(he.Time).ToLocalTime().Date;
+					if (currDate == prevDate)
+					{
+						currentDayAmount += he.Amount;
+						continue;
+					}
+
+					(strongestAmount, weakestAmount, strongestDate, weakestDate) = EvaluateAmounts(currentDayAmount, strongestAmount, weakestAmount, prevDate, strongestDate, weakestDate);
+
+					currentDayAmount = 0;
 					currentDayAmount += he.Amount;
-					continue;
+
+					if (!ignoreInactiveDays)
+					{
+						int gapSize = (currDate - prevDate).Days;
+						for (int i = 1; i < gapSize; i++) (strongestAmount, weakestAmount, strongestDate, weakestDate) = EvaluateAmounts(0, strongestAmount, weakestAmount, prevDate.AddDays(1), strongestDate, weakestDate);
+					}
+
+					prevDate = currDate;
 				}
-
-				(strongestAmount, weakestAmount, strongestDate, weakestDate) = EvaluateAmounts(currentDayAmount, strongestAmount, weakestAmount, prevDate, strongestDate, weakestDate);
-
-				currentDayAmount = 0;
-				currentDayAmount += he.Amount;
-
-				if (!ignoreInactiveDays)
-				{
-					int gapSize = (currDate - prevDate).Days;
-					for (int i = 1; i < gapSize; i++) (strongestAmount, weakestAmount, strongestDate, weakestDate) = EvaluateAmounts(0, strongestAmount, weakestAmount, prevDate.AddDays(1), strongestDate, weakestDate);
-				}
-
-				prevDate = currDate;
 			}
 
 			ret.Title = seasonData.Name;

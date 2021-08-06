@@ -121,17 +121,27 @@
 			
 			<Grid Margin="8">
 				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="*"/>
 					<RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
 
+				<TextBlock Text="{Binding SeasonName}"
+							   Grid.Column="0"
+							   Grid.Row="0"
+							   Grid.ColumnSpan="2"
+							   FontSize="20"
+							   FontWeight="Bold"
+							   Foreground="{DynamicResource Foreground}"
+							   Margin="0, 0, 0, 16"/>
+				
 				<oxy:PlotView Model="{Binding Graph}"
 							  Background="{DynamicResource Background}"
 							  Foreground="{DynamicResource Foreground}"
-							  Margin="0, 0, 0, 0">
-				</oxy:PlotView>
+							  Margin="0, 0, 0, 0"
+							  Grid.Row="1"/>
 
-				<Grid Grid.Row="1"
+				<Grid Grid.Row="2"
 					   Margin="0, 8, 0, 0">
 					<Grid.RowDefinitions>
 						<RowDefinition Height="22"/>

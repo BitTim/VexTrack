@@ -61,7 +61,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 				string endDate = DateTimeOffset.FromUnixTimeSeconds(EndDate).ToLocalTime().Date.ToString("d");
 				List<HistoryEntry> initList = new();
-				initList.Add(new HistoryEntry(Guid.NewGuid().ToString(), DateTimeOffset.Now.ToUnixTimeSeconds(), "Initialization", 0, ""));
+				initList.Add(new HistoryEntry(Guid.NewGuid().ToString(), DateTimeOffset.Now.AddDays(-1).ToLocalTime().ToUnixTimeSeconds(), "Initialization", 0, ""));
 
 				if (EditMode) TrackingDataHelper.EditSeason(UUID, new Season(UUID, Name, endDate, TrackingDataHelper.GetSeason(UUID).ActiveBPLevel, TrackingDataHelper.GetSeason(UUID).CXP, TrackingDataHelper.GetSeason(UUID).History));
 				else TrackingDataHelper.AddSeason(new Season(UUID, Name, endDate, 2, 0, initList));
@@ -80,7 +80,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 		public void InitData()
 		{
-			EndDate = DateTimeOffset.Now.AddDays(60).ToUnixTimeSeconds();
+			EndDate = DateTimeOffset.Now.AddDays(61).ToUnixTimeSeconds();
 
 			UUID = Guid.NewGuid().ToString();
 			Name = "";

@@ -19,10 +19,10 @@ namespace VexTrack.Core
 			int idealRemainingDays = TrackingDataHelper.GetRemainingDays(TrackingDataHelper.CurrentSeasonUUID) - bufferDays;
 
 			if (idealRemainingDays > -bufferDays && idealRemainingDays <= 0) idealRemainingDays = 1;
-			else if (idealRemainingDays <= -bufferDays && idealRemainingDays <= 0) TrackingDataHelper.SeasonCreatePopup();
+			else if (idealRemainingDays <= -bufferDays && idealRemainingDays <= 0) TrackingDataHelper.CreateSeasonInitPopup();
 
 			int dailyColected = 0;
-			foreach(HistoryEntry h in TrackingDataHelper.CurrentSeasonData.History)
+			foreach (HistoryEntry h in TrackingDataHelper.CurrentSeasonData.History.GetRange(1, TrackingDataHelper.CurrentSeasonData.History.Count - 1))
 			{
 				if (DateTimeOffset.FromUnixTimeSeconds(h.Time).ToLocalTime().Date != DateTimeOffset.Now.ToLocalTime().Date) continue;
 				dailyColected += h.Amount;
@@ -55,7 +55,7 @@ namespace VexTrack.Core
 			DateTimeOffset lastEntryDate = DateTimeOffset.FromUnixTimeSeconds(TrackingDataHelper.GetLastHistoryEntry(TrackingDataHelper.CurrentSeasonUUID).Time).ToLocalTime().Date;
 			if (lastEntryDate == today) startOffset = 1;
 
-			int previousAmount = 0;
+			int previousAmount = (int)performance.Points.First().Y;
 			if (performance.Points.Count > 1) previousAmount = (int)performance.Points[performance.Points.Count - 1 - startOffset].Y;
 			int dailyTotal = (int)MathF.Round((total - previousAmount) / effectiveRemaining);
 			amounts.Add(previousAmount);
@@ -94,8 +94,14 @@ namespace VexTrack.Core
 			for (int i = daysPassed + 1; i < duration + 1; i++)
 			{
 				int amount = (int)ret.Points.Last().Y + average;
+				if (amount > total)
+				{
+					double x = ((double)total - (double)totalCollected) / (double)average + daysPassed;
+					ret.Points.Add(new DataPoint(x, total));
+					break;
+				}
+
 				ret.Points.Add(new DataPoint(i, amount));
-				if (amount > total) break;
 			}
 
 			ret.Color = OxyColors.PaleVioletRed;

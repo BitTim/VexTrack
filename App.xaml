@@ -86,6 +86,10 @@
 			<DataTemplate DataType="{x:Type popupViewModel:ProgressActivityPopupViewModel}">
 				<popupView:ProgressActivityPopup/>
 			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type popupViewModel:DataInitPopupViewModel}">
+				<popupView:DataInitPopup/>
+			</DataTemplate>
 		</ResourceDictionary>
 	</Application.Resources>
 </Application>

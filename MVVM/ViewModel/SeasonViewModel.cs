@@ -16,7 +16,6 @@ namespace VexTrack.MVVM.ViewModel
 		public RelayCommand SeasonButtonClick { get; set; }
 
 		public SeasonPopupViewModel SeasonPopup { get; set; }
-		//public EditableSeasonPopupViewModel EditableSeasonPopup { get; set; }
 		private MainViewModel MainVM { get; set; }
 		private bool Epilogue { get; set; }
 
@@ -38,7 +37,6 @@ namespace VexTrack.MVVM.ViewModel
 		{
 			MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
 			SeasonPopup = (SeasonPopupViewModel)ViewModelManager.ViewModels["SeasonPopup"];
-			//EditableSeasonPopup = (EditableSeasonPopupViewModel)ViewModelManager.ViewModels["EditableSeasonPopup"];
 
 			SeasonButtonClick = new RelayCommand(OnSeasonButtonClick);
 			Update(false);

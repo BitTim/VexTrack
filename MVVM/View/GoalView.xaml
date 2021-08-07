@@ -39,7 +39,7 @@
 
 				<ItemsControl x:Name="BuiltinContentContainer"
 							  Grid.Row="1"
-							  Margin="4 0, 0, 24"
+							  Margin="0, 0, 0, 24"
 							  ItemsSource="{Binding BuiltinEntries}">
 					<ItemsControl.ItemsPanel>
 						<ItemsPanelTemplate>
@@ -67,7 +67,7 @@
 				
 				<ItemsControl x:Name="CustomContentContainer"
 							  Grid.Row="3"
-							  Margin="4, 0, 0, 12"
+							  Margin="0, 0, 0, 12"
 							  ItemsSource="{Binding UserEntries}">
 					<ItemsControl.ItemsPanel>
 						<ItemsPanelTemplate>

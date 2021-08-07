@@ -35,5 +35,10 @@ namespace VexTrack.Core
 			double ret = Math.Floor(collected / total * 100);
 			return ret;
 		}
+
+		public static int CalcMaxForLevel(int level)
+		{
+			return Constants.Level2Offset + (level * Constants.XPPerLevel);
+		}
 	}
 }

@@ -252,7 +252,7 @@
 		</Border>
 
 		<!-- Popups -->
-		
+
 		<Border Background="{DynamicResource Black}"
 				CornerRadius="8"
 				x:Name="PopupBorder"

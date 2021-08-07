@@ -28,6 +28,7 @@ namespace VexTrack.MVVM.ViewModel
 		private EditableGoalPopupViewModel EditableGoalPopup { get; set; }
 		private SeasonPopupViewModel SeasonPopup { get; set; }
 		private EditableSeasonPopupViewModel EditableSeasonPopup { get; set; }
+		private DataInitPopupViewModel DataInitPopup { get; set; }
 		private ProgressActivityPopupViewModel PAPopupVM { get; set; }
 
 		private object _currentView;
@@ -85,6 +86,9 @@ namespace VexTrack.MVVM.ViewModel
 
 
 
+			DataInitPopup = new();
+			ViewModelManager.ViewModels.Add("DataInitPopup", DataInitPopup);
+
 			EditableHEPopup = new();
 			ViewModelManager.ViewModels.Add("EditableHEPopup", EditableHEPopup);
 
@@ -105,6 +109,14 @@ namespace VexTrack.MVVM.ViewModel
 
 			PAPopupVM = new ProgressActivityPopupViewModel();
 			ViewModelManager.ViewModels.Add("PAPopup", PAPopupVM);
+
+
+
+			DashboardViewCommand = new RelayCommand(o => SetView(DashboardVM)); ;
+			GoalViewCommand = new RelayCommand(o => SetView(GoalVM));
+			SeasonViewCommand = new RelayCommand(o => SetView(SeasonVM));
+			HistoryViewCommand = new RelayCommand(o => SetView(HistoryVM));
+			SettingsViewCommand = new RelayCommand(o => SetView(SettingsVM));
 
 
 
@@ -129,14 +141,12 @@ namespace VexTrack.MVVM.ViewModel
 			ViewModelManager.ViewModels.Add("Settings", SettingsVM);
 
 			CurrentView = DashboardVM;
-
-			DashboardViewCommand = new RelayCommand(o => { CurrentView = DashboardVM; });
-			GoalViewCommand = new RelayCommand(o => { CurrentView = GoalVM; });
-			SeasonViewCommand = new RelayCommand(o => { CurrentView = SeasonVM; });
-			HistoryViewCommand = new RelayCommand(o => { CurrentView = HistoryVM; });
-			SettingsViewCommand = new RelayCommand(o => { CurrentView = SettingsVM; });
-
 			ViewModelsInitialized = true;
+		}
+
+		public void SetView(object view)
+		{
+			CurrentView = view;
 		}
 
 		public void Update(bool epilogueOnly = false)

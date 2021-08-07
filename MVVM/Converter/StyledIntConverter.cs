@@ -15,6 +15,13 @@ namespace VexTrack.MVVM.Converter
 			string val = value.ToString();
 			string param = (string)parameter;
 			string str = val + " " + param;
+
+			if (param == "NegativeToNone")
+			{
+				if ((int)value < 0) str = "-";
+				else str = val;
+			}
+
 			return str;
 		}
 

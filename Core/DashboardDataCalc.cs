@@ -142,6 +142,7 @@ namespace VexTrack.Core
 				if (val >= total) break;
 			}
 
+			if (daysFinished > remainingDays) daysFinished = -1;
 			return daysFinished;
 		}
 	}

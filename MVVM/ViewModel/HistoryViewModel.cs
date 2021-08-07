@@ -61,7 +61,8 @@ namespace VexTrack.MVVM.ViewModel
 
 			initUUID = Entries.Last().HUUID;
 
-			if (HEPopup.IsInitialized) HEPopup.SetData(Entries.Where(e => e.HUUID == HEPopup.HUUID).FirstOrDefault(), initUUID);
+			HistoryEntryData entry = Entries.Where(e => e.HUUID == HEPopup.HUUID).FirstOrDefault();
+			if (HEPopup.IsInitialized && entry != null) HEPopup.SetData(entry, initUUID);
 			else HEPopup.Close();
 		}
 

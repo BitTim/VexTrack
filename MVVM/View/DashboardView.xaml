@@ -133,7 +133,7 @@
 							   FontSize="20"
 							   FontWeight="Bold"
 							   Foreground="{DynamicResource Foreground}"
-							   Margin="0, 0, 0, 16"/>
+							   Margin="0, 0, 0, 8"/>
 				
 				<oxy:PlotView Model="{Binding Graph}"
 							  Background="{DynamicResource Background}"
@@ -201,7 +201,7 @@
 							   Foreground="{DynamicResource Foreground}"
 							   Margin="0, 0, 0, 4"/>
 
-					<TextBlock Text="{Binding DaysFinished}"
+					<TextBlock Text="{Binding DaysFinished, Converter={StaticResource styledIntConv}, ConverterParameter=NegativeToNone}"
 							   Grid.Row="0"
 							   Grid.Column="3"
 							   FontSize="14"

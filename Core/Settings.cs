@@ -12,12 +12,36 @@ namespace VexTrack.Core
 {
 	public class Settings
 	{
-
+		public string Username;
+		public int BufferDays;
+		public bool IgnoreInactiveDays;
+		public bool IgnoreInit;
+		public bool IgnorePreReleases;
+		
+		public string Theme;
+		public string SystemTheme; //Not part of saved settings file
+		public string Accent;
+		
+		public Settings() {}
+		public Settings(string username, int bufferDays, bool ignoreInactiveDays, bool ignoreInit, bool ignorePreReleases, string theme, string systemTheme, string accent)
+		{
+			(Username, BufferDaysm IgnoreInactiveDays, IgnoreInit, IgnorePreReleases, Theme, SystemTheme, Accent) = (username, bufferDaysm ignoreInactiveDays, ignoreInit, ignorePreReleases, theme, systemTheme, accent);
+		}
 	}
 
 	public static class SettingsHelper
 	{
-
+		public static Settings Data { get; set; }
+		
+		//TODO: Add Load, Save, Init and Convert Functions
+		//      (like in TrackingData.cs -> TrackingDataHelper)
+		
+		public void Update()
+		{
+			//NOTE: Maybe replace with call to MainVM.Update();
+			SettingsViewModel SettingsVM = ViewModelManager.ViewModels["Settings"];
+			SettingsVM.Update();
+		}
 	}
 
 	public class ThemeWatcher
@@ -62,7 +86,8 @@ namespace VexTrack.Core
 			if (e.Category != UserPreferenceCategory.General) return;
 			string theme = GetWindowsTheme().ToString();
 
-			//TODO: Feed theme variable to settings
+			SettingsHelper.Data.SystemTheme = theme;
+			SettingsHelper.Update();
 		}
 	}
 }

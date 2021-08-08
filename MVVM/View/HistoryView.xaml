@@ -22,7 +22,7 @@
 
 		<TextBlock Text="History"
 				   Margin="16, 16, 16, 16"
-				   Foreground="{StaticResource Foreground}"
+				   Foreground="{DynamicResource Foreground}"
 				   FontSize="36"
 				   FontWeight="Bold"/>
 

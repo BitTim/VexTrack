@@ -42,11 +42,55 @@
 		<GradientStop Color="{StaticResource LossColor1}" Offset="0.0"/>
 		<GradientStop Color="{StaticResource LossColor2}" Offset="1.0"/>
 	</LinearGradientBrush>
+	
+	
+
+	<LinearGradientBrush x:Key="AccBlue">
+		<GradientStop Color="{StaticResource Blue1}" Offset="0.0"/>
+		<GradientStop Color="{StaticResource Blue2}" Offset="1.0"/>
+	</LinearGradientBrush>
+
+	<LinearGradientBrush x:Key="AccTeal">
+		<GradientStop Color="{StaticResource Teal1}" Offset="0.0"/>
+		<GradientStop Color="{StaticResource Teal2}" Offset="1.0"/>
+	</LinearGradientBrush>
+
+	<LinearGradientBrush x:Key="AccGreen">
+		<GradientStop Color="{StaticResource Green1}" Offset="0.0"/>
+		<GradientStop Color="{StaticResource Green2}" Offset="1.0"/>
+	</LinearGradientBrush>
+
+	<LinearGradientBrush x:Key="AccYellow">
+		<GradientStop Color="{StaticResource Yellow1}" Offset="0.0"/>
+		<GradientStop Color="{StaticResource Yellow2}" Offset="1.0"/>
+	</LinearGradientBrush>
+
+	<LinearGradientBrush x:Key="AccOrange">
+		<GradientStop Color="{StaticResource Orange1}" Offset="0.0"/>
+		<GradientStop Color="{StaticResource Orange2}" Offset="1.0"/>
+	</LinearGradientBrush>
 
 	<LinearGradientBrush x:Key="AccRed">
 		<GradientStop Color="{StaticResource Red1}" Offset="0.0"/>
 		<GradientStop Color="{StaticResource Red2}" Offset="1.0"/>
 	</LinearGradientBrush>
+
+	<LinearGradientBrush x:Key="AccPurple">
+		<GradientStop Color="{StaticResource Purple1}" Offset="0.0"/>
+		<GradientStop Color="{StaticResource Purple2}" Offset="1.0"/>
+	</LinearGradientBrush>
+
+
+
+	<LinearGradientBrush x:Key="AutoBGBrush">
+		<GradientStop Color="{StaticResource LightBG}" Offset="0.49"/>
+		<GradientStop Color="{StaticResource DarkBG}" Offset="0.51"/>
+	</LinearGradientBrush>
+
+	<SolidColorBrush x:Key="DarkBGBrush" Color="{StaticResource DarkBG}"/>
+	<SolidColorBrush x:Key="LightBGBrush" Color="{StaticResource LightBG}"/>
+
+	
 
 	<LinearGradientBrush x:Key="HueColors" StartPoint="0, 0" EndPoint="0, 1">
 		<GradientStop Color="#ff0000" Offset="0.0"/>

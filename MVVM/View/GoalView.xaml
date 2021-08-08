@@ -15,7 +15,7 @@
 		
 		<TextBlock Text="Goals"
 				   Margin="16, 16, 16, 16"
-				   Foreground="{StaticResource Foreground}"
+				   Foreground="{DynamicResource Foreground}"
 				   FontSize="36"
 				   FontWeight="Bold"/>
 
@@ -32,7 +32,7 @@
 
 				<TextBlock Text="Builtin Goals"
 						   Grid.Row="0"
-						   Foreground="{StaticResource Foreground}"
+						   Foreground="{DynamicResource Foreground}"
 						   FontSize="20"
 						   Margin="8, 8, 0, 0"
 						   FontWeight="Bold"/>
@@ -60,7 +60,7 @@
 
 				<TextBlock Text="Custom Goals"
 						   Grid.Row="2"
-						   Foreground="{StaticResource Foreground}"
+						   Foreground="{DynamicResource Foreground}"
 						   FontSize="20"
 						   Margin="8, 8, 0, 0"
 						   FontWeight="Bold"/>

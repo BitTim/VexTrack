@@ -55,7 +55,7 @@
 		<Style.Triggers>
 			<Trigger Property="IsChecked" Value="True">
 				<Setter Property="Background" Value="{DynamicResource Accent}"/>
-				<Setter Property="Foreground" Value="white"/>
+				<Setter Property="Foreground" Value="{StaticResource White}"/>
 			</Trigger>
 
 			<MultiTrigger>

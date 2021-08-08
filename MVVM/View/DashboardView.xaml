@@ -26,13 +26,13 @@
 		
 		<TextBlock Text="Welcome back, User"
 				   Margin="16, 16, 80, 16"
-				   Foreground="{StaticResource Foreground}"
+				   Foreground="{DynamicResource Foreground}"
 				   FontSize="36"
 				   FontWeight="Bold"/>
 
 		<Border Grid.Row="1"
 				CornerRadius="8"
-				BorderBrush="{StaticResource Shade}"
+				BorderBrush="{DynamicResource Shade}"
 				BorderThickness="2"
 				Margin="16, 0, 16, 16">
 
@@ -115,7 +115,7 @@
 
 		<Border CornerRadius="8"
 				Grid.Row="2"
-				BorderBrush="{StaticResource Shade}"
+				BorderBrush="{DynamicResource Shade}"
 				BorderThickness="2"
 				Margin="16, 0, 16, 16">
 			

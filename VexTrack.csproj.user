@@ -123,6 +123,9 @@
     <Page Update="Theme\ProgressButtonTheme.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Theme\RadioSelectorButtonTheme.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Theme\ScrollViewerTheme.xaml">
       <SubType>Designer</SubType>
     </Page>

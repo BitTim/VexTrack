@@ -15,7 +15,7 @@
 		
 		<TextBlock Text="Settings"
 				   Margin="16, 16, 16, 16"
-				   Foreground="{StaticResource Foreground}"
+				   Foreground="{DynamicResource Foreground}"
 				   FontSize="36"
 				   FontWeight="Bold"/>
 
@@ -32,7 +32,7 @@
 
 				<TextBlock Text="General"
 						   Grid.Row="0"
-						   Foreground="{StaticResource Foreground}"
+						   Foreground="{DynamicResource Foreground}"
 						   FontSize="20"
 						   Margin="8, 8, 0, 0"
 						   FontWeight="Bold"/>
@@ -150,7 +150,7 @@
 
 				<TextBlock Text="Customization"
 						   Grid.Row="2"
-						   Foreground="{StaticResource Foreground}"
+						   Foreground="{DynamicResource Foreground}"
 						   FontSize="20"
 						   Margin="8, 8, 0, 0"
 						   FontWeight="Bold"/>
@@ -158,8 +158,9 @@
 				<Grid Grid.Row="3"
 					  Margin="8, 0, 8, 24">
 					<Grid.RowDefinitions>
-						<RowDefinition Height="30"/>
-						<RowDefinition Height="30"/>
+						<RowDefinition Height="36"/>
+						<RowDefinition Height="36"/>
+						<RowDefinition Height="*"/>
 					</Grid.RowDefinitions>
 
 					<Grid.ColumnDefinitions>
@@ -172,16 +173,106 @@
 							   Grid.Column="0"
 							   FontSize="14"
 							   FontWeight="Bold"
+							   VerticalAlignment="Center"
 							   Foreground="{DynamicResource Foreground}"
 							   Margin="0, 0, 0, 4"/>
 
+					<StackPanel Grid.Row="0"
+								Grid.Column="1"
+								Orientation="Horizontal"
+								VerticalAlignment="Center"
+								HorizontalAlignment="Right">
+						<RadioButton Style="{StaticResource RadioThemeSelectorButtonTheme}"
+									 Tag="{Binding Source={StaticResource LightBulbIcon}, Path=Data}"
+									 Command="{Binding ThemeButtonCommand}"
+									 CommandParameter="Auto"
+									 IsChecked="True"
+									 Margin="0, 0, 4, 0"/>
+						
+						<RadioButton Style="{StaticResource RadioThemeSelectorButtonTheme}"
+									 Tag="{Binding Source={StaticResource MoonIcon}, Path=Data}"
+									 Command="{Binding ThemeButtonCommand}"
+									 CommandParameter="Dark"
+									 Margin="0, 0, 4, 0"/>
+						
+						<RadioButton Style="{StaticResource RadioThemeSelectorButtonTheme}"
+									 Tag="{Binding Source={StaticResource SunIcon}, Path=Data}"
+									 Command="{Binding ThemeButtonCommand}"
+									 CommandParameter="Light"
+									 Margin="0, 0, 4, 0"/>
+					</StackPanel>
+					
 					<TextBlock Text="Accent Color"
 							   Grid.Row="1"
 							   Grid.Column="0"
 							   FontSize="14"
 							   FontWeight="Bold"
+							   VerticalAlignment="Center"
 							   Foreground="{DynamicResource Foreground}"
 							   Margin="0, 0, 0, 4"/>
+
+					<StackPanel Grid.Row="1"
+								Grid.Column="1"
+								Orientation="Horizontal"
+								VerticalAlignment="Center"
+								HorizontalAlignment="Right">
+						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
+									 Background="{StaticResource AccBlue}"
+									 Foreground="{StaticResource White}"
+									 IsChecked="True"
+									 Command="{Binding AccentButtonCommand}"
+									 CommandParameter="Blue"
+									 Margin="0, 0, 4, 0"/>
+						
+						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
+									 Background="{StaticResource AccTeal}"
+									 Foreground="{StaticResource White}"
+									 Command="{Binding AccentButtonCommand}"
+									 CommandParameter="Teal"
+									 Margin="0, 0, 4, 0"/>
+						
+						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
+									 Background="{StaticResource AccGreen}"
+									 Foreground="{StaticResource White}"
+									 Command="{Binding AccentButtonCommand}"
+									 CommandParameter="Green"
+									 Margin="0, 0, 4, 0"/>
+						
+						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
+									 Background="{StaticResource AccYellow}"
+									 Foreground="{StaticResource White}"
+									 Command="{Binding AccentButtonCommand}"
+									 CommandParameter="Yellow"
+									 Margin="0, 0, 4, 0"/>
+						
+						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
+									 Background="{StaticResource AccOrange}"
+									 Foreground="{StaticResource White}"
+									 Command="{Binding AccentButtonCommand}"
+									 CommandParameter="Orange"
+									 Margin="0, 0, 4, 0"/>
+						
+						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
+									 Background="{StaticResource AccRed}"
+									 Foreground="{StaticResource White}"
+									 Command="{Binding AccentButtonCommand}"
+									 CommandParameter="Red"
+									 Margin="0, 0, 4, 0"/>
+						
+						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
+									 Background="{StaticResource AccPurple}"
+									 Foreground="{StaticResource White}"
+									 Command="{Binding AccentButtonCommand}"
+									 CommandParameter="Purple"
+									 Margin="0, 0, 4, 0"/>
+						
+						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
+									 Background="{DynamicResource AccMono}"
+									 Foreground="{StaticResource White}"
+									 Command="{Binding AccentButtonCommand}"
+									 CommandParameter="Mono"
+									 Margin="0, 0, 4, 0"/>
+					</StackPanel>
 				</Grid>
 			</Grid>
 		</ScrollViewer>

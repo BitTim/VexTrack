@@ -6,13 +6,13 @@
 			 xmlns:popupViewModel="clr-namespace:VexTrack.MVVM.ViewModel.Popups"
 			 xmlns:view="clr-namespace:VexTrack.MVVM.View"
 			 xmlns:popupView="clr-namespace:VexTrack.MVVM.View.Popups"
-             StartupUri="MainWindow.xaml">
-	
+			 StartupUri="MainWindow.xaml">
+
 	<Application.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="Theme/Colors.xaml"/>
-
+				
 				<!-- Colors and Themes -->
 				<ResourceDictionary Source="Theme/AppTheme/LightTheme.xaml"/>
 				<ResourceDictionary Source="Theme/AccentColors/Blue.xaml"/>
@@ -26,6 +26,7 @@
 				<ResourceDictionary Source="Theme/TextBoxTheme.xaml"/>
 				<ResourceDictionary Source="Theme/AddButtonTheme.xaml"/>
 				<ResourceDictionary Source="Theme/HueSliderTheme.xaml"/>
+				<ResourceDictionary Source="Theme/RadioSelectorButtonTheme.xaml"/>
 
 				<ResourceDictionary Source="Theme/HistoryButtonTheme.xaml"/>
 				<ResourceDictionary Source="Theme/ProgressArcTheme.xaml"/>

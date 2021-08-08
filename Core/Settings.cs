@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using VexTrack.MVVM.ViewModel;
 
 namespace VexTrack.Core
 {
@@ -25,7 +26,7 @@ namespace VexTrack.Core
 		public Settings() {}
 		public Settings(string username, int bufferDays, bool ignoreInactiveDays, bool ignoreInit, bool ignorePreReleases, string theme, string systemTheme, string accent)
 		{
-			(Username, BufferDaysm IgnoreInactiveDays, IgnoreInit, IgnorePreReleases, Theme, SystemTheme, Accent) = (username, bufferDaysm ignoreInactiveDays, ignoreInit, ignorePreReleases, theme, systemTheme, accent);
+			(Username, BufferDays, IgnoreInactiveDays, IgnoreInit, IgnorePreReleases, Theme, SystemTheme, Accent) = (username, bufferDays, ignoreInactiveDays, ignoreInit, ignorePreReleases, theme, systemTheme, accent);
 		}
 	}
 
@@ -33,14 +34,31 @@ namespace VexTrack.Core
 	{
 		public static Settings Data { get; set; }
 		
-		//TODO: Add Load, Save, Init and Convert Functions
-		//      (like in TrackingData.cs -> TrackingDataHelper)
-		
-		public void Update()
+		public static void Update()
 		{
 			//NOTE: Maybe replace with call to MainVM.Update();
-			SettingsViewModel SettingsVM = ViewModelManager.ViewModels["Settings"];
+			SettingsViewModel SettingsVM = (SettingsViewModel)ViewModelManager.ViewModels["Settings"];
 			SettingsVM.Update();
+		}
+
+		public static void InitSettings()
+		{
+
+		}
+
+		public static void ConvertSettings()
+		{
+
+		}
+
+		public static void LoadSettings()
+		{
+			//TODO: Implement this
+		}
+
+		public static void SaveSettings()
+		{
+
 		}
 	}
 

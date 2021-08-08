@@ -144,6 +144,9 @@ namespace VexTrack
 
 		private void OnCloseButtonClick(object sender, RoutedEventArgs e)
 		{
+			MainViewModel MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
+			MainVM.Destroy();
+			
 			this.Close();
 		}
 

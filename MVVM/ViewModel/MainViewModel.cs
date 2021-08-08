@@ -10,6 +10,8 @@ namespace VexTrack.MVVM.ViewModel
 {
 	class MainViewModel : ObservableObject
 	{
+		public ThemeWatcher Watcher { get; set; }
+
 		public RelayCommand DashboardViewCommand { get; set; }
 		public RelayCommand GoalViewCommand { get; set; }
 		public RelayCommand SeasonViewCommand { get; set; }
@@ -82,6 +84,8 @@ namespace VexTrack.MVVM.ViewModel
 
 		public MainViewModel()
 		{
+			Watcher = new();
+
 			ViewModelManager.ViewModels.Add("Main", this);
 
 
@@ -182,6 +186,13 @@ namespace VexTrack.MVVM.ViewModel
 		{
 			if (PopupQueue.Count != 0 && PopupQueue.Last().CanCancel == false) return;
 			DequeuePopup(PopupQueue.Last());
+		}
+
+
+
+		public void Destroy()
+		{
+			Watcher.Destroy();
 		}
 	}
 }

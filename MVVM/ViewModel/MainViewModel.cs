@@ -84,6 +84,7 @@ namespace VexTrack.MVVM.ViewModel
 
 		public MainViewModel()
 		{
+			SettingsHelper.Init();
 			Watcher = new();
 
 			ViewModelManager.ViewModels.Add("Main", this);
@@ -125,6 +126,7 @@ namespace VexTrack.MVVM.ViewModel
 
 
 			TrackingDataHelper.LoadData();
+			SettingsHelper.LoadSettings();
 			InitViewModels();
 		}
 
@@ -162,7 +164,11 @@ namespace VexTrack.MVVM.ViewModel
 			GoalVM.Update(Epilogue);
 			SeasonVM.Update(Epilogue);
 
-			if(!epilogueOnly) HistoryVM.Update();
+			if (!epilogueOnly)
+			{
+				HistoryVM.Update();
+				SettingsVM.Update();
+			}
 		}
 
 		public void QueuePopup(BasePopupViewModel popup)

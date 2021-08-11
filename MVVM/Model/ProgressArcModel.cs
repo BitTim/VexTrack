@@ -164,6 +164,11 @@ namespace VexTrack.MVVM.Model
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(ProgressArcModel), new FrameworkPropertyMetadata(typeof(ProgressArcModel)));
 		}
 
+		public ProgressArcModel()
+		{
+			Update();
+		}
+
 		private static void OnPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
 			if (d is ProgressArcModel)

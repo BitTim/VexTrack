@@ -20,7 +20,7 @@ namespace VexTrack.Core
 			SolidColorBrush Foreground = (SolidColorBrush)Application.Current.FindResource("Foreground");
 
 			int total = GoalDataCalc.CalcTotalGoal("", TrackingDataHelper.GetSeason(sUUID).ActiveBPLevel, TrackingDataHelper.GetSeason(sUUID).CXP, epilogue).Total;
-			int bufferDays = Constants.BufferDays; //TODO: Move BufferDays to settings
+			int bufferDays = SettingsHelper.Data.BufferDays;
 			int duration = TrackingDataHelper.GetDuration(sUUID);
 
 			int initCollected = TrackingDataHelper.GetFirstHistoryEntry(sUUID).Amount;
@@ -94,7 +94,7 @@ namespace VexTrack.Core
 			RectangleAnnotation ret = new();
 
 			int total = GoalDataCalc.CalcTotalGoal("", TrackingDataHelper.GetSeason(sUUID).ActiveBPLevel, TrackingDataHelper.GetSeason(sUUID).CXP, epilogue).Total;
-			int bufferDays = Constants.BufferDays; //TODO: Move BufferDays to settings
+			int bufferDays = SettingsHelper.Data.BufferDays;
 			int duration = TrackingDataHelper.GetDuration(sUUID);
 
 			ret.MinimumX = duration - bufferDays;

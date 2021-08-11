@@ -19,12 +19,6 @@ namespace VexTrack.Core
 		public static readonly int XPPerEpilogueLevel = 36500;
 		public static readonly int Level2Offset = 500;
 
-		//TODO: Move this to Settings
-		public static readonly int BufferDays = 8;
-		public static readonly bool IgnoreInitDay = true;
-		public static readonly bool IgnoreInactiveDays = true;
-		// --------------------------
-
 		public static Dictionary<string, string> ThemeURIs = new Dictionary<string, string>
 		{
 			["Light"] = "Theme/AppTheme/LightTheme.xaml",

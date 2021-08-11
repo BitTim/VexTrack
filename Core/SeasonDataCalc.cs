@@ -28,8 +28,8 @@ namespace VexTrack.Core
 			DateTimeOffset strongestDate = new();
 			DateTimeOffset weakestDate = new();
 
-			bool ignoreInitDay = Constants.IgnoreInitDay; //TODO: Move to settings
-			bool ignoreInactiveDays = Constants.IgnoreInactiveDays; //TODO: Move to settings
+			bool ignoreInitDay = SettingsHelper.Data.IgnoreInit;
+			bool ignoreInactiveDays = SettingsHelper.Data.IgnoreInactiveDays;
 
 			List<HistoryEntry> history = seasonData.History;
 			if (ignoreInitDay) history = seasonData.History.GetRange(1, seasonData.History.Count - 1);

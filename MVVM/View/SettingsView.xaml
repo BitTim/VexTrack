@@ -5,14 +5,21 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VexTrack.MVVM.View"
 			 xmlns:validation="clr-namespace:VexTrack.MVVM.Validation"
+			 xmlns:conv="clr-namespace:VexTrack.MVVM.Converter"
 			 mc:Ignorable="d" 
              d:DesignHeight="780" d:DesignWidth="640">
-    <Grid>
+
+	<UserControl.Resources>
+		<conv:DataStringToBoolConverter x:Key="DataStringToBoolConv"/>
+	</UserControl.Resources>
+
+	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="80"/>
-			<RowDefinition/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
-		
+
 		<TextBlock Text="Settings"
 				   Margin="16, 16, 16, 16"
 				   Foreground="{DynamicResource Foreground}"
@@ -144,7 +151,7 @@
 							   Grid.Row="4"
 							   Grid.Column="1"
 								  HorizontalAlignment="Right"
-								  IsChecked="{Binding IgnorePreRelease}"
+								  IsChecked="{Binding IgnorePreReleases}"
 								  Style="{StaticResource CheckBoxTheme}"/>
 				</Grid>
 
@@ -186,22 +193,24 @@
 									 Tag="{Binding Source={StaticResource LightBulbIcon}, Path=Data}"
 									 Command="{Binding ThemeButtonCommand}"
 									 CommandParameter="Auto"
-									 IsChecked="True"
+									 IsChecked="{Binding Theme, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Auto, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
 									 Margin="0, 0, 4, 0"/>
-						
+
 						<RadioButton Style="{StaticResource RadioThemeSelectorButtonTheme}"
 									 Tag="{Binding Source={StaticResource MoonIcon}, Path=Data}"
 									 Command="{Binding ThemeButtonCommand}"
 									 CommandParameter="Dark"
+									 IsChecked="{Binding Theme, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Dark, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
 									 Margin="0, 0, 4, 0"/>
-						
+
 						<RadioButton Style="{StaticResource RadioThemeSelectorButtonTheme}"
 									 Tag="{Binding Source={StaticResource SunIcon}, Path=Data}"
 									 Command="{Binding ThemeButtonCommand}"
 									 CommandParameter="Light"
+									 IsChecked="{Binding Theme, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Light, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
 									 Margin="0, 0, 4, 0"/>
 					</StackPanel>
-					
+
 					<TextBlock Text="Accent Color"
 							   Grid.Row="1"
 							   Grid.Column="0"
@@ -219,62 +228,110 @@
 						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
 									 Background="{StaticResource AccBlue}"
 									 Foreground="{StaticResource White}"
-									 IsChecked="True"
 									 Command="{Binding AccentButtonCommand}"
 									 CommandParameter="Blue"
+									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Blue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
 									 Margin="0, 0, 4, 0"/>
-						
+
 						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
 									 Background="{StaticResource AccTeal}"
 									 Foreground="{StaticResource White}"
 									 Command="{Binding AccentButtonCommand}"
 									 CommandParameter="Teal"
+									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Teal, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
 									 Margin="0, 0, 4, 0"/>
-						
+
 						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
 									 Background="{StaticResource AccGreen}"
 									 Foreground="{StaticResource White}"
 									 Command="{Binding AccentButtonCommand}"
 									 CommandParameter="Green"
+									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Green, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
 									 Margin="0, 0, 4, 0"/>
-						
+
 						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
 									 Background="{StaticResource AccYellow}"
 									 Foreground="{StaticResource White}"
 									 Command="{Binding AccentButtonCommand}"
 									 CommandParameter="Yellow"
+									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Yellow, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
 									 Margin="0, 0, 4, 0"/>
-						
+
 						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
 									 Background="{StaticResource AccOrange}"
 									 Foreground="{StaticResource White}"
 									 Command="{Binding AccentButtonCommand}"
 									 CommandParameter="Orange"
+									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Orange, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
 									 Margin="0, 0, 4, 0"/>
-						
+
 						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
 									 Background="{StaticResource AccRed}"
 									 Foreground="{StaticResource White}"
 									 Command="{Binding AccentButtonCommand}"
 									 CommandParameter="Red"
+									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Red, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
 									 Margin="0, 0, 4, 0"/>
-						
+
 						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
 									 Background="{StaticResource AccPurple}"
 									 Foreground="{StaticResource White}"
 									 Command="{Binding AccentButtonCommand}"
 									 CommandParameter="Purple"
+									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Purple, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
 									 Margin="0, 0, 4, 0"/>
-						
+
 						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
 									 Background="{DynamicResource AccMono}"
 									 Foreground="{StaticResource White}"
 									 Command="{Binding AccentButtonCommand}"
 									 CommandParameter="Mono"
+									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Mono, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
 									 Margin="0, 0, 4, 0"/>
 					</StackPanel>
 				</Grid>
 			</Grid>
 		</ScrollViewer>
+
+		<Grid Grid.Row="2"
+			  Margin="16, 0, 16, 16">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
+
+			<Button Content="About"
+							Background="{DynamicResource Background}"
+							Foreground="{DynamicResource Foreground}"
+							Width="80"
+							Height="30"
+							HorizontalAlignment="Left"
+							VerticalAlignment="Bottom"
+							Style="{DynamicResource ButtonTheme}"
+							Command="{Binding OnAboutClicked}"/>
+
+			<StackPanel Orientation="Horizontal"
+								Grid.Column="1"
+								HorizontalAlignment="Right">
+				<Button Content="Reset Data"
+								Background="{DynamicResource AccRed}"
+								Foreground="{StaticResource White}"
+								Width="80"
+								Height="30"
+								VerticalAlignment="Bottom"
+								Style="{DynamicResource ButtonTheme}"
+								Command="{Binding OnResetClicked}"
+								Margin="0, 0, 4, 0"/>
+
+				<Button Content="Defaults"
+								Background="{DynamicResource Background}"
+								Foreground="{DynamicResource AccRed}"
+								Width="80"
+								Height="30"
+								VerticalAlignment="Bottom"
+								Style="{DynamicResource ButtonTheme}"
+								Command="{Binding OnDefaultsClicked}"/>
+			</StackPanel>
+		</Grid>
 	</Grid>
 </UserControl>

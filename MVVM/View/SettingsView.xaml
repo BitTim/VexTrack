@@ -193,21 +193,21 @@
 									 Tag="{Binding Source={StaticResource LightBulbIcon}, Path=Data}"
 									 Command="{Binding ThemeButtonCommand}"
 									 CommandParameter="Auto"
-									 IsChecked="{Binding Theme, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Auto, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+									 IsChecked="{Binding Theme, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Auto, Mode=OneWay}"
 									 Margin="0, 0, 4, 0"/>
 
 						<RadioButton Style="{StaticResource RadioThemeSelectorButtonTheme}"
 									 Tag="{Binding Source={StaticResource MoonIcon}, Path=Data}"
 									 Command="{Binding ThemeButtonCommand}"
 									 CommandParameter="Dark"
-									 IsChecked="{Binding Theme, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Dark, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+									 IsChecked="{Binding Theme, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Dark, Mode=OneWay}"
 									 Margin="0, 0, 4, 0"/>
 
 						<RadioButton Style="{StaticResource RadioThemeSelectorButtonTheme}"
 									 Tag="{Binding Source={StaticResource SunIcon}, Path=Data}"
 									 Command="{Binding ThemeButtonCommand}"
 									 CommandParameter="Light"
-									 IsChecked="{Binding Theme, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Light, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+									 IsChecked="{Binding Theme, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Light, Mode=OneWay}"
 									 Margin="0, 0, 4, 0"/>
 					</StackPanel>
 
@@ -230,7 +230,7 @@
 									 Foreground="{StaticResource White}"
 									 Command="{Binding AccentButtonCommand}"
 									 CommandParameter="Blue"
-									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Blue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Blue, Mode=OneWay}"
 									 Margin="0, 0, 4, 0"/>
 
 						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
@@ -238,7 +238,7 @@
 									 Foreground="{StaticResource White}"
 									 Command="{Binding AccentButtonCommand}"
 									 CommandParameter="Teal"
-									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Teal, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Teal, Mode=OneWay}"
 									 Margin="0, 0, 4, 0"/>
 
 						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
@@ -246,7 +246,7 @@
 									 Foreground="{StaticResource White}"
 									 Command="{Binding AccentButtonCommand}"
 									 CommandParameter="Green"
-									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Green, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Green, Mode=OneWay}"
 									 Margin="0, 0, 4, 0"/>
 
 						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
@@ -254,7 +254,7 @@
 									 Foreground="{StaticResource White}"
 									 Command="{Binding AccentButtonCommand}"
 									 CommandParameter="Yellow"
-									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Yellow, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Yellow, Mode=OneWay}"
 									 Margin="0, 0, 4, 0"/>
 
 						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
@@ -262,7 +262,7 @@
 									 Foreground="{StaticResource White}"
 									 Command="{Binding AccentButtonCommand}"
 									 CommandParameter="Orange"
-									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Orange, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Orange, Mode=OneWay}"
 									 Margin="0, 0, 4, 0"/>
 
 						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
@@ -270,7 +270,7 @@
 									 Foreground="{StaticResource White}"
 									 Command="{Binding AccentButtonCommand}"
 									 CommandParameter="Red"
-									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Red, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Red, Mode=OneWay}"
 									 Margin="0, 0, 4, 0"/>
 
 						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
@@ -278,7 +278,7 @@
 									 Foreground="{StaticResource White}"
 									 Command="{Binding AccentButtonCommand}"
 									 CommandParameter="Purple"
-									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Purple, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Purple, Mode=OneWay}"
 									 Margin="0, 0, 4, 0"/>
 
 						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
@@ -286,7 +286,7 @@
 									 Foreground="{StaticResource White}"
 									 Command="{Binding AccentButtonCommand}"
 									 CommandParameter="Mono"
-									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Mono, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Mono, Mode=OneWay}"
 									 Margin="0, 0, 4, 0"/>
 					</StackPanel>
 				</Grid>

@@ -82,18 +82,34 @@ namespace VexTrack.Core
 			string rawJSON = File.ReadAllText(Constants.SettingsPath);
 			JObject jo = JObject.Parse(rawJSON);
 
-			bool showInitPopup = true;
+			bool showInitPopup = false;
 
 			Data.SetDefault();
 
-			if (jo["username"] != null) Data.Username = (string)jo["username"]; showInitPopup = false;
-			if (jo["bufferDays"] != null) Data.BufferDays = (int)jo["bufferDays"]; showInitPopup = false;
-			if (jo["ignoreInactiveDays"] != null) Data.IgnoreInactiveDays = (bool)jo["ignoreInactiveDays"]; showInitPopup = false;
-			if (jo["ignoreInit"] != null) Data.IgnoreInit = (bool)jo["ignoreInit"]; showInitPopup = false;
-			if (jo["ignorePreReleases"] != null) Data.IgnorePreReleases = (bool)jo["ignorePreReleases"]; showInitPopup = false;
+			if (jo["username"] == null) showInitPopup = true;
+			else Data.Username = (string)jo["username"];
 
-			if (jo["theme"] != null) Data.Theme = (string)jo["theme"]; showInitPopup = false;
-			if (jo["accent"] != null) Data.Accent = (string)jo["accent"]; showInitPopup = false;
+			if (jo["bufferDays"] == null) showInitPopup = true;
+			else Data.BufferDays = (int)jo["bufferDays"];
+
+			if (jo["ignoreInactiveDays"] == null) showInitPopup = true;
+			else Data.IgnoreInactiveDays = (bool)jo["ignoreInactiveDays"];
+
+			if (jo["ignoreInit"] == null) showInitPopup = true;
+			else Data.IgnoreInit = (bool)jo["ignoreInit"];
+
+			if (jo["ignorePreReleases"] == null) showInitPopup = true;
+			else Data.IgnorePreReleases = (bool)jo["ignorePreReleases"];
+
+
+
+			if (jo["theme"] == null) showInitPopup = true;
+			else Data.Theme = (string)jo["theme"];
+
+			if (jo["accent"] == null) showInitPopup = true;
+			else Data.Accent = (string)jo["accent"];
+
+			
 
 			if (showInitPopup)
 			{

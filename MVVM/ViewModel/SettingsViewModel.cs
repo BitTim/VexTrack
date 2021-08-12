@@ -20,14 +20,33 @@ namespace VexTrack.MVVM.ViewModel
 		public RelayCommand OnResetClicked { get; set; }
 		public RelayCommand OnDefaultsClicked { get; set; }
 
-		public string Theme { get; set; }
-		public string Accent { get; set; }
+		private string _theme;
+		private string _accent;
 
 		private string _username;
 		private int _bufferDays;
 		private bool _ignoreInactive;
 		private bool _ignoreInit;
 		private bool _ignorePreReleases;
+
+		public string Theme
+		{
+			get => _theme;
+			set
+			{
+				_theme = value;
+				OnPropertyChanged();
+			}
+		}
+		public string Accent
+		{
+			get => _accent;
+			set
+			{
+				_accent = value;
+				OnPropertyChanged();
+			}
+		}
 
 		public string Username
 		{
@@ -126,6 +145,7 @@ namespace VexTrack.MVVM.ViewModel
 		{
 			SettingsHelper.Data.Theme = theme;
 			SettingsHelper.ApplyVisualSettings();
+			SettingsHelper.SaveSettings();
 			Update();
 		}
 
@@ -133,6 +153,7 @@ namespace VexTrack.MVVM.ViewModel
 		{
 			SettingsHelper.Data.Accent = accent;
 			SettingsHelper.ApplyVisualSettings();
+			SettingsHelper.SaveSettings();
 			Update();
 		}
 	}

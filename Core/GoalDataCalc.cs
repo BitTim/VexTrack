@@ -55,9 +55,11 @@ namespace VexTrack.Core
 
 			int total;
 			if (activeLevel - 1 < Constants.BattlepassLevels) total = Constants.Level2Offset + Constants.XPPerLevel * activeLevel;
+			else if (activeLevel > Constants.BattlepassLevels + Constants.EpilogueLevels) total = 0;
 			else total = Constants.XPPerEpilogueLevel;
 
-			ret.Title = "Level " + (activeLevel > Constants.BattlepassLevels + Constants.EpilogueLevels ? (Constants.BattlepassLevels + Constants.EpilogueLevels).ToString() : activeLevel.ToString());
+			if (activeLevel > Constants.BattlepassLevels + Constants.EpilogueLevels) ret.Title = "Post Completion";
+			else ret.Title = "Level " + activeLevel.ToString();
 
 			ret.Total = total;
 			ret.Collected = cxp;

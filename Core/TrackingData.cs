@@ -249,6 +249,8 @@ namespace VexTrack.Core
 
 			Data = new TrackingData(goals, seasons);
 			if (reSave) SaveData();
+
+			Recalculate();
 		}
 
 		public static void SaveData()
@@ -332,7 +334,7 @@ namespace VexTrack.Core
 			{
 				if (iter < Constants.BattlepassLevels)
 					cxp -= Constants.Level2Offset + (iter * Constants.XPPerLevel);
-				else if (iter - 1 < Constants.BattlepassLevels + Constants.EpilogueLevels + 1)
+				else if (iter < Constants.BattlepassLevels + Constants.EpilogueLevels + 2)
 					cxp -= Constants.XPPerEpilogueLevel;
 				else
 					break;
@@ -350,7 +352,7 @@ namespace VexTrack.Core
 
 			if (iter < Constants.BattlepassLevels)
 				cxp += Constants.Level2Offset + (iter * Constants.XPPerLevel);
-			else if (iter < Constants.BattlepassLevels + Constants.EpilogueLevels)
+			else if (iter < Constants.BattlepassLevels + Constants.EpilogueLevels + 2)
 				cxp += Constants.XPPerEpilogueLevel;
 
 			CurrentSeasonData.CXP = cxp;

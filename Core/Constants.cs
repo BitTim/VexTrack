@@ -8,9 +8,12 @@ namespace VexTrack.Core
 {
 	static class Constants
 	{
-		public static readonly string SettingsPath = @"dat/settings.json";
-		public static readonly string DataPath = @"dat/data.json";
-		public static readonly string LegacyDataPath = @"dat/config.json";
+		public static readonly string DataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"/VexTrack";
+		public static readonly string LegacyDataFolder = @"dat";
+
+		public static readonly string SettingsPath = DataFolder + @"/settings.json";
+		public static readonly string DataPath = DataFolder + @"/data.json";
+		public static readonly string LegacyDataPath = DataFolder + @"/config.json";
 
 		public static readonly int BattlepassLevels = 50;
 		public static readonly int EpilogueLevels = 5;

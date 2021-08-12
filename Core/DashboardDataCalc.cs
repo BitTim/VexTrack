@@ -82,7 +82,7 @@ namespace VexTrack.Core
 			return ret;
 		}
 
-		public static LineSeries CalcAverageGraph(bool epilogue)
+		public static LineSeries CalcAverageGraph(LineSeries performance, bool epilogue)
 		{
 			LineSeries ret = new();
 
@@ -91,17 +91,18 @@ namespace VexTrack.Core
 			int daysPassed = duration - TrackingDataHelper.GetRemainingDays(TrackingDataHelper.CurrentSeasonUUID);
 			int totalCollected = CalcUtil.CalcTotalCollected(TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP);
 			int average = (int)MathF.Round(totalCollected / (daysPassed + 1));
+			average = 30000;
 
 			if (totalCollected >= total) return ret;
 
-			ret.Points.Add(new DataPoint(daysPassed - 1, totalCollected));
+			ret.Points.Add(new DataPoint(daysPassed - 1, performance.Points[daysPassed - 1].Y));
 
 			for (int i = daysPassed; i < duration + 1; i++)
 			{
 				int amount = (int)ret.Points.Last().Y + average;
 				if (amount > total)
 				{
-					double x = ((double)total - (double)totalCollected) / (double)average + daysPassed - 1;
+					double x = ((double)total - (double)performance.Points[daysPassed - 1].Y) / (double)average + daysPassed - 1;
 					ret.Points.Add(new DataPoint(x, total));
 					break;
 				}

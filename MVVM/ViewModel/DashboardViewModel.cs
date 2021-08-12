@@ -222,7 +222,7 @@ namespace VexTrack.MVVM.ViewModel
 			LineSeries ideal = GraphCalc.CalcIdealGraph(TrackingDataHelper.CurrentSeasonUUID, epilogue);
 			LineSeries performance = GraphCalc.CalcPerformanceGraph(TrackingDataHelper.CurrentSeasonUUID);
 			LineSeries dailyIdeal = DashboardDataCalc.CalcDailyIdeal(performance, epilogue);
-			LineSeries average = DashboardDataCalc.CalcAverageGraph(epilogue);
+			LineSeries average = DashboardDataCalc.CalcAverageGraph(performance, epilogue);
 
 			LineSeries idealPoint = DashboardDataCalc.CalcGraphPoint(ideal, OxyColor.FromArgb(GraphIdealPoint.Color.A, GraphIdealPoint.Color.R, GraphIdealPoint.Color.G, GraphIdealPoint.Color.B));
 			LineSeries performancePoint = DashboardDataCalc.CalcGraphPoint(performance, OxyColors.Maroon);

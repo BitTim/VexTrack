@@ -28,6 +28,7 @@ namespace VexTrack.MVVM.ViewModel
 		private bool _ignoreInactive;
 		private bool _ignoreInit;
 		private bool _ignorePreReleases;
+		private bool _forceEpilogue;
 
 		public string Theme
 		{
@@ -113,6 +114,19 @@ namespace VexTrack.MVVM.ViewModel
 				if (!NoUpdate) SettingsHelper.CallUpdate();
 			}
 		}
+		public bool ForceEpilogue
+		{
+			get => _forceEpilogue;
+			set
+			{
+				if (_forceEpilogue == value) return;
+
+				_forceEpilogue = value;
+				SettingsHelper.Data.ForceEpilogue = value;
+				OnPropertyChanged();
+				if (!NoUpdate) SettingsHelper.CallUpdate();
+			}
+		}
 
 		public SettingsViewModel()
 		{
@@ -139,6 +153,7 @@ namespace VexTrack.MVVM.ViewModel
 			IgnoreInactive = SettingsHelper.Data.IgnoreInactiveDays;
 			IgnoreInit = SettingsHelper.Data.IgnoreInit;
 			IgnorePreReleases = SettingsHelper.Data.IgnorePreReleases;
+			ForceEpilogue = SettingsHelper.Data.ForceEpilogue;
 		}
 
 		public void SetTheme(string theme)

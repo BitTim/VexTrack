@@ -171,7 +171,7 @@ namespace VexTrack.MVVM.ViewModel
 			if (InterruptUpdate) return;
 			if (!ViewModelsInitialized) InitViewModels();
 
-			if(TrackingDataHelper.CurrentSeasonData.ActiveBPLevel > Constants.BattlepassLevels)
+			if(TrackingDataHelper.CurrentSeasonData.ActiveBPLevel > Constants.BattlepassLevels && SettingsHelper.Data.ForceEpilogue)
 			{
 				if(!Epilogue) Epilogue = true;
 				EpilogueButtonEnabled = false;

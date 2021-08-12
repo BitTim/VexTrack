@@ -30,7 +30,7 @@ namespace VexTrack.Core
 
 		public static double CalcProgress(double total, double collected)
 		{
-			if (total == 0) return 0;
+			if (total == 0) return 100;
 
 			double ret = Math.Floor(collected / total * 100);
 			return ret;

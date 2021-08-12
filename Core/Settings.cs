@@ -21,15 +21,16 @@ namespace VexTrack.Core
 		public bool IgnoreInactiveDays;
 		public bool IgnoreInit;
 		public bool IgnorePreReleases;
+		public bool ForceEpilogue;
 		
 		public string Theme;
 		public string SystemTheme; //Not part of saved settings file
 		public string Accent;
 		
 		public Settings() {}
-		public Settings(string username, int bufferDays, bool ignoreInactiveDays, bool ignoreInit, bool ignorePreReleases, string theme, string systemTheme, string accent)
+		public Settings(string username, int bufferDays, bool ignoreInactiveDays, bool ignoreInit, bool ignorePreReleases, bool forceEpilogue, string theme, string systemTheme, string accent)
 		{
-			(Username, BufferDays, IgnoreInactiveDays, IgnoreInit, IgnorePreReleases, Theme, SystemTheme, Accent) = (username, bufferDays, ignoreInactiveDays, ignoreInit, ignorePreReleases, theme, systemTheme, accent);
+			(Username, BufferDays, IgnoreInactiveDays, IgnoreInit, IgnorePreReleases, ForceEpilogue, Theme, SystemTheme, Accent) = (username, bufferDays, ignoreInactiveDays, ignoreInit, ignorePreReleases, forceEpilogue, theme, systemTheme, accent);
 		}
 		public void SetDefault()
 		{
@@ -38,6 +39,7 @@ namespace VexTrack.Core
 			IgnoreInactiveDays = true;
 			IgnoreInit = true;
 			IgnorePreReleases = true;
+			ForceEpilogue = true;
 
 			Theme = "Auto";
 			Accent = "Blue";
@@ -101,6 +103,9 @@ namespace VexTrack.Core
 			if (jo["ignorePreReleases"] == null) showInitPopup = true;
 			else Data.IgnorePreReleases = (bool)jo["ignorePreReleases"];
 
+			if (jo["forceEpilogue"] == null) showInitPopup = true;
+			else Data.ForceEpilogue = (bool)jo["forceEpilogue"];
+
 
 
 			if (jo["theme"] == null) showInitPopup = true;
@@ -128,6 +133,7 @@ namespace VexTrack.Core
 			jo.Add("ignoreInactiveDays", Data.IgnoreInactiveDays);
 			jo.Add("ignoreInit", Data.IgnoreInit);
 			jo.Add("ignorePreReleases", Data.IgnorePreReleases);
+			jo.Add("forceEpilogue", Data.ForceEpilogue);
 
 			jo.Add("theme", Data.Theme);
 			jo.Add("accent", Data.Accent);

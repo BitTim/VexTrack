@@ -226,7 +226,7 @@ namespace VexTrack.MVVM.ViewModel
 			Graph.Series.Add(performance);
 
 			Graph.Series.Add(idealPoint);
-			Graph.Series.Add(dailyIdealPoint);
+			if (dailyIdeal.Points.Count > 0) Graph.Series.Add(dailyIdealPoint);
 			Graph.Series.Add(performancePoint);
 
 			Graph.Annotations.Add(bufferZone);
@@ -235,7 +235,9 @@ namespace VexTrack.MVVM.ViewModel
 
 			int t = performance.Points.Count - 1;
 			int deviationIdeal = (int)performance.Points[t].Y - (int)ideal.Points[t].Y;
-			int deviationDaily = (int)performance.Points[t].Y - (int)dailyIdeal.Points[1].Y;
+
+			int deviationDaily = 0;
+			if(dailyIdeal.Points.Count > 0) deviationDaily = (int)performance.Points[t].Y - (int)dailyIdeal.Points[1].Y;
 
 			return (deviationIdeal, deviationDaily);
 		}

@@ -28,7 +28,10 @@ namespace VexTrack.Core
 				dailyColected += h.Amount;
 			}
 
-			ret.Total = (int)MathF.Round(totalData.Remaining / idealRemainingDays);
+			int total = (int)MathF.Round(totalData.Remaining / idealRemainingDays);
+			if(total <= 0) total = 0;
+
+			ret.Total = total;
 			ret.Collected = dailyColected;
 			ret.Remaining = ret.Total - ret.Collected;
 			ret.Progress = CalcUtil.CalcProgress(ret.Total, ret.Collected);
@@ -58,6 +61,8 @@ namespace VexTrack.Core
 			int previousAmount = (int)performance.Points.First().Y;
 			if (performance.Points.Count > 1) previousAmount = (int)performance.Points[performance.Points.Count - 1 - startOffset].Y;
 			int dailyTotal = (int)MathF.Round((total - previousAmount) / effectiveRemaining);
+			if (dailyTotal <= 0) return ret;
+
 			amounts.Add(previousAmount);
 
 			for(int i = 1; i < remainingDays + 2; i++)
@@ -89,14 +94,14 @@ namespace VexTrack.Core
 
 			if (totalCollected >= total) return ret;
 
-			ret.Points.Add(new DataPoint(daysPassed, totalCollected));
+			ret.Points.Add(new DataPoint(daysPassed - 1, totalCollected));
 
-			for (int i = daysPassed + 1; i < duration + 1; i++)
+			for (int i = daysPassed; i < duration + 1; i++)
 			{
 				int amount = (int)ret.Points.Last().Y + average;
 				if (amount > total)
 				{
-					double x = ((double)total - (double)totalCollected) / (double)average + daysPassed;
+					double x = ((double)total - (double)totalCollected) / (double)average + daysPassed - 1;
 					ret.Points.Add(new DataPoint(x, total));
 					break;
 				}
@@ -143,7 +148,7 @@ namespace VexTrack.Core
 			for (int i = 0; i < remainingDays + 1; i++)
 			{
 				val += average;
-				daysFinished = i + 1;
+				daysFinished = i;
 
 				if (val >= total) break;
 			}

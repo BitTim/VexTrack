@@ -83,7 +83,6 @@
 								VerticalAlignment="Bottom"
 								Style="{DynamicResource ButtonTheme}"
 								Command="{Binding OnYesClicked}"
-								Visibility="{Binding CanDelete, Converter={StaticResource BoolToVisibleConv}}"
 								Margin="0, 0, 4, 0"/>
 				</Grid>
 			</Grid>

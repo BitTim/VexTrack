@@ -1,0 +1,155 @@
+﻿<UserControl x:Class="VexTrack.MVVM.View.Popups.AboutPopup"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VexTrack.MVVM.View.Popups"
+             mc:Ignorable="d" 
+             d:DesignHeight="812" d:DesignWidth="872">
+
+	<Grid Height="Auto"
+		  Width="320"
+		  VerticalAlignment="Center">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
+
+		<Border Background="{DynamicResource Background}"
+				CornerRadius="8">
+			<Grid Margin="16">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="*"/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
+
+				<Grid Grid.Row="0"
+					  Grid.Column="0"
+					  Margin="0, 4, 0, 0">
+
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+					</Grid.RowDefinitions>
+
+					<Image Source="/Images/VexTrack_128.png"
+						   Width="128"
+						   Height="128"
+						   Grid.Column="0"
+						   Grid.Row="0"
+						   Margin="0, 0, 0, 16"/>
+
+					<Grid Grid.Row="1">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+						</Grid.RowDefinitions>
+						
+						<TextBlock Grid.Row="0"
+								   FontSize="18"
+								   HorizontalAlignment="Center"
+								   Foreground="{DynamicResource Foreground}"
+								   Margin="0, 0, 0, 8">
+							<Bold>VexTrack</Bold> v1.7
+						</TextBlock>
+
+						<TextBlock Text="Source available, Licensed under GPL3"
+								   Grid.Row="1"
+								   FontSize="14"
+								   TextWrapping="Wrap"
+								   HorizontalAlignment="Center"
+								   Foreground="{DynamicResource Foreground}"/>
+
+						<TextBlock Grid.Row="2"
+								   FontSize="14"
+								   TextWrapping="Wrap"
+								   HorizontalAlignment="Center"
+								   Foreground="{DynamicResource Foreground}"
+								   Margin="0, 0, 0, 8">
+							GitHub:
+							<Hyperlink NavigateUri="https://github.com/BitTim/VexTrack" RequestNavigate="Hyperlink_RequestNavigate">
+								https://github.com/BitTim/VexTrack					
+							</Hyperlink>
+						</TextBlock>
+
+						<TextBlock Text="Created by BitTim, Copyright ©2021"
+								   Grid.Row="3"
+								   FontSize="14"
+								   TextWrapping="Wrap"
+								   HorizontalAlignment="Center"
+								   Foreground="{DynamicResource Foreground}"
+								   Margin="0, 0, 0, 2"/>
+					</Grid>
+				</Grid>
+
+				<Grid Grid.Row="1"
+					  Grid.ColumnSpan="2"
+					  Margin="0, 16, 0, 0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+
+					<Grid.RowDefinitions>
+						<RowDefinition Height="*"/>
+						<RowDefinition Height="*"/>
+					</Grid.RowDefinitions>
+
+					<Button Content="Changelog"
+							Grid.Row="1"
+							Grid.Column="1"
+							Background="{DynamicResource Background}"
+							Foreground="{DynamicResource Foreground}"
+							Height="30"
+							HorizontalAlignment="Stretch"
+							VerticalAlignment="Bottom"
+							Style="{DynamicResource ButtonTheme}"
+							Command="{Binding OnChangelogClicked}"
+							Margin="4, 8, 0, 0"/>
+
+					<Button Content="Check Update"
+							Grid.Row="0"
+							Grid.Column="0"
+							Background="{DynamicResource Background}"
+							Foreground="{DynamicResource Foreground}"
+							Height="30"
+							HorizontalAlignment="Stretch"
+							VerticalAlignment="Bottom"
+							Style="{DynamicResource ButtonTheme}"
+							Command="{Binding OnCheckUpdateClicked}"
+							Margin="0, 0, 4, 0"/>
+
+					<Button Content="Force Update"
+							Grid.Row="0"
+							Grid.Column="1"
+							Background="{DynamicResource Background}"
+							Foreground="{DynamicResource Foreground}"
+							Height="30"
+							HorizontalAlignment="Stretch"
+							VerticalAlignment="Bottom"
+							Style="{DynamicResource ButtonTheme}"
+							Command="{Binding OnForceUpdateClicked}"
+							Margin="4, 0, 0, 0"/>
+
+					<Button Content="Close"
+							Grid.Row="1"
+							Grid.Column="0"
+							Background="{DynamicResource Background}"
+							Foreground="{DynamicResource Foreground}"
+							Height="30"
+							HorizontalAlignment="Stretch"
+							VerticalAlignment="Bottom"
+							Style="{DynamicResource ButtonTheme}"
+							Command="{Binding OnCloseClicked}"
+							Margin="0, 8, 4, 0"/>
+				</Grid>
+			</Grid>
+		</Border>
+	</Grid>
+</UserControl>

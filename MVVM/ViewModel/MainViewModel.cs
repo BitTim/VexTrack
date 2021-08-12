@@ -33,6 +33,7 @@ namespace VexTrack.MVVM.ViewModel
 		private DataInitPopupViewModel DataInitPopup { get; set; }
 		private ResetDataConfirmationPopupViewModel ResetDataConfirmationPopup { get; set; }
 		private ProgressActivityPopupViewModel PAPopupVM { get; set; }
+		private AboutPopupViewModel AboutPopup { get; set; }
 
 		private object _currentView;
 		private bool _epilogue;
@@ -129,6 +130,9 @@ namespace VexTrack.MVVM.ViewModel
 
 			PAPopupVM = new ProgressActivityPopupViewModel();
 			ViewModelManager.ViewModels.Add("PAPopup", PAPopupVM);
+
+			AboutPopup = new AboutPopupViewModel();
+			ViewModelManager.ViewModels.Add("AboutPopup", AboutPopup);
 
 
 

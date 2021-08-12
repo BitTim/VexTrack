@@ -4,7 +4,7 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
-    <ApplicationIcon>VexTrack.ico</ApplicationIcon>
+    <ApplicationIcon>P:\Visual Studio\VexTrack\Images\VexTrack.ico</ApplicationIcon>
     <Version>1.7</Version>
     <Authors>BitTim</Authors>
     <Description />
@@ -17,15 +17,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\VexTrack_128.png" />
+    <None Remove="Images\VexTrack_64.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Fonts\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Images\VexTrack.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
     <None Include="LICENSE">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
@@ -35,6 +35,15 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="OxyPlot.Wpf" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\VexTrack_128.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\VexTrack_64.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>

@@ -16,6 +16,7 @@ namespace VexTrack.MVVM.ViewModel
 		private bool NoUpdate = true;
 
 		private ResetDataConfirmationPopupViewModel ResetDataConfirmationPopup { get; set; }
+		private AboutPopupViewModel AboutPopup { get; set; }
 		private MainViewModel MainVM { get; set; }
 		public RelayCommand ThemeButtonCommand { get; set; }
 		public RelayCommand AccentButtonCommand { get; set; }
@@ -135,6 +136,7 @@ namespace VexTrack.MVVM.ViewModel
 		{
 			MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
 			ResetDataConfirmationPopup = (ResetDataConfirmationPopupViewModel)ViewModelManager.ViewModels["ResetDataConfirmationPopup"];
+			AboutPopup = (AboutPopupViewModel)ViewModelManager.ViewModels["AboutPopup"];
 
 			ThemeButtonCommand = new RelayCommand(theme => SetTheme((string)theme));
 			AccentButtonCommand = new RelayCommand(accent => SetAccent((string)accent));
@@ -146,6 +148,9 @@ namespace VexTrack.MVVM.ViewModel
 			});
 			OnResetClicked = new RelayCommand(o => {
 				MainVM.QueuePopup(ResetDataConfirmationPopup);
+			});
+			OnAboutClicked = new RelayCommand(o => {
+				MainVM.QueuePopup(AboutPopup);
 			});
 
 			Update();

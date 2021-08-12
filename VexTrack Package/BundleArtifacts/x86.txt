@@ -1,0 +1,2 @@
+MainPackage=P:\Visual Studio\VexTrack\VexTrack Package\bin\x86\Release\VexTrack Package_1.7.0.0_x86.appx
+SymbolPackage=P:\Visual Studio\VexTrack\VexTrack Package\obj\x86\Release\Symbols\VexTrack Package_1.7.0.0_x86.appxsym

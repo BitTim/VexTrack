@@ -20,6 +20,8 @@ namespace VexTrack.MVVM.ViewModel
 		private EditableHistoryEntryPopupViewModel EditableHEPopup { get; set; }
 		private MainViewModel MainVM { get; set; }
 
+		private string _title;
+		private string _username;
 		private int _collected;
 		private int _remaining;
 		private int _total;
@@ -31,6 +33,24 @@ namespace VexTrack.MVVM.ViewModel
 		private int _daysRemaining;
 		private PlotModel _graph;
 
+		public string Title
+		{
+			get => _title;
+			set
+			{
+				_title = value;
+				OnPropertyChanged();
+			}
+		}
+		public string Username
+		{
+			get => _username;
+			set
+			{
+				_username = value;
+				OnPropertyChanged();
+			}
+		}
 		public int Collected
 		{
 			get => _collected;
@@ -125,18 +145,9 @@ namespace VexTrack.MVVM.ViewModel
 
 		public DashboardViewModel()
 		{
-			SolidColorBrush Foreground = (SolidColorBrush)Application.Current.FindResource("Foreground");
-			SolidColorBrush Background = (SolidColorBrush)Application.Current.FindResource("Background");
-			SolidColorBrush Shade = (SolidColorBrush)Application.Current.FindResource("Shade");
-
 			Graph = new PlotModel();
 			Graph.PlotMargins = new OxyThickness(0, 0, 0, 16);
 			Graph.PlotAreaBorderColor = OxyColors.Transparent;
-
-			Graph.LegendPosition = LegendPosition.LeftTop;
-			Graph.LegendBackground = OxyColor.FromArgb(Background.Color.A, Background.Color.R, Background.Color.G, Background.Color.B);
-			Graph.LegendTextColor = OxyColor.FromArgb(Foreground.Color.A, Foreground.Color.R, Foreground.Color.G, Foreground.Color.B);
-			Graph.LegendBorder = OxyColor.FromArgb(Shade.Color.A, Shade.Color.R, Shade.Color.G, Shade.Color.B);
 
 			ApplyAxes();
 
@@ -150,7 +161,7 @@ namespace VexTrack.MVVM.ViewModel
 
 			SolidColorBrush Foreground = (SolidColorBrush)Application.Current.FindResource("Foreground");
 			SolidColorBrush Shade = (SolidColorBrush)Application.Current.FindResource("Shade");
-
+			
 			xAxis.Position = AxisPosition.Bottom;
 			xAxis.AbsoluteMinimum = 0;
 			xAxis.TickStyle = TickStyle.None;
@@ -177,6 +188,10 @@ namespace VexTrack.MVVM.ViewModel
 			MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
 			EditableHEPopup = (EditableHistoryEntryPopupViewModel)ViewModelManager.ViewModels["EditableHEPopup"];
 
+			Username = SettingsHelper.Data.Username;
+			if (Username != "") Title = "Welcome back,";
+			else Title = "Welcome back";
+
 			DailyData data = DashboardDataCalc.CalcDailyData(epilogue);
 
 			Collected = data.Collected;
@@ -200,6 +215,10 @@ namespace VexTrack.MVVM.ViewModel
 		{
 			SolidColorBrush GraphIdealPoint = (SolidColorBrush)Application.Current.FindResource("GraphIdealPoint");
 
+			SolidColorBrush Foreground = (SolidColorBrush)Application.Current.FindResource("Foreground");
+			SolidColorBrush Background = (SolidColorBrush)Application.Current.FindResource("Background");
+			SolidColorBrush Shade = (SolidColorBrush)Application.Current.FindResource("Shade");
+
 			LineSeries ideal = GraphCalc.CalcIdealGraph(TrackingDataHelper.CurrentSeasonUUID, epilogue);
 			LineSeries performance = GraphCalc.CalcPerformanceGraph(TrackingDataHelper.CurrentSeasonUUID);
 			LineSeries dailyIdeal = DashboardDataCalc.CalcDailyIdeal(performance, epilogue);
@@ -210,6 +229,11 @@ namespace VexTrack.MVVM.ViewModel
 			LineSeries dailyIdealPoint = DashboardDataCalc.CalcGraphPoint(dailyIdeal, OxyColors.Navy);
 
 			RectangleAnnotation bufferZone = GraphCalc.CalcBufferZone(TrackingDataHelper.CurrentSeasonUUID, epilogue);
+
+			Graph.LegendPosition = LegendPosition.LeftTop;
+			Graph.LegendBackground = OxyColor.FromArgb(Background.Color.A, Background.Color.R, Background.Color.G, Background.Color.B);
+			Graph.LegendTextColor = OxyColor.FromArgb(Foreground.Color.A, Foreground.Color.R, Foreground.Color.G, Foreground.Color.B);
+			Graph.LegendBorder = OxyColor.FromArgb(Shade.Color.A, Shade.Color.R, Shade.Color.G, Shade.Color.B);
 
 			Graph.Series.Clear();
 			Graph.Axes.Clear();

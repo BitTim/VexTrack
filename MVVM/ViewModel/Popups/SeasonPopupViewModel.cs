@@ -62,18 +62,9 @@ namespace VexTrack.MVVM.ViewModel.Popups
 				TrackingDataHelper.RemoveSeason(UUID);
 			});
 
-			SolidColorBrush Foreground = (SolidColorBrush)Application.Current.FindResource("Foreground");
-			SolidColorBrush Background = (SolidColorBrush)Application.Current.FindResource("Background");
-			SolidColorBrush Shade = (SolidColorBrush)Application.Current.FindResource("Shade");
-
 			Graph = new PlotModel();
 			Graph.PlotMargins = new OxyThickness(0, 0, 0, 16);
 			Graph.PlotAreaBorderColor = OxyColors.Transparent;
-
-			Graph.LegendPosition = LegendPosition.LeftTop;
-			Graph.LegendBackground = OxyColor.FromArgb(Background.Color.A, Background.Color.R, Background.Color.G, Background.Color.B);
-			Graph.LegendTextColor = OxyColor.FromArgb(Foreground.Color.A, Foreground.Color.R, Foreground.Color.G, Foreground.Color.B);
-			Graph.LegendBorder = OxyColor.FromArgb(Shade.Color.A, Shade.Color.R, Shade.Color.G, Shade.Color.B);
 		}
 
 		private void ApplyAxes()
@@ -110,6 +101,10 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		{
 			SolidColorBrush GraphIdealPoint = (SolidColorBrush)Application.Current.FindResource("GraphIdealPoint");
 
+			SolidColorBrush Foreground = (SolidColorBrush)Application.Current.FindResource("Foreground");
+			SolidColorBrush Background = (SolidColorBrush)Application.Current.FindResource("Background");
+			SolidColorBrush Shade = (SolidColorBrush)Application.Current.FindResource("Shade");
+
 			LineSeries ideal = GraphCalc.CalcIdealGraph(UUID, epilogue);
 			LineSeries performance = GraphCalc.CalcPerformanceGraph(UUID);
 
@@ -117,6 +112,11 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			LineSeries performancePoint = DashboardDataCalc.CalcGraphPoint(performance, OxyColors.Maroon);
 
 			RectangleAnnotation bufferZone = GraphCalc.CalcBufferZone(UUID, epilogue);
+
+			Graph.LegendPosition = LegendPosition.LeftTop;
+			Graph.LegendBackground = OxyColor.FromArgb(Background.Color.A, Background.Color.R, Background.Color.G, Background.Color.B);
+			Graph.LegendTextColor = OxyColor.FromArgb(Foreground.Color.A, Foreground.Color.R, Foreground.Color.G, Foreground.Color.B);
+			Graph.LegendBorder = OxyColor.FromArgb(Shade.Color.A, Shade.Color.R, Shade.Color.G, Shade.Color.B);
 
 			Graph.Series.Clear();
 			Graph.Annotations.Clear();

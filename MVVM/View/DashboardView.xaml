@@ -23,12 +23,14 @@
 			<RowDefinition Height="182"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
-		
-		<TextBlock Text="Welcome back, User"
-				   Margin="16, 16, 80, 16"
+
+		<TextBlock Margin="16, 16, 80, 16"
 				   Foreground="{DynamicResource Foreground}"
 				   FontSize="36"
-				   FontWeight="Bold"/>
+				   FontWeight="Bold">
+			<TextBlock Text="{Binding Title}"/>
+			<TextBlock Text="{Binding Username}"/>
+		</TextBlock>
 
 		<Border Grid.Row="1"
 				CornerRadius="8"

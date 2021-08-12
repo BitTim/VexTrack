@@ -77,50 +77,45 @@ namespace VexTrack.Core
 			if (!File.Exists(Constants.SettingsPath) || File.ReadAllText(Constants.SettingsPath) == "")
 			{
 				InitSettings();
-				CreateSettingsInitPopup();
 				return;
 			}
 
 			string rawJSON = File.ReadAllText(Constants.SettingsPath);
 			JObject jo = JObject.Parse(rawJSON);
 
-			bool showInitPopup = false;
+			bool resave = false;
 
 			Data.SetDefault();
 
-			if (jo["username"] == null) showInitPopup = true;
+			if (jo["username"] == null) resave = true;
 			else Data.Username = (string)jo["username"];
 
-			if (jo["bufferDays"] == null) showInitPopup = true;
+			if (jo["bufferDays"] == null) resave = true;
 			else Data.BufferDays = (int)jo["bufferDays"];
 
-			if (jo["ignoreInactiveDays"] == null) showInitPopup = true;
+			if (jo["ignoreInactiveDays"] == null) resave = true;
 			else Data.IgnoreInactiveDays = (bool)jo["ignoreInactiveDays"];
 
-			if (jo["ignoreInit"] == null) showInitPopup = true;
+			if (jo["ignoreInit"] == null) resave = true;
 			else Data.IgnoreInit = (bool)jo["ignoreInit"];
 
-			if (jo["ignorePreReleases"] == null) showInitPopup = true;
+			if (jo["ignorePreReleases"] == null) resave = true;
 			else Data.IgnorePreReleases = (bool)jo["ignorePreReleases"];
 
-			if (jo["forceEpilogue"] == null) showInitPopup = true;
+			if (jo["forceEpilogue"] == null) resave = true;
 			else Data.ForceEpilogue = (bool)jo["forceEpilogue"];
 
 
 
-			if (jo["theme"] == null) showInitPopup = true;
+			if (jo["theme"] == null) resave = true;
 			else Data.Theme = (string)jo["theme"];
 
-			if (jo["accent"] == null) showInitPopup = true;
+			if (jo["accent"] == null) resave = true;
 			else Data.Accent = (string)jo["accent"];
 
 			
 
-			if (showInitPopup)
-			{
-				SaveSettings();
-				CreateSettingsInitPopup();
-			}
+			if (resave) SaveSettings();
 			ApplyVisualSettings();
 		}
 
@@ -147,11 +142,6 @@ namespace VexTrack.Core
 			}
 
 			File.WriteAllText(Constants.SettingsPath, jo.ToString());
-		}
-
-		public static void CreateSettingsInitPopup()
-		{
-			//TODO: Create popup
 		}
 
 		public static void ApplyVisualSettings()

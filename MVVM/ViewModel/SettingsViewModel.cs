@@ -174,16 +174,14 @@ namespace VexTrack.MVVM.ViewModel
 		{
 			SettingsHelper.Data.Theme = theme;
 			SettingsHelper.ApplyVisualSettings();
-			SettingsHelper.SaveSettings();
-			Update();
+			SettingsHelper.CallUpdate();
 		}
 
 		public void SetAccent(string accent)
 		{
 			SettingsHelper.Data.Accent = accent;
 			SettingsHelper.ApplyVisualSettings();
-			SettingsHelper.SaveSettings();
-			Update();
+			SettingsHelper.CallUpdate();
 		}
 	}
 }

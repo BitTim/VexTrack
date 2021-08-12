@@ -35,6 +35,7 @@ namespace VexTrack.MVVM.ViewModel
 
 		private object _currentView;
 		private bool _epilogue;
+		private bool _epilogueButtonEnabled;
 
 		private BasePopupViewModel _currentPopup = null;
 		private List<BasePopupViewModel> _popupQueue = new();
@@ -79,6 +80,16 @@ namespace VexTrack.MVVM.ViewModel
 				_epilogue = value;
 				OnPropertyChanged();
 				Update(true);
+			}
+		}
+
+		public bool EpilogueButtonEnabled
+		{
+			get => _epilogueButtonEnabled;
+			set
+			{
+				_epilogueButtonEnabled = value;
+				OnPropertyChanged();
 			}
 		}
 
@@ -127,7 +138,7 @@ namespace VexTrack.MVVM.ViewModel
 
 			TrackingDataHelper.LoadData();
 			SettingsHelper.LoadSettings();
-			InitViewModels();
+			Update();
 		}
 
 		private void InitViewModels()
@@ -159,6 +170,13 @@ namespace VexTrack.MVVM.ViewModel
 		{
 			if (InterruptUpdate) return;
 			if (!ViewModelsInitialized) InitViewModels();
+
+			if(TrackingDataHelper.CurrentSeasonData.ActiveBPLevel > Constants.BattlepassLevels)
+			{
+				if(!Epilogue) Epilogue = true;
+				EpilogueButtonEnabled = false;
+			}
+			else EpilogueButtonEnabled = true;
 
 			DashboardVM.Update(Epilogue);
 			GoalVM.Update(Epilogue);

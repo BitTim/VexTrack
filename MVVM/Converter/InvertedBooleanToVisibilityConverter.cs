@@ -14,7 +14,10 @@ namespace VexTrack.MVVM.Converter
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			bool val = (bool)value;
-			bool param = bool.Parse((string)parameter);
+
+			bool param;
+			if (parameter == null) param = false; 
+			else param = bool.Parse((string)parameter);
 
 			if (val)
 			{

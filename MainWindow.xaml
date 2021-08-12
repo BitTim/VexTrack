@@ -227,6 +227,7 @@
 								  Height="30"
 								  Width="50"
 								  FontSize="14"
+								  IsEnabled="{Binding EpilogueButtonEnabled}"
 								  IsChecked="{Binding Epilogue, UpdateSourceTrigger=PropertyChanged}"
 								  Style="{DynamicResource CheckBoxTheme}"/>
 					</Grid>

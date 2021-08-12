@@ -54,7 +54,7 @@ namespace VexTrack.Core
 			GoalEntryData ret = new(uuid);
 
 			int total;
-			if (activeLevel - 1 <= Constants.BattlepassLevels) total = Constants.Level2Offset + Constants.XPPerLevel * activeLevel;
+			if (activeLevel - 1 < Constants.BattlepassLevels) total = Constants.Level2Offset + Constants.XPPerLevel * activeLevel;
 			else total = Constants.XPPerEpilogueLevel;
 
 			ret.Title = "Level " + (activeLevel > Constants.BattlepassLevels + Constants.EpilogueLevels ? (Constants.BattlepassLevels + Constants.EpilogueLevels).ToString() : activeLevel.ToString());

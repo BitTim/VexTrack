@@ -397,6 +397,13 @@ namespace VexTrack.Core
 			MainVM.Update();
 		}
 
+		public static void ResetData()
+		{
+			InitData();
+			SaveData();
+			LoadData();
+			CallUpdate();
+		}
 
 
 

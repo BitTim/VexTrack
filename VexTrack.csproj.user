@@ -34,6 +34,9 @@
     <Compile Update="MVVM\View\Popups\HistoryEntryPopup.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="MVVM\View\Popups\ResetDataConfirmationPopup.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="MVVM\View\Popups\SeasonPopup.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -73,6 +76,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MVVM\View\Popups\HistoryEntryPopup.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="MVVM\View\Popups\ResetDataConfirmationPopup.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MVVM\View\Popups\SeasonPopup.xaml">

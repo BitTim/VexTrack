@@ -31,6 +31,7 @@ namespace VexTrack.MVVM.ViewModel
 		private SeasonPopupViewModel SeasonPopup { get; set; }
 		private EditableSeasonPopupViewModel EditableSeasonPopup { get; set; }
 		private DataInitPopupViewModel DataInitPopup { get; set; }
+		private ResetDataConfirmationPopupViewModel ResetDataConfirmationPopup { get; set; }
 		private ProgressActivityPopupViewModel PAPopupVM { get; set; }
 
 		private object _currentView;
@@ -122,6 +123,9 @@ namespace VexTrack.MVVM.ViewModel
 
 			SeasonPopup = new();
 			ViewModelManager.ViewModels.Add("SeasonPopup", SeasonPopup);
+
+			ResetDataConfirmationPopup = new ResetDataConfirmationPopupViewModel();
+			ViewModelManager.ViewModels.Add("ResetDataConfirmationPopup", ResetDataConfirmationPopup);
 
 			PAPopupVM = new ProgressActivityPopupViewModel();
 			ViewModelManager.ViewModels.Add("PAPopup", PAPopupVM);

@@ -91,6 +91,10 @@
 			<DataTemplate DataType="{x:Type popupViewModel:DataInitPopupViewModel}">
 				<popupView:DataInitPopup/>
 			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type popupViewModel:ResetDataConfirmationPopupViewModel}">
+				<popupView:ResetDataConfirmationPopup/>
+			</DataTemplate>
 		</ResourceDictionary>
 	</Application.Resources>
 </Application>

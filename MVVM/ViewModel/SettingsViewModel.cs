@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Markup;
 using VexTrack.Core;
+using VexTrack.MVVM.ViewModel.Popups;
 
 namespace VexTrack.MVVM.ViewModel
 {
@@ -14,6 +15,8 @@ namespace VexTrack.MVVM.ViewModel
 	{
 		private bool NoUpdate = true;
 
+		private ResetDataConfirmationPopupViewModel ResetDataConfirmationPopup { get; set; }
+		private MainViewModel MainVM { get; set; }
 		public RelayCommand ThemeButtonCommand { get; set; }
 		public RelayCommand AccentButtonCommand { get; set; }
 		public RelayCommand OnAboutClicked { get; set; }
@@ -130,6 +133,9 @@ namespace VexTrack.MVVM.ViewModel
 
 		public SettingsViewModel()
 		{
+			MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
+			ResetDataConfirmationPopup = (ResetDataConfirmationPopupViewModel)ViewModelManager.ViewModels["ResetDataConfirmationPopup"];
+
 			ThemeButtonCommand = new RelayCommand(theme => SetTheme((string)theme));
 			AccentButtonCommand = new RelayCommand(accent => SetAccent((string)accent));
 
@@ -137,6 +143,9 @@ namespace VexTrack.MVVM.ViewModel
 				SettingsHelper.Data.SetDefault();
 				SettingsHelper.ApplyVisualSettings();
 				SettingsHelper.CallUpdate();
+			});
+			OnResetClicked = new RelayCommand(o => {
+				MainVM.QueuePopup(ResetDataConfirmationPopup);
 			});
 
 			Update();

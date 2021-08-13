@@ -56,7 +56,8 @@
 								   HorizontalAlignment="Center"
 								   Foreground="{DynamicResource Foreground}"
 								   Margin="0, 0, 0, 8">
-							<Bold>VexTrack</Bold> v1.7
+							<Bold>VexTrack</Bold>
+							<TextBlock Text="{Binding Version}"/>
 						</TextBlock>
 
 						<TextBlock Text="Source available, Licensed under GPL3"

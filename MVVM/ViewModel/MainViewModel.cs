@@ -112,6 +112,8 @@ namespace VexTrack.MVVM.ViewModel
 				Directory.Delete(Constants.LegacyDataFolder);
 			}
 
+			UpdateHelper.CheckUpdateAsync();
+
 			SettingsHelper.Init();
 			Watcher = new();
 

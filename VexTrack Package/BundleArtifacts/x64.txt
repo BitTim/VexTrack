@@ -1,6 +1,0 @@
-MainPackage=P:\Visual Studio\VexTrack\VexTrack Package\bin\x64\Release\VexTrack Package_1.7.0.0_x64.appx
-SymbolPackage=P:\Visual Studio\VexTrack\VexTrack Package\obj\x64\Release\Symbols\VexTrack Package_1.7.0.0_x64.appxsym
-ResourcePack=P:\Visual Studio\VexTrack\VexTrack Package\bin\x64\Release\VexTrack Package_1.7.0.0_scale-100.appx
-ResourcePack=P:\Visual Studio\VexTrack\VexTrack Package\bin\x64\Release\VexTrack Package_1.7.0.0_scale-125.appx
-ResourcePack=P:\Visual Studio\VexTrack\VexTrack Package\bin\x64\Release\VexTrack Package_1.7.0.0_scale-150.appx
-ResourcePack=P:\Visual Studio\VexTrack\VexTrack Package\bin\x64\Release\VexTrack Package_1.7.0.0_scale-400.appx

@@ -14,6 +14,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public RelayCommand OnForceUpdateClicked { get; set; }
 		public RelayCommand OnCloseClicked { get; set; }
 
+		public string Version => Constants.Version;
+
 		public AboutPopupViewModel()
 		{
 			CanCancel = true;

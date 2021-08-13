@@ -8,6 +8,9 @@ namespace VexTrack.Core
 {
 	static class Constants
 	{
+		public static readonly string AppName = "VexTrack";
+		public static readonly string Version = "v1.7";
+
 		public static readonly string DataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"/VexTrack";
 		public static readonly string LegacyDataFolder = @"dat";
 
@@ -39,5 +42,8 @@ namespace VexTrack.Core
 			["Purple"] = "Theme/AccentColors/Purple.xaml",
 			["Mono"] = "Theme/AccentColors/Mono.xaml"
 		};
+
+		public static readonly string ReleasesURL = "https://api.github.com/repos/BitTim/VexTrack/releases";
+		public static readonly string BaseDownloadURL = "https://github.com/BitTim/VexTrack/releases/download";
 	}
 }

@@ -332,7 +332,7 @@ namespace VexTrack.Core
 
 			while (cxp >= 0)
 			{
-				if (iter < Constants.BattlepassLevels)
+				if (iter <= Constants.BattlepassLevels)
 					cxp -= Constants.Level2Offset + (iter * Constants.XPPerLevel);
 				else if (iter < Constants.BattlepassLevels + Constants.EpilogueLevels + 2)
 					cxp -= Constants.XPPerEpilogueLevel;

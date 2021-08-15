@@ -35,6 +35,7 @@ namespace VexTrack.MVVM.ViewModel
 		private ResetDataConfirmationPopupViewModel ResetDataConfirmationPopup { get; set; }
 		private ProgressActivityPopupViewModel PAPopupVM { get; set; }
 		private AboutPopupViewModel AboutPopup { get; set; }
+		private UpdateAvailablePopupViewModel UpdateAvailablePopup { get; set; }
 
 		private object _currentView;
 		private bool _epilogue;
@@ -112,8 +113,6 @@ namespace VexTrack.MVVM.ViewModel
 				Directory.Delete(Constants.LegacyDataFolder);
 			}
 
-			UpdateHelper.CheckUpdateAsync();
-
 			SettingsHelper.Init();
 			Watcher = new();
 
@@ -151,6 +150,9 @@ namespace VexTrack.MVVM.ViewModel
 			AboutPopup = new AboutPopupViewModel();
 			ViewModelManager.ViewModels.Add("AboutPopup", AboutPopup);
 
+			UpdateAvailablePopup = new UpdateAvailablePopupViewModel();
+			ViewModelManager.ViewModels.Add("UpdateAvailablePopup", UpdateAvailablePopup);
+
 
 
 			DashboardViewCommand = new RelayCommand(o => SetView(DashboardVM)); ;
@@ -163,6 +165,9 @@ namespace VexTrack.MVVM.ViewModel
 
 			TrackingDataHelper.LoadData();
 			SettingsHelper.LoadSettings();
+
+			UpdateHelper.CheckUpdateAsync();
+
 			Update();
 		}
 

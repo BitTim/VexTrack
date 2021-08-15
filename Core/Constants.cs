@@ -13,6 +13,7 @@ namespace VexTrack.Core
 
 		public static readonly string DataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"/VexTrack";
 		public static readonly string LegacyDataFolder = @"dat";
+		public static readonly string UpdateFolder = DataFolder + @"/Update";
 
 		public static readonly string SettingsPath = DataFolder + @"/settings.json";
 		public static readonly string DataPath = DataFolder + @"/data.json";

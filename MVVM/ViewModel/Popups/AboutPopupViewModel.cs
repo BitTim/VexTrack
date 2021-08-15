@@ -9,7 +9,6 @@ namespace VexTrack.MVVM.ViewModel.Popups
 {
 	class AboutPopupViewModel : BasePopupViewModel
 	{
-		public RelayCommand OnChangelogClicked { get; set; }
 		public RelayCommand OnCheckUpdateClicked { get; set; }
 		public RelayCommand OnForceUpdateClicked { get; set; }
 		public RelayCommand OnCloseClicked { get; set; }
@@ -21,6 +20,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			CanCancel = true;
 
 			OnCloseClicked = new RelayCommand(o => Close());
+			OnCheckUpdateClicked = new RelayCommand(o => UpdateHelper.CheckUpdateAsync());
+			OnForceUpdateClicked = new RelayCommand(o => UpdateHelper.CheckUpdateAsync(true));
 		}
 	}
 }

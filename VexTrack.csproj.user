@@ -45,6 +45,9 @@
     <Compile Update="MVVM\View\Popups\SeasonPopup.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="MVVM\View\Popups\UpdateAvailablePopup.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="MVVM\View\SeasonView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -90,6 +93,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MVVM\View\Popups\SeasonPopup.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="MVVM\View\Popups\UpdateAvailablePopup.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MVVM\View\SeasonView.xaml">

@@ -99,6 +99,10 @@
 			<DataTemplate DataType="{x:Type popupViewModel:AboutPopupViewModel}">
 				<popupView:AboutPopup/>
 			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type popupViewModel:UpdateAvailablePopupViewModel}">
+				<popupView:UpdateAvailablePopup/>
+			</DataTemplate>
 		</ResourceDictionary>
 	</Application.Resources>
 </Application>

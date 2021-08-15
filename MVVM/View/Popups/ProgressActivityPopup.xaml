@@ -47,10 +47,10 @@
 						   Margin="0, 0, 0, 4"/>
 
 				<ScrollViewer Grid.Row="2"
-							  Height="64"
+							  Height="96"
 							  Style="{DynamicResource ScrollViewerTheme}"
 							  Visibility="{Binding CompletedVisible, Converter={StaticResource BoolToVisibleConv}}"
-							  Margin="16">
+							  Margin="0, 0, 0, 8">
 					<ItemsControl x:Name="CompletedContainer"
 								  ItemsSource="{Binding Completed}"
 								  Margin="4, 4, 8, 4">
@@ -72,10 +72,10 @@
 						   Margin="0, 0, 0, 4"/>
 
 				<ScrollViewer Grid.Row="4"
-							  Height="64"
+							  Height="96"
 							  Style="{DynamicResource ScrollViewerTheme}"
 							  Visibility="{Binding LostVisible, Converter={StaticResource BoolToVisibleConv}}"
-							  Margin="16">
+							  Margin="0, 0, 0, 8">
 					<ItemsControl x:Name="LostContainer"
 								  ItemsSource="{Binding Lost}"
 								  Margin="4, 4, 8, 4">

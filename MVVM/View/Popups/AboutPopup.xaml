@@ -95,48 +95,8 @@
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*"/>
 						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
 					</Grid.ColumnDefinitions>
-
-					<Grid.RowDefinitions>
-						<RowDefinition Height="*"/>
-						<RowDefinition Height="*"/>
-					</Grid.RowDefinitions>
-
-					<Button Content="Changelog"
-							Grid.Row="1"
-							Grid.Column="1"
-							Background="{DynamicResource Background}"
-							Foreground="{DynamicResource Foreground}"
-							Height="30"
-							HorizontalAlignment="Stretch"
-							VerticalAlignment="Bottom"
-							Style="{DynamicResource ButtonTheme}"
-							Command="{Binding OnChangelogClicked}"
-							Margin="4, 8, 0, 0"/>
-
-					<Button Content="Check Update"
-							Grid.Row="0"
-							Grid.Column="0"
-							Background="{DynamicResource Background}"
-							Foreground="{DynamicResource Foreground}"
-							Height="30"
-							HorizontalAlignment="Stretch"
-							VerticalAlignment="Bottom"
-							Style="{DynamicResource ButtonTheme}"
-							Command="{Binding OnCheckUpdateClicked}"
-							Margin="0, 0, 4, 0"/>
-
-					<Button Content="Force Update"
-							Grid.Row="0"
-							Grid.Column="1"
-							Background="{DynamicResource Background}"
-							Foreground="{DynamicResource Foreground}"
-							Height="30"
-							HorizontalAlignment="Stretch"
-							VerticalAlignment="Bottom"
-							Style="{DynamicResource ButtonTheme}"
-							Command="{Binding OnForceUpdateClicked}"
-							Margin="4, 0, 0, 0"/>
 
 					<Button Content="Close"
 							Grid.Row="1"
@@ -149,6 +109,30 @@
 							Style="{DynamicResource ButtonTheme}"
 							Command="{Binding OnCloseClicked}"
 							Margin="0, 8, 4, 0"/>
+
+					<Button Content="Force Update"
+							Grid.Row="0"
+							Grid.Column="1"
+							Background="{DynamicResource Background}"
+							Foreground="{DynamicResource Foreground}"
+							Height="30"
+							HorizontalAlignment="Stretch"
+							VerticalAlignment="Bottom"
+							Style="{DynamicResource ButtonTheme}"
+							Command="{Binding OnForceUpdateClicked}"
+							Margin="4, 0, 4, 0"/>
+
+					<Button Content="Check Update"
+							Grid.Row="0"
+							Grid.Column="2"
+							Background="{DynamicResource Background}"
+							Foreground="{DynamicResource Foreground}"
+							Height="30"
+							HorizontalAlignment="Stretch"
+							VerticalAlignment="Bottom"
+							Style="{DynamicResource ButtonTheme}"
+							Command="{Binding OnCheckUpdateClicked}"
+							Margin="4, 0, 0, 0"/>
 				</Grid>
 			</Grid>
 		</Border>

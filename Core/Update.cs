@@ -18,34 +18,85 @@ namespace VexTrack.Core
 	{
 		public static async Task DownloadUpdate(string packageFile, string updaterFile, string tag, HttpClient client)
 		{
-			string updaterURL = Constants.BaseDownloadURL + "/" + tag + "/Updater.exe";
+			byte[] buffer = new byte[1024 * 1024];
+			int i = 0;
+			DateTimeOffset startTime;
+
+			MainViewModel MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
+			UpdateDownloadPopupViewModel UpdateDownloadPopup = (UpdateDownloadPopupViewModel)ViewModelManager.ViewModels["UpdateDownloadPopup"];
+			MainVM.QueuePopup(UpdateDownloadPopup);
+
 			string packageURL = Constants.BaseDownloadURL + "/" + tag + "/UpdatePackage.zip";
+			string updaterURL = Constants.BaseDownloadURL + "/" + tag + "/Updater.exe";
 
 			HttpResponseMessage packageResponse = await client.GetAsync(packageURL, HttpCompletionOption.ResponseHeadersRead);
+			HttpResponseMessage updaterResponse = await client.GetAsync(updaterURL, HttpCompletionOption.ResponseHeadersRead);
+
+			long packageContentLength = (long)packageResponse.Content.Headers.ContentLength;
+			long updaterContentLength = (long)updaterResponse.Content.Headers.ContentLength;
+
+			UpdateDownloadPopup.SetPackageData(packageContentLength, 0, 0);
+			UpdateDownloadPopup.SetUpdaterData(updaterContentLength, 0, 0);
+
+
+
+			// Downlaod Update Package
 
 			Stream packageStream = await packageResponse.Content.ReadAsStreamAsync();
 			FileStream packageFileStream = File.Create(packageFile);
-			long packageContentLength = (long)packageResponse.Content.Headers.ContentLength;
 			long packageTotalBytesRead = 0;
+			startTime = DateTimeOffset.Now;
 
-			while (true)
+			i = 0;
+			for(int len = packageStream.Read(buffer, 0, 1024 * 1024); len != 0; len = packageStream.Read(buffer, 0, 1024 * 1024))
 			{
-				DateTimeOffset startTime = DateTimeOffset.Now;
 
-				byte[] chunk = new byte[1024 * 1024];
-				await packageStream.ReadAsync(chunk);
+				packageTotalBytesRead += len;
+				await packageFileStream.WriteAsync(buffer, 0, len);
 
-				if (packageStream.Position >= packageContentLength) break;
+				double packageProgress = CalcUtil.CalcProgress(packageContentLength, packageTotalBytesRead);
+				UpdateDownloadPopup.SetPackageData(packageContentLength, packageTotalBytesRead, packageProgress);
 
-				packageTotalBytesRead += Buffer.ByteLength(chunk);
-				await packageFileStream.WriteAsync(chunk);
-
-
-				Trace.WriteLine("Total: " + packageContentLength + "B | Read: " +  packageTotalBytesRead.ToString() + "B | Progress: " + Math.Round((double)(packageTotalBytesRead / packageContentLength)).ToString() + "% | Speed: " + Math.Round(packageTotalBytesRead / (DateTimeOffset.Now - startTime).TotalSeconds).ToString() + " B/s");
-
+				if (i % 15 == 0)
+				{
+					double downloadSpeed = packageTotalBytesRead / (DateTimeOffset.Now - startTime).TotalMilliseconds;
+					UpdateDownloadPopup.SetDownloadSpeed(downloadSpeed);
+				}
+				i++;
 			}
+
 			packageStream.Dispose();
 			packageFileStream.Dispose();
+
+
+
+			// Download Updater
+
+			Stream updaterStream = await updaterResponse.Content.ReadAsStreamAsync();
+			FileStream updaterFileStream = File.Create(updaterFile);
+			long updaterTotalBytesRead = 0;
+			startTime = DateTimeOffset.Now;
+
+			i = 0;
+			for (int len = updaterStream.Read(buffer, 0, 1024 * 1024); len != 0; len = updaterStream.Read(buffer, 0, 1024 * 1024))
+			{
+
+				updaterTotalBytesRead += len;
+				await updaterFileStream.WriteAsync(buffer, 0, len);
+
+				double updaterProgress = CalcUtil.CalcProgress(updaterContentLength, updaterTotalBytesRead);
+				UpdateDownloadPopup.SetUpdaterData(updaterContentLength, updaterTotalBytesRead, updaterProgress);
+
+				if(i % 15  == 0)
+				{
+					double downloadSpeed = updaterTotalBytesRead / (DateTimeOffset.Now - startTime).TotalMilliseconds;
+					UpdateDownloadPopup.SetDownloadSpeed(downloadSpeed);
+				}
+				i++;
+			}
+
+			updaterStream.Dispose();
+			updaterFileStream.Dispose();
 		}
 
 		public static void ExtractUpdate(string sourceFile, string extractTarget)
@@ -55,7 +106,40 @@ namespace VexTrack.Core
 
 		public static void ApplyUpdate(string applierFile)
 		{
+			//TODO: Close this instance and open Applier program
+		}
 
+
+
+		public static (double, string) FormatSize(double rawSize, bool isSpeed = false)
+		{
+			double size = rawSize;
+			string unit = " B";
+
+			if (isSpeed) unit = " B/s";
+
+			int divisions = 0;
+			while(size > 1)
+			{
+				size /= 1024;
+				divisions++;
+
+				if (divisions > 3) break;
+			}
+
+			if(divisions > 0)
+			{
+				size *= 1024;
+				divisions--;
+			}
+
+			size = Math.Round(size, 2);
+
+			if (divisions == 1) unit = unit.Insert(1, "K");
+			if (divisions == 2) unit = unit.Insert(1, "M");
+			if (divisions == 3) unit = unit.Insert(1, "G");
+
+			return (size, unit);
 		}
 	}
 

@@ -47,7 +47,10 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		{
 			CanCancel = true;
 			OnCancelClicked = new RelayCommand(o => { Close(); });
-			OnUpdateClicked = new RelayCommand(o => { UpdateHelper.GetUpdate(); });
+			OnUpdateClicked = new RelayCommand(o => {
+				UpdateHelper.GetUpdate();
+				Close();
+			});
 		}
 
 		public void SetData(List<string> changelog, List<string> warnings)

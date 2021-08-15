@@ -103,6 +103,10 @@
 			<DataTemplate DataType="{x:Type popupViewModel:UpdateAvailablePopupViewModel}">
 				<popupView:UpdateAvailablePopup/>
 			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type popupViewModel:UpdateDownloadPopupViewModel}">
+				<popupView:UpdateDownloadPopup/>
+			</DataTemplate>
 		</ResourceDictionary>
 	</Application.Resources>
 </Application>

@@ -36,6 +36,7 @@ namespace VexTrack.MVVM.ViewModel
 		private ProgressActivityPopupViewModel PAPopupVM { get; set; }
 		private AboutPopupViewModel AboutPopup { get; set; }
 		private UpdateAvailablePopupViewModel UpdateAvailablePopup { get; set; }
+		private UpdateDownloadPopupViewModel UpdateDownloadPopup { get; set; }
 
 		private object _currentView;
 		private bool _epilogue;
@@ -152,6 +153,9 @@ namespace VexTrack.MVVM.ViewModel
 
 			UpdateAvailablePopup = new UpdateAvailablePopupViewModel();
 			ViewModelManager.ViewModels.Add("UpdateAvailablePopup", UpdateAvailablePopup);
+
+			UpdateDownloadPopup = new UpdateDownloadPopupViewModel();
+			ViewModelManager.ViewModels.Add("UpdateDownloadPopup", UpdateDownloadPopup);
 
 
 

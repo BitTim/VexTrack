@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VexTrack", "VexTrack\VexTra
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Updater", "Updater\Updater.vcxproj", "{F89E60F9-3ECB-41B6-81F6-C1D6C7350776}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UpdaterCSharp", "UpdaterCSharp\UpdaterCSharp.csproj", "{BB4765B4-3A58-4E9E-AC42-59FD47B0D8F7}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,16 +37,6 @@ Global
 		{F89E60F9-3ECB-41B6-81F6-C1D6C7350776}.Release|x64.Build.0 = Release|x64
 		{F89E60F9-3ECB-41B6-81F6-C1D6C7350776}.Release|x86.ActiveCfg = Release|Win32
 		{F89E60F9-3ECB-41B6-81F6-C1D6C7350776}.Release|x86.Build.0 = Release|Win32
-		{BB4765B4-3A58-4E9E-AC42-59FD47B0D8F7}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{BB4765B4-3A58-4E9E-AC42-59FD47B0D8F7}.Debug|x64.ActiveCfg = Debug|x64
-		{BB4765B4-3A58-4E9E-AC42-59FD47B0D8F7}.Debug|x64.Build.0 = Debug|x64
-		{BB4765B4-3A58-4E9E-AC42-59FD47B0D8F7}.Debug|x86.ActiveCfg = Debug|x86
-		{BB4765B4-3A58-4E9E-AC42-59FD47B0D8F7}.Debug|x86.Build.0 = Debug|x86
-		{BB4765B4-3A58-4E9E-AC42-59FD47B0D8F7}.Release|Any CPU.ActiveCfg = Release|x86
-		{BB4765B4-3A58-4E9E-AC42-59FD47B0D8F7}.Release|x64.ActiveCfg = Release|x64
-		{BB4765B4-3A58-4E9E-AC42-59FD47B0D8F7}.Release|x64.Build.0 = Release|x64
-		{BB4765B4-3A58-4E9E-AC42-59FD47B0D8F7}.Release|x86.ActiveCfg = Release|x86
-		{BB4765B4-3A58-4E9E-AC42-59FD47B0D8F7}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

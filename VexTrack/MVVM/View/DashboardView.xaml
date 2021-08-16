@@ -136,12 +136,28 @@
 							   FontWeight="Bold"
 							   Foreground="{DynamicResource Foreground}"
 							   Margin="0, 0, 0, 8"/>
-				
+
 				<oxy:PlotView Model="{Binding Graph}"
 							  Background="{DynamicResource Background}"
 							  Foreground="{DynamicResource Foreground}"
 							  Margin="0, 0, 0, 0"
-							  Grid.Row="1"/>
+							  Grid.Row="1">
+					<oxy:PlotView.DefaultTrackerTemplate>
+						<ControlTemplate>
+							<oxy:TrackerControl Position="{Binding Position}"
+												LineExtents="{Binding PlotModel.PlotArea}"
+												Background="{DynamicResource Background}"
+												BorderBrush="{DynamicResource Shade}"
+												LineStroke="{DynamicResource Shade}">
+								<oxy:TrackerControl.Content>
+									<TextBlock Text="{Binding}"
+											   Margin="8"
+											   Foreground="{DynamicResource Foreground}"/>
+								</oxy:TrackerControl.Content>
+							</oxy:TrackerControl>
+						</ControlTemplate>
+					</oxy:PlotView.DefaultTrackerTemplate>
+				</oxy:PlotView>
 
 				<Grid Grid.Row="2"
 					   Margin="0, 8, 0, 0">

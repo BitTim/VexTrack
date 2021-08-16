@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using VexTrack.MVVM.ViewModel;
 using VexTrack.MVVM.ViewModel.Popups;
 
@@ -104,9 +105,16 @@ namespace VexTrack.Core
 			ZipFile.ExtractToDirectory(sourceFile, extractTarget);
 		}
 
-		public static void ApplyUpdate(string applierFile)
+		public static void ApplyUpdate(string applierFile, string extractTarget, string installPath)
 		{
-			//TODO: Close this instance and open Applier program
+			Application.Current.Shutdown();
+
+			ProcessStartInfo startInfo = new();
+			startInfo.FileName = applierFile;
+			startInfo.Arguments = "\"" + extractTarget + "\" \"" + installPath + "\" \"" + Constants.AppName + ".exe\"";
+			startInfo.WorkingDirectory = Constants.UpdateFolder;
+
+			Process.Start(startInfo);
 		}
 
 
@@ -218,7 +226,7 @@ namespace VexTrack.Core
 
 			await UpdateUtil.DownloadUpdate(SourceFile, UpdaterFile, latestVersionTag, client);
 			UpdateUtil.ExtractUpdate(SourceFile, ExtractTarget);
-			UpdateUtil.ApplyUpdate(UpdaterFile);
+			UpdateUtil.ApplyUpdate(UpdaterFile, ExtractTarget, Environment.CurrentDirectory);
 		}
 	}
 }

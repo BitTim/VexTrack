@@ -70,6 +70,15 @@
 														MinValue="{TemplateBinding MinValue}"
 														MaxValue="{TemplateBinding MaxValue}"
 														Color="{TemplateBinding Color}"/>
+
+									<Path Width="24" Height="24"
+										  Grid.Row="1"
+										  x:Name="Icon"
+										  HorizontalAlignment="Right"
+										  VerticalAlignment="Bottom"
+										  Margin="0, 0, 4, 4"
+										  Fill="{TemplateBinding BadgeColor}"
+										  Data="{TemplateBinding BadgeData}"/>
 								</Grid>
 							</Border>
 						</Grid>

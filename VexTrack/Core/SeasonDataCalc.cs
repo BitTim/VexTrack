@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace VexTrack.Core
 {
@@ -73,6 +74,9 @@ namespace VexTrack.Core
 			ret.WeakestDate = weakestDate;
 			ret.History = seasonData.History;
 
+			if (ret.Progress >= 100) ret.Status = "Done";
+			else if (ended) ret.Status = "Failed";
+
 			return ret;
 		}
 
@@ -107,6 +111,7 @@ namespace VexTrack.Core
 		public DateTimeOffset WeakestDate { get; set; }
 		public int StrongestAmount { get; set; }
 		public int WeakestAmount { get; set; }
+		public string Status { get; set; }
 		public List<HistoryEntry> History { get; set; }
 
 		public SeasonEntryData(string uuid)
@@ -114,9 +119,9 @@ namespace VexTrack.Core
 			UUID = uuid;
 		}
 
-		public SeasonEntryData(string uuid, string title, double progress, bool ended, int average, long endDate, DateTimeOffset strongestDate, DateTimeOffset weakestDate, int strongestAmount, int weakestAmount, List<HistoryEntry> history)
+		public SeasonEntryData(string uuid, string title, double progress, bool ended, int average, long endDate, DateTimeOffset strongestDate, DateTimeOffset weakestDate, int strongestAmount, int weakestAmount, string status, List<HistoryEntry> history)
 		{
-			(UUID, Title, Progress, Ended, Average, EndDate, StrongestDate, WeakestDate, StrongestAmount, WeakestAmount, History) = (uuid, title, progress, ended, average, endDate, strongestDate, weakestDate, strongestAmount, weakestAmount, history);
+			(UUID, Title, Progress, Ended, Average, EndDate, StrongestDate, WeakestDate, StrongestAmount, WeakestAmount, Status, History) = (uuid, title, progress, ended, average, endDate, strongestDate, weakestDate, strongestAmount, weakestAmount, status, history);
 		}
 	}
 }

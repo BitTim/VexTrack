@@ -5,9 +5,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VexTrack.MVVM.View"
              xmlns:model="clr-namespace:VexTrack.MVVM.Model"
-             mc:Ignorable="d" 
+			 xmlns:conv="clr-namespace:VexTrack.MVVM.Converter"
+			 mc:Ignorable="d" 
              d:DesignHeight="780" d:DesignWidth="640">
-    <Grid>
+
+	<UserControl.Resources>
+		<conv:StatusToBadgeConverter x:Key="statusToBadgeConv"/>
+	</UserControl.Resources>
+
+	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="80"/>
 			<RowDefinition/>
@@ -53,6 +59,8 @@
 													   Value="{Binding Path=Progress}"
 													   Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.BuiltinGoalButtonClick}"
 													   CommandParameter="{Binding Path=UUID}"
+													   BadgeData="{Binding Path=Status, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Data}"
+													   BadgeColor="{Binding Path=Status, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Color}"
 													   Margin="8, 8, 0, 0"/>
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
@@ -82,6 +90,8 @@
 													   Color="{Binding Path=Color}"
 													   Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.UserGoalButtonClick}"
 													   CommandParameter="{Binding Path=UUID}"
+													   BadgeData="{Binding Path=Status, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Data}"
+													   BadgeColor="{Binding Path=Status, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Color}"
 													   Margin="8, 8, 0, 0"/>
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>

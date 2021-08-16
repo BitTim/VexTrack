@@ -22,6 +22,8 @@ namespace VexTrack.MVVM.Model
 		public static DependencyProperty MinValueProperty = DependencyProperty.Register("MinValue", typeof(double), typeof(ProgressButtonModel), new PropertyMetadata(0.0));
 		public static DependencyProperty MaxValueProperty = DependencyProperty.Register("MaxValue", typeof(double), typeof(ProgressButtonModel), new PropertyMetadata(100.0));
 		public static DependencyProperty ColorProperty = DependencyProperty.Register("Color", typeof(string), typeof(ProgressButtonModel), new PropertyMetadata(""));
+		public static DependencyProperty BadgeDataProperty = DependencyProperty.Register("BadgeData", typeof(Geometry), typeof(ProgressButtonModel), new PropertyMetadata(null));
+		public static DependencyProperty BadgeColorProperty = DependencyProperty.Register("BadgeColor", typeof(Brush), typeof(ProgressButtonModel), new PropertyMetadata(Application.Current.FindResource("Foreground")));
 
 		public string Title
 		{
@@ -53,6 +55,18 @@ namespace VexTrack.MVVM.Model
 			set => SetValue(ColorProperty, value);
 		}
 
+		public Geometry BadgeData
+		{
+			get => (Geometry)GetValue(BadgeDataProperty);
+			set => SetValue(BadgeDataProperty, value);
+		}
+
+		public Brush BadgeColor
+		{
+			get => (Brush)GetValue(BadgeColorProperty);
+			set => SetValue(BadgeColorProperty, value);
+		}
+
 		public bool IsCompleted { get => Value == MaxValue; }
 
 		static ProgressButtonModel()
@@ -60,13 +74,16 @@ namespace VexTrack.MVVM.Model
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(ProgressButtonModel), new FrameworkPropertyMetadata(typeof(ProgressButtonModel)));
 		}
 		public ProgressButtonModel() { }
-		public ProgressButtonModel(string title, double value, string color, double minValue = 0, double maxValue = 100)
+		public ProgressButtonModel(string title, double value, string color, double minValue = 0, double maxValue = 100, Geometry badgeData = null, Brush badgeColor = null)
 		{
 			Title = title;
 			Value = value;
 			Color = color;
 			MinValue = minValue;
 			MaxValue = maxValue;
+
+			if(badgeData != null) BadgeData = badgeData;
+			if(badgeColor != null) BadgeColor = badgeColor;
 		}
 	}
 }

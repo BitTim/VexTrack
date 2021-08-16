@@ -4,7 +4,7 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows10.0.20348.0</TargetFramework>
     <UseWPF>true</UseWPF>
-    <ApplicationIcon>P:\Visual Studio\VexTrack\Images\VexTrack.ico</ApplicationIcon>
+    <ApplicationIcon>P:\Visual Studio\VexTrack\VexTrack\Images\VexTrack.ico</ApplicationIcon>
     <Version>1.7</Version>
     <Authors>BitTim</Authors>
     <Description />
@@ -25,13 +25,6 @@
 
   <ItemGroup>
     <Folder Include="Fonts\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="LICENSE">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
   </ItemGroup>
 
   <ItemGroup>

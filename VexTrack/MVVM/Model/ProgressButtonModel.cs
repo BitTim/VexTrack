@@ -68,6 +68,5 @@ namespace VexTrack.MVVM.Model
 			MinValue = minValue;
 			MaxValue = maxValue;
 		}
-
 	}
 }

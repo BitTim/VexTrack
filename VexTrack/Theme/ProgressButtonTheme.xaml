@@ -59,18 +59,17 @@
 									</Grid.RowDefinitions>
 
 									<TextBlock x:Name="PART_TitleTextBlock"
-											   HorizontalAlignment="Center"
-											   VerticalAlignment="Center"
-											   Text="{TemplateBinding Title}"
-											   FontSize="16"
-											   FontWeight="Bold"
-											   Foreground="{TemplateBinding Foreground}"/>
-
+											HorizontalAlignment="Center"
+											VerticalAlignment="Center"
+											Text="{TemplateBinding Title}"
+											FontSize="16"
+											FontWeight="Bold"
+											Foreground="{TemplateBinding Foreground}"/>
 									<local:ProgressArcModel Grid.Row="1"
-															Value="{TemplateBinding Value}"
-															MinValue="{TemplateBinding MinValue}"
-															MaxValue="{TemplateBinding MaxValue}"
-															Color="{TemplateBinding Color}"/>
+														Value="{TemplateBinding Value}"
+														MinValue="{TemplateBinding MinValue}"
+														MaxValue="{TemplateBinding MaxValue}"
+														Color="{TemplateBinding Color}"/>
 								</Grid>
 							</Border>
 						</Grid>

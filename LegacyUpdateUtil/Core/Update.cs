@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using LegacyUpdateUtil.MVVM.ViewModel;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,10 +11,8 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using VexTrack.MVVM.ViewModel;
-using VexTrack.MVVM.ViewModel.Popups;
 
-namespace VexTrack.Core
+namespace LegacyUpdateUtil.Core
 {
 	public static class UpdateUtil
 	{
@@ -24,8 +23,6 @@ namespace VexTrack.Core
 			DateTimeOffset startTime;
 
 			MainViewModel MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
-			UpdateDownloadPopupViewModel UpdateDownloadPopup = (UpdateDownloadPopupViewModel)ViewModelManager.ViewModels["UpdateDownloadPopup"];
-			MainVM.QueuePopup(UpdateDownloadPopup);
 
 			string packageURL = Constants.BaseDownloadURL + "/" + tag + "/UpdatePackage.zip";
 			string updaterURL = Constants.BaseDownloadURL + "/" + tag + "/Updater.exe";
@@ -36,8 +33,8 @@ namespace VexTrack.Core
 			long packageContentLength = (long)packageResponse.Content.Headers.ContentLength;
 			long updaterContentLength = (long)updaterResponse.Content.Headers.ContentLength;
 
-			UpdateDownloadPopup.SetPackageData(packageContentLength, 0, 0);
-			UpdateDownloadPopup.SetUpdaterData(updaterContentLength, 0, 0);
+			MainVM.SetPackageData(packageContentLength, 0, 0);
+			MainVM.SetUpdaterData(updaterContentLength, 0, 0);
 
 
 
@@ -56,12 +53,12 @@ namespace VexTrack.Core
 				await packageFileStream.WriteAsync(buffer, 0, len);
 
 				double packageProgress = CalcUtil.CalcProgress(packageContentLength, packageTotalBytesRead);
-				UpdateDownloadPopup.SetPackageData(packageContentLength, packageTotalBytesRead, packageProgress);
+				MainVM.SetPackageData(packageContentLength, packageTotalBytesRead, packageProgress);
 
 				if (i % 15 == 0)
 				{
 					double downloadSpeed = packageTotalBytesRead / (DateTimeOffset.Now - startTime).TotalSeconds;
-					UpdateDownloadPopup.SetDownloadSpeed(downloadSpeed);
+					MainVM.SetDownloadSpeed(downloadSpeed);
 				}
 				i++;
 			}
@@ -86,12 +83,12 @@ namespace VexTrack.Core
 				await updaterFileStream.WriteAsync(buffer, 0, len);
 
 				double updaterProgress = CalcUtil.CalcProgress(updaterContentLength, updaterTotalBytesRead);
-				UpdateDownloadPopup.SetUpdaterData(updaterContentLength, updaterTotalBytesRead, updaterProgress);
+				MainVM.SetUpdaterData(updaterContentLength, updaterTotalBytesRead, updaterProgress);
 
 				if(i % 15  == 0)
 				{
 					double downloadSpeed = updaterTotalBytesRead / (DateTimeOffset.Now - startTime).TotalSeconds;
-					UpdateDownloadPopup.SetDownloadSpeed(downloadSpeed);
+					MainVM.SetDownloadSpeed(downloadSpeed);
 				}
 				i++;
 			}
@@ -176,46 +173,16 @@ namespace VexTrack.Core
 			{
 				List<string> tokenizedName = release["name"].ToString().Split().ToList();
 				if (tokenizedName[0] != Constants.AppName) continue;
+				if (tokenizedName[1] != Constants.UpdateVersion) continue;
 
 				float newestVersion = float.Parse(tokenizedName[1].Split("v")[1]);
 				float currentVersion = float.Parse(Constants.Version.Split("v")[1]);
 
 				if (currentVersion >= newestVersion && !forceUpdate) break;
-				if ((bool)release["prerelease"] && SettingsHelper.Data.IgnorePreReleases) continue;
+				//if ((bool)release["prerelease"]) continue;
 
 				latestVersionTag = (string)release["tag_name"];
-
-				string rawDesc = (string)release["body"];
-				List<string> desc = rawDesc.Split("##").ToList();
-
-				List<string> changelog = new();
-				List<string> warnings = new();
-
-				foreach (string d in  desc)
-				{
-					List<string> splitDesc = d.Split("\r\n").ToList();
-					splitDesc.RemoveAll(x => string.IsNullOrWhiteSpace(x));
-
-					for(int i = 0; i < splitDesc.Count; i++)
-					{
-						if(splitDesc[i].StartsWith("-")) splitDesc[i] = splitDesc[i].Substring(1);
-						if(splitDesc[i].StartsWith(" ")) splitDesc[i] = splitDesc[i].Substring(1);
-					}
-
-					if (splitDesc.Count < 2) continue;
-
-					if(splitDesc[0].Contains("Changelog")) changelog = splitDesc.GetRange(1, splitDesc.Count - 1).ToList();
-					if(splitDesc[0].Contains("Warning")) warnings = splitDesc.GetRange(1, splitDesc.Count - 1).ToList();
-				}
-
-				if ((bool)release["prerelease"]) warnings.Add("This release is a pre-release");
-
-				UpdateAvailablePopupViewModel UpdateAvailablePopup = (UpdateAvailablePopupViewModel)ViewModelManager.ViewModels["UpdateAvailablePopup"];
-				MainViewModel MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
-
-				UpdateAvailablePopup.SetData(changelog, warnings);
-				MainVM.QueuePopup(UpdateAvailablePopup);
-
+				GetUpdate();
 				break;
 			}
 		}

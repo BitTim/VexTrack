@@ -20,7 +20,29 @@
 								</Border.Effect>
 							</Border>
 
-							<Border CornerRadius="8" BorderThickness="0">
+							<Border Background="{DynamicResource Foreground}"
+									Opacity="0"
+									CornerRadius="8">
+								<Border.Triggers>
+									<EventTrigger RoutedEvent="UIElement.MouseEnter">
+										<BeginStoryboard>
+											<Storyboard Storyboard.TargetProperty="Opacity">
+												<DoubleAnimation From="0" To="0.2" Duration="00:00:00.10"/>
+											</Storyboard>
+										</BeginStoryboard>
+									</EventTrigger>
+
+									<EventTrigger RoutedEvent="UIElement.MouseLeave">
+										<BeginStoryboard>
+											<Storyboard Storyboard.TargetProperty="Opacity">
+												<DoubleAnimation From="0.2" To="0" Duration="00:00:00.10"/>
+											</Storyboard>
+										</BeginStoryboard>
+									</EventTrigger>
+								</Border.Triggers>
+							</Border>
+
+							<Border CornerRadius="8" BorderThickness="0" IsHitTestVisible="False">
 								<Grid VerticalAlignment="Stretch"
 									  HorizontalAlignment="Stretch">
 
@@ -57,17 +79,6 @@
 				<Setter Property="Background" Value="{DynamicResource Accent}"/>
 				<Setter Property="Foreground" Value="{StaticResource White}"/>
 			</Trigger>
-
-			<MultiTrigger>
-				<MultiTrigger.Conditions>
-					<Condition Property="IsChecked" Value="False"/>
-					<Condition Property="IsMouseOver" Value="True"/>
-				</MultiTrigger.Conditions>
-
-				<MultiTrigger.Setters>
-					<Setter Property="Background" Value="{DynamicResource Shade}"/>
-				</MultiTrigger.Setters>
-			</MultiTrigger>
 		</Style.Triggers>
 	</Style>
 </ResourceDictionary>

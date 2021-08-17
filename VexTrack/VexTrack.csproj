@@ -1,0 +1,65 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows10.0.20348.0</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>P:\Visual Studio\VexTrack\VexTrack\Images\VexTrack.ico</ApplicationIcon>
+    <Version>1.7</Version>
+    <Authors>BitTim</Authors>
+    <Description />
+    <PackageProjectUrl>https://github.com/BitTim/VexTrack</PackageProjectUrl>
+    <PackageIcon>VexTrack.png</PackageIcon>
+    <PackageIconUrl />
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <RepositoryUrl>https://github.com/BitTim/VexTrack</RepositoryUrl>
+    <RepositoryType>Git Repository</RepositoryType>
+    <Platforms>x64;x86</Platforms>
+    <MinimumPlatformVersion>10.0.17763.0</MinimumPlatformVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Images\VexTrack_128.png" />
+    <None Remove="Images\VexTrack_64.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Fonts\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="OxyPlot.Wpf" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\VexTrack_128.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\VexTrack_64.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Theme\ButtonTheme.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+</Project>

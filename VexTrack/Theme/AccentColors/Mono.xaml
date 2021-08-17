@@ -1,0 +1,7 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<LinearGradientBrush x:Key="Accent">
+		<GradientStop Color="{DynamicResource Mono1}" Offset="0.0"/>
+		<GradientStop Color="{DynamicResource Mono2}" Offset="1.0"/>
+	</LinearGradientBrush>
+</ResourceDictionary>

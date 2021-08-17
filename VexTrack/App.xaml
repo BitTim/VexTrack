@@ -1,0 +1,112 @@
+﻿<Application x:Class="VexTrack.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:VexTrack"
+			 xmlns:viewModel="clr-namespace:VexTrack.MVVM.ViewModel"
+			 xmlns:popupViewModel="clr-namespace:VexTrack.MVVM.ViewModel.Popups"
+			 xmlns:view="clr-namespace:VexTrack.MVVM.View"
+			 xmlns:popupView="clr-namespace:VexTrack.MVVM.View.Popups"
+			 StartupUri="MainWindow.xaml">
+
+	<Application.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="Theme/Colors.xaml"/>
+				
+				<!-- Colors and Themes -->
+				<ResourceDictionary Source="Theme/AppTheme/LightTheme.xaml"/>
+				<ResourceDictionary Source="Theme/AccentColors/Blue.xaml"/>
+
+				<ResourceDictionary Source="Theme/Icons.xaml"/>
+
+				<ResourceDictionary Source="Theme/MenuButtonTheme.xaml"/>
+				<ResourceDictionary Source="Theme/TitleBarButtonTheme.xaml"/>
+				<ResourceDictionary Source="Theme/CheckBoxTheme.xaml"/>
+				<ResourceDictionary Source="Theme/ButtonTheme.xaml"/>
+				<ResourceDictionary Source="Theme/TextBoxTheme.xaml"/>
+				<ResourceDictionary Source="Theme/AddButtonTheme.xaml"/>
+				<ResourceDictionary Source="Theme/HueSliderTheme.xaml"/>
+				<ResourceDictionary Source="Theme/RadioSelectorButtonTheme.xaml"/>
+
+				<ResourceDictionary Source="Theme/HistoryButtonTheme.xaml"/>
+				<ResourceDictionary Source="Theme/ProgressArcTheme.xaml"/>
+				<ResourceDictionary Source="Theme/ScrollViewerTheme.xaml"/>
+				<ResourceDictionary Source="Theme/ProgressButtonTheme.xaml"/>
+				<ResourceDictionary Source="Theme/ColorPickerTheme.xaml"/>
+				<ResourceDictionary Source="Theme/TextWithUnitTheme.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+
+			<!-- Pages -->
+			
+			<DataTemplate DataType="{x:Type viewModel:DashboardViewModel}">
+				<view:DashboardView/>
+			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type viewModel:GoalViewModel}">
+				<view:GoalView/>
+			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type viewModel:SeasonViewModel}">
+				<view:SeasonView/>
+			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type viewModel:HistoryViewModel}">
+				<view:HistoryView/>
+			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type viewModel:SettingsViewModel}">
+				<view:SettingsView/>
+			</DataTemplate>
+
+			<!-- Popups -->
+			
+			<DataTemplate DataType="{x:Type popupViewModel:HistoryEntryPopupViewModel}">
+				<popupView:HistoryEntryPopup/>
+			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type popupViewModel:EditableHistoryEntryPopupViewModel}">
+				<popupView:EditableHistoryEntryPopup/>
+			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type popupViewModel:GoalPopupViewModel}">
+				<popupView:GoalPopup/>
+			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type popupViewModel:EditableGoalPopupViewModel}">
+				<popupView:EditableGoalPopup/>
+			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type popupViewModel:SeasonPopupViewModel}">
+				<popupView:SeasonPopup/>
+			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type popupViewModel:EditableSeasonPopupViewModel}">
+				<popupView:EditableSeasonPopup/>
+			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type popupViewModel:ProgressActivityPopupViewModel}">
+				<popupView:ProgressActivityPopup/>
+			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type popupViewModel:DataInitPopupViewModel}">
+				<popupView:DataInitPopup/>
+			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type popupViewModel:ResetDataConfirmationPopupViewModel}">
+				<popupView:ResetDataConfirmationPopup/>
+			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type popupViewModel:AboutPopupViewModel}">
+				<popupView:AboutPopup/>
+			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type popupViewModel:UpdateAvailablePopupViewModel}">
+				<popupView:UpdateAvailablePopup/>
+			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type popupViewModel:UpdateDownloadPopupViewModel}">
+				<popupView:UpdateDownloadPopup/>
+			</DataTemplate>
+		</ResourceDictionary>
+	</Application.Resources>
+</Application>

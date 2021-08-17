@@ -1,0 +1,228 @@
+﻿<Window x:Class="LegacyUpdateUtil.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LegacyUpdateUtil"
+		xmlns:model="clr-namespace:LegacyUpdateUtil.MVVM.Model"
+		xmlns:vm="clr-namespace:LegacyUpdateUtil.MVVM.ViewModel"
+		mc:Ignorable="d"
+        Title="VexTrack - Legacy Update Utility"
+		Height="472" Width="392"
+		MinHeight="472" MinWidth="360"
+		WindowStyle="None"
+		Background="Transparent"
+		AllowsTransparency="True">
+
+	<Window.DataContext>
+		<vm:MainViewModel/>
+	</Window.DataContext>
+	
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
+
+		<Border Background="{DynamicResource Background}"
+				CornerRadius="8"
+				x:Name="ShadowBorder"
+				Margin="16">
+			<Border.Effect>
+				<DropShadowEffect BlurRadius="16"
+								  ShadowDepth="2"
+								  Direction="-90"
+								  Opacity="0.3"/>
+			</Border.Effect>
+		</Border>
+
+		<Border CornerRadius="8"
+				Margin="16">
+			<Grid Margin="16">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="*"/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+
+				<Grid Grid.Row="0"
+					  Grid.Column="0"
+					  Margin="0, 4, 0, 0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+					</Grid.RowDefinitions>
+
+					<TextBlock Text="Downloading Update"
+							   Grid.Column="0"
+							   Grid.Row="0"
+							   Grid.ColumnSpan="2"
+							   FontSize="20"
+							   FontWeight="Bold"
+							   Foreground="{DynamicResource Foreground}"
+							   Margin="0, 0, 0, 16"/>
+
+					<TextBlock Text="Update Package"
+							   Grid.Column="0"
+							   Grid.Row="1"
+							   FontSize="14"
+							   FontWeight="Bold"
+							   HorizontalAlignment="Center"
+							   Foreground="{DynamicResource Foreground}"
+							   Margin="0, 0, 0, 4"/>
+
+					<TextBlock Text="Updater Tool"
+							   Grid.Column="1"
+							   Grid.Row="1"
+							   FontSize="14"
+							   FontWeight="Bold"
+							   HorizontalAlignment="Center"
+							   Foreground="{DynamicResource Foreground}"
+							   Margin="0, 0, 0, 4"/>
+
+					<model:ProgressArcModel Grid.Column="0"
+											Grid.Row="2"
+											HorizontalAlignment="Center"
+											Margin="0, 0, 0, 8"
+										Value="{Binding PackageProgress}"/>
+
+					<model:ProgressArcModel Grid.Column="1"
+											Grid.Row="2"
+											HorizontalAlignment="Center"
+											Margin="0, 0, 0, 8"
+										Value="{Binding UpdaterProgress}"/>
+
+					<Grid Grid.Row="3"
+						  Grid.Column="0">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
+
+						<TextBlock Text="Total"
+							   Grid.Column="0"
+							   Grid.Row="3"
+							   FontSize="14"
+							   FontWeight="Bold"
+							   Foreground="{DynamicResource Foreground}"
+							   Margin="0, 0, 0, 4"/>
+
+						<model:TextWithUnit Text="{Binding PackageTotalSize}"
+										Unit="{Binding PackageTotalSizeUnit}"
+										Grid.Column="1"
+										Grid.Row="3"
+										FontSize="14"
+										Foreground="{DynamicResource Foreground}"
+										Margin="0, 0, 0, 4"/>
+					</Grid>
+
+					<Grid Grid.Row="4"
+						  Grid.Column="0">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
+
+						<TextBlock Text="Size"
+							   Grid.Column="0"
+							   Grid.Row="3"
+							   FontSize="14"
+							   FontWeight="Bold"
+							   Foreground="{DynamicResource Foreground}"
+							   Margin="0, 0, 0, 4"/>
+
+						<model:TextWithUnit Text="{Binding PackageSize}"
+										Unit="{Binding PackageSizeUnit}"
+										Grid.Column="1"
+										Grid.Row="3"
+										FontSize="14"
+										Foreground="{DynamicResource Foreground}"
+										Margin="0, 0, 0, 4"/>
+					</Grid>
+
+					<Grid Grid.Row="3"
+						  Grid.Column="1">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
+
+						<TextBlock Text="Total"
+							   Grid.Column="0"
+							   Grid.Row="3"
+							   FontSize="14"
+							   FontWeight="Bold"
+							   Foreground="{DynamicResource Foreground}"
+							   Margin="0, 0, 0, 4"/>
+
+						<model:TextWithUnit Text="{Binding UpdaterTotalSize}"
+										Unit="{Binding UpdaterTotalSizeUnit}"
+										Grid.Column="1"
+										Grid.Row="3"
+										FontSize="14"
+										Foreground="{DynamicResource Foreground}"
+										Margin="0, 0, 0, 4"/>
+					</Grid>
+
+					<Grid Grid.Row="4"
+						  Grid.Column="1">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
+
+						<TextBlock Text="Size"
+							   Grid.Column="0"
+							   Grid.Row="3"
+							   FontSize="14"
+							   FontWeight="Bold"
+							   Foreground="{DynamicResource Foreground}"
+							   Margin="0, 0, 0, 4"/>
+
+						<model:TextWithUnit Text="{Binding UpdaterSize}"
+										Unit="{Binding UpdaterSizeUnit}"
+										Grid.Column="1"
+										Grid.Row="3"
+										FontSize="14"
+										Foreground="{DynamicResource Foreground}"
+										Margin="0, 0, 0, 4"/>
+					</Grid>
+
+					<TextBlock Text="Download Speed"
+							   Grid.Column="0"
+							   Grid.Row="5"
+							   FontSize="14"
+							   FontWeight="Bold"
+							   Foreground="{DynamicResource Foreground}"
+							   Margin="0, 8, 0, 4"/>
+
+					<model:TextWithUnit Text="{Binding DownloadSpeed}"
+										Unit="{Binding DownloadSpeedUnit}"
+										Grid.Column="1"
+										Grid.Row="5"
+										FontSize="14"
+										Foreground="{DynamicResource Foreground}"
+										Margin="0, 8, 0, 4"/>
+
+					<TextBlock Text="Note: VexTrack may not start after the download is completed. Please open VexTrack manually if it does not open after 5 seconds after download completion. Make sure to not have any other programs open within the VexTrack installation folder"
+							   Grid.Column="0"
+							   Grid.ColumnSpan="2"
+							   Grid.Row="6"
+							   FontSize="14"
+							   FontStyle="Italic"
+							   TextWrapping="Wrap"
+							   Foreground="{DynamicResource Foreground}"
+							   Margin="0, 8, 0, 4"/>
+				</Grid>
+			</Grid>
+		</Border>
+	</Grid>
+</Window>

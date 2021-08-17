@@ -13,4 +13,8 @@ build/
 sign.bat
 compile.bat
 tokenString.py
-VexTrack.png
+bin/
+obj/
+.vs/
+VexTrack Package\AppPackages
+x64/

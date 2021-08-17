@@ -8,8 +8,8 @@
 		xmlns:vm="clr-namespace:LegacyUpdateUtil.MVVM.ViewModel"
 		mc:Ignorable="d"
         Title="VexTrack - Legacy Update Utility"
-		Height="436" Width="392"
-		MinHeight="436" MinWidth="360"
+		Height="472" Width="392"
+		MinHeight="472" MinWidth="360"
 		WindowStyle="None"
 		Background="Transparent"
 		AllowsTransparency="True">
@@ -212,7 +212,7 @@
 										Foreground="{DynamicResource Foreground}"
 										Margin="0, 8, 0, 4"/>
 
-					<TextBlock Text="Note: VexTrack will start after the download is completed. Make sure to not have any other programs open within the VexTrack installation folder"
+					<TextBlock Text="Note: VexTrack may not start after the download is completed. Please open VexTrack manually if it does not open after 5 seconds after download completion. Make sure to not have any other programs open within the VexTrack installation folder"
 							   Grid.Column="0"
 							   Grid.ColumnSpan="2"
 							   Grid.Row="6"

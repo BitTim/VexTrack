@@ -19,8 +19,8 @@
 	<Color x:Key="Teal2">#009e97</Color>
 	<Color x:Key="Green1">#0AC903</Color>
 	<Color x:Key="Green2">#00bd5c</Color>
-	<Color x:Key="Yellow1">#FBCA04</Color>
-	<Color x:Key="Yellow2">#ffbe82</Color>
+	<Color x:Key="Yellow1">#efb431</Color>
+	<Color x:Key="Yellow2">#de9321</Color>
 	<Color x:Key="Orange1">#FC8316</Color>
 	<Color x:Key="Orange2">#f7595f</Color>
 	<Color x:Key="Red1">#E2030B</Color>

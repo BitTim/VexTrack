@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using VexTrack.Core;
 using VexTrack.MVVM.ViewModel.Popups;
@@ -42,6 +43,7 @@ namespace VexTrack.MVVM.ViewModel
 		private bool _epilogue;
 		private bool _epilogueButtonEnabled;
 
+		private Timer updateTimer;
 		private BasePopupViewModel _currentPopup = null;
 		private List<BasePopupViewModel> _popupQueue = new();
 
@@ -118,9 +120,52 @@ namespace VexTrack.MVVM.ViewModel
 			Watcher = new();
 
 			ViewModelManager.ViewModels.Add("Main", this);
+			InitPopupViewModels();
 
+			DashboardViewCommand = new RelayCommand(o => SetView(DashboardVM)); ;
+			GoalViewCommand = new RelayCommand(o => SetView(GoalVM));
+			SeasonViewCommand = new RelayCommand(o => SetView(SeasonVM));
+			HistoryViewCommand = new RelayCommand(o => SetView(HistoryVM));
+			SettingsViewCommand = new RelayCommand(o => SetView(SettingsVM));
 
+			TrackingDataHelper.LoadData();
+			SettingsHelper.LoadSettings();
 
+			UpdateHelper.CheckUpdateAsync();
+
+			updateTimer = new(UpdateTimerCallback);
+			DateTime now = DateTime.Now.ToLocalTime();
+			DateTime midnight = DateTime.Today.ToLocalTime();
+
+			if(now > midnight) midnight = midnight.AddDays(1).ToLocalTime();
+			int msUntilMidnight = (int)(midnight - now).TotalMilliseconds;
+			updateTimer.Change(msUntilMidnight, Timeout.Infinite);
+
+			Update();
+		}
+
+		private void InitViewModels()
+		{
+			if (InterruptUpdate) return;
+
+			DashboardVM = new DashboardViewModel();
+			GoalVM = new GoalViewModel();
+			SeasonVM = new SeasonViewModel();
+			HistoryVM = new HistoryViewModel();
+			SettingsVM = new SettingsViewModel();
+
+			ViewModelManager.ViewModels.Add("Dashboard", DashboardVM);
+			ViewModelManager.ViewModels.Add("Goal", GoalVM);
+			ViewModelManager.ViewModels.Add("Season", SeasonVM);
+			ViewModelManager.ViewModels.Add("History", HistoryVM);
+			ViewModelManager.ViewModels.Add("Settings", SettingsVM);
+
+			CurrentView = DashboardVM;
+			ViewModelsInitialized = true;
+		}
+
+		private void InitPopupViewModels()
+		{
 			DataInitPopup = new();
 			ViewModelManager.ViewModels.Add("DataInitPopup", DataInitPopup);
 
@@ -156,43 +201,6 @@ namespace VexTrack.MVVM.ViewModel
 
 			UpdateDownloadPopup = new UpdateDownloadPopupViewModel();
 			ViewModelManager.ViewModels.Add("UpdateDownloadPopup", UpdateDownloadPopup);
-
-
-
-			DashboardViewCommand = new RelayCommand(o => SetView(DashboardVM)); ;
-			GoalViewCommand = new RelayCommand(o => SetView(GoalVM));
-			SeasonViewCommand = new RelayCommand(o => SetView(SeasonVM));
-			HistoryViewCommand = new RelayCommand(o => SetView(HistoryVM));
-			SettingsViewCommand = new RelayCommand(o => SetView(SettingsVM));
-
-
-
-			TrackingDataHelper.LoadData();
-			SettingsHelper.LoadSettings();
-
-			UpdateHelper.CheckUpdateAsync();
-
-			Update();
-		}
-
-		private void InitViewModels()
-		{
-			if (InterruptUpdate) return;
-
-			DashboardVM = new DashboardViewModel();
-			GoalVM = new GoalViewModel();
-			SeasonVM = new SeasonViewModel();
-			HistoryVM = new HistoryViewModel();
-			SettingsVM = new SettingsViewModel();
-
-			ViewModelManager.ViewModels.Add("Dashboard", DashboardVM);
-			ViewModelManager.ViewModels.Add("Goal", GoalVM);
-			ViewModelManager.ViewModels.Add("Season", SeasonVM);
-			ViewModelManager.ViewModels.Add("History", HistoryVM);
-			ViewModelManager.ViewModels.Add("Settings", SettingsVM);
-
-			CurrentView = DashboardVM;
-			ViewModelsInitialized = true;
 		}
 
 		public void SetView(object view)
@@ -244,6 +252,13 @@ namespace VexTrack.MVVM.ViewModel
 		{
 			if (PopupQueue.Count != 0 && PopupQueue.Last().CanCancel == false) return;
 			DequeuePopup(PopupQueue.Last());
+		}
+
+
+
+		public void UpdateTimerCallback(object state)
+		{
+			Update();
 		}
 
 

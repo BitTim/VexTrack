@@ -26,6 +26,13 @@ namespace VexTrack.Core
 		public static readonly int XPPerEpilogueLevel = 36500;
 		public static readonly int Level2Offset = 500;
 
+		public static readonly Dictionary<string, int> StreakStatusOrder = new Dictionary<string, int>
+		{
+			["None"] = 0,
+			["Daily"] = 1,
+			["DailyEpilogue"] = 2
+		};
+
 		public static Dictionary<string, string> ThemeURIs = new Dictionary<string, string>
 		{
 			["Light"] = "Theme/AppTheme/LightTheme.xaml",

@@ -14,12 +14,23 @@ namespace VexTrack.Core
 		public long Time { get; set; }
 		public string Description { get; set; }
 		public int Amount { get; set; }
-
 		public string Map { get; set; }
 
 		public HistoryEntry(string uuid, long time, string desc, int amount, string map)
 		{
 			(UUID, Time, Description, Amount, Map) = (uuid, time, desc, amount, map);
+		}
+	}
+
+	public class StreakEntry
+	{
+		public string UUID { get; set; }
+		public long Date { get; set; }
+		public string Status { get; set; }
+
+		public StreakEntry(string uuid, long date, string status)
+		{
+			(UUID, Date, Status) = (uuid, date, status);
 		}
 	}
 
@@ -55,11 +66,12 @@ namespace VexTrack.Core
 	public class TrackingData
 	{
 		public List<Goal> Goals { get; set; }
+		public List<StreakEntry> Streak { get; set; }
 		public List<Season> Seasons { get; set; }
 
-		public TrackingData(List<Goal> goals, List<Season> seasons)
+		public TrackingData(List<Goal> goals, List<StreakEntry> streak, List<Season> seasons)
 		{
-			(Goals, Seasons) = (goals, seasons);
+			(Goals, Streak, Seasons) = (goals, streak, seasons);
 		}
 	}
 
@@ -110,9 +122,10 @@ namespace VexTrack.Core
 		public static void InitData()
 		{
 			List<Goal> goals = new();
+			List<StreakEntry> streak = new();
 			List<Season> seasons = new();
 
-			Data = new TrackingData(goals, seasons);
+			Data = new TrackingData(goals, streak, seasons);
 		}
 
 		public static void ConvertData()
@@ -132,6 +145,7 @@ namespace VexTrack.Core
 				goals.Add(new Goal(Guid.NewGuid().ToString(), gName, total, collected, color));
 			}
 
+			List<StreakEntry> streak = new();
 			List<Season> seasons = new();
 
 			string name = "First Season";
@@ -151,7 +165,7 @@ namespace VexTrack.Core
 			}
 
 			seasons.Add(new Season(Guid.NewGuid().ToString(), name, endDate, activeBPLevel, cXP, history));
-			Data = new TrackingData(goals, seasons);
+			Data = new TrackingData(goals, streak, seasons);
 
 			File.Move(Constants.LegacyDataPath, Constants.LegacyDataPath + ".bak");
 			SaveData();
@@ -220,6 +234,21 @@ namespace VexTrack.Core
 				seasons.Add(new Season(sUUID, name, endDate, activeBPLevel, cXP, history));
 			}
 
+			List<StreakEntry> streak = new();
+			if (jo["streak"] != null)
+			{
+				foreach (JObject streakEntry in jo["streak"])
+				{
+					string uuid = (string)streakEntry["uuid"];
+					long date = (long)streakEntry["date"];
+					string status = (string)streakEntry["status"];
+
+					if (uuid == null) uuid = Guid.NewGuid().ToString();
+					streak.Add(new StreakEntry(uuid, date, status));
+				}
+			}
+			streak = streak.OrderByDescending(t => t.Date).ToList();
+
 			List<Goal> goals = new();
 			foreach(JObject goal in jo["goals"]) {
 				string uuid = (string)goal["uuid"];
@@ -247,7 +276,7 @@ namespace VexTrack.Core
 
 			if (seasons.Count == 0) CreateDataInitPopup();
 
-			Data = new TrackingData(goals, seasons);
+			Data = new TrackingData(goals, streak, seasons);
 			if (reSave) SaveData();
 
 			Recalculate();
@@ -269,8 +298,20 @@ namespace VexTrack.Core
 
 				goals.Add(goalObj);
 			}
-
 			jo.Add("goals", goals);
+
+			Data.Streak = Data.Streak.OrderByDescending(t => t.Date).ToList();
+			JArray streak = new();
+			foreach(StreakEntry streakEntry in Data.Streak)
+			{
+				JObject streakEntryObj = new();
+				streakEntryObj.Add("uuid", streakEntry.UUID);
+				streakEntryObj.Add("date", streakEntry.Date);
+				streakEntryObj.Add("status", streakEntry.Status);
+
+				streak.Add(streakEntryObj);
+			}
+			jo.Add("streak", streak);
 
 			JArray seasons = new();
 			foreach (Season season in Data.Seasons)

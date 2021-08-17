@@ -25,6 +25,8 @@ namespace VexTrack.MVVM.ViewModel
 		private int _collected;
 		private int _remaining;
 		private int _total;
+		private int _streak;
+		private Brush _streakColor;
 		private double _progress;
 		private string _seasonName;
 		private int _deviationIdeal;
@@ -75,6 +77,24 @@ namespace VexTrack.MVVM.ViewModel
 			set
 			{
 				_total = value;
+				OnPropertyChanged();
+			}
+		}
+		public int Streak
+		{
+			get => _streak;
+			set
+			{
+				_streak = value;
+				OnPropertyChanged();
+			}
+		}
+		public Brush StreakColor
+		{
+			get => _streakColor;
+			set
+			{
+				_streakColor = value;
 				OnPropertyChanged();
 			}
 		}
@@ -198,6 +218,8 @@ namespace VexTrack.MVVM.ViewModel
 			Remaining = data.Remaining;
 			Total = data.Total;
 			Progress = data.Progress;
+			Streak = data.Streak;
+			StreakColor = StreakDataCalc.GetStreakColor(DateTimeOffset.Now.ToLocalTime().Date, epilogue);
 
 			SeasonName = TrackingDataHelper.CurrentSeasonData.Name;
 			(DeviationIdeal, DeviationDaily) = CalcGraph(epilogue);

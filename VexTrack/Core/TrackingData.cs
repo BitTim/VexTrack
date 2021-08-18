@@ -99,7 +99,7 @@ namespace VexTrack.Core
 		{
 			if (sUUID == "" && !overrideEndDate) return -1;
 
-			if (!overrideEndDate) endDate = DateTimeOffset.Parse(Data.Seasons.Find(s => s.UUID == sUUID).EndDate).ToLocalTime();
+			if (!overrideEndDate) endDate = DateTimeOffset.Parse(Data.Seasons.Find(s => s.UUID == sUUID).EndDate).ToLocalTime().Date;
 			DateTimeOffset today = DateTimeOffset.Now.ToLocalTime().Date;
 
 			int remainingDays = (endDate - today).Days;

@@ -25,12 +25,12 @@ namespace VexTrack.Core
 
 			int initCollected = TrackingDataHelper.GetFirstHistoryEntry(sUUID).Amount;
 			int initRemaining = total - initCollected;
-			int totalDaily = (int)MathF.Round(initRemaining / (duration - bufferDays));
+			double totalDaily = (double)initRemaining / (double)(duration - bufferDays);
 
 			ret.Points.Add(new DataPoint(0, initCollected));
 			for (int i = 1; i < duration + 1; i++)
 			{
-				int value = (int)ret.Points.Last().Y + totalDaily;
+				int value = (int)Math.Ceiling(i * totalDaily + initCollected);
 				if (value > total) value = total;
 
 				ret.Points.Add(new DataPoint(i, value));

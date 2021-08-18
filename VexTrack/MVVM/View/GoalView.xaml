@@ -36,7 +36,7 @@
 					<RowDefinition Height="*"/>
 				</Grid.RowDefinitions>
 
-				<TextBlock Text="Builtin Goals"
+				<TextBlock Text="Built-in Goals"
 						   Grid.Row="0"
 						   Foreground="{DynamicResource Foreground}"
 						   FontSize="20"

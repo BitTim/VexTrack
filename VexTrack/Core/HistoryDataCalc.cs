@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -49,7 +50,29 @@ namespace VexTrack.Core
 
 		public HistoryEntryData(string sUUID, string hUUID, string description, long time, int amount, string map, string result)
 		{
-			(SUUID, HUUID, Description, Time, Amount, Map, Result) = (sUUID, hUUID, description, time, amount, map, result);
+			SUUID = sUUID;
+			HUUID = hUUID;
+			Description = description;
+			Time = time;
+			Amount = amount;
+			Map = map;
+			Result = result;
+		}
+	}
+
+	public class HistoryGroupData
+	{
+		public string SUUID { get; set; }
+		public string GUUID { get; set; }
+		public long Date { get; set; }
+		public ObservableCollection<HistoryEntryData> Entries { get; set; }
+
+		public HistoryGroupData(string sUUID, string gUUID, long date, ObservableCollection<HistoryEntryData> entries)
+		{
+			SUUID = sUUID;
+			GUUID = gUUID;
+			Date = date;
+			Entries = entries;
 		}
 	}
 }

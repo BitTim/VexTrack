@@ -1,14 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VexTrack.Core;
-using VexTrack.MVVM.Validation;
 
 namespace VexTrack.MVVM.ViewModel.Popups
 {
-    class EditableHistoryEntryPopupViewModel : BasePopupViewModel
+	class EditableHistoryEntryPopupViewModel : BasePopupViewModel
 	{
 		public RelayCommand OnBackClicked { get; set; }
 		public RelayCommand OnDoneClicked { get; set; }
@@ -23,7 +18,9 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		private int _amount;
 		private string _map;
 
-		public string Description { get => _description;
+		public string Description
+		{
+			get => _description;
 			set
 			{
 				_description = value;
@@ -66,8 +63,9 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			CanCancel = true;
 
 			OnBackClicked = new RelayCommand(o => { if (CanCancel) Close(); });
-			OnDoneClicked = new RelayCommand(o => {
-				if(EditMode) TrackingDataHelper.EditHistoryEntry(SUUID, HUUID, new HistoryEntry(HUUID, Time, Description, Amount, Map));
+			OnDoneClicked = new RelayCommand(o =>
+			{
+				if (EditMode) TrackingDataHelper.EditHistoryEntry(SUUID, HUUID, new HistoryEntry(HUUID, Time, Description, Amount, Map));
 				else TrackingDataHelper.AddHistoryEntry(SUUID, new HistoryEntry(HUUID, Time, Description, Amount, Map));
 				Close();
 			});
@@ -78,7 +76,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			Title = title;
 			EditMode = editMode;
 
-			if (!EditMode) InitData();
+			if (!EditMode)
+				InitData();
 		}
 
 		public void InitData()
@@ -105,5 +104,5 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 			IsInitialized = true;
 		}
-    }
+	}
 }

@@ -11,7 +11,7 @@
 			<Setter Property="Template">
 				<Setter.Value>
 					<ControlTemplate TargetType="{x:Type local:HistoryEntryButtonModel}">
-						<Grid Margin="8, 0, 16, 8">
+						<Grid Margin="0, 0, 0, 0">
 							<Grid.RowDefinitions>
 								<RowDefinition Height="30"/>
 							</Grid.RowDefinitions>

@@ -494,6 +494,9 @@ namespace VexTrack.Core
 				.History[Data.Seasons[Data.Seasons.FindIndex(s => s.UUID == sUUID)]
 				.History.FindIndex(he => he.UUID == hUUID)] = data;
 
+			HistoryViewModel HistoryVM = (HistoryViewModel)ViewModelManager.ViewModels["History"];
+			HistoryVM.EditEntry(new HistoryEntryData(sUUID, hUUID, data.Description, data.Time, data.Amount, data.Map, HistoryDataCalc.CalcHistoryResult(data.Description)));
+
 			Recalculate();
 			CallUpdate();
 		}

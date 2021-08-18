@@ -32,7 +32,7 @@ namespace VexTrack.Core
 				dailyCollected += h.Amount;
 			}
 
-			int total = (int)MathF.Round(totalData.Remaining / idealRemainingDays);
+			int total = (int)MathF.Round((totalData.Remaining + dailyCollected) / idealRemainingDays);
 			if(total <= 0) total = 0;
 
 			ret.Total = total;
@@ -40,8 +40,8 @@ namespace VexTrack.Core
 			ret.Remaining = ret.Total - ret.Collected;
 			ret.Progress = CalcUtil.CalcProgress(ret.Total, ret.Collected);
 
-			if (CalcUtil.CalcProgress((int)MathF.Round(totalDataEpilogue.Remaining / idealRemainingDays), dailyCollected) >= 100 && dailyCollected > 0) StreakDataCalc.SetStreakEntry(DateTimeOffset.Now.ToLocalTime().Date, Constants.StreakStatusOrder.Keys.ElementAt(2));
-			else if (CalcUtil.CalcProgress((int)MathF.Round(totalDataNormal.Remaining / idealRemainingDays), dailyCollected) >= 100 && dailyCollected > 0) StreakDataCalc.SetStreakEntry(DateTimeOffset.Now.ToLocalTime().Date, Constants.StreakStatusOrder.Keys.ElementAt(1));
+			if (CalcUtil.CalcProgress((int)MathF.Round((totalDataEpilogue.Remaining + dailyCollected) / idealRemainingDays), dailyCollected) >= 100 && dailyCollected > 0) StreakDataCalc.SetStreakEntry(DateTimeOffset.Now.ToLocalTime().Date, Constants.StreakStatusOrder.Keys.ElementAt(2));
+			else if (CalcUtil.CalcProgress((int)MathF.Round((totalDataNormal.Remaining + dailyCollected) / idealRemainingDays), dailyCollected) >= 100 && dailyCollected > 0) StreakDataCalc.SetStreakEntry(DateTimeOffset.Now.ToLocalTime().Date, Constants.StreakStatusOrder.Keys.ElementAt(1));
 			else StreakDataCalc.SetStreakEntry(DateTimeOffset.Now.ToLocalTime().Date, Constants.StreakStatusOrder.Keys.ElementAt(0));
 
 			ret.Streak = StreakDataCalc.CalcCurrentStreak(epilogue);

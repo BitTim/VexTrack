@@ -11,7 +11,7 @@ namespace VexTrack.Core
 		public static readonly string AppName = "VexTrack";
 		public static readonly string Version = "v1.7";
 
-		public static readonly string DataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"/VexTrack";
+		public static readonly string DataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"/VexTrack - Preview";
 		public static readonly string LegacyDataFolder = @"dat";
 		public static readonly string UpdateFolder = DataFolder + @"/Update";
 

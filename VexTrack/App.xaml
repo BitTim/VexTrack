@@ -34,6 +34,7 @@
 				<ResourceDictionary Source="Theme/ProgressButtonTheme.xaml"/>
 				<ResourceDictionary Source="Theme/ColorPickerTheme.xaml"/>
 				<ResourceDictionary Source="Theme/TextWithUnitTheme.xaml"/>
+				<ResourceDictionary Source="Theme/ComboBoxTheme.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 
 			<!-- Pages -->

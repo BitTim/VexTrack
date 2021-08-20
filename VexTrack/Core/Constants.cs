@@ -26,6 +26,27 @@ namespace VexTrack.Core
 		public static readonly int XPPerEpilogueLevel = 36500;
 		public static readonly int Level2Offset = 500;
 
+		public static readonly List<string> Maps = new List<string>()
+		{
+			"Ascent",
+			"Bind",
+			"Breeze",
+			"Haven",
+			"Icebox",
+			"Split"
+		};
+
+		public static readonly List<string> Gamemodes = new List<string>()
+		{
+			"Unrated",
+			"Competetive",
+			"Spike Rush",
+			"Deathmatch",
+			"Escalation",
+			"Replication",
+			"Snowballfight"
+		};
+
 		public static readonly Dictionary<string, int> StreakStatusOrder = new Dictionary<string, int>
 		{
 			["None"] = 0,

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using VexTrack.Core;
 
 namespace VexTrack.MVVM.ViewModel.Popups
@@ -11,6 +12,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public string Title { get; set; }
 		public string SUUID { get; set; }
 		public string HUUID { get; set; }
+		public List<string> Maps => Constants.Maps;
 		public bool EditMode { get; set; }
 
 		private string _description;

@@ -13,6 +13,8 @@
 	<UserControl.Resources>
 		<conv:HistoryResultToResourceKeyConverter x:Key="ResultToKeyConv"/>
 		<conv:TimestampToStringConverter x:Key="TimestampConv"/>
+		<conv:StringToVisibilityConverter x:Key="StringToVisibleConv"/>
+		<conv:InvertedStringToVisibilityConverter x:Key="InvStringToVisibleConv"/>
 	</UserControl.Resources>
 
 	<Grid Height="Auto"
@@ -49,25 +51,36 @@
 						<RowDefinition Height="30"/>
 						<RowDefinition Height="30"/>
 						<RowDefinition Height="30"/>
+						<RowDefinition Height="30"/>
 					</Grid.RowDefinitions>
 
-					<TextBlock Text="Description"
+					<TextBlock Text="Game mode"
 							   Grid.Row="0"
 							   Grid.Column="0"
 							   FontSize="14"
 							   FontWeight="Bold"
 							   Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
 							   Margin="0, 0, 0, 8"/>
-
-					<TextBlock Text="Time"
+					
+					<TextBlock Text="Description"
 							   Grid.Row="1"
 							   Grid.Column="0"
 							   FontSize="14"
 							   FontWeight="Bold"
 							   Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
+							   Visibility="{Binding GameMode, Converter={StaticResource StringToVisibleConv}, ConverterParameter=Custom}"
 							   Margin="0, 0, 0, 8"/>
 
-					<TextBlock Text="Gained XP"
+					<TextBlock Text="Score"
+							   Grid.Row="1"
+							   Grid.Column="0"
+							   FontSize="14"
+							   FontWeight="Bold"
+							   Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
+							   Visibility="{Binding GameMode, Converter={StaticResource InvStringToVisibleConv}, ConverterParameter=Custom}"
+							   Margin="0, 0, 0, 8"/>
+
+					<TextBlock Text="Time"
 							   Grid.Row="2"
 							   Grid.Column="0"
 							   FontSize="14"
@@ -75,7 +88,7 @@
 							   Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
 							   Margin="0, 0, 0, 8"/>
 
-					<TextBlock Text="Result"
+					<TextBlock Text="Gained XP"
 							   Grid.Row="3"
 							   Grid.Column="0"
 							   FontSize="14"
@@ -91,18 +104,88 @@
 							   Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
 							   Margin="0, 0, 0, 8"/>
 
+					<TextBlock Text="Result"
+							   Grid.Row="5"
+							   Grid.Column="0"
+							   FontSize="14"
+							   FontWeight="Bold"
+							   Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
+							   Margin="0, 0, 0, 8"/>
 
+
+					<ComboBox  Grid.Row="0"
+							   Grid.Column="1"
+							   Margin="0, 0, 0, 8"
+							   FontSize="14"
+							   ItemsSource="{Binding GameModes}"
+							   SelectedIndex="0"
+							   SelectedItem="{Binding GameMode, UpdateSourceTrigger=PropertyChanged}"/>
 
 					<TextBox Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
-							   Grid.Row="0"
-							   Grid.Column="1"
-							   FontSize="14"
-							   Margin="0, 0, 0, 8"
+							 Grid.Row="1"
+							 Grid.Column="1"
+							 FontSize="14"
+							 Margin="0, 0, 0, 8"
 							 Height="22"
+							 Visibility="{Binding GameMode, Converter={StaticResource StringToVisibleConv}, ConverterParameter=Custom}"
 							 Style="{DynamicResource TextBoxTheme}"/>
 
+					<Grid Grid.Row="1"
+						  Grid.Column="1"
+						  Visibility="{Binding GameMode, Converter={StaticResource InvStringToVisibleConv}, ConverterParameter=Custom}">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
+
+						<TextBox x:Name="PART_Score"
+							 Grid.Column="0"
+							 FontSize="14"
+							 Margin="0, 0, 0, 8"
+							 Height="22"
+							 Style="{DynamicResource TextBoxTheme}">
+							<TextBox.Text>
+								<Binding Path="Score"
+									 UpdateSourceTrigger="PropertyChanged"
+									 ValidatesOnNotifyDataErrors="True"
+									 ValidatesOnDataErrors="True"
+									 NotifyOnValidationError="True">
+									<Binding.ValidationRules>
+										<validation:NumericValidationRule ValidatesOnTargetUpdated="True"/>
+									</Binding.ValidationRules>
+								</Binding>
+							</TextBox.Text>
+						</TextBox>
+
+						<TextBlock Text="-"
+								   Grid.Column="1"
+								   FontSize="14"
+								   Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
+								   Margin="8, 0, 8, 0"/>
+
+						<TextBox x:Name="PART_EnemyScore"
+							 Grid.Column="2"
+							 FontSize="14"
+							 Margin="0, 0, 0, 8"
+							 Height="22"
+							 Style="{DynamicResource TextBoxTheme}">
+							<TextBox.Text>
+								<Binding Path="EnemyScore"
+									 UpdateSourceTrigger="PropertyChanged"
+									 ValidatesOnNotifyDataErrors="True"
+									 ValidatesOnDataErrors="True"
+									 NotifyOnValidationError="True">
+									<Binding.ValidationRules>
+										<validation:NumericValidationRule ValidatesOnTargetUpdated="True"/>
+									</Binding.ValidationRules>
+								</Binding>
+							</TextBox.Text>
+						</TextBox>
+					</Grid>
+
 					<TextBox x:Name="PART_DateTimeBox"
-							 Grid.Row="1"
+							 Grid.Row="2"
 							 Grid.Column="1"
 							 FontSize="14"
 							 Margin="0, 0, 0, 8"
@@ -123,7 +206,7 @@
 					</TextBox>
 
 					<TextBox x:Name="PART_AmountBox"
-							 Grid.Row="2"
+							 Grid.Row="3"
 							 Grid.Column="1"
 							 FontSize="14"
 							 Margin="0, 0, 0, 8"
@@ -142,20 +225,21 @@
 						</TextBox.Text>
 					</TextBox>
 
-					<TextBlock Text="{Binding Result, UpdateSourceTrigger=PropertyChanged}"
-							   Grid.Row="3"
-							   Grid.Column="1"
-							   FontSize="14"
-							   Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
-							   Margin="0, 0, 0, 8"
-							 Height="22"/>
-
 					<ComboBox  Grid.Row="4"
 							   Grid.Column="1"
 							   Margin="0, 0, 0, 8"
 							   FontSize="14"
 							   ItemsSource="{Binding Maps}"
+							   SelectedIndex="0"
 							   SelectedItem="{Binding Map, UpdateSourceTrigger=PropertyChanged}"/>
+
+					<TextBlock Text="{Binding Result, UpdateSourceTrigger=PropertyChanged}"
+							   Grid.Row="5"
+							   Grid.Column="1"
+							   FontSize="14"
+							   Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
+							   Margin="0, 0, 0, 8"
+							 Height="22"/>
 				</Grid>
 
 				<Grid Grid.Row="2"

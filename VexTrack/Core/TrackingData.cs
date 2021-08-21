@@ -12,9 +12,15 @@ namespace VexTrack.Core
 	{
 		public string UUID { get; set; }
 		public long Time { get; set; }
-		public string Description { get; set; }
+		public string GameMode { get; set; }
 		public int Amount { get; set; }
 		public string Map { get; set; }
+		public string Description { get; set; }
+		public int Score { get; set; }
+		public int EnemyScore { get; set; }
+
+		//TODO: Implement read / write of new Properties and display the new Properties correctly
+		//TODO: Toggle for surrendered win / loss
 
 		public HistoryEntry(string uuid, long time, string desc, int amount, string map)
 		{

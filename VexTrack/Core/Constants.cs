@@ -44,7 +44,8 @@ namespace VexTrack.Core
 			"Deathmatch",
 			"Escalation",
 			"Replication",
-			"Snowballfight"
+			"Snowballfight",
+			"Custom"
 		};
 
 		public static readonly Dictionary<string, int> StreakStatusOrder = new Dictionary<string, int>

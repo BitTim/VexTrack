@@ -13,9 +13,13 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public string SUUID { get; set; }
 		public string HUUID { get; set; }
 		public List<string> Maps => Constants.Maps;
+		public List<string> GameModes => Constants.Gamemodes;
 		public bool EditMode { get; set; }
 
 		private string _description;
+		private string _gamemode;
+		private int _score;
+		private int _enemyScore;
 		private long _time;
 		private int _amount;
 		private string _map;
@@ -26,6 +30,34 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			set
 			{
 				_description = value;
+				OnPropertyChanged();
+			}
+		}
+		public string GameMode
+		{
+			get => _gamemode;
+			set
+			{
+				_gamemode = value;
+				OnPropertyChanged();
+			}
+		}
+		public int Score
+		{
+			get => _score;
+			set
+			{
+				_score = value;
+				OnPropertyChanged();
+				OnPropertyChanged(nameof(Result));
+			}
+		}
+		public int EnemyScore
+		{
+			get => _enemyScore;
+			set
+			{
+				_enemyScore = value;
 				OnPropertyChanged();
 				OnPropertyChanged(nameof(Result));
 			}
@@ -89,8 +121,11 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			SUUID = TrackingDataHelper.CurrentSeasonUUID;
 			HUUID = Guid.NewGuid().ToString();
 			Description = "";
+			GameMode = Constants.Gamemodes[0];
+			Map = Constants.Maps[0];
 			Amount = 0;
-			Map = "";
+			Score = 0;
+			EnemyScore = 0;
 
 			IsInitialized = true;
 		}
@@ -99,10 +134,13 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		{
 			SUUID = data.SUUID;
 			HUUID = data.HUUID;
-			Description = data.Description;
+			GameMode = data.GameMode;
+			Score = data.Score;
+			EnemyScore = data.EnemyScore;
 			Time = data.Time;
 			Amount = data.Amount;
 			Map = data.Map;
+			Description = data.Description;
 
 			IsInitialized = true;
 		}

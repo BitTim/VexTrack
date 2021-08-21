@@ -42,21 +42,27 @@ namespace VexTrack.Core
 	{
 		public string SUUID { get; set; }
 		public string HUUID { get; set; }
+		public string GameMode { get; set; }
+		public int Score { get; set; }
+		public int EnemyScore { get; set; }
 		public string Description { get; set; }
 		public long Time { get; set; }
 		public int Amount { get; set; }
 		public string Map { get; set; }
 		public string Result { get; set; }
 
-		public HistoryEntryData(string sUUID, string hUUID, string description, long time, int amount, string map, string result)
+		public HistoryEntryData(string sUUID, string hUUID, string gameMode, long time, int amount, string map, string result, string description = "", int score = -1, int enemyScore = -1)
 		{
 			SUUID = sUUID;
 			HUUID = hUUID;
-			Description = description;
+			GameMode = gameMode;
 			Time = time;
 			Amount = amount;
 			Map = map;
 			Result = result;
+			Description = description;
+			Score = score;
+			EnemyScore = enemyScore;
 		}
 	}
 

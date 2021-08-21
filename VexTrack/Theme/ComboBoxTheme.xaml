@@ -57,7 +57,7 @@
 									  Template="{StaticResource ComboBoxToggleButtonTheme}"
 									  Grid.Column="2"
 									  Focusable="false"
-									  ClickMode="Press"
+									  ClickMode="Release"
 									  IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"/>
 
 						<ContentPresenter x:Name="ContentSite"

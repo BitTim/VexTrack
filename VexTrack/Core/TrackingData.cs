@@ -18,13 +18,21 @@ namespace VexTrack.Core
 		public string Description { get; set; }
 		public int Score { get; set; }
 		public int EnemyScore { get; set; }
+		public bool SurrenderedWin { get; set; }
+		public bool SurrenderedLoss { get; set; }
 
-		//TODO: Implement read / write of new Properties and display the new Properties correctly
-		//TODO: Toggle for surrendered win / loss
-
-		public HistoryEntry(string uuid, long time, string desc, int amount, string map)
+		public HistoryEntry(string uuid, long time, string gamemode, int amount, string map, string desc, int score, int enemyScore, bool surrenderedWin, bool surrenderedLoss)
 		{
-			(UUID, Time, Description, Amount, Map) = (uuid, time, desc, amount, map);
+			UUID = uuid;
+			Time = time;
+			GameMode = gamemode;
+			Amount = amount;
+			Map = map;
+			Description = desc;
+			Score = score;
+			EnemyScore = enemyScore;
+			SurrenderedWin = surrenderedWin;
+			SurrenderedLoss = surrenderedLoss;
 		}
 	}
 
@@ -36,7 +44,9 @@ namespace VexTrack.Core
 
 		public StreakEntry(string uuid, long date, string status)
 		{
-			(UUID, Date, Status) = (uuid, date, status);
+			UUID = uuid;
+			Date = date;
+			Status = status;
 		}
 	}
 
@@ -167,7 +177,11 @@ namespace VexTrack.Core
 				int amount = (int)historyEntry["amount"];
 				string map = (string)historyEntry["map"];
 
-				history.Add(new HistoryEntry(Guid.NewGuid().ToString(), time, description, amount, map));
+				string gameMode, desc;
+				int score, enemyScore;
+				(gameMode, desc, score, enemyScore) = HistoryDataCalc.DescriptionToScores(description);
+
+				history.Add(new HistoryEntry(Guid.NewGuid().ToString(), time, gameMode, amount, map, desc, score, enemyScore, false, false));
 			}
 
 			seasons.Add(new Season(Guid.NewGuid().ToString(), name, endDate, activeBPLevel, cXP, history));
@@ -227,13 +241,34 @@ namespace VexTrack.Core
 				foreach (JObject historyEntry in season[historyKey])
 				{
 					string hUUID = (string)historyEntry["uuid"];
-					string description = (string)historyEntry["description"];
+					string gamemode = (string)historyEntry["gameMode"];
 					long time = (long)historyEntry["time"];
 					int amount = (int)historyEntry["amount"];
 					string map = (string)historyEntry["map"];
+					string description = (string)historyEntry["description"];
+
+					string gameMode, desc;
+					int score, enemyScore;
+					bool surrenderedWin, surrenderedLoss;
+
+					if (gamemode == null)
+					{
+						(gameMode, desc, score, enemyScore) = HistoryDataCalc.DescriptionToScores(description);
+						surrenderedWin = false;
+						surrenderedLoss = false;
+					}
+					else
+					{
+						gameMode = gamemode;
+						desc = description;
+						score = (int)historyEntry["score"];
+						enemyScore = (int)historyEntry["enemyScore"];
+						surrenderedWin = (bool)historyEntry["surrenderedWin"];
+						surrenderedLoss = (bool)historyEntry["surrenderedLoss"];
+					}
 
 					if (hUUID == null) hUUID = Guid.NewGuid().ToString();
-					history.Add(new HistoryEntry(hUUID, time, description, amount, map));
+					history.Add(new HistoryEntry(hUUID, time, gameMode, amount, map, desc, score, enemyScore, surrenderedWin, surrenderedLoss));
 				}
 
 				if (sUUID == null) sUUID = Guid.NewGuid().ToString();
@@ -334,10 +369,15 @@ namespace VexTrack.Core
 				{
 					JObject historyEntryObj = new();
 					historyEntryObj.Add("uuid", historyEntry.UUID);
-					historyEntryObj.Add("description", historyEntry.Description);
+					historyEntryObj.Add("gameMode", historyEntry.GameMode);
 					historyEntryObj.Add("time", historyEntry.Time);
 					historyEntryObj.Add("amount", historyEntry.Amount);
 					historyEntryObj.Add("map", historyEntry.Map);
+					historyEntryObj.Add("description", historyEntry.Description);
+					historyEntryObj.Add("score", historyEntry.Score);
+					historyEntryObj.Add("enemyScore", historyEntry.EnemyScore);
+					historyEntryObj.Add("surrenderedWin", historyEntry.SurrenderedWin);
+					historyEntryObj.Add("surrenderedLoss", historyEntry.SurrenderedLoss);
 
 					history.Add(historyEntryObj);
 				}
@@ -501,7 +541,7 @@ namespace VexTrack.Core
 				.History.FindIndex(he => he.UUID == hUUID)] = data;
 
 			HistoryViewModel HistoryVM = (HistoryViewModel)ViewModelManager.ViewModels["History"];
-			HistoryVM.EditEntry(new HistoryEntryData(sUUID, hUUID, data.Description, data.Time, data.Amount, data.Map, HistoryDataCalc.CalcHistoryResult(data.Description)));
+			HistoryVM.EditEntry(new HistoryEntryData(sUUID, hUUID, data.GameMode, data.Time, data.Amount, data.Map, HistoryDataCalc.CalcHistoryResultFromScores(Constants.ScoreTypes[data.GameMode], data.Score, data.EnemyScore, data.SurrenderedWin, data.SurrenderedLoss), data.Description, data.Score, data.EnemyScore, data.SurrenderedWin, data.SurrenderedLoss));
 
 			Recalculate();
 			CallUpdate();

@@ -17,7 +17,7 @@ namespace VexTrack.MVVM.Converter
 			string param = (string)parameter;
 
 			if (val == param) return Visibility.Visible;
-			else return Visibility.Hidden;
+			else return Visibility.Collapsed;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

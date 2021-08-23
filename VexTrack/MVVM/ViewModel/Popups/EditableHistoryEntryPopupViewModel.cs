@@ -14,6 +14,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public string HUUID { get; set; }
 		public List<string> Maps => Constants.Maps;
 		public List<string> GameModes => Constants.Gamemodes;
+		public string ScoreType => Constants.ScoreTypes[GameMode];
 		public bool EditMode { get; set; }
 
 		private string _description;
@@ -23,6 +24,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		private long _time;
 		private int _amount;
 		private string _map;
+		private bool _surrenderedWin;
+		private bool _surrenderedLoss;
 
 		public string Description
 		{
@@ -40,6 +43,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			{
 				_gamemode = value;
 				OnPropertyChanged();
+				OnPropertyChanged(nameof(ScoreType));
 			}
 		}
 		public int Score
@@ -89,8 +93,34 @@ namespace VexTrack.MVVM.ViewModel.Popups
 				OnPropertyChanged();
 			}
 		}
+		public bool SurrenderedWin
+		{
+			get => _surrenderedWin;
+			set
+			{
+				_surrenderedWin = value;
+				if (_surrenderedWin == true) SurrenderedLoss = false;
 
-		public string Result => HistoryDataCalc.CalcHistoryResult(Description);
+				OnPropertyChanged();
+				OnPropertyChanged(nameof(Result));
+				OnPropertyChanged(nameof(SurrenderedLoss));
+			}
+		}
+		public bool SurrenderedLoss
+		{
+			get => _surrenderedLoss;
+			set
+			{
+				_surrenderedLoss = value;
+				if(_surrenderedLoss == true) SurrenderedWin = false;
+
+				OnPropertyChanged();
+				OnPropertyChanged(nameof(Result));
+				OnPropertyChanged(nameof(SurrenderedWin));
+			}
+		}
+
+		public string Result => HistoryDataCalc.CalcHistoryResultFromScores(ScoreType, Score, EnemyScore, SurrenderedWin, SurrenderedLoss);
 
 		public EditableHistoryEntryPopupViewModel()
 		{
@@ -99,8 +129,12 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			OnBackClicked = new RelayCommand(o => { if (CanCancel) Close(); });
 			OnDoneClicked = new RelayCommand(o =>
 			{
-				if (EditMode) TrackingDataHelper.EditHistoryEntry(SUUID, HUUID, new HistoryEntry(HUUID, Time, Description, Amount, Map));
-				else TrackingDataHelper.AddHistoryEntry(SUUID, new HistoryEntry(HUUID, Time, Description, Amount, Map));
+				if (ScoreType == "Placement" || ScoreType == "None") EnemyScore = -1;
+				if (ScoreType == "None") Score = -1;
+				if (ScoreType == "Score") Description = "";
+
+				if (EditMode) TrackingDataHelper.EditHistoryEntry(SUUID, HUUID, new HistoryEntry(HUUID, Time, GameMode, Amount, Map, Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss));
+				else TrackingDataHelper.AddHistoryEntry(SUUID, new HistoryEntry(HUUID, Time, GameMode, Amount, Map, Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss));
 				Close();
 			});
 		}
@@ -126,6 +160,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			Amount = 0;
 			Score = 0;
 			EnemyScore = 0;
+			SurrenderedWin = false;
+			SurrenderedLoss = false;
 
 			IsInitialized = true;
 		}
@@ -141,6 +177,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			Amount = data.Amount;
 			Map = data.Map;
 			Description = data.Description;
+			SurrenderedWin = data.SurrenderedWin;
+			SurrenderedLoss = data.SurrenderedLoss;
 
 			IsInitialized = true;
 		}

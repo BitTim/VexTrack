@@ -85,7 +85,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 				string endDate = DateTimeOffset.FromUnixTimeSeconds(EndDate).ToLocalTime().Date.ToString("d");
 				List<HistoryEntry> initList = new();
 				int totalCollectedXP = CalcUtil.CalcTotalCollected(ActiveBPLevel, Collected);
-				initList.Add(new HistoryEntry(Guid.NewGuid().ToString(), DateTimeOffset.Now.AddDays(-1).ToLocalTime().ToUnixTimeSeconds(), "Initialization", totalCollectedXP, ""));
+				initList.Add(new HistoryEntry(Guid.NewGuid().ToString(), DateTimeOffset.Now.AddDays(-1).ToLocalTime().ToUnixTimeSeconds(), "Custom", totalCollectedXP, "", "Initialization", -1, -1, false, false));
 
 				TrackingDataHelper.AddSeason(new Season(Guid.NewGuid().ToString(), Name, endDate, ActiveBPLevel, Collected, initList));
 

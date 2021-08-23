@@ -46,7 +46,7 @@
 											  ItemsSource="{Binding Entries}">
 								<ItemsControl.ItemTemplate>
 									<DataTemplate>
-										<model:HistoryEntryButtonModel Description="{Binding Path=Description}"
+										<model:HistoryEntryButtonModel Description="{Binding Path=Title}"
 																	   Margin="0, 0, 0, 8"
 																	   Amount="{Binding Path=Amount}"
 																	   Background="{Binding Path=Result, Converter={StaticResource historyKeyConv}, ConverterParameter=Background}"

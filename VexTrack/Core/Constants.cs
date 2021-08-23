@@ -48,6 +48,18 @@ namespace VexTrack.Core
 			"Custom"
 		};
 
+		public static readonly Dictionary<string, string> ScoreTypes = new Dictionary<string, string>()
+		{
+			[Gamemodes[0]] = "Score",
+			[Gamemodes[1]] = "Score",
+			[Gamemodes[2]] = "Score",
+			[Gamemodes[3]] = "Placement",
+			[Gamemodes[4]] = "Placement",
+			[Gamemodes[5]] = "Score",
+			[Gamemodes[6]] = "Score",
+			[Gamemodes[7]] = "None"
+		};
+
 		public static readonly Dictionary<string, int> StreakStatusOrder = new Dictionary<string, int>
 		{
 			["None"] = 0,

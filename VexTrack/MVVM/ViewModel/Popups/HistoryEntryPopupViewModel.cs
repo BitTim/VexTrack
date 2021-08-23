@@ -17,7 +17,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		private HistoryEntryData RawData { get; set; }
 		public string SUUID { get; set; }
 		public string HUUID { get; set; }
-		public string Description { get; set; }
+		public string Title { get; set; }
 		public long Time { get; set; }
 		public int Amount { get; set; }
 		public string Map { get; set; }
@@ -48,7 +48,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 			SUUID = data.SUUID;
 			HUUID = data.HUUID;
-			Description = data.Description;
+			Title = data.Title;
 			Time = data.Time;
 			Amount = data.Amount;
 			Map = data.Map;

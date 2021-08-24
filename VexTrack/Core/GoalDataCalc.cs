@@ -27,7 +27,8 @@ namespace VexTrack.Core
 			ret.Progress = CalcUtil.CalcProgress(ret.Total, ret.Collected);
 			ret.Active = -1;
 			ret.StartXP = -1;
-			if (ret.Progress >= 100) ret.Status = "Done";
+			ret.Paused = false;
+			if (ret.Progress >= 100) ret.CompletionStatus = "Done";
 
 			return ret;
 		}
@@ -46,7 +47,8 @@ namespace VexTrack.Core
 			ret.Progress = CalcUtil.CalcProgress(ret.Total, ret.Collected);
 			ret.Active = activeLevel > Constants.BattlepassLevels + Constants.EpilogueLevels ? -1 : activeLevel;
 			ret.StartXP = -1;
-			if (ret.Progress >= 100) ret.Status = "Done";
+			ret.Paused = false;
+			if (ret.Progress >= 100) ret.CompletionStatus = "Done";
 
 			return ret;
 		}
@@ -69,7 +71,8 @@ namespace VexTrack.Core
 			ret.Progress = CalcUtil.CalcProgress(ret.Total, ret.Collected);
 			ret.Active = -1;
 			ret.StartXP = -1;
-			if (ret.Progress >= 100) ret.Status = "Done";
+			ret.Paused = false;
+			if (ret.Progress >= 100) ret.CompletionStatus = "Done";
 
 			return ret;
 		}
@@ -86,7 +89,10 @@ namespace VexTrack.Core
 			ret.Progress = CalcUtil.CalcProgress(ret.Total, ret.Collected);
 			ret.Active = -1;
 			ret.Color = goalData.Color;
-			if (ret.Progress >= 100) ret.Status = "Done";
+			ret.Paused = goalData.Paused;
+
+			if (ret.Paused) ret.ActivityStatus = "Paused";
+			if (ret.Progress >= 100) ret.CompletionStatus = "Done";
 
 			return ret;
 		}
@@ -140,18 +146,32 @@ namespace VexTrack.Core
 		public int Remaining { get; set; }
 		public int Total { get; set; }
 		public string Color { get; set; }
-		public string Status { get; set; }
+		public string CompletionStatus { get; set; }
+		public string ActivityStatus { get; set; }
 		public int StartXP { get; set; }
 		public int Active { get; set; }
+		public bool Paused { get; set; }
 
 		public GoalEntryData(string uuid)
 		{
 			UUID = uuid;
 		}
 
-		public GoalEntryData(string uuid, string title, double progress, int collected, int remaining, int total, string color, string status, int startXP = -1, int active = -1)
+		public GoalEntryData(string uuid, string title, double progress, int collected, int remaining, int total, string color, string completionStatus, string activityStatus, bool paused, int startXP = -1, int active = -1)
 		{
-			(UUID, Title, Progress, Collected, Remaining, Total, Color, Status, StartXP, Active) = (uuid, title, progress, collected, remaining, total, color, status, startXP, active);
+			UUID = uuid;
+			Title = title;
+			Progress = progress;
+			Collected = collected;
+			Remaining = remaining;
+			Total = total;
+			Color = color;
+			CompletionStatus = completionStatus;
+			ActivityStatus = activityStatus;
+			Paused = paused;
+
+			StartXP = startXP;
+			Active = active;
 		}
 	}
 }

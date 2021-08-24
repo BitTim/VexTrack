@@ -57,10 +57,16 @@ namespace VexTrack.Core
 		public int Total { get; set; }
 		public int Collected { get; set; }
 		public string Color { get; set; }
+		public bool Paused { get; set; }
 
-		public Goal(string uuid, string name, int total, int collected, string color)
+		public Goal(string uuid, string name, int total, int collected, string color, bool paused)
 		{
-			(UUID, Name, Total, Collected, Color) = (uuid, name, total, collected, color);
+			UUID = uuid;
+			Name = name;
+			Total = total;
+			Collected = collected;
+			Color = color;
+			Paused = paused;
 		}
 	}
 
@@ -158,7 +164,7 @@ namespace VexTrack.Core
 				int startXP = (int)goal["startXP"];
 				string color = (string)goal["color"];
 
-				goals.Add(new Goal(Guid.NewGuid().ToString(), gName, total, collected, color));
+				goals.Add(new Goal(Guid.NewGuid().ToString(), gName, total, collected, color, false));
 			}
 
 			List<StreakEntry> streak = new();
@@ -302,6 +308,7 @@ namespace VexTrack.Core
 
 				int collected;
 				int total;
+				bool paused;
 
 				if (goal["total"] == null || goal["collected"] == null)
 				{
@@ -315,8 +322,15 @@ namespace VexTrack.Core
 					collected = (int)goal["collected"];
 				}
 
+				if(goal["paused"] == null)
+				{
+					paused = false;
+					reSave = true;
+				}
+				else paused = (bool)goal["paused"];
+
 				if (uuid == null) uuid = Guid.NewGuid().ToString();
-				goals.Add(new Goal(uuid, name, total, collected, color));
+				goals.Add(new Goal(uuid, name, total, collected, color, paused));
 			}
 
 			if (seasons.Count == 0) CreateDataInitPopup();
@@ -340,6 +354,7 @@ namespace VexTrack.Core
 				goalObj.Add("total", goal.Total);
 				goalObj.Add("collected", goal.Collected);
 				goalObj.Add("color", goal.Color);
+				goalObj.Add("paused", goal.Paused);
 
 				goals.Add(goalObj);
 			}
@@ -454,6 +469,8 @@ namespace VexTrack.Core
 
 			foreach (Goal g in Data.Goals)
 			{
+				if (g.Paused) continue;
+
 				int newCollected = g.Collected + deltaXP;
 				if (newCollected < 0)
 				{

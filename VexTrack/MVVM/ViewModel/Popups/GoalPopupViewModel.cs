@@ -15,7 +15,6 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		private EditableGoalPopupViewModel EditableGoalPopup { get; set; }
 
 		private GoalEntryData RawData { get; set; }
-		public int Index { get; set; }
 		public string UUID { get; set; }
 		public string Title { get; set; }
 		public string Unit { get; set; }
@@ -28,6 +27,22 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 		public bool CanDelete { get; set; }
 		public bool CanEdit { get; set; }
+
+		private bool _paused { get; set; }
+		public bool Paused
+		{
+			get => _paused;
+			set
+			{
+				if (value == _paused) return;
+
+				_paused = value;
+				RawData.Paused = _paused;
+				TrackingDataHelper.EditGoal(UUID, new Goal(UUID, Title, Total, Collected, Color, _paused));
+
+				OnPropertyChanged();
+			}
+		}
 
 		public GoalPopupViewModel()
 		{
@@ -65,6 +80,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			Active = data.Active;
 			Color = data.Color;
 			Unit = unit;
+			Paused = data.Paused;
 
 			IsInitialized = true;
 		}

@@ -20,14 +20,17 @@ namespace VexTrack.MVVM.Converter
 
 			Path checkIcon = (Path)Application.Current.FindResource("CheckIcon");
 			Path crossIcon = (Path)Application.Current.FindResource("CrossIcon");
+			Path pauseIcon = (Path)Application.Current.FindResource("LockIcon");
 
 			Brush green = (Brush)Application.Current.FindResource("AccGreen");
 			Brush red = (Brush)Application.Current.FindResource("AccRed");
+			Brush foreground = (Brush)Application.Current.FindResource("Foreground");
 
 			if (mode == "Data")
 			{
 				if (status == "Done") return checkIcon.Data;
 				if (status == "Failed") return crossIcon.Data;
+				if (status == "Paused") return pauseIcon.Data;
 				return null;
 			}
 
@@ -35,6 +38,7 @@ namespace VexTrack.MVVM.Converter
 			{
 				if (status == "Done") return green;
 				if (status == "Failed") return red;
+				if (status == "Paused") return foreground;
 				return null;
 			}
 

@@ -16,6 +16,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public string UUID { get; set; }
 		public int StartXP { get; set; }
 		public bool EditMode { get; set; }
+		public bool Paused { get; set; }
 		
 
 		private string PrevColor { get; set; }
@@ -99,8 +100,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 			OnBackClicked = new RelayCommand(o => { if (CanCancel) Close(); });
 			OnDoneClicked = new RelayCommand(o => {
-				if (EditMode) TrackingDataHelper.EditGoal(UUID, new Goal(UUID, Title, Total, Collected, Color));
-				else TrackingDataHelper.AddGoal(new Goal(UUID, Title, Total, Collected, Color));
+				if (EditMode) TrackingDataHelper.EditGoal(UUID, new Goal(UUID, Title, Total, Collected, Color, Paused));
+				else TrackingDataHelper.AddGoal(new Goal(UUID, Title, Total, Collected, Color, Paused));
 				Close();
 			});
 		}
@@ -121,6 +122,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			Collected = 0;
 			UseAccentColor = false;
 			Color = "#000000";
+			Paused = false;
 
 			IsInitialized = true;
 		}
@@ -134,6 +136,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			UseAccentColor = data.Color == "" ? true : false;
 			Color = data.Color;
 			StartXP = data.StartXP;
+			Paused = data.Paused;
 
 			IsInitialized = true;
 		}

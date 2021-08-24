@@ -59,8 +59,10 @@
 													   Value="{Binding Path=Progress}"
 													   Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.BuiltinGoalButtonClick}"
 													   CommandParameter="{Binding Path=UUID}"
-													   BadgeData="{Binding Path=Status, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Data}"
-													   BadgeColor="{Binding Path=Status, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Color}"
+													   BadgeRightData="{Binding Path=Status, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Data}"
+													   BadgeRightColor="{Binding Path=Status, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Color}"
+													   BadgeLeftData="{Binding Path=ActivityStatus, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Data}"
+													   BadgeLeftColor="{Binding Path=ActivityStatus, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Color}"
 													   Margin="8, 8, 0, 0"/>
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
@@ -90,8 +92,10 @@
 													   Color="{Binding Path=Color}"
 													   Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.UserGoalButtonClick}"
 													   CommandParameter="{Binding Path=UUID}"
-													   BadgeData="{Binding Path=Status, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Data}"
-													   BadgeColor="{Binding Path=Status, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Color}"
+													   BadgeRightData="{Binding Path=CompletionStatus, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Data}"
+													   BadgeRightColor="{Binding Path=CompletionStatus, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Color}"
+													   BadgeLeftData="{Binding Path=ActivityStatus, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Data}"
+													   BadgeLeftColor="{Binding Path=ActivityStatus, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Color}"
 													   Margin="8, 8, 0, 0"/>
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>

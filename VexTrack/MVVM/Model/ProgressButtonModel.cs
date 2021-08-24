@@ -22,8 +22,10 @@ namespace VexTrack.MVVM.Model
 		public static DependencyProperty MinValueProperty = DependencyProperty.Register("MinValue", typeof(double), typeof(ProgressButtonModel), new PropertyMetadata(0.0));
 		public static DependencyProperty MaxValueProperty = DependencyProperty.Register("MaxValue", typeof(double), typeof(ProgressButtonModel), new PropertyMetadata(100.0));
 		public static DependencyProperty ColorProperty = DependencyProperty.Register("Color", typeof(string), typeof(ProgressButtonModel), new PropertyMetadata(""));
-		public static DependencyProperty BadgeDataProperty = DependencyProperty.Register("BadgeData", typeof(Geometry), typeof(ProgressButtonModel), new PropertyMetadata(null));
-		public static DependencyProperty BadgeColorProperty = DependencyProperty.Register("BadgeColor", typeof(Brush), typeof(ProgressButtonModel), new PropertyMetadata(Application.Current.FindResource("Foreground")));
+		public static DependencyProperty BadgeRightDataProperty = DependencyProperty.Register("BadgeRightData", typeof(Geometry), typeof(ProgressButtonModel), new PropertyMetadata(null));
+		public static DependencyProperty BadgeRightColorProperty = DependencyProperty.Register("BadgeRightColor", typeof(Brush), typeof(ProgressButtonModel), new PropertyMetadata(Application.Current.FindResource("Foreground")));
+		public static DependencyProperty BadgeLeftDataProperty = DependencyProperty.Register("BadgeLeftData", typeof(Geometry), typeof(ProgressButtonModel), new PropertyMetadata(null));
+		public static DependencyProperty BadgeLeftColorProperty = DependencyProperty.Register("BadgeLeftColor", typeof(Brush), typeof(ProgressButtonModel), new PropertyMetadata(Application.Current.FindResource("Foreground")));
 
 		public string Title
 		{
@@ -55,16 +57,28 @@ namespace VexTrack.MVVM.Model
 			set => SetValue(ColorProperty, value);
 		}
 
-		public Geometry BadgeData
+		public Geometry BadgeRightData
 		{
-			get => (Geometry)GetValue(BadgeDataProperty);
-			set => SetValue(BadgeDataProperty, value);
+			get => (Geometry)GetValue(BadgeRightDataProperty);
+			set => SetValue(BadgeRightDataProperty, value);
 		}
 
-		public Brush BadgeColor
+		public Brush BadgeRightColor
 		{
-			get => (Brush)GetValue(BadgeColorProperty);
-			set => SetValue(BadgeColorProperty, value);
+			get => (Brush)GetValue(BadgeRightColorProperty);
+			set => SetValue(BadgeRightColorProperty, value);
+		}
+
+		public Geometry BadgeLeftData
+		{
+			get => (Geometry)GetValue(BadgeLeftDataProperty);
+			set => SetValue(BadgeLeftDataProperty, value);
+		}
+
+		public Brush BadgeLeftColor
+		{
+			get => (Brush)GetValue(BadgeLeftColorProperty);
+			set => SetValue(BadgeLeftColorProperty, value);
 		}
 
 		public bool IsCompleted { get => Value == MaxValue; }
@@ -74,7 +88,7 @@ namespace VexTrack.MVVM.Model
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(ProgressButtonModel), new FrameworkPropertyMetadata(typeof(ProgressButtonModel)));
 		}
 		public ProgressButtonModel() { }
-		public ProgressButtonModel(string title, double value, string color, double minValue = 0, double maxValue = 100, Geometry badgeData = null, Brush badgeColor = null)
+		public ProgressButtonModel(string title, double value, string color, double minValue = 0, double maxValue = 100, Geometry badgeRightData = null, Brush badgeRightColor = null, Geometry badgeLeftData = null, Brush badgeLeftColor = null)
 		{
 			Title = title;
 			Value = value;
@@ -82,8 +96,10 @@ namespace VexTrack.MVVM.Model
 			MinValue = minValue;
 			MaxValue = maxValue;
 
-			if(badgeData != null) BadgeData = badgeData;
-			if(badgeColor != null) BadgeColor = badgeColor;
+			if (badgeRightData != null) BadgeRightData = badgeRightData;
+			if (badgeRightColor != null) BadgeRightColor = badgeRightColor;
+			if (badgeLeftData != null) BadgeLeftData = badgeLeftData;
+			if (badgeLeftColor != null) BadgeLeftColor = badgeLeftColor;
 		}
 	}
 }

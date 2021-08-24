@@ -42,7 +42,13 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			set
 			{
 				_gamemode = value;
+				Score = 0;
+				EnemyScore = 0;
+				Description = "";
 				OnPropertyChanged();
+				OnPropertyChanged(nameof(Score));
+				OnPropertyChanged(nameof(EnemyScore));
+				OnPropertyChanged(nameof(Description));
 				OnPropertyChanged(nameof(ScoreType));
 			}
 		}

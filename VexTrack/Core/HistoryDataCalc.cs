@@ -26,9 +26,12 @@ namespace VexTrack.Core
 				
 				string scoreString = score.ToString();
 				string suffix = "th";
-				if (scoreString.Last() == '1') suffix = "st";
-				if (scoreString.Last() == '2') suffix = "nd";
-				if (scoreString.Last() == '3') suffix = "rd";
+				if (scoreString[scoreString.Count - 2] != 1)
+				{
+					if (scoreString.Last() == '1') suffix = "st";
+					if (scoreString.Last() == '2') suffix = "nd";
+					if (scoreString.Last() == '3') suffix = "rd";
+				}
 
 				return scoreString + suffix;
 			}

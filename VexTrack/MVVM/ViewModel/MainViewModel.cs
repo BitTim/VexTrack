@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using VexTrack.Core;
 using VexTrack.MVVM.ViewModel.Popups;
 
@@ -258,7 +259,7 @@ namespace VexTrack.MVVM.ViewModel
 
 		public void UpdateTimerCallback(object state)
 		{
-			Update();
+			Application.Current.Dispatcher.Invoke((Action)delegate { Update(); });
 		}
 
 

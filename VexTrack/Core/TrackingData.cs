@@ -177,6 +177,8 @@ namespace VexTrack.Core
 				int amount = (int)historyEntry["amount"];
 				string map = (string)historyEntry["map"];
 
+				if (map == null || map == "") map = Constants.Maps.Last();
+
 				string gameMode, desc;
 				int score, enemyScore;
 				(gameMode, desc, score, enemyScore) = HistoryDataCalc.DescriptionToScores(description);
@@ -246,6 +248,8 @@ namespace VexTrack.Core
 					int amount = (int)historyEntry["amount"];
 					string map = (string)historyEntry["map"];
 					string description = (string)historyEntry["description"];
+
+					if (map == null || map == "") map = Constants.Maps.Last();
 
 					string gameMode, desc;
 					int score, enemyScore;

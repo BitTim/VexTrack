@@ -33,7 +33,8 @@ namespace VexTrack.Core
 			"Breeze",
 			"Haven",
 			"Icebox",
-			"Split"
+			"Split",
+			"None"
 		};
 
 		public static readonly List<string> Gamemodes = new List<string>()
@@ -54,7 +55,7 @@ namespace VexTrack.Core
 			[Gamemodes[1]] = "Score",
 			[Gamemodes[2]] = "Score",
 			[Gamemodes[3]] = "Placement",
-			[Gamemodes[4]] = "Placement",
+			[Gamemodes[4]] = "Score",
 			[Gamemodes[5]] = "Score",
 			[Gamemodes[6]] = "Score",
 			[Gamemodes[7]] = "None"

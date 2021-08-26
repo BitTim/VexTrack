@@ -28,6 +28,9 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		private bool _useAccentColor;
 		private double _progress;
 
+		private string _group; 
+		private string _dependency; 
+
 		public string Title
 		{
 			get => _title;
@@ -79,6 +82,30 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			}
 		}
 
+
+		public List<GoalGroup> AvailableGroups => TrackingDataHelper.Data.Goals;
+		public List<Goal> AvailableDependencies => Group != null ? TrackingDataHelper.Data.Goals[TrackingDataHelper.Data.Goals.FindIndex(gg => gg.UUID == Group)].Goals : new();
+		public string Group
+		{
+			get => _group;
+			set
+			{
+				_group = value;
+				OnPropertyChanged();
+				OnPropertyChanged(nameof(AvailableDependencies));
+			}
+		}
+		public string Dependency
+		{
+			get => _dependency;
+			set
+			{
+				_dependency = value;
+				OnPropertyChanged();
+			}
+		}
+
+
 		public bool UseAccentColor
 		{
 			get => _useAccentColor;
@@ -100,8 +127,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 			OnBackClicked = new RelayCommand(o => { if (CanCancel) Close(); });
 			OnDoneClicked = new RelayCommand(o => {
-				if (EditMode) TrackingDataHelper.EditGoal(UUID, new Goal(UUID, Title, Total, Collected, Color, Paused));
-				else TrackingDataHelper.AddGoal(new Goal(UUID, Title, Total, Collected, Color, Paused));
+				if (EditMode) TrackingDataHelper.EditGoal(Group, UUID, new Goal(UUID, Title, Total, Collected, Color, Paused));
+				else TrackingDataHelper.AddGoal(Group, new Goal(UUID, Title, Total, Collected, Color, Paused));
 				Close();
 			});
 		}
@@ -124,12 +151,17 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			Color = "#000000";
 			Paused = false;
 
+			//TODO: Handle case where no Group exists
+			//      -> Ability to Create Groups
+			Group = AvailableGroups[0].UUID;
+
 			IsInitialized = true;
 		}
 
 		public void SetData(GoalEntryData data)
 		{
 			UUID = data.UUID;
+			Group = data.GroupUUID;
 			Title = data.Title;
 			Total = data.Total;
 			Collected = data.Collected;

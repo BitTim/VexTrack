@@ -47,6 +47,8 @@
 						<RowDefinition Height="30"/>
 						<RowDefinition Height="30"/>
 						<RowDefinition Height="30"/>
+						<RowDefinition Height="30"/>
+						<RowDefinition Height="30"/>
 						<RowDefinition Height="Auto"/>
 					</Grid.RowDefinitions>
 
@@ -81,8 +83,24 @@
 							   Foreground="{DynamicResource Foreground}"
 							   Margin="0, 0, 0, 8"/>
 
-					<TextBlock Text="Color"
+					<TextBlock Text="Group"
 							   Grid.Row="4"
+							   Grid.Column="0"
+							   FontSize="14"
+							   FontWeight="Bold"
+							   Foreground="{DynamicResource Foreground}"
+							   Margin="0, 0, 0, 8"/>
+
+					<TextBlock Text="Dependency"
+							   Grid.Row="5"
+							   Grid.Column="0"
+							   FontSize="14"
+							   FontWeight="Bold"
+							   Foreground="{DynamicResource Foreground}"
+							   Margin="0, 0, 0, 8"/>
+
+					<TextBlock Text="Color"
+							   Grid.Row="6"
 							   Grid.Column="0"
 							   FontSize="14"
 							   FontWeight="Bold"
@@ -141,7 +159,26 @@
 						</TextBox.Text>
 					</TextBox>
 
-					<Grid Grid.Row="4"
+					<ComboBox  Grid.Row="4"
+							   Grid.Column="1"
+							   Margin="0, 0, 0, 8"
+							   FontSize="14"
+							   ItemsSource="{Binding AvailableGroups}"
+							   SelectedValuePath="UUID"
+							   DisplayMemberPath="Name"
+							   SelectedIndex="0"
+							   SelectedItem="{Binding Group, UpdateSourceTrigger=PropertyChanged}"/>
+
+					<ComboBox  Grid.Row="5"
+							   Grid.Column="1"
+							   Margin="0, 0, 0, 8"
+							   FontSize="14"
+							   ItemsSource="{Binding AvailableDependencies}"
+							   SelectedValuePath="UUID"
+							   DisplayMemberPath="Name"
+							   SelectedItem="{Binding Dependency, UpdateSourceTrigger=PropertyChanged}"/>
+
+					<Grid Grid.Row="6"
 						  Grid.Column="1">
 
 						<TextBlock Text="Use Accent Color"
@@ -159,7 +196,7 @@
 								  Style="{StaticResource CheckBoxTheme}"/>
 					</Grid>
 					
-					<model:ColorPickerModel Grid.Row="5"
+					<model:ColorPickerModel Grid.Row="7"
 											Grid.Column="0"
 											Grid.ColumnSpan="2"
 											Margin="0, 8, 0, 0"

@@ -70,6 +70,20 @@ namespace VexTrack.Core
 		}
 	}
 
+	public class GoalGroup
+	{
+		public string UUID { get; set; }
+		public string Name { get; set; }
+		public List<Goal> Goals { get; set; }
+
+		public GoalGroup(string uuid, string name, List<Goal> goals)
+		{
+			UUID = uuid;
+			Name = name;
+			Goals = goals;
+		}
+	}
+
 	public class Season
 	{
 		public string UUID { get; set; }
@@ -87,11 +101,11 @@ namespace VexTrack.Core
 
 	public class TrackingData
 	{
-		public List<Goal> Goals { get; set; }
+		public List<GoalGroup> Goals { get; set; }
 		public List<StreakEntry> Streak { get; set; }
 		public List<Season> Seasons { get; set; }
 
-		public TrackingData(List<Goal> goals, List<StreakEntry> streak, List<Season> seasons)
+		public TrackingData(List<GoalGroup> goals, List<StreakEntry> streak, List<Season> seasons)
 		{
 			(Goals, Streak, Seasons) = (goals, streak, seasons);
 		}
@@ -143,7 +157,7 @@ namespace VexTrack.Core
 
 		public static void InitData()
 		{
-			List<Goal> goals = new();
+			List<GoalGroup> goals = new();
 			List<StreakEntry> streak = new();
 			List<Season> seasons = new();
 
@@ -155,7 +169,8 @@ namespace VexTrack.Core
 			string rawJSON = File.ReadAllText(Constants.LegacyDataPath);
 			JObject jo = JObject.Parse(rawJSON);
 
-			List<Goal> goals = new();
+			List<GoalGroup> goals = new();
+			goals.Add(new GoalGroup(Guid.NewGuid().ToString(), "No Group", new List<Goal>()));
 			foreach (JObject goal in jo["goals"])
 			{
 				string gName = (string)goal["name"];
@@ -164,7 +179,7 @@ namespace VexTrack.Core
 				int startXP = (int)goal["startXP"];
 				string color = (string)goal["color"];
 
-				goals.Add(new Goal(Guid.NewGuid().ToString(), gName, total, collected, color, false));
+				goals[0].Goals.Add(new Goal(Guid.NewGuid().ToString(), gName, total, collected, color, false));
 			}
 
 			List<StreakEntry> streak = new();
@@ -300,42 +315,68 @@ namespace VexTrack.Core
 			}
 			streak = streak.OrderByDescending(t => t.Date).ToList();
 
-			List<Goal> goals = new();
-			foreach(JObject goal in jo["goals"]) {
-				string uuid = (string)goal["uuid"];
-				string name = (string)goal["name"];
-				string color = (string)goal["color"];
-
-				int collected;
-				int total;
-				bool paused;
-
-				if (goal["total"] == null || goal["collected"] == null)
+			List<GoalGroup> goalGroups = new();
+			foreach(JObject goalGroup in jo["goals"])
+			{
+				JToken source = goalGroup["goals"];
+				bool convertToGrouped = false;
+				if (goalGroup["goals"] == null)
 				{
-					collected = CalcUtil.CalcTotalCollected(seasons.Last().ActiveBPLevel, seasons.Last().CXP) - (int)goal["startXP"];
-					total = collected + (int)goal["remaining"];
-					reSave = true;
+					source = jo["goals"];
+					goalGroups.Add(new GoalGroup(Guid.NewGuid().ToString(), "No Group", new List<Goal>()));
+					convertToGrouped = true;
+				}
+
+				List<Goal> goals = new();
+				foreach(JObject goal in source)
+				{
+					string uuid = (string)goal["uuid"];
+					string name = (string)goal["name"];
+					string color = (string)goal["color"];
+
+					int collected;
+					int total;
+					bool paused;
+
+					if (goal["total"] == null || goal["collected"] == null)
+					{
+						collected = CalcUtil.CalcTotalCollected(seasons.Last().ActiveBPLevel, seasons.Last().CXP) - (int)goal["startXP"];
+						total = collected + (int)goal["remaining"];
+						reSave = true;
+					}
+					else
+					{
+						total = (int)goal["total"];
+						collected = (int)goal["collected"];
+					}
+
+					if(goal["paused"] == null)
+					{
+						paused = false;
+						reSave = true;
+					}
+					else paused = (bool)goal["paused"];
+
+					if (uuid == null) uuid = Guid.NewGuid().ToString();
+					goals.Add(new Goal(uuid, name, total, collected, color, paused));
+				}
+
+				if (!convertToGrouped)
+				{
+					string uuid = (string)goalGroup["uuid"];
+					string name = (string)goalGroup["name"];
+					goalGroups.Add(new GoalGroup(uuid, name, goals));
 				}
 				else
 				{
-					total = (int)goal["total"];
-					collected = (int)goal["collected"];
+					goalGroups[0].Goals = goals;
+					break;
 				}
-
-				if(goal["paused"] == null)
-				{
-					paused = false;
-					reSave = true;
-				}
-				else paused = (bool)goal["paused"];
-
-				if (uuid == null) uuid = Guid.NewGuid().ToString();
-				goals.Add(new Goal(uuid, name, total, collected, color, paused));
 			}
 
 			if (seasons.Count == 0) CreateDataInitPopup();
 
-			Data = new TrackingData(goals, streak, seasons);
+			Data = new TrackingData(goalGroups, streak, seasons);
 			if (reSave) SaveData();
 
 			Recalculate();
@@ -345,20 +386,31 @@ namespace VexTrack.Core
 		{
 			JObject jo = new();
 
-			JArray goals = new();
-			foreach(Goal goal in Data.Goals)
+			JArray goalGroups = new();
+			foreach(GoalGroup goalGroup in Data.Goals)
 			{
-				JObject goalObj = new();
-				goalObj.Add("uuid", goal.UUID);
-				goalObj.Add("name", goal.Name);
-				goalObj.Add("total", goal.Total);
-				goalObj.Add("collected", goal.Collected);
-				goalObj.Add("color", goal.Color);
-				goalObj.Add("paused", goal.Paused);
+				JObject goalGroubObj = new();
+				goalGroubObj.Add("uuid", goalGroup.UUID);
+				goalGroubObj.Add("name", goalGroup.Name);
 
-				goals.Add(goalObj);
+				JArray goals = new();
+				foreach (Goal goal in goalGroup.Goals)
+				{
+					JObject goalObj = new();
+					goalObj.Add("uuid", goal.UUID);
+					goalObj.Add("name", goal.Name);
+					goalObj.Add("total", goal.Total);
+					goalObj.Add("collected", goal.Collected);
+					goalObj.Add("color", goal.Color);
+					goalObj.Add("paused", goal.Paused);
+
+					goals.Add(goalObj);
+				}
+
+				goalGroubObj.Add("goals", goals);
+				goalGroups.Add(goalGroubObj);
 			}
-			jo.Add("goals", goals);
+			jo.Add("goals", goalGroups);
 
 			Data.Streak = Data.Streak.OrderByDescending(t => t.Date).ToList();
 			JArray streak = new();
@@ -425,7 +477,9 @@ namespace VexTrack.Core
 
 			//Get Completed goals
 			List<string> completedGoals = new();
-			foreach (Goal g in Data.Goals) if (g.Collected >= g.Total) completedGoals.Add(g.UUID);
+			foreach (GoalGroup gg in Data.Goals) 
+				foreach(Goal g in gg.Goals)
+					if (g.Collected >= g.Total) completedGoals.Add(g.UUID);
 
 			//Recalculate total collected XP, collected XP in level and current level
 			int prevTotalXP = CalcUtil.CalcTotalCollected(CurrentSeasonData.ActiveBPLevel, CurrentSeasonData.CXP);
@@ -467,21 +521,24 @@ namespace VexTrack.Core
 			int currTotalXP = CalcUtil.CalcTotalCollected(CurrentSeasonData.ActiveBPLevel, CurrentSeasonData.CXP);
 			int deltaXP = currTotalXP - prevTotalXP;
 
-			foreach (Goal g in Data.Goals)
+			foreach (GoalGroup gg in Data.Goals)
 			{
-				if (g.Paused) continue;
-
-				int newCollected = g.Collected + deltaXP;
-				if (newCollected < 0)
+				foreach (Goal g in gg.Goals)
 				{
-					g.Total += -newCollected;
-					newCollected = 0;
+					if (g.Paused) continue;
+
+					int newCollected = g.Collected + deltaXP;
+					if (newCollected < 0)
+					{
+						g.Total += -newCollected;
+						newCollected = 0;
+					}
+
+					g.Collected = newCollected;
+
+					if (g.Collected >= g.Total && !completedGoals.Contains(g.UUID)) completed.Add(g.Name);
+					if (g.Collected < g.Total && completedGoals.Contains(g.UUID)) lost.Add(g.Name);
 				}
-
-				g.Collected = newCollected;
-
-				if (g.Collected >= g.Total && !completedGoals.Contains(g.UUID)) completed.Add(g.Name);
-				if (g.Collected < g.Total && completedGoals.Contains(g.UUID)) lost.Add(g.Name);
 			}
 
 			if (completed.Count != 0 || lost.Count != 0)
@@ -570,21 +627,25 @@ namespace VexTrack.Core
 
 
 
-		public static void AddGoal(Goal data)
+		public static void AddGoal(string groupUUID, Goal data)
 		{
-			Data.Goals.Add(data);
+			Data.Goals[Data.Goals.FindIndex(gg => gg.UUID == groupUUID)].Goals.Add(data);
 			CallUpdate();
 		}
 
-		public static void RemoveGoal(string uuid)
+		public static void RemoveGoal(string groupUUID, string uuid)
 		{
-			Data.Goals.RemoveAt(Data.Goals.FindIndex(g => g.UUID == uuid));
+			Data.Goals[Data.Goals.FindIndex(gg => gg.UUID == groupUUID)]
+				.Goals.RemoveAt(Data.Goals[Data.Goals.FindIndex(gg => gg.UUID == groupUUID)]
+				.Goals.FindIndex(g => g.UUID == uuid));
 			CallUpdate();
 		}
 
-		public static void EditGoal(string uuid, Goal data)
+		public static void EditGoal(string groupUUID, string uuid, Goal data)
 		{
-			Data.Goals[Data.Goals.FindIndex(g => g.UUID == uuid)] = data;
+			Data.Goals[Data.Goals.FindIndex(gg => gg.UUID == groupUUID)]
+				.Goals[Data.Goals[Data.Goals.FindIndex(gg => gg.UUID == groupUUID)]
+				.Goals.FindIndex(g => g.UUID == uuid)] = data;
 			CallUpdate();
 		}
 

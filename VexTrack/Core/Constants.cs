@@ -26,6 +26,8 @@ namespace VexTrack.Core
 		public static readonly int XPPerEpilogueLevel = 36500;
 		public static readonly int Level2Offset = 500;
 
+		public static readonly string DefaultGroupUUID = "07a7c1e7-5cfc-40b5-b7a5-7d3aaa7a6352";
+
 		public static readonly List<string> Maps = new List<string>()
 		{
 			"Ascent",

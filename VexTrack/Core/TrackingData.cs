@@ -57,15 +57,17 @@ namespace VexTrack.Core
 		public int Total { get; set; }
 		public int Collected { get; set; }
 		public string Color { get; set; }
+		public string Dependency { get; set; }
 		public bool Paused { get; set; }
 
-		public Goal(string uuid, string name, int total, int collected, string color, bool paused)
+		public Goal(string uuid, string name, int total, int collected, string color, string dependency, bool paused)
 		{
 			UUID = uuid;
 			Name = name;
 			Total = total;
 			Collected = collected;
 			Color = color;
+			Dependency = dependency;
 			Paused = paused;
 		}
 	}
@@ -176,10 +178,9 @@ namespace VexTrack.Core
 				string gName = (string)goal["name"];
 				int collected = CalcUtil.CalcTotalCollected((int)jo["activeBPLevel"], (int)jo["cXP"]) - (int)goal["startXP"];
 				int total = collected + (int)goal["remaining"];
-				int startXP = (int)goal["startXP"];
 				string color = (string)goal["color"];
 
-				goals[0].Goals.Add(new Goal(Guid.NewGuid().ToString(), gName, total, collected, color, false));
+				goals[0].Goals.Add(new Goal(Guid.NewGuid().ToString(), gName, total, collected, color, "", false));
 			}
 
 			List<StreakEntry> streak = new();
@@ -337,6 +338,7 @@ namespace VexTrack.Core
 					int collected;
 					int total;
 					bool paused;
+					string dependency;
 
 					if (goal["total"] == null || goal["collected"] == null)
 					{
@@ -357,8 +359,15 @@ namespace VexTrack.Core
 					}
 					else paused = (bool)goal["paused"];
 
+					if (goal["dependency"] == null)
+					{
+						dependency = "";
+						reSave = true;
+					}
+					else dependency = (string)goal["dependency"];
+
 					if (uuid == null) uuid = Guid.NewGuid().ToString();
-					goals.Add(new Goal(uuid, name, total, collected, color, paused));
+					goals.Add(new Goal(uuid, name, total, collected, color, dependency, paused));
 				}
 
 				if (!convertToGrouped)
@@ -402,6 +411,7 @@ namespace VexTrack.Core
 					goalObj.Add("total", goal.Total);
 					goalObj.Add("collected", goal.Collected);
 					goalObj.Add("color", goal.Color);
+					goalObj.Add("dependency", goal.Dependency);
 					goalObj.Add("paused", goal.Paused);
 
 					goals.Add(goalObj);
@@ -646,6 +656,25 @@ namespace VexTrack.Core
 			Data.Goals[Data.Goals.FindIndex(gg => gg.UUID == groupUUID)]
 				.Goals[Data.Goals[Data.Goals.FindIndex(gg => gg.UUID == groupUUID)]
 				.Goals.FindIndex(g => g.UUID == uuid)] = data;
+			CallUpdate();
+		}
+
+
+		public static void AddGoalGroup(GoalGroup data)
+		{
+			Data.Goals.Add(data);
+			CallUpdate();
+		}
+
+		public static void RemoveGoalGroup(string uuid)
+		{
+			Data.Goals.RemoveAt(Data.Goals.FindIndex(gg => gg.UUID == uuid));
+			CallUpdate();
+		}
+
+		public static void EditGoalGroup(string uuid, string name)
+		{
+			Data.Goals[Data.Goals.FindIndex(gg => gg.UUID == uuid)].Name = name;
 			CallUpdate();
 		}
 

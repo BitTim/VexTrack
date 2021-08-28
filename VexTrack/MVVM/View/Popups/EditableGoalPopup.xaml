@@ -167,7 +167,7 @@
 							   SelectedValuePath="UUID"
 							   DisplayMemberPath="Name"
 							   SelectedIndex="0"
-							   SelectedItem="{Binding Group, UpdateSourceTrigger=PropertyChanged}"/>
+							   SelectedValue="{Binding Group, UpdateSourceTrigger=PropertyChanged}"/>
 
 					<ComboBox  Grid.Row="5"
 							   Grid.Column="1"
@@ -176,7 +176,8 @@
 							   ItemsSource="{Binding AvailableDependencies}"
 							   SelectedValuePath="UUID"
 							   DisplayMemberPath="Name"
-							   SelectedItem="{Binding Dependency, UpdateSourceTrigger=PropertyChanged}"/>
+							   SelectedIndex="0"
+							   SelectedValue="{Binding Dependency, UpdateSourceTrigger=PropertyChanged}"/>
 
 					<Grid Grid.Row="6"
 						  Grid.Column="1">

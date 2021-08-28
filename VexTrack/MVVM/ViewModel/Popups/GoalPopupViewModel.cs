@@ -17,6 +17,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		private GoalEntryData RawData { get; set; }
 		public string UUID { get; set; }
 		public string GroupUUID { get; set; }
+		public string DepUUID { get; set; }
 		public string Title { get; set; }
 		public string Unit { get; set; }
 		public int Collected { get; set; }
@@ -39,7 +40,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 				_paused = value;
 				RawData.Paused = _paused;
-				TrackingDataHelper.EditGoal(GroupUUID, UUID, new Goal(UUID, Title, Total, Collected, Color, _paused));
+				TrackingDataHelper.EditGoal(GroupUUID, UUID, new Goal(UUID, Title, Total, Collected, Color, DepUUID, _paused));
 
 				OnPropertyChanged();
 			}
@@ -74,6 +75,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 			UUID = data.UUID;
 			GroupUUID = data.GroupUUID;
+			DepUUID = data.DepUUID;
 			Title = data.Title;
 			Collected = data.Collected;
 			Remaining = data.Remaining;

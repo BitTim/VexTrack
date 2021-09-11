@@ -39,6 +39,7 @@ namespace VexTrack.MVVM.ViewModel
 		private AboutPopupViewModel AboutPopup { get; set; }
 		private UpdateAvailablePopupViewModel UpdateAvailablePopup { get; set; }
 		private UpdateDownloadPopupViewModel UpdateDownloadPopup { get; set; }
+		private EditableGoalGroupPopupViewModel EditableGoalGroupPopup { get; set; }
 
 		private object _currentView;
 		private bool _epilogue;
@@ -202,6 +203,9 @@ namespace VexTrack.MVVM.ViewModel
 
 			UpdateDownloadPopup = new UpdateDownloadPopupViewModel();
 			ViewModelManager.ViewModels.Add("UpdateDownloadPopup", UpdateDownloadPopup);
+
+			EditableGoalGroupPopup = new EditableGoalGroupPopupViewModel();
+			ViewModelManager.ViewModels.Add("EditableGoalGroupPopup", EditableGoalGroupPopup);
 		}
 
 		public void SetView(object view)

@@ -108,6 +108,10 @@
 			<DataTemplate DataType="{x:Type popupViewModel:UpdateDownloadPopupViewModel}">
 				<popupView:UpdateDownloadPopup/>
 			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type popupViewModel:EditableGoalGroupPopupViewModel}">
+				<popupView:EditableGoalGroupPopup/>
+			</DataTemplate>
 		</ResourceDictionary>
 	</Application.Resources>
 </Application>

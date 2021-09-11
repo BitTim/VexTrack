@@ -531,23 +531,54 @@ namespace VexTrack.Core
 			int currTotalXP = CalcUtil.CalcTotalCollected(CurrentSeasonData.ActiveBPLevel, CurrentSeasonData.CXP);
 			int deltaXP = currTotalXP - prevTotalXP;
 
-			foreach (GoalGroup gg in Data.Goals)
+			for (int pass = 1; pass <= 2; pass++)
 			{
-				foreach (Goal g in gg.Goals)
+				foreach (GoalGroup gg in Data.Goals)
 				{
-					if (g.Paused) continue;
-
-					int newCollected = g.Collected + deltaXP;
-					if (newCollected < 0)
+					foreach (Goal g in gg.Goals)
 					{
-						g.Total += -newCollected;
-						newCollected = 0;
+						int appliedXP = deltaXP;
+						bool hasDep = false;
+
+						if (g.Paused) continue;
+						if (g.Dependency != "")
+						{
+							if (pass != 2) continue;
+
+							Goal dep = gg.Goals.Find(x => x.UUID == g.Dependency);
+							if (dep != null)
+							{
+								hasDep = true;
+
+								if (deltaXP > 0)
+								{
+									int depRemaining = dep.Total - (dep.Collected - deltaXP);
+									if (depRemaining < 0) depRemaining = 0;
+
+									appliedXP = deltaXP - depRemaining;
+									if (appliedXP < 0) appliedXP = 0;
+								}
+								else
+								{
+									if (deltaXP * -1 >= g.Collected) appliedXP = g.Collected * -1;
+								}
+							}
+						}
+
+						if (pass == 2 && !hasDep) continue;
+
+						int newCollected = g.Collected + appliedXP;
+						if (newCollected < 0)
+						{
+							g.Total += -newCollected;
+							newCollected = 0;
+						}
+
+						g.Collected = newCollected;
+
+						if (g.Collected >= g.Total && !completedGoals.Contains(g.UUID)) completed.Add(g.Name);
+						if (g.Collected < g.Total && completedGoals.Contains(g.UUID)) lost.Add(g.Name);
 					}
-
-					g.Collected = newCollected;
-
-					if (g.Collected >= g.Total && !completedGoals.Contains(g.UUID)) completed.Add(g.Name);
-					if (g.Collected < g.Total && completedGoals.Contains(g.UUID)) lost.Add(g.Name);
 				}
 			}
 

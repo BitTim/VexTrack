@@ -61,17 +61,24 @@ namespace VexTrack.MVVM.ViewModel
 			foreach (HistoryGroupData g in removedGroups)
 				Groups.Remove(g);
 
-			foreach (HistoryEntry he in TrackingDataHelper.CurrentSeasonData.History)
-			{
-				if (!(from g in Groups
-					  from e in g.Entries
-					  where e.HUUID == he.UUID
-					  select e).Any())
-				{
-					string result = HistoryDataCalc.CalcHistoryResultFromScores(Constants.ScoreTypes[he.GameMode], he.Score, he.EnemyScore, he.SurrenderedWin, he.SurrenderedLoss);
-					HistoryEntryData hed = new HistoryEntryData(TrackingDataHelper.CurrentSeasonUUID, he.UUID, he.GameMode, he.Time, he.Amount, he.Map, result, he.Description, he.Score, he.EnemyScore, he.SurrenderedWin, he.SurrenderedLoss);
+			List<Season> seasons = new();
+			if (SettingsHelper.Data.SingleSeasonHistory) seasons.Add(TrackingDataHelper.CurrentSeasonData);
+			else seasons = TrackingDataHelper.Data.Seasons;
 
-					InsertEntry(hed);
+			foreach (Season season in seasons)
+			{
+				foreach (HistoryEntry he in season.History)
+				{
+					if (!(from g in Groups
+						  from e in g.Entries
+						  where e.HUUID == he.UUID
+						  select e).Any())
+					{
+						string result = HistoryDataCalc.CalcHistoryResultFromScores(Constants.ScoreTypes[he.GameMode], he.Score, he.EnemyScore, he.SurrenderedWin, he.SurrenderedLoss);
+						HistoryEntryData hed = new HistoryEntryData(TrackingDataHelper.CurrentSeasonUUID, he.UUID, he.GameMode, he.Time, he.Amount, he.Map, result, he.Description, he.Score, he.EnemyScore, he.SurrenderedWin, he.SurrenderedLoss);
+
+						InsertEntry(hed);
+					}
 				}
 			}
 

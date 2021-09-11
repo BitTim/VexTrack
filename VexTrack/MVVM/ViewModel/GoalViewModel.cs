@@ -18,7 +18,7 @@ namespace VexTrack.MVVM.ViewModel
 
 		public GoalPopupViewModel GoalPopup { get; set; }
 		public EditableGoalPopupViewModel EditableGoalPopup { get; set; }
-		public CreateGoalGroupPopupViewModel CreateGoalGroupPopup { get; set; }
+		//public CreateGoalGroupPopupViewModel CreateGoalGroupPopup { get; set; }
 
 		private string TotalGoalUUID = Guid.NewGuid().ToString();
 		private string BattlepassGoalUUID = Guid.NewGuid().ToString();
@@ -67,7 +67,7 @@ namespace VexTrack.MVVM.ViewModel
 				MainVM.QueuePopup(EditableGoalPopup);
 			});
 			OnGroupAddClicked = new RelayCommand(o => {
-				MainVM.QueuePopup(CreateGoalGroupPopup);
+				//MainVM.QueuePopup(CreateGoalGroupPopup);
 			});
 
 			Update(false);

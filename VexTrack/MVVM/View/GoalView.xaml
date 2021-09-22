@@ -83,11 +83,32 @@
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
 							<StackPanel>
-								<TextBlock Text="{Binding Name}"
-										   Foreground="{DynamicResource Foreground}"
-										   FontSize="14"
-										   Margin="8, 0, 0, 8"
-										   FontWeight="Bold"/>
+								<Grid Margin="0, 4, 0, 4">
+									<TextBlock Text="{Binding Name}"
+											   Foreground="{DynamicResource Foreground}"
+											   FontSize="14"
+											   VerticalAlignment="Center"
+											   Margin="8, 0, 0, 8"
+											   FontWeight="Bold"/>
+
+									<Button Grid.Row="0"
+											Width="32" Height="32"
+											HorizontalAlignment="Right"
+											VerticalAlignment="Center"
+											Margin="0, 0, 16, 0"
+											Style="{DynamicResource SmallDeleteButtonTheme}"
+											Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.OnGroupDeleteClicked}"
+											CommandParameter="{Binding UUID}"/>
+
+									<Button Grid.Row="0"
+											Width="32" Height="32"
+											HorizontalAlignment="Right"
+											VerticalAlignment="Center"
+											Margin="0, 0, 52, 0"
+											Style="{DynamicResource SmallEditButtonTheme}"
+											Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.OnGroupEditClicked}"
+											CommandParameter="{Binding UUID}"/>
+								</Grid>
 								
 								<ItemsControl x:Name="CustomContentContainer"
 											Grid.Row="3"

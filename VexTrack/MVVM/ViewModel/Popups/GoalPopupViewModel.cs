@@ -71,6 +71,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 		public void SetData(GoalEntryData data, string unit = " XP")
 		{
+			if(data == null) return;
 			RawData = data;
 
 			UUID = data.UUID;

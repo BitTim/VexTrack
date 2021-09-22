@@ -15,6 +15,8 @@ namespace VexTrack.MVVM.ViewModel
 		public RelayCommand UserGoalButtonClick { get; set; }
 		public RelayCommand OnAddClicked { get; set; }
 		public RelayCommand OnGroupAddClicked { get; set; }
+		public RelayCommand OnGroupEditClicked { get; set; }
+		public RelayCommand OnGroupDeleteClicked { get; set; }
 
 		public GoalPopupViewModel GoalPopup { get; set; }
 		public EditableGoalPopupViewModel EditableGoalPopup { get; set; }
@@ -70,6 +72,14 @@ namespace VexTrack.MVVM.ViewModel
 			OnGroupAddClicked = new RelayCommand(o => {
 				EditableGoalGroupPopup.SetParameters("Create Group", false);
 				MainVM.QueuePopup(EditableGoalGroupPopup);
+			});
+			OnGroupEditClicked = new RelayCommand(o => {
+				EditableGoalGroupPopup.SetParameters("Edit Group", true);
+				EditableGoalGroupPopup.SetData(UserEntries.Where(x => x.UUID == (string)o).FirstOrDefault());
+				MainVM.QueuePopup(EditableGoalGroupPopup);
+			});
+			OnGroupDeleteClicked = new RelayCommand(o => {
+				TrackingDataHelper.RemoveGoalGroup((string)o);
 			});
 
 			Update(false);

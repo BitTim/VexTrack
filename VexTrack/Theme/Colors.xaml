@@ -27,6 +27,20 @@
 	<Color x:Key="Red2">#d40058</Color>
 	<Color x:Key="Purple1">#8A16FC</Color>
 	<Color x:Key="Purple2">#ff00b9</Color>
+	<Color x:Key="Cyberpunk1">#1ae699</Color>
+	<Color x:Key="Cyberpunk2">#dd0070</Color>
+	<Color x:Key="Cyberpunk3">#e70efc</Color>
+	<Color x:Key="Cyberpunk4">#31f96f</Color>
+	<Color x:Key="Lavender1">#7a13b1</Color>
+	<Color x:Key="Lavender2">#d086bb</Color>
+	<Color x:Key="Aqua1">#463bac</Color>
+	<Color x:Key="Aqua2">#17fbe5</Color>
+	<Color x:Key="Nature1">#18a358</Color>
+	<Color x:Key="Nature2">#c58c73</Color>
+	<Color x:Key="Emerald1">#2ea783</Color>
+	<Color x:Key="Emerald2">#108321</Color>
+	<Color x:Key="Fire1">#89384c</Color>
+	<Color x:Key="Fire2">#db6a3a</Color>
 
 	<Color x:Key="WinColor1">#66C2A9</Color>
 	<Color x:Key="WinColor2">#19b2b5</Color>
@@ -78,6 +92,46 @@
 	<LinearGradientBrush x:Key="AccPurple">
 		<GradientStop Color="{StaticResource Purple1}" Offset="0.0"/>
 		<GradientStop Color="{StaticResource Purple2}" Offset="1.0"/>
+	</LinearGradientBrush>
+	
+	<LinearGradientBrush x:Key="AccHotCold">
+		<GradientStop Color="{StaticResource Red1}" Offset="0.0"/>
+		<GradientStop Color="{StaticResource Blue1}" Offset="1.0"/>
+	</LinearGradientBrush>
+	
+	<LinearGradientBrush x:Key="AccCyberpunk">
+		<GradientStop Color="{StaticResource Cyberpunk1}" Offset="0.0"/>
+		<GradientStop Color="{StaticResource Cyberpunk2}" Offset="1.0"/>
+	</LinearGradientBrush>
+	
+	<LinearGradientBrush x:Key="AccCyberpunk2">
+		<GradientStop Color="{StaticResource Cyberpunk3}" Offset="0.0"/>
+		<GradientStop Color="{StaticResource Cyberpunk4}" Offset="1.0"/>
+	</LinearGradientBrush>
+	
+	<LinearGradientBrush x:Key="AccLavender">
+		<GradientStop Color="{StaticResource Lavender1}" Offset="0.0"/>
+		<GradientStop Color="{StaticResource Lavender2}" Offset="1.0"/>
+	</LinearGradientBrush>
+	
+	<LinearGradientBrush x:Key="AccAqua">
+		<GradientStop Color="{StaticResource Aqua1}" Offset="0.0"/>
+		<GradientStop Color="{StaticResource Aqua2}" Offset="1.0"/>
+	</LinearGradientBrush>
+	
+	<LinearGradientBrush x:Key="AccNature">
+		<GradientStop Color="{StaticResource Nature1}" Offset="0.0"/>
+		<GradientStop Color="{StaticResource Nature2}" Offset="1.0"/>
+	</LinearGradientBrush>
+	
+	<LinearGradientBrush x:Key="AccEmerald">
+		<GradientStop Color="{StaticResource Emerald1}" Offset="0.0"/>
+		<GradientStop Color="{StaticResource Emerald2}" Offset="1.0"/>
+	</LinearGradientBrush>
+	
+	<LinearGradientBrush x:Key="AccFire">
+		<GradientStop Color="{StaticResource Fire1}" Offset="0.0"/>
+		<GradientStop Color="{StaticResource Fire2}" Offset="1.0"/>
 	</LinearGradientBrush>
 
 

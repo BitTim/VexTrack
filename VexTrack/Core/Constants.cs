@@ -85,7 +85,15 @@ namespace VexTrack.Core
 			["Orange"] = "Theme/AccentColors/Orange.xaml",
 			["Red"] = "Theme/AccentColors/Red.xaml",
 			["Purple"] = "Theme/AccentColors/Purple.xaml",
-			["Mono"] = "Theme/AccentColors/Mono.xaml"
+			["Mono"] = "Theme/AccentColors/Mono.xaml",
+			["HotCold"] = "Theme/AccentColors/HotCold.xaml",
+			["Cyberpunk"] = "Theme/AccentColors/Cyberpunk.xaml",
+			["Lavender"] = "Theme/AccentColors/Lavender.xaml",
+			["Aqua"] = "Theme/AccentColors/Aqua.xaml",
+			["Nature"] = "Theme/AccentColors/Nature.xaml",
+			["Emerald"] = "Theme/AccentColors/Emerald.xaml",
+			["Fire"] = "Theme/AccentColors/Fire.xaml",
+			["Cyberpunk2"] = "Theme/AccentColors/Cyberpunk2.xaml",
 		};
 
 		public static readonly string ReleasesURL = "https://api.github.com/repos/BitTim/VexTrack/releases";

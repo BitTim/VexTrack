@@ -122,7 +122,28 @@
     <Page Update="MVVM\View\SettingsView.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Theme\AccentColors\Cyberpunk2.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Theme\AccentColors\Fire.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Theme\AccentColors\Emerald.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Theme\AccentColors\Nature.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Theme\AccentColors\Blue.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Theme\AccentColors\Aqua.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Theme\AccentColors\Lavender.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Theme\AccentColors\HotCold.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Theme\AddButtonTheme.xaml">

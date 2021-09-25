@@ -200,7 +200,7 @@
 					  Margin="8, 0, 8, 24">
 					<Grid.RowDefinitions>
 						<RowDefinition Height="36"/>
-						<RowDefinition Height="36"/>
+						<RowDefinition Height="Auto"/>
 						<RowDefinition Height="*"/>
 					</Grid.RowDefinitions>
 
@@ -250,11 +250,11 @@
 							   Grid.Column="0"
 							   FontSize="14"
 							   FontWeight="Bold"
-							   VerticalAlignment="Center"
+							   VerticalAlignment="Top"
 							   Foreground="{DynamicResource Foreground}"
 							   Margin="0, 0, 0, 4"/>
 
-					<StackPanel Grid.Row="1"
+					<WrapPanel Grid.Row="1"
 								Grid.Column="1"
 								Orientation="Horizontal"
 								VerticalAlignment="Center"
@@ -265,7 +265,7 @@
 									 Command="{Binding AccentButtonCommand}"
 									 CommandParameter="Blue"
 									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Blue, Mode=OneWay}"
-									 Margin="0, 0, 4, 0"/>
+									 Margin="0, 0, 4, 4"/>
 
 						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
 									 Background="{StaticResource AccTeal}"
@@ -273,7 +273,7 @@
 									 Command="{Binding AccentButtonCommand}"
 									 CommandParameter="Teal"
 									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Teal, Mode=OneWay}"
-									 Margin="0, 0, 4, 0"/>
+									 Margin="0, 0, 4, 4"/>
 
 						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
 									 Background="{StaticResource AccGreen}"
@@ -281,7 +281,7 @@
 									 Command="{Binding AccentButtonCommand}"
 									 CommandParameter="Green"
 									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Green, Mode=OneWay}"
-									 Margin="0, 0, 4, 0"/>
+									 Margin="0, 0, 4, 4"/>
 
 						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
 									 Background="{StaticResource AccYellow}"
@@ -289,7 +289,7 @@
 									 Command="{Binding AccentButtonCommand}"
 									 CommandParameter="Yellow"
 									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Yellow, Mode=OneWay}"
-									 Margin="0, 0, 4, 0"/>
+									 Margin="0, 0, 4, 4"/>
 
 						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
 									 Background="{StaticResource AccOrange}"
@@ -297,7 +297,7 @@
 									 Command="{Binding AccentButtonCommand}"
 									 CommandParameter="Orange"
 									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Orange, Mode=OneWay}"
-									 Margin="0, 0, 4, 0"/>
+									 Margin="0, 0, 4, 4"/>
 
 						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
 									 Background="{StaticResource AccRed}"
@@ -305,7 +305,7 @@
 									 Command="{Binding AccentButtonCommand}"
 									 CommandParameter="Red"
 									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Red, Mode=OneWay}"
-									 Margin="0, 0, 4, 0"/>
+									 Margin="0, 0, 4, 4"/>
 
 						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
 									 Background="{StaticResource AccPurple}"
@@ -313,7 +313,7 @@
 									 Command="{Binding AccentButtonCommand}"
 									 CommandParameter="Purple"
 									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Purple, Mode=OneWay}"
-									 Margin="0, 0, 4, 0"/>
+									 Margin="0, 0, 4, 4"/>
 
 						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
 									 Background="{DynamicResource AccMono}"
@@ -321,8 +321,72 @@
 									 Command="{Binding AccentButtonCommand}"
 									 CommandParameter="Mono"
 									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Mono, Mode=OneWay}"
-									 Margin="0, 0, 4, 0"/>
-					</StackPanel>
+									 Margin="0, 0, 4, 4"/>
+
+						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
+									 Background="{StaticResource AccAqua}"
+									 Foreground="{StaticResource White}"
+									 Command="{Binding AccentButtonCommand}"
+									 CommandParameter="Aqua"
+									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Aqua, Mode=OneWay}"
+									 Margin="0, 0, 4, 4"/>
+
+						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
+									 Background="{StaticResource AccEmerald}"
+									 Foreground="{StaticResource White}"
+									 Command="{Binding AccentButtonCommand}"
+									 CommandParameter="Emerald"
+									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Emerald, Mode=OneWay}"
+									 Margin="0, 0, 4, 4"/>
+
+						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
+									 Background="{StaticResource AccFire}"
+									 Foreground="{StaticResource White}"
+									 Command="{Binding AccentButtonCommand}"
+									 CommandParameter="Fire"
+									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Fire, Mode=OneWay}"
+									 Margin="0, 0, 4, 4"/>
+
+						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
+									 Background="{StaticResource AccLavender}"
+									 Foreground="{StaticResource White}"
+									 Command="{Binding AccentButtonCommand}"
+									 CommandParameter="Lavender"
+									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Lavender, Mode=OneWay}"
+									 Margin="0, 0, 4, 4"/>
+
+						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
+									 Background="{StaticResource AccNature}"
+									 Foreground="{StaticResource White}"
+									 Command="{Binding AccentButtonCommand}"
+									 CommandParameter="Nature"
+									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Nature, Mode=OneWay}"
+									 Margin="0, 0, 4, 4"/>
+						
+						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
+									 Background="{StaticResource AccHotCold}"
+									 Foreground="{StaticResource White}"
+									 Command="{Binding AccentButtonCommand}"
+									 CommandParameter="HotCold"
+									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=HotCold, Mode=OneWay}"
+									 Margin="0, 0, 4, 4"/>
+
+						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
+									 Background="{StaticResource AccCyberpunk}"
+									 Foreground="{StaticResource White}"
+									 Command="{Binding AccentButtonCommand}"
+									 CommandParameter="Cyberpunk"
+									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Cyberpunk, Mode=OneWay}"
+									 Margin="0, 0, 4, 4"/>
+
+						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
+									 Background="{StaticResource AccCyberpunk2}"
+									 Foreground="{StaticResource White}"
+									 Command="{Binding AccentButtonCommand}"
+									 CommandParameter="Cyberpunk2"
+									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Cyberpunk2, Mode=OneWay}"
+									 Margin="0, 0, 4, 4"/>
+					</WrapPanel>
 				</Grid>
 			</Grid>
 		</ScrollViewer>

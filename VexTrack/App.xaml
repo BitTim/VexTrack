@@ -19,6 +19,7 @@
 
 				<ResourceDictionary Source="Theme/Icons.xaml"/>
 
+				<ResourceDictionary Source="Theme/RadioSelectorButtonTheme.xaml"/>
 				<ResourceDictionary Source="Theme/MenuButtonTheme.xaml"/>
 				<ResourceDictionary Source="Theme/TitleBarButtonTheme.xaml"/>
 				<ResourceDictionary Source="Theme/CheckBoxTheme.xaml"/>
@@ -26,7 +27,6 @@
 				<ResourceDictionary Source="Theme/TextBoxTheme.xaml"/>
 				<ResourceDictionary Source="Theme/AddButtonTheme.xaml"/>
 				<ResourceDictionary Source="Theme/HueSliderTheme.xaml"/>
-				<ResourceDictionary Source="Theme/RadioSelectorButtonTheme.xaml"/>
 
 				<ResourceDictionary Source="Theme/HistoryButtonTheme.xaml"/>
 				<ResourceDictionary Source="Theme/ProgressArcTheme.xaml"/>

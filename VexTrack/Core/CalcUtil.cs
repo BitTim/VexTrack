@@ -40,5 +40,23 @@ namespace VexTrack.Core
 		{
 			return Constants.Level2Offset + (level * Constants.XPPerLevel);
 		}
+		
+		public static int CalcMaxForTier(int tier)
+		{
+			switch(tier)
+			{
+				case 1: return 20000;
+				case 2: return 30000;
+				case 3: return 40000;
+				case 4: return 50000;
+				case 5: return 60000;
+				case 6: return 75000;
+				case 7: return 100000;
+				case 8: return 150000;
+				case 9: return 200000;
+				case 10: return 250000;
+				default: return 0;
+			}
+		}
 	}
 }

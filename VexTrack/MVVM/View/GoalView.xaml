@@ -11,6 +11,7 @@
 
 	<UserControl.Resources>
 		<conv:StatusToBadgeConverter x:Key="statusToBadgeConv"/>
+		<conv:IsDefaultGroupToVisibilityConverter x:Key="IsDefaultToVisibleConv"/>
 	</UserControl.Resources>
 
 	<Grid>
@@ -96,6 +97,7 @@
 											HorizontalAlignment="Right"
 											VerticalAlignment="Center"
 											Margin="0, 0, 16, 0"
+											Visibility="{Binding UUID, Converter={StaticResource IsDefaultToVisibleConv}}"
 											Style="{DynamicResource SmallDeleteButtonTheme}"
 											Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.OnGroupDeleteClicked}"
 											CommandParameter="{Binding UUID}"/>
@@ -105,6 +107,7 @@
 											HorizontalAlignment="Right"
 											VerticalAlignment="Center"
 											Margin="0, 0, 52, 0"
+											Visibility="{Binding UUID, Converter={StaticResource IsDefaultToVisibleConv}}"
 											Style="{DynamicResource SmallEditButtonTheme}"
 											Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.OnGroupEditClicked}"
 											CommandParameter="{Binding UUID}"/>

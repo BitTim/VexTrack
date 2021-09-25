@@ -36,6 +36,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 					{
 						TrackingDataHelper.MoveGoal(UUID, Constants.DefaultGroupUUID, goal.UUID);
 					}
+
+					KeepGoals = false;
 				}
 
 				TrackingDataHelper.RemoveGoalGroup(UUID);

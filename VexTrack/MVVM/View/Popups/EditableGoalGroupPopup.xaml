@@ -9,6 +9,11 @@
 			 mc:Ignorable="d" 
              d:DesignHeight="812" d:DesignWidth="872">
 
+	<UserControl.Resources>
+		<BooleanToVisibilityConverter x:Key="BoolToVisibileConv"/>
+		<conv:InvertedBooleanToVisibilityConverter x:Key="InvBoolToVisibileConv"/>
+	</UserControl.Resources>
+	
 	<Grid Height="Auto"
 		  Width="640"
 		  VerticalAlignment="Center">
@@ -42,6 +47,8 @@
 						<RowDefinition Height="Auto"/>
 						<RowDefinition Height="30"/>
 						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
 					</Grid.RowDefinitions>
 
 					<TextBlock Text="{Binding Title}"
@@ -58,6 +65,37 @@
 							   Grid.Column="0"
 							   FontSize="14"
 							   FontWeight="Bold"
+							   VerticalAlignment="Center"
+							   Foreground="{DynamicResource Foreground}"
+							   Margin="0, 0, 0, 4"/>
+
+					<TextBlock Text="Generate Goals for Agents"
+							   Grid.Row="2"
+							   Visibility="{Binding EditMode, Converter={StaticResource InvBoolToVisibileConv}, ConverterParameter=true}"
+							   Foreground="{DynamicResource Foreground}"
+							   FontSize="14"
+							   Margin="0, 0, 0, 8"
+							   HorizontalAlignment="Left"
+							   VerticalAlignment="Center"
+							   FontWeight="Bold"/>
+
+					<TextBlock Text="Active Tier"
+							   Grid.Row="3"
+							   Grid.Column="0"
+							   FontSize="14"
+							   FontWeight="Bold"
+							   VerticalAlignment="Center"
+							   Visibility="{Binding GenerateAgentGoals, Converter={StaticResource BoolToVisibileConv}}"
+							   Foreground="{DynamicResource Foreground}"
+							   Margin="0, 0, 0, 4"/>
+
+					<TextBlock Text="Collected XP in Active Tier"
+							   Grid.Row="4"
+							   Grid.Column="0"
+							   FontSize="14"
+							   FontWeight="Bold"
+							   VerticalAlignment="Center"
+							   Visibility="{Binding GenerateAgentGoals, Converter={StaticResource BoolToVisibileConv}}"
 							   Foreground="{DynamicResource Foreground}"
 							   Margin="0, 0, 0, 4"/>
 
@@ -70,6 +108,58 @@
 							   Margin="0, 0, 0, 8"
 							 Height="22"
 							 Style="{DynamicResource TextBoxTheme}"/>
+
+					<CheckBox Width="50" Height="30"
+							  Grid.Row="2"
+							  Grid.Column="1"
+							  x:Name="PART_AccentCheckBox"
+							  HorizontalAlignment="Right"
+							  Visibility="{Binding EditMode, Converter={StaticResource InvBoolToVisibileConv}, ConverterParameter=true}"
+							  IsChecked="{Binding GenerateAgentGoals}"
+							  Style="{StaticResource CheckBoxTheme}"
+							  Margin="0, 0, 0, 8"/>
+
+					<TextBox x:Name="PART_TierBox"
+							 Grid.Row="3"
+							 Grid.Column="1"
+							 FontSize="14"
+							 Margin="0, 0, 0, 8"
+							 Height="22"
+							   Visibility="{Binding GenerateAgentGoals, Converter={StaticResource BoolToVisibileConv}}"
+							 Style="{DynamicResource TextBoxTheme}">
+						<TextBox.Text>
+							<Binding Path="ActiveTier"
+									 UpdateSourceTrigger="PropertyChanged"
+									 ValidatesOnNotifyDataErrors="True"
+									 ValidatesOnDataErrors="True"
+									 NotifyOnValidationError="True">
+								<Binding.ValidationRules>
+									<validation:TierValidationRule ValidatesOnTargetUpdated="True"/>
+								</Binding.ValidationRules>
+							</Binding>
+						</TextBox.Text>
+					</TextBox>
+
+					<TextBox x:Name="PART_CollectedBox"
+							 Grid.Row="4"
+							 Grid.Column="1"
+							 FontSize="14"
+							 Margin="0, 0, 0, 8"
+							 Height="22"
+							   Visibility="{Binding GenerateAgentGoals, Converter={StaticResource BoolToVisibileConv}}"
+							 Style="{DynamicResource TextBoxTheme}">
+						<TextBox.Text>
+							<Binding Path="Collected"
+									 UpdateSourceTrigger="PropertyChanged"
+									 ValidatesOnNotifyDataErrors="True"
+									 ValidatesOnDataErrors="True"
+									 NotifyOnValidationError="True">
+								<Binding.ValidationRules>
+									<validation:NumericValidationRule ValidatesOnTargetUpdated="True"/>
+								</Binding.ValidationRules>
+							</Binding>
+						</TextBox.Text>
+					</TextBox>
 				</Grid>
 
 				<Grid Grid.Row="2"

@@ -17,6 +17,9 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public bool EditMode { get; set; }
 
 		private string _name;
+		private int _activeTier = 1;
+		private int _collected;
+		private bool _generateAgentGoals;
 
 		public string Name
 		{
@@ -28,6 +31,40 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			}
 		}
 
+		public int ActiveTier
+		{
+			get => _activeTier;
+			set
+			{
+				_activeTier = value;
+				OnPropertyChanged();
+			}
+		}
+
+		public int Collected
+		{
+			get => _collected;
+			set
+			{
+				_collected = value;
+
+				int maxForTier = CalcUtil.CalcMaxForTier(ActiveTier);
+				if (_collected >= maxForTier) _collected = maxForTier - 1;
+
+				OnPropertyChanged();
+			}
+		}
+
+		public bool GenerateAgentGoals
+		{
+			get => _generateAgentGoals;
+			set
+			{
+				_generateAgentGoals = value;
+				OnPropertyChanged();
+			}
+		}
+
 		public EditableGoalGroupPopupViewModel()
 		{
 			CanCancel = true;
@@ -35,7 +72,26 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			OnBackClicked = new RelayCommand(o => { if (CanCancel) Close(); });
 			OnDoneClicked = new RelayCommand(o => {
 				if (EditMode) TrackingDataHelper.EditGoalGroup(UUID, Name);
-				else TrackingDataHelper.AddGoalGroup(new GoalGroup(UUID, Name, new List<Goal>()));
+				else
+				{
+					TrackingDataHelper.AddGoalGroup(new GoalGroup(UUID, Name, new List<Goal>()));
+
+					if(GenerateAgentGoals)
+					{
+						string prevUUID = "";
+
+						for(int i = ActiveTier; i < Constants.AgentTiers + 1; i++)
+						{
+							string uuid = Guid.NewGuid().ToString();
+							TrackingDataHelper.AddGoal(UUID, new Goal(uuid, Name + " Tier " + i.ToString(), CalcUtil.CalcMaxForTier(i), i == ActiveTier ? Collected : 0, "", prevUUID, false));
+							prevUUID = uuid;
+						}
+
+						ActiveTier = 1;
+						Collected = 0;
+						GenerateAgentGoals = false;
+					}
+				}
 
 				Close();
 			});

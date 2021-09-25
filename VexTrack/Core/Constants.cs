@@ -21,6 +21,7 @@ namespace VexTrack.Core
 
 		public static readonly int BattlepassLevels = 50;
 		public static readonly int EpilogueLevels = 5;
+		public static readonly int AgentTiers = 10;
 
 		public static readonly int XPPerLevel = 750;
 		public static readonly int XPPerEpilogueLevel = 36500;

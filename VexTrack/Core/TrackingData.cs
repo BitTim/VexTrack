@@ -324,7 +324,7 @@ namespace VexTrack.Core
 				if (goalGroup["goals"] == null)
 				{
 					source = jo["goals"];
-					goalGroups.Add(new GoalGroup(Guid.NewGuid().ToString(), "No Group", new List<Goal>()));
+					goalGroups.Add(new GoalGroup(Constants.DefaultGroupUUID, "No Group", new List<Goal>()));
 					convertToGrouped = true;
 				}
 

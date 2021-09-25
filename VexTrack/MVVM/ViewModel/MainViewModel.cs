@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using VexTrack.Core;
 using VexTrack.MVVM.ViewModel.Popups;
 
@@ -38,6 +39,9 @@ namespace VexTrack.MVVM.ViewModel
 		private AboutPopupViewModel AboutPopup { get; set; }
 		private UpdateAvailablePopupViewModel UpdateAvailablePopup { get; set; }
 		private UpdateDownloadPopupViewModel UpdateDownloadPopup { get; set; }
+		private EditableGoalGroupPopupViewModel EditableGoalGroupPopup { get; set; }
+		private DeleteGoalConfirmationPopupViewModel DeleteGoalConfirmationPopup { get; set; }
+		private DeleteGoalGroupConfirmationPopupViewModel DeleteGoalGroupConfirmationPopup { get; set; }
 
 		private object _currentView;
 		private bool _epilogue;
@@ -175,6 +179,12 @@ namespace VexTrack.MVVM.ViewModel
 			HEPopup = new();
 			ViewModelManager.ViewModels.Add("HEPopup", HEPopup);
 
+			DeleteGoalConfirmationPopup = new DeleteGoalConfirmationPopupViewModel();
+			ViewModelManager.ViewModels.Add("DeleteGoalConfirmationPopup", DeleteGoalConfirmationPopup);
+
+			DeleteGoalGroupConfirmationPopup = new DeleteGoalGroupConfirmationPopupViewModel();
+			ViewModelManager.ViewModels.Add("DeleteGoalGroupConfirmationPopup", DeleteGoalGroupConfirmationPopup);
+
 			EditableGoalPopup = new();
 			ViewModelManager.ViewModels.Add("EditableGoalPopup", EditableGoalPopup);
 
@@ -201,6 +211,9 @@ namespace VexTrack.MVVM.ViewModel
 
 			UpdateDownloadPopup = new UpdateDownloadPopupViewModel();
 			ViewModelManager.ViewModels.Add("UpdateDownloadPopup", UpdateDownloadPopup);
+
+			EditableGoalGroupPopup = new EditableGoalGroupPopupViewModel();
+			ViewModelManager.ViewModels.Add("EditableGoalGroupPopup", EditableGoalGroupPopup);
 		}
 
 		public void SetView(object view)
@@ -258,7 +271,7 @@ namespace VexTrack.MVVM.ViewModel
 
 		public void UpdateTimerCallback(object state)
 		{
-			Update();
+			Application.Current.Dispatcher.Invoke((Action)delegate { Update(); });
 		}
 
 

@@ -82,7 +82,7 @@
 							   Foreground="{DynamicResource Foreground}"
 							   Margin="0, 0, 0, 8"/>
 
-					<TextBlock Text="Collected XP in Current Level"
+					<TextBlock Text="Collected XP in Active Level"
 							   Grid.Row="4"
 							   Grid.Column="0"
 							   FontSize="14"

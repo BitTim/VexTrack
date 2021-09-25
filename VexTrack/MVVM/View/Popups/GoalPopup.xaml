@@ -134,15 +134,34 @@
 						<ColumnDefinition Width="*"/>
 					</Grid.ColumnDefinitions>
 
-					<Button Content="Back"
-							Background="{DynamicResource Background}"
-							Foreground="{DynamicResource Foreground}"
-							Width="80"
-							Height="30"
-							HorizontalAlignment="Left"
-							VerticalAlignment="Bottom"
-							Style="{DynamicResource ButtonTheme}"
-							Command="{Binding OnBackClicked}"/>
+					<StackPanel Orientation="Horizontal"
+								Grid.Column="0"
+								HorizontalAlignment="Stretch">
+						
+						<Button Content="Back"
+								Background="{DynamicResource Background}"
+								Foreground="{DynamicResource Foreground}"
+								Width="80"
+								Height="30"
+								HorizontalAlignment="Left"
+								VerticalAlignment="Bottom"
+								Style="{DynamicResource ButtonTheme}"
+								Command="{Binding OnBackClicked}"/>
+
+						<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="16, 0">
+							<TextBlock Text="Paused"
+								   Foreground="{DynamicResource Foreground}"
+								   HorizontalAlignment="Left"
+								   VerticalAlignment="Center"
+								   Margin="8, 0, 8, 0"/>
+
+							<CheckBox Width="50" Height="30"
+								  x:Name="PART_PausedCheckBox"
+								  HorizontalAlignment="Right"
+								  IsChecked="{Binding Paused}"
+								  Style="{StaticResource CheckBoxTheme}"/>
+						</StackPanel>
+					</StackPanel>
 
 					<StackPanel Orientation="Horizontal"
 								Grid.Column="1"

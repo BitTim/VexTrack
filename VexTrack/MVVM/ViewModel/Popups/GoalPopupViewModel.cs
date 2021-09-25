@@ -13,10 +13,12 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public RelayCommand OnEditClicked { get; set; }
 		public RelayCommand OnDeleteClicked { get; set; }
 		private EditableGoalPopupViewModel EditableGoalPopup { get; set; }
+		private DeleteGoalConfirmationPopupViewModel DeleteGoalConfirmationPopup {  get; set; }
 
 		private GoalEntryData RawData { get; set; }
-		public int Index { get; set; }
 		public string UUID { get; set; }
+		public string GroupUUID { get; set; }
+		public string DepUUID { get; set; }
 		public string Title { get; set; }
 		public string Unit { get; set; }
 		public int Collected { get; set; }
@@ -29,9 +31,26 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public bool CanDelete { get; set; }
 		public bool CanEdit { get; set; }
 
+		private bool _paused { get; set; }
+		public bool Paused
+		{
+			get => _paused;
+			set
+			{
+				if (value == _paused) return;
+
+				_paused = value;
+				RawData.Paused = _paused;
+				TrackingDataHelper.EditGoal(GroupUUID, UUID, new Goal(UUID, Title, Total, Collected, Color, DepUUID, _paused));
+
+				OnPropertyChanged();
+			}
+		}
+
 		public GoalPopupViewModel()
 		{
 			EditableGoalPopup = (EditableGoalPopupViewModel)ViewModelManager.ViewModels["EditableGoalPopup"];
+			DeleteGoalConfirmationPopup = (DeleteGoalConfirmationPopupViewModel)ViewModelManager.ViewModels["DeleteGoalConfirmationPopup"];
 			CanCancel = true;
 
 			OnBackClicked = new RelayCommand(o => { Close(); });
@@ -42,7 +61,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			});
 			OnDeleteClicked = new RelayCommand(o => {
 				IsInitialized = false;
-				TrackingDataHelper.RemoveGoal(UUID);
+				DeleteGoalConfirmationPopup.SetData(GroupUUID, UUID);
+				MainVM.QueuePopup(DeleteGoalConfirmationPopup);
 			});
 		}
 
@@ -54,9 +74,12 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 		public void SetData(GoalEntryData data, string unit = " XP")
 		{
+			if(data == null) return;
 			RawData = data;
 
 			UUID = data.UUID;
+			GroupUUID = data.GroupUUID;
+			DepUUID = data.DepUUID;
 			Title = data.Title;
 			Collected = data.Collected;
 			Remaining = data.Remaining;
@@ -65,6 +88,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			Active = data.Active;
 			Color = data.Color;
 			Unit = unit;
+			Paused = data.Paused;
 
 			IsInitialized = true;
 		}

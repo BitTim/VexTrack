@@ -27,7 +27,8 @@ namespace VexTrack.Core
 			ret.Progress = CalcUtil.CalcProgress(ret.Total, ret.Collected);
 			ret.Active = -1;
 			ret.StartXP = -1;
-			if (ret.Progress >= 100) ret.Status = "Done";
+			ret.Paused = false;
+			if (ret.Progress >= 100) ret.CompletionStatus = "Done";
 
 			return ret;
 		}
@@ -46,7 +47,8 @@ namespace VexTrack.Core
 			ret.Progress = CalcUtil.CalcProgress(ret.Total, ret.Collected);
 			ret.Active = activeLevel > Constants.BattlepassLevels + Constants.EpilogueLevels ? -1 : activeLevel;
 			ret.StartXP = -1;
-			if (ret.Progress >= 100) ret.Status = "Done";
+			ret.Paused = false;
+			if (ret.Progress >= 100) ret.CompletionStatus = "Done";
 
 			return ret;
 		}
@@ -69,24 +71,32 @@ namespace VexTrack.Core
 			ret.Progress = CalcUtil.CalcProgress(ret.Total, ret.Collected);
 			ret.Active = -1;
 			ret.StartXP = -1;
-			if (ret.Progress >= 100) ret.Status = "Done";
+			ret.Paused = false;
+			if (ret.Progress >= 100) ret.CompletionStatus = "Done";
 
 			return ret;
 		}
 
-		public static GoalEntryData CalcUserGoal(Goal goalData)
+		public static GoalEntryData CalcUserGoal(string groupUUID, Goal goalData)
 		{
 			GoalEntryData ret = new(goalData.UUID);
 
 			ret.Title = goalData.Name;
 
+			ret.GroupUUID = groupUUID;
+			ret.DepUUID = goalData.Dependency;
 			ret.Total = goalData.Total;
 			ret.Collected = goalData.Collected;
 			ret.Remaining = goalData.Total - goalData.Collected;
 			ret.Progress = CalcUtil.CalcProgress(ret.Total, ret.Collected);
 			ret.Active = -1;
 			ret.Color = goalData.Color;
-			if (ret.Progress >= 100) ret.Status = "Done";
+			ret.Paused = goalData.Paused;
+
+			if (ret.DepUUID != null && ret.DepUUID != "") ret.ActivityStatus = "Linked";
+
+			if (ret.Paused) ret.CompletionStatus = "Paused";
+			if (ret.Progress >= 100) ret.CompletionStatus = "Done";
 
 			return ret;
 		}
@@ -96,35 +106,38 @@ namespace VexTrack.Core
 			List<LineSeries> lsret = new();
 			List<TextAnnotation> taret = new();
 
-			foreach(Goal g in TrackingDataHelper.Data.Goals)
+			foreach (GoalGroup gg in TrackingDataHelper.Data.Goals)
 			{
-				LineSeries ls = new();
-				TextAnnotation ta = new();
-				byte alpha = 128;
+				foreach (Goal g in gg.Goals)
+				{
+					LineSeries ls = new();
+					TextAnnotation ta = new();
+					byte alpha = 128;
 
-				GoalEntryData ge = CalcUserGoal(g);
-				int totalCollected = CalcUtil.CalcTotalCollected(TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP);
-				int val = totalCollected - ge.Collected + ge.Total;
+					GoalEntryData ge = CalcUserGoal(gg.UUID, g);
+					int totalCollected = CalcUtil.CalcTotalCollected(TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP);
+					int val = totalCollected - ge.Collected + ge.Total;
 
-				if (val <= 0) continue;
+					if (val <= 0) continue;
 
-				ls.Points.Add(new DataPoint(0, val));
-				ls.Points.Add(new DataPoint(TrackingDataHelper.GetDuration(sUUID), val));
+					ls.Points.Add(new DataPoint(0, val));
+					ls.Points.Add(new DataPoint(TrackingDataHelper.GetDuration(sUUID), val));
 
-				ta.Text = ge.Title;
-				ta.TextPosition = new DataPoint(TrackingDataHelper.GetDuration(sUUID) / 2, val);
-				ta.StrokeThickness = 0;
+					ta.Text = ge.Title;
+					ta.TextPosition = new DataPoint(TrackingDataHelper.GetDuration(sUUID) / 2, val);
+					ta.StrokeThickness = 0;
 
-				if (totalCollected >= val) alpha = 13;
+					if (totalCollected >= val) alpha = 13;
 
-				LinearGradientBrush accent = (LinearGradientBrush)Application.Current.FindResource("Accent");
+					LinearGradientBrush accent = (LinearGradientBrush)Application.Current.FindResource("Accent");
 
-				if (ge.Color == "") ge.Color = accent.GradientStops[0].Color.ToString();
-				ls.Color = OxyColor.FromAColor(alpha, OxyColor.Parse(ge.Color));
-				ta.TextColor = OxyColor.FromAColor(alpha, OxyColor.Parse(ge.Color));
+					if (ge.Color == "") ge.Color = accent.GradientStops[0].Color.ToString();
+					ls.Color = OxyColor.FromAColor(alpha, OxyColor.Parse(ge.Color));
+					ta.TextColor = OxyColor.FromAColor(alpha, OxyColor.Parse(ge.Color));
 
-				lsret.Add(ls);
-				taret.Add(ta);
+					lsret.Add(ls);
+					taret.Add(ta);
+				}
 			}
 
 			return (lsret, taret);
@@ -134,24 +147,56 @@ namespace VexTrack.Core
 	public class GoalEntryData
 	{
 		public string UUID { get; set; }
+		public string GroupUUID { get; set; }
+		public string DepUUID { get; set; }
 		public string Title { get; set; }
 		public double Progress { get; set; }
 		public int Collected { get; set; }
 		public int Remaining { get; set; }
 		public int Total { get; set; }
 		public string Color { get; set; }
-		public string Status { get; set; }
+		public string CompletionStatus { get; set; }
+		public string ActivityStatus { get; set; }
 		public int StartXP { get; set; }
 		public int Active { get; set; }
+		public bool Paused { get; set; }
 
 		public GoalEntryData(string uuid)
 		{
 			UUID = uuid;
 		}
 
-		public GoalEntryData(string uuid, string title, double progress, int collected, int remaining, int total, string color, string status, int startXP = -1, int active = -1)
+		public GoalEntryData(string uuid, string groupUUID, string depUUID, string title, double progress, int collected, int remaining, int total, string color, string completionStatus, string activityStatus, bool paused, int startXP = -1, int active = -1)
 		{
-			(UUID, Title, Progress, Collected, Remaining, Total, Color, Status, StartXP, Active) = (uuid, title, progress, collected, remaining, total, color, status, startXP, active);
+			UUID = uuid;
+			GroupUUID = groupUUID;
+			DepUUID = depUUID;
+			Title = title;
+			Progress = progress;
+			Collected = collected;
+			Remaining = remaining;
+			Total = total;
+			Color = color;
+			CompletionStatus = completionStatus;
+			ActivityStatus = activityStatus;
+			Paused = paused;
+
+			StartXP = startXP;
+			Active = active;
+		}
+	}
+
+	public class GoalGroupData
+	{
+		public string UUID { get; set; }
+		public string Name { get; set; }
+		public List<GoalEntryData> Goals { get; set; }
+
+		public GoalGroupData(string uuid, string name, List<GoalEntryData> goals)
+		{
+			UUID = uuid;
+			Name = name;
+			Goals = goals;
 		}
 	}
 }

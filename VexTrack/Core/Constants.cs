@@ -9,9 +9,9 @@ namespace VexTrack.Core
 	static class Constants
 	{
 		public static readonly string AppName = "VexTrack";
-		public static readonly string Version = "v1.7";
+		public static readonly string Version = "v1.8";
 
-		public static readonly string DataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"/VexTrack";
+		public static readonly string DataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"/VexTrack - Preview";
 		public static readonly string LegacyDataFolder = @"dat";
 		public static readonly string UpdateFolder = DataFolder + @"/Update";
 
@@ -21,10 +21,48 @@ namespace VexTrack.Core
 
 		public static readonly int BattlepassLevels = 50;
 		public static readonly int EpilogueLevels = 5;
+		public static readonly int AgentTiers = 10;
 
 		public static readonly int XPPerLevel = 750;
 		public static readonly int XPPerEpilogueLevel = 36500;
 		public static readonly int Level2Offset = 500;
+
+		public static readonly string DefaultGroupUUID = "07a7c1e7-5cfc-40b5-b7a5-7d3aaa7a6352";
+
+		public static readonly List<string> Maps = new List<string>()
+		{
+			"Ascent",
+			"Bind",
+			"Breeze",
+			"Haven",
+			"Icebox",
+			"Split",
+			"None"
+		};
+
+		public static readonly List<string> Gamemodes = new List<string>()
+		{
+			"Unrated",
+			"Competetive",
+			"Spike Rush",
+			"Deathmatch",
+			"Escalation",
+			"Replication",
+			"Snowballfight",
+			"Custom"
+		};
+
+		public static readonly Dictionary<string, string> ScoreTypes = new Dictionary<string, string>()
+		{
+			[Gamemodes[0]] = "Score",
+			[Gamemodes[1]] = "Score",
+			[Gamemodes[2]] = "Score",
+			[Gamemodes[3]] = "Placement",
+			[Gamemodes[4]] = "Score",
+			[Gamemodes[5]] = "Score",
+			[Gamemodes[6]] = "Score",
+			[Gamemodes[7]] = "None"
+		};
 
 		public static readonly Dictionary<string, int> StreakStatusOrder = new Dictionary<string, int>
 		{
@@ -48,7 +86,15 @@ namespace VexTrack.Core
 			["Orange"] = "Theme/AccentColors/Orange.xaml",
 			["Red"] = "Theme/AccentColors/Red.xaml",
 			["Purple"] = "Theme/AccentColors/Purple.xaml",
-			["Mono"] = "Theme/AccentColors/Mono.xaml"
+			["Mono"] = "Theme/AccentColors/Mono.xaml",
+			["HotCold"] = "Theme/AccentColors/HotCold.xaml",
+			["Cyberpunk"] = "Theme/AccentColors/Cyberpunk.xaml",
+			["Lavender"] = "Theme/AccentColors/Lavender.xaml",
+			["Aqua"] = "Theme/AccentColors/Aqua.xaml",
+			["Nature"] = "Theme/AccentColors/Nature.xaml",
+			["Emerald"] = "Theme/AccentColors/Emerald.xaml",
+			["Fire"] = "Theme/AccentColors/Fire.xaml",
+			["Cyberpunk2"] = "Theme/AccentColors/Cyberpunk2.xaml",
 		};
 
 		public static readonly string ReleasesURL = "https://api.github.com/repos/BitTim/VexTrack/releases";

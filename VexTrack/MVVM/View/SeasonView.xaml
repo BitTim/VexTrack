@@ -43,8 +43,8 @@
 													   Value="{Binding Path=Progress}"
 													   Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.SeasonButtonClick}"
 													   CommandParameter="{Binding Path=UUID}"
-													   BadgeData="{Binding Path=Status, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Data}"
-													   BadgeColor="{Binding Path=Status, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Color}"
+													   BadgeRightData="{Binding Path=Status, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Data}"
+													   BadgeRightColor="{Binding Path=Status, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Color}"
 													   Margin="8, 8, 0, 0"/>
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>

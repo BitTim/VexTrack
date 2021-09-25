@@ -22,15 +22,26 @@ namespace VexTrack.Core
 		public bool IgnoreInit;
 		public bool IgnorePreReleases;
 		public bool ForceEpilogue;
+		public bool SingleSeasonHistory;
 		
 		public string Theme;
 		public string SystemTheme; //Not part of saved settings file
 		public string Accent;
 		
 		public Settings() {}
-		public Settings(string username, int bufferDays, bool ignoreInactiveDays, bool ignoreInit, bool ignorePreReleases, bool forceEpilogue, string theme, string systemTheme, string accent)
+		public Settings(string username, int bufferDays, bool ignoreInactiveDays, bool ignoreInit, bool ignorePreReleases, bool forceEpilogue, bool singleSeasonHistory, string theme, string systemTheme, string accent)
 		{
-			(Username, BufferDays, IgnoreInactiveDays, IgnoreInit, IgnorePreReleases, ForceEpilogue, Theme, SystemTheme, Accent) = (username, bufferDays, ignoreInactiveDays, ignoreInit, ignorePreReleases, forceEpilogue, theme, systemTheme, accent);
+			Username = username;
+			BufferDays = bufferDays;
+			IgnoreInactiveDays = ignoreInactiveDays;
+			IgnoreInit = ignoreInit;
+			IgnorePreReleases = ignorePreReleases;
+			ForceEpilogue = forceEpilogue;
+			SingleSeasonHistory = singleSeasonHistory;
+
+			Theme = theme;
+			SystemTheme = systemTheme;
+			Accent = accent;
 		}
 		public void SetDefault()
 		{
@@ -40,6 +51,7 @@ namespace VexTrack.Core
 			IgnoreInit = true;
 			IgnorePreReleases = true;
 			ForceEpilogue = true;
+			SingleSeasonHistory = true;
 
 			Theme = "Auto";
 			Accent = "Blue";
@@ -105,6 +117,9 @@ namespace VexTrack.Core
 			if (jo["forceEpilogue"] == null) resave = true;
 			else Data.ForceEpilogue = (bool)jo["forceEpilogue"];
 
+			if (jo["singleSeasonHistory"] == null) resave = true;
+			else Data.SingleSeasonHistory = (bool)jo["singleSeasonHistory"];
+
 
 
 			if (jo["theme"] == null) resave = true;
@@ -129,6 +144,7 @@ namespace VexTrack.Core
 			jo.Add("ignoreInit", Data.IgnoreInit);
 			jo.Add("ignorePreReleases", Data.IgnorePreReleases);
 			jo.Add("forceEpilogue", Data.ForceEpilogue);
+			jo.Add("singleSeasonHistory", Data.SingleSeasonHistory);
 
 			jo.Add("theme", Data.Theme);
 			jo.Add("accent", Data.Accent);

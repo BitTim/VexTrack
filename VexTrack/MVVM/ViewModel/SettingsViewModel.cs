@@ -33,6 +33,7 @@ namespace VexTrack.MVVM.ViewModel
 		private bool _ignoreInit;
 		private bool _ignorePreReleases;
 		private bool _forceEpilogue;
+		private bool _singleSeasonHistory;
 
 		public string Theme
 		{
@@ -131,6 +132,19 @@ namespace VexTrack.MVVM.ViewModel
 				if (!NoUpdate) SettingsHelper.CallUpdate();
 			}
 		}
+		public bool SingleSeasonHistory
+		{
+			get => _singleSeasonHistory;
+			set
+			{
+				if (_singleSeasonHistory == value) return;
+
+				_singleSeasonHistory = value;
+				SettingsHelper.Data.SingleSeasonHistory = value;
+				OnPropertyChanged();
+				if (!NoUpdate) SettingsHelper.CallUpdate();
+			}
+		}
 
 		public SettingsViewModel()
 		{
@@ -168,6 +182,7 @@ namespace VexTrack.MVVM.ViewModel
 			IgnoreInit = SettingsHelper.Data.IgnoreInit;
 			IgnorePreReleases = SettingsHelper.Data.IgnorePreReleases;
 			ForceEpilogue = SettingsHelper.Data.ForceEpilogue;
+			SingleSeasonHistory = SettingsHelper.Data.SingleSeasonHistory;
 		}
 
 		public void SetTheme(string theme)

@@ -73,12 +73,28 @@
 
 									<Path Width="24" Height="24"
 										  Grid.Row="1"
-										  x:Name="Icon"
+										  x:Name="Left"
+										  HorizontalAlignment="Left"
+										  VerticalAlignment="Bottom"
+										  Margin="4, 0, 0, 4"
+										  Fill="{TemplateBinding BadgeLeftColor}"
+										  Data="{TemplateBinding BadgeLeftData}">
+										<Path.Effect>
+											<DropShadowEffect BlurRadius="8"
+														  ShadowDepth="2"
+														  Direction="-90"
+														  Opacity="0.3"/>
+										</Path.Effect>
+									</Path>
+									
+									<Path Width="24" Height="24"
+										  Grid.Row="1"
+										  x:Name="Right"
 										  HorizontalAlignment="Right"
 										  VerticalAlignment="Bottom"
 										  Margin="0, 0, 4, 4"
-										  Fill="{TemplateBinding BadgeColor}"
-										  Data="{TemplateBinding BadgeData}">
+										  Fill="{TemplateBinding BadgeRightColor}"
+										  Data="{TemplateBinding BadgeRightData}">
 										<Path.Effect>
 											<DropShadowEffect BlurRadius="8"
 														  ShadowDepth="2"

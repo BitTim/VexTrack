@@ -21,6 +21,9 @@
     <Compile Update="MVVM\View\Popups\AboutPopup.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="MVVM\View\Popups\EditableGoalGroupPopup.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="MVVM\View\Popups\DataInitPopup.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -74,6 +77,12 @@
     <Page Update="MVVM\View\Popups\AboutPopup.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="MVVM\View\Popups\DeleteGoalGroupConfirmationPopup.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="MVVM\View\Popups\EditableGoalGroupPopup.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="MVVM\View\Popups\DataInitPopup.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -90,6 +99,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MVVM\View\Popups\HistoryEntryPopup.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="MVVM\View\Popups\DeleteGoalConfirmationPopup.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MVVM\View\Popups\ResetDataConfirmationPopup.xaml">
@@ -110,7 +122,28 @@
     <Page Update="MVVM\View\SettingsView.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Theme\AccentColors\Cyberpunk2.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Theme\AccentColors\Fire.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Theme\AccentColors\Emerald.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Theme\AccentColors\Nature.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Theme\AccentColors\Blue.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Theme\AccentColors\Aqua.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Theme\AccentColors\Lavender.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Theme\AccentColors\HotCold.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Theme\AddButtonTheme.xaml">
@@ -123,6 +156,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Theme\AppTheme\DarkTheme.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Theme\ComboBoxTheme.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Theme\HistoryButtonTheme.xaml">

@@ -19,6 +19,7 @@
 
 				<ResourceDictionary Source="Theme/Icons.xaml"/>
 
+				<ResourceDictionary Source="Theme/RadioSelectorButtonTheme.xaml"/>
 				<ResourceDictionary Source="Theme/MenuButtonTheme.xaml"/>
 				<ResourceDictionary Source="Theme/TitleBarButtonTheme.xaml"/>
 				<ResourceDictionary Source="Theme/CheckBoxTheme.xaml"/>
@@ -26,7 +27,6 @@
 				<ResourceDictionary Source="Theme/TextBoxTheme.xaml"/>
 				<ResourceDictionary Source="Theme/AddButtonTheme.xaml"/>
 				<ResourceDictionary Source="Theme/HueSliderTheme.xaml"/>
-				<ResourceDictionary Source="Theme/RadioSelectorButtonTheme.xaml"/>
 
 				<ResourceDictionary Source="Theme/HistoryButtonTheme.xaml"/>
 				<ResourceDictionary Source="Theme/ProgressArcTheme.xaml"/>
@@ -34,6 +34,7 @@
 				<ResourceDictionary Source="Theme/ProgressButtonTheme.xaml"/>
 				<ResourceDictionary Source="Theme/ColorPickerTheme.xaml"/>
 				<ResourceDictionary Source="Theme/TextWithUnitTheme.xaml"/>
+				<ResourceDictionary Source="Theme/ComboBoxTheme.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 
 			<!-- Pages -->
@@ -106,6 +107,18 @@
 
 			<DataTemplate DataType="{x:Type popupViewModel:UpdateDownloadPopupViewModel}">
 				<popupView:UpdateDownloadPopup/>
+			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type popupViewModel:EditableGoalGroupPopupViewModel}">
+				<popupView:EditableGoalGroupPopup/>
+			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type popupViewModel:DeleteGoalConfirmationPopupViewModel}">
+				<popupView:DeleteGoalConfirmationPopup/>
+			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type popupViewModel:DeleteGoalGroupConfirmationPopupViewModel}">
+				<popupView:DeleteGoalGroupConfirmationPopup/>
 			</DataTemplate>
 		</ResourceDictionary>
 	</Application.Resources>

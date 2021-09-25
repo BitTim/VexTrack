@@ -8,30 +8,44 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type Button}">
-					<Border
-					x:Name="border"
-					Background="Transparent"
-					BorderThickness="0"
-					CornerRadius="8"
-					SnapsToDevicePixels="true">
-						<ContentPresenter
-						x:Name="contentPresenter"
-						Margin="0"
-						HorizontalAlignment="Center"
-						VerticalAlignment="Center"
-						Focusable="False"
-						RecognizesAccessKey="True" />
-					</Border>
-					<ControlTemplate.Triggers>
-						<Trigger Property="IsMouseOver" Value="true">
-							<Setter TargetName="border" Property="Background" Value="{DynamicResource Shade}" />
-							<Setter Property="Foreground" Value="{DynamicResource Foreground}" />
-						</Trigger>
-						<Trigger Property="IsPressed" Value="true">
-							<Setter TargetName="border" Property="Background" Value="{DynamicResource AccMono}" />
-							<Setter Property="Foreground" Value="white" />
-						</Trigger>
-					</ControlTemplate.Triggers>
+					<Grid>
+						<Border Background="{DynamicResource Foreground}"
+										Opacity="0"
+										CornerRadius="8"
+								SnapsToDevicePixels="true">
+							<Border.Triggers>
+								<EventTrigger RoutedEvent="UIElement.MouseEnter">
+									<BeginStoryboard>
+										<Storyboard Storyboard.TargetProperty="Opacity">
+											<DoubleAnimation From="0" To="0.2" Duration="00:00:00.10"/>
+										</Storyboard>
+									</BeginStoryboard>
+								</EventTrigger>
+
+								<EventTrigger RoutedEvent="UIElement.MouseLeave">
+									<BeginStoryboard>
+										<Storyboard Storyboard.TargetProperty="Opacity">
+											<DoubleAnimation From="0.2" To="0" Duration="00:00:00.10"/>
+										</Storyboard>
+									</BeginStoryboard>
+								</EventTrigger>
+							</Border.Triggers>
+						</Border>
+
+						<Border IsHitTestVisible="False"
+						x:Name="border"
+						BorderThickness="0"
+						CornerRadius="8"
+						SnapsToDevicePixels="true">
+							<ContentPresenter
+							x:Name="contentPresenter"
+							Margin="0"
+							HorizontalAlignment="Center"
+							VerticalAlignment="Center"
+							Focusable="False"
+							RecognizesAccessKey="True" />
+						</Border>
+					</Grid>
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
@@ -45,28 +59,46 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type Button}">
-					<Border
-					x:Name="border"
-					Background="Transparent"
-					BorderThickness="0"
-					CornerRadius="8"
-					SnapsToDevicePixels="true">
-						<ContentPresenter
-						x:Name="contentPresenter"
-						Margin="0"
-						HorizontalAlignment="Center"
-						VerticalAlignment="Center"
-						Focusable="False"
-						RecognizesAccessKey="True" />
-					</Border>
+					<Grid>
+						<Border Background="{DynamicResource AccRed}"
+										Opacity="0"
+										CornerRadius="8"
+								SnapsToDevicePixels="true">
+							<Border.Triggers>
+								<EventTrigger RoutedEvent="UIElement.MouseEnter">
+									<BeginStoryboard>
+										<Storyboard Storyboard.TargetProperty="Opacity">
+											<DoubleAnimation From="0" To="0.75" Duration="00:00:00.10"/>
+										</Storyboard>
+									</BeginStoryboard>
+								</EventTrigger>
+
+								<EventTrigger RoutedEvent="UIElement.MouseLeave">
+									<BeginStoryboard>
+										<Storyboard Storyboard.TargetProperty="Opacity">
+											<DoubleAnimation From="0.75" To="0" Duration="00:00:00.10"/>
+										</Storyboard>
+									</BeginStoryboard>
+								</EventTrigger>
+							</Border.Triggers>
+						</Border>
+
+						<Border IsHitTestVisible="False"
+						x:Name="border"
+						BorderThickness="0"
+						CornerRadius="8"
+						SnapsToDevicePixels="true">
+							<ContentPresenter
+							x:Name="contentPresenter"
+							Margin="0"
+							HorizontalAlignment="Center"
+							VerticalAlignment="Center"
+							Focusable="False"
+							RecognizesAccessKey="True" />
+						</Border>
+					</Grid>
 					<ControlTemplate.Triggers>
 						<Trigger Property="IsMouseOver" Value="true">
-							<Setter TargetName="border" Property="Background" Value="{DynamicResource AccRed}" />
-							<Setter Property="Foreground" Value="white" />
-						</Trigger>
-						
-						<Trigger Property="IsPressed" Value="true">
-							<Setter TargetName="border" Property="Background" Value="{DynamicResource LossColor}" />
 							<Setter Property="Foreground" Value="white" />
 						</Trigger>
 					</ControlTemplate.Triggers>

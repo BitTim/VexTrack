@@ -16,6 +16,7 @@ namespace VexTrack.MVVM.Converter
 			string result = value as string;
 			string property = parameter as string;
 
+			if (result.Split()[0] == "Surrendered") result = result.Split()[1];
 			if (result == "Win" || result == "Loss")
 			{
 				if (property == "Foreground") return Application.Current.FindResource("White");

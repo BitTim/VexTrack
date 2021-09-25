@@ -18,8 +18,13 @@ namespace VexTrack.Core
 			if(!epilogue) targetStatus.Add(Constants.StreakStatusOrder.Keys.ElementAt(1));
 
 			DateTimeOffset today = DateTimeOffset.Now.ToLocalTime().Date;
+			DateTimeOffset prevDate = DateTimeOffset.FromUnixTimeSeconds(TrackingDataHelper.Data.Streak[0].Date);
+
 			foreach(StreakEntry streakEntry in TrackingDataHelper.Data.Streak)
 			{
+				if ((prevDate - DateTimeOffset.FromUnixTimeSeconds(streakEntry.Date)).Days > 1) break;
+				prevDate = DateTimeOffset.FromUnixTimeSeconds(streakEntry.Date);
+
 				if (streakEntry.Date == today.ToUnixTimeSeconds() && !targetStatus.Contains(streakEntry.Status)) continue;
 				if (!targetStatus.Contains(streakEntry.Status)) break;
 				streak++;

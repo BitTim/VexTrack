@@ -12,6 +12,7 @@
 
 	<UserControl.Resources>
 		<conv:HistoryResultToResourceKeyConverter x:Key="historyKeyConv"/>
+		<conv:TimestampToStringConverter x:Key="timestampToStringConv"/>
 	</UserControl.Resources>
 
 	<Grid>
@@ -29,17 +30,33 @@
 		<ScrollViewer Grid.Row="1"
 					  Style="{DynamicResource ScrollViewerTheme}"
 					  Margin="16">
-			<ItemsControl x:Name="ContentContainer"
-						Margin="0, 8, 0, 0"
-						  ItemsSource="{Binding Entries}">
+			<ItemsControl x:Name="GroupContainer"
+						Margin="8, 0, 16, 8"
+						  ItemsSource="{Binding Groups}">
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
-						<model:HistoryEntryButtonModel Description="{Binding Path=Description}"
-													   Amount="{Binding Path=Amount}"
-													   Background="{Binding Path=Result, Converter={StaticResource historyKeyConv}, ConverterParameter=Background}"
-													   Foreground="{Binding Path=Result, Converter={StaticResource historyKeyConv}, ConverterParameter=Foreground}"
-													   Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.HistoryButtonClick}"
-													   CommandParameter="{Binding Path=HUUID}"/>
+						<StackPanel Margin="8, 8, 0, 0">
+							<TextBlock Text="{Binding Date, Converter={StaticResource timestampToStringConv}, ConverterParameter=true}"
+										   Foreground="{DynamicResource Foreground}"
+										   FontSize="14"
+										   Margin="0, 0, 0, 8"
+										   FontWeight="Bold"/>
+
+							<ItemsControl x:Name="ContentContainer"
+											  ItemsSource="{Binding Entries}">
+								<ItemsControl.ItemTemplate>
+									<DataTemplate>
+										<model:HistoryEntryButtonModel Description="{Binding Path=Title}"
+																	   Margin="0, 0, 0, 8"
+																	   Amount="{Binding Path=Amount}"
+																	   Background="{Binding Path=Result, Converter={StaticResource historyKeyConv}, ConverterParameter=Background}"
+																	   Foreground="{Binding Path=Result, Converter={StaticResource historyKeyConv}, ConverterParameter=Foreground}"
+																	   Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.HistoryButtonClick}"
+																	   CommandParameter="{Binding Path=HUUID}"/>
+									</DataTemplate>
+								</ItemsControl.ItemTemplate>
+							</ItemsControl>
+						</StackPanel>
 					</DataTemplate>
 				</ItemsControl.ItemTemplate>
 			</ItemsControl>

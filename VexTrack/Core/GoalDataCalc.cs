@@ -84,6 +84,7 @@ namespace VexTrack.Core
 			ret.Title = goalData.Name;
 
 			ret.GroupUUID = groupUUID;
+			ret.DepUUID = goalData.Dependency;
 			ret.Total = goalData.Total;
 			ret.Collected = goalData.Collected;
 			ret.Remaining = goalData.Total - goalData.Collected;
@@ -92,7 +93,9 @@ namespace VexTrack.Core
 			ret.Color = goalData.Color;
 			ret.Paused = goalData.Paused;
 
-			if (ret.Paused) ret.ActivityStatus = "Paused";
+			if (ret.DepUUID != null && ret.DepUUID != "") ret.ActivityStatus = "Linked";
+
+			if (ret.Paused) ret.CompletionStatus = "Paused";
 			if (ret.Progress >= 100) ret.CompletionStatus = "Done";
 
 			return ret;

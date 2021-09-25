@@ -76,7 +76,7 @@
 										  x:Name="Left"
 										  HorizontalAlignment="Left"
 										  VerticalAlignment="Bottom"
-										  Margin="0, 0, 4, 4"
+										  Margin="4, 0, 0, 4"
 										  Fill="{TemplateBinding BadgeLeftColor}"
 										  Data="{TemplateBinding BadgeLeftData}">
 										<Path.Effect>

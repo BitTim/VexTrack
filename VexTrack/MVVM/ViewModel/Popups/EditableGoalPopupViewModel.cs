@@ -93,8 +93,9 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 				goals = new(TrackingDataHelper.Data.Goals[TrackingDataHelper.Data.Goals.FindIndex(gg => gg.UUID == Group)].Goals);
 				goals.Insert(0, new Goal("", "No Dependency", 0, 0, "#000000", "", true));
-				return goals;
 
+				goals.RemoveAt(goals.FindIndex(gg => gg.UUID == UUID));
+				return goals;
 			}
 		}
 		public string Group

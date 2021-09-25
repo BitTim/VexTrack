@@ -21,6 +21,7 @@ namespace VexTrack.MVVM.ViewModel
 		public GoalPopupViewModel GoalPopup { get; set; }
 		public EditableGoalPopupViewModel EditableGoalPopup { get; set; }
 		public EditableGoalGroupPopupViewModel EditableGoalGroupPopup { get; set; }
+		public DeleteGoalGroupConfirmationPopupViewModel DeleteGoalGroupConfirmationPopup { get; set; }
 
 		private string TotalGoalUUID = Guid.NewGuid().ToString();
 		private string BattlepassGoalUUID = Guid.NewGuid().ToString();
@@ -62,6 +63,7 @@ namespace VexTrack.MVVM.ViewModel
 			GoalPopup = (GoalPopupViewModel)ViewModelManager.ViewModels["GoalPopup"];
 			EditableGoalPopup = (EditableGoalPopupViewModel)ViewModelManager.ViewModels["EditableGoalPopup"];
 			EditableGoalGroupPopup = (EditableGoalGroupPopupViewModel)ViewModelManager.ViewModels["EditableGoalGroupPopup"];
+			DeleteGoalGroupConfirmationPopup = (DeleteGoalGroupConfirmationPopupViewModel)ViewModelManager.ViewModels["DeleteGoalGroupConfirmationPopup"];
 
 			BuiltinGoalButtonClick = new RelayCommand(OnBuiltinGoalButtonClick);
 			UserGoalButtonClick = new RelayCommand(OnUserGoalButtonClick);
@@ -79,7 +81,8 @@ namespace VexTrack.MVVM.ViewModel
 				MainVM.QueuePopup(EditableGoalGroupPopup);
 			});
 			OnGroupDeleteClicked = new RelayCommand(o => {
-				TrackingDataHelper.RemoveGoalGroup((string)o);
+				DeleteGoalGroupConfirmationPopup.SetData((string)o);
+				MainVM.QueuePopup(DeleteGoalGroupConfirmationPopup);
 			});
 
 			Update(false);

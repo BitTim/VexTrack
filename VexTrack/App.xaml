@@ -112,6 +112,14 @@
 			<DataTemplate DataType="{x:Type popupViewModel:EditableGoalGroupPopupViewModel}">
 				<popupView:EditableGoalGroupPopup/>
 			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type popupViewModel:DeleteGoalConfirmationPopupViewModel}">
+				<popupView:DeleteGoalConfirmationPopup/>
+			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type popupViewModel:DeleteGoalGroupConfirmationPopupViewModel}">
+				<popupView:DeleteGoalGroupConfirmationPopup/>
+			</DataTemplate>
 		</ResourceDictionary>
 	</Application.Resources>
 </Application>

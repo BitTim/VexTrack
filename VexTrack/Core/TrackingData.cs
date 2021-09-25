@@ -684,10 +684,28 @@ namespace VexTrack.Core
 
 		public static void EditGoal(string groupUUID, string uuid, Goal data)
 		{
-			Data.Goals[Data.Goals.FindIndex(gg => gg.UUID == groupUUID)]
-				.Goals[Data.Goals[Data.Goals.FindIndex(gg => gg.UUID == groupUUID)]
-				.Goals.FindIndex(g => g.UUID == uuid)] = data;
-			CallUpdate();
+			int index = Data.Goals[Data.Goals.FindIndex(gg => gg.UUID == groupUUID)]
+							.Goals.FindIndex(g => g.UUID == uuid);
+			if(index >= 0)
+			{
+				Data.Goals[Data.Goals.FindIndex(gg => gg.UUID == groupUUID)]
+					.Goals[index] = data;
+				CallUpdate();
+				return;
+			}
+
+			string prevGroupUUID = Data.Goals.Where(gg => gg.Goals.Any(g => g.UUID == uuid)).First().UUID;
+			MoveGoal(prevGroupUUID, groupUUID, uuid, true);
+		}
+
+		public static void MoveGoal(string srcGroupUUID, string dstGroupUUID, string uuid, bool deleteGoalFromGroup = false)
+		{
+			Goal goal = Data.Goals[Data.Goals.FindIndex(gg => gg.UUID == srcGroupUUID)]
+							.Goals[Data.Goals[Data.Goals.FindIndex(gg => gg.UUID == srcGroupUUID)]
+							.Goals.FindIndex(g => g.UUID == uuid)];
+
+			AddGoal(dstGroupUUID, goal);
+			if(deleteGoalFromGroup) RemoveGoal(srcGroupUUID, uuid);
 		}
 
 

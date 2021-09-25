@@ -13,6 +13,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public RelayCommand OnEditClicked { get; set; }
 		public RelayCommand OnDeleteClicked { get; set; }
 		private EditableGoalPopupViewModel EditableGoalPopup { get; set; }
+		private DeleteGoalConfirmationPopupViewModel DeleteGoalConfirmationPopup {  get; set; }
 
 		private GoalEntryData RawData { get; set; }
 		public string UUID { get; set; }
@@ -49,6 +50,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public GoalPopupViewModel()
 		{
 			EditableGoalPopup = (EditableGoalPopupViewModel)ViewModelManager.ViewModels["EditableGoalPopup"];
+			DeleteGoalConfirmationPopup = (DeleteGoalConfirmationPopupViewModel)ViewModelManager.ViewModels["DeleteGoalConfirmationPopup"];
 			CanCancel = true;
 
 			OnBackClicked = new RelayCommand(o => { Close(); });
@@ -59,7 +61,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			});
 			OnDeleteClicked = new RelayCommand(o => {
 				IsInitialized = false;
-				TrackingDataHelper.RemoveGoal(GroupUUID, UUID);
+				DeleteGoalConfirmationPopup.SetData(GroupUUID, UUID);
+				MainVM.QueuePopup(DeleteGoalConfirmationPopup);
 			});
 		}
 

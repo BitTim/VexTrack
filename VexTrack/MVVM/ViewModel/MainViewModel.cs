@@ -40,6 +40,8 @@ namespace VexTrack.MVVM.ViewModel
 		private UpdateAvailablePopupViewModel UpdateAvailablePopup { get; set; }
 		private UpdateDownloadPopupViewModel UpdateDownloadPopup { get; set; }
 		private EditableGoalGroupPopupViewModel EditableGoalGroupPopup { get; set; }
+		private DeleteGoalConfirmationPopupViewModel DeleteGoalConfirmationPopup { get; set; }
+		private DeleteGoalGroupConfirmationPopupViewModel DeleteGoalGroupConfirmationPopup { get; set; }
 
 		private object _currentView;
 		private bool _epilogue;
@@ -176,6 +178,12 @@ namespace VexTrack.MVVM.ViewModel
 
 			HEPopup = new();
 			ViewModelManager.ViewModels.Add("HEPopup", HEPopup);
+
+			DeleteGoalConfirmationPopup = new DeleteGoalConfirmationPopupViewModel();
+			ViewModelManager.ViewModels.Add("DeleteGoalConfirmationPopup", DeleteGoalConfirmationPopup);
+
+			DeleteGoalGroupConfirmationPopup = new DeleteGoalGroupConfirmationPopupViewModel();
+			ViewModelManager.ViewModels.Add("DeleteGoalGroupConfirmationPopup", DeleteGoalGroupConfirmationPopup);
 
 			EditableGoalPopup = new();
 			ViewModelManager.ViewModels.Add("EditableGoalPopup", EditableGoalPopup);

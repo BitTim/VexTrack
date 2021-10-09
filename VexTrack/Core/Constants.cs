@@ -9,7 +9,7 @@ namespace VexTrack.Core
 	static class Constants
 	{
 		public static readonly string AppName = "VexTrack";
-		public static readonly string Version = "v1.8";
+		public static readonly string Version = "v1.85";
 
 		public static readonly string DataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"/VexTrack - Preview";
 		public static readonly string LegacyDataFolder = @"dat";
@@ -96,7 +96,7 @@ namespace VexTrack.Core
 			["Aqua"] = "Theme/AccentColors/Aqua.xaml",
 			["Nature"] = "Theme/AccentColors/Nature.xaml",
 			["Emerald"] = "Theme/AccentColors/Emerald.xaml",
-			["Fire"] = "Theme/AccentColors/Fire.xaml",
+			["Chocolate"] = "Theme/AccentColors/Chocolate.xaml",
 			["Cyberpunk2"] = "Theme/AccentColors/Cyberpunk2.xaml",
 		};
 

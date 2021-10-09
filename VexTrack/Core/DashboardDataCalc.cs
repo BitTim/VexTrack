@@ -100,7 +100,6 @@ namespace VexTrack.Core
 			int daysPassed = duration - TrackingDataHelper.GetRemainingDays(TrackingDataHelper.CurrentSeasonUUID);
 			int totalCollected = CalcUtil.CalcTotalCollected(TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP);
 			int average = (int)MathF.Round(totalCollected / (daysPassed + 1));
-			average = 30000;
 
 			if (totalCollected >= total) return ret;
 

@@ -204,6 +204,7 @@ namespace VexTrack.Core
 				if (currentVersion >= newestVersion && !forceUpdate) break;
 				if ((bool)release["prerelease"] && SettingsHelper.Data.IgnorePreReleases) continue;
 
+
 				latestVersionTag = (string)release["tag_name"];
 
 				string rawDesc = (string)release["body"];
@@ -211,8 +212,9 @@ namespace VexTrack.Core
 
 				List<string> changelog = new();
 				List<string> warnings = new();
+				List<string> requiredVersion = new();
 
-				foreach (string d in  desc)
+				foreach (string d in desc)
 				{
 					List<string> splitDesc = d.Split("\r\n").ToList();
 					splitDesc.RemoveAll(x => string.IsNullOrWhiteSpace(x));
@@ -227,14 +229,17 @@ namespace VexTrack.Core
 
 					if(splitDesc[0].Contains("Changelog")) changelog = splitDesc.GetRange(1, splitDesc.Count - 1).ToList();
 					if(splitDesc[0].Contains("Warning")) warnings = splitDesc.GetRange(1, splitDesc.Count - 1).ToList();
+					if(splitDesc[0].Contains("Required Version")) requiredVersion = splitDesc.GetRange(1, splitDesc.Count - 1).ToList();
 				}
+
+				if (!requiredVersion.Contains(Constants.Version)) continue;
 
 				if ((bool)release["prerelease"]) warnings.Add("This release is a pre-release");
 
 				UpdateAvailablePopupViewModel UpdateAvailablePopup = (UpdateAvailablePopupViewModel)ViewModelManager.ViewModels["UpdateAvailablePopup"];
 				MainViewModel MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
 
-				UpdateAvailablePopup.SetData(changelog, warnings);
+				UpdateAvailablePopup.SetData(changelog, warnings, latestVersionTag);
 				MainVM.QueuePopup(UpdateAvailablePopup);
 
 				break;

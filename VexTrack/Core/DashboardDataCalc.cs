@@ -55,7 +55,7 @@ namespace VexTrack.Core
 			List<int> amounts = new();
 			int total = GoalDataCalc.CalcTotalGoal("", TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP, epilogue).Total;
 			int bufferDays = SettingsHelper.Data.BufferDays;
-			int effectiveRemaining = TrackingDataHelper.GetRemainingDays(TrackingDataHelper.CurrentSeasonUUID) - bufferDays;
+			int effectiveRemaining = TrackingDataHelper.GetRemainingDays(TrackingDataHelper.CurrentSeasonUUID) - bufferDays + 1;
 			if (effectiveRemaining <= 0) effectiveRemaining = 1;
 
 			int remainingDays = TrackingDataHelper.GetRemainingDays(TrackingDataHelper.CurrentSeasonUUID);
@@ -157,7 +157,7 @@ namespace VexTrack.Core
 			for (int i = 0; i < remainingDays + 1; i++)
 			{
 				val += average;
-				daysFinished = i;
+				daysFinished++;
 
 				if (val >= total) break;
 			}

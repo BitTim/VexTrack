@@ -195,6 +195,7 @@ namespace VexTrack.Core
 			List<string> changelog = new();
 			List<string> warnings = new();
 			bool collectChangelog = false;
+			bool showDialog = false;
 
 			JArray ja = JArray.Parse(res);
 			foreach(JObject release in ja)
@@ -237,8 +238,10 @@ namespace VexTrack.Core
 
 				if ((bool)release["prerelease"] && !collectChangelog) warnings.Add("This release is a pre-release");
 				collectChangelog = true;
+				showDialog = true;
 			}
 
+			if (!showDialog) return;
 			UpdateAvailablePopupViewModel UpdateAvailablePopup = (UpdateAvailablePopupViewModel)ViewModelManager.ViewModels["UpdateAvailablePopup"];
 			MainViewModel MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
 

@@ -39,8 +39,8 @@
 	<Color x:Key="Nature2">#c58c73</Color>
 	<Color x:Key="Emerald1">#2ea783</Color>
 	<Color x:Key="Emerald2">#108321</Color>
-	<Color x:Key="Fire1">#89384c</Color>
-	<Color x:Key="Fire2">#db6a3a</Color>
+	<Color x:Key="Chocolate1">#89384c</Color>
+	<Color x:Key="Chocolate2">#db6a3a</Color>
 
 	<Color x:Key="WinColor1">#66C2A9</Color>
 	<Color x:Key="WinColor2">#19b2b5</Color>
@@ -128,10 +128,10 @@
 		<GradientStop Color="{StaticResource Emerald1}" Offset="0.0"/>
 		<GradientStop Color="{StaticResource Emerald2}" Offset="1.0"/>
 	</LinearGradientBrush>
-	
-	<LinearGradientBrush x:Key="AccFire">
-		<GradientStop Color="{StaticResource Fire1}" Offset="0.0"/>
-		<GradientStop Color="{StaticResource Fire2}" Offset="1.0"/>
+
+	<LinearGradientBrush x:Key="AccChocolate">
+		<GradientStop Color="{StaticResource Chocolate1}" Offset="0.0"/>
+		<GradientStop Color="{StaticResource Chocolate2}" Offset="1.0"/>
 	</LinearGradientBrush>
 
 

@@ -96,7 +96,7 @@ namespace VexTrack.Core
 			["Aqua"] = "Theme/AccentColors/Aqua.xaml",
 			["Nature"] = "Theme/AccentColors/Nature.xaml",
 			["Emerald"] = "Theme/AccentColors/Emerald.xaml",
-			["Fire"] = "Theme/AccentColors/Fire.xaml",
+			["Chocolate"] = "Theme/AccentColors/Chocolate.xaml",
 			["Cyberpunk2"] = "Theme/AccentColors/Cyberpunk2.xaml",
 		};
 

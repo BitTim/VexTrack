@@ -340,10 +340,10 @@
 									 Margin="0, 0, 4, 4"/>
 
 						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
-									 Background="{StaticResource AccFire}"
+									 Background="{StaticResource AccChocolate}"
 									 Foreground="{StaticResource White}"
 									 Command="{Binding AccentButtonCommand}"
-									 CommandParameter="Fire"
+									 CommandParameter="Chocolate"
 									 IsChecked="{Binding Accent, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Fire, Mode=OneWay}"
 									 Margin="0, 0, 4, 4"/>
 

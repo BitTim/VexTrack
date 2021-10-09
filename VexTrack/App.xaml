@@ -109,6 +109,10 @@
 				<popupView:UpdateDownloadPopup/>
 			</DataTemplate>
 
+			<DataTemplate DataType="{x:Type popupViewModel:UpdateFailedPopupViewModel}">
+				<popupView:UpdateFailedPopup/>
+			</DataTemplate>
+
 			<DataTemplate DataType="{x:Type popupViewModel:EditableGoalGroupPopupViewModel}">
 				<popupView:EditableGoalGroupPopup/>
 			</DataTemplate>

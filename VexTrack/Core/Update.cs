@@ -100,21 +100,42 @@ namespace VexTrack.Core
 			updaterFileStream.Dispose();
 		}
 
-		public static void ExtractUpdate(string sourceFile, string extractTarget)
+		public static int ExtractUpdate(string sourceFile, string extractTarget)
 		{
 			ZipFile.ExtractToDirectory(sourceFile, extractTarget);
+
+			if (!File.Exists(extractTarget + Constants.ManifestFile)) return 1;
+			return 0;
 		}
 
-		public static void ApplyUpdate(string applierFile, string extractTarget, string installPath)
+		public static int ApplyUpdate(string applierFile, string extractTarget, string installPath, string newVersionString)
 		{
 			Application.Current.Shutdown();
 
+			string rawJSON = File.ReadAllText(extractTarget + Constants.ManifestFile);
+			JObject jo = JObject.Parse(rawJSON);
+
+			string NewVersionString = (string)jo["version"];
+			if (NewVersionString != newVersionString) return 1;
+
+			string fileList = "";
+			foreach(JValue file in jo["files"])
+			{
+				fileList += file.ToString() + "\n";
+			}
+
+			if(!File.Exists(extractTarget + Constants.FileListFile)) File.CreateText(extractTarget + Constants.FileListFile).Close();
+			File.WriteAllText(extractTarget + Constants.FileListFile, fileList);
+
 			ProcessStartInfo startInfo = new();
 			startInfo.FileName = applierFile;
-			startInfo.Arguments = "\"" + extractTarget + "\" \"" + installPath + "\" \"" + Constants.AppName + ".exe\"";
+			startInfo.Arguments = "\"" + extractTarget + "\" \"" + installPath + "\" \"" + extractTarget + Constants.FileListFile + "\" \"" + Constants.AppName + ".exe\"";
 			startInfo.WorkingDirectory = Constants.UpdateFolder;
+			startInfo.UseShellExecute = true;
+			startInfo.Verb = "runas";
 
 			Process.Start(startInfo);
+			return 0;
 		}
 
 
@@ -225,8 +246,35 @@ namespace VexTrack.Core
 			if(!Directory.Exists(Constants.UpdateFolder)) Directory.CreateDirectory(Constants.UpdateFolder);
 
 			await UpdateUtil.DownloadUpdate(SourceFile, UpdaterFile, latestVersionTag, client);
-			UpdateUtil.ExtractUpdate(SourceFile, ExtractTarget);
-			UpdateUtil.ApplyUpdate(UpdaterFile, ExtractTarget, Environment.CurrentDirectory);
+			int extractResult = UpdateUtil.ExtractUpdate(SourceFile, ExtractTarget);
+
+			if (extractResult == 1)
+			{
+				MainViewModel MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
+				UpdateFailedPopupViewModel popup = new UpdateFailedPopupViewModel();
+
+				MainVM.PopupQueue.LastOrDefault().CanCancel = true;
+				MainVM.PopupQueue.LastOrDefault().Close();
+
+				popup.SetData("Invalid Update Package: Manifest file missing or corrupted");
+				MainVM.QueuePopup(popup);
+				return;
+			}
+
+			int applyResult = UpdateUtil.ApplyUpdate(UpdaterFile, ExtractTarget, Environment.CurrentDirectory, latestVersionTag);
+
+			if (applyResult == 1)
+			{
+				MainViewModel MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
+				UpdateFailedPopupViewModel popup = new UpdateFailedPopupViewModel();
+
+				MainVM.PopupQueue.LastOrDefault().CanCancel = true;
+				MainVM.PopupQueue.LastOrDefault().Close();
+
+				popup.SetData("Invalid Update Package: Manifest version and Tag version mismatch");
+				MainVM.QueuePopup(popup);
+				return;
+			}
 		}
 	}
 }

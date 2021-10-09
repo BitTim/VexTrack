@@ -9,7 +9,7 @@ namespace VexTrack.Core
 	static class Constants
 	{
 		public static readonly string AppName = "VexTrack";
-		public static readonly string Version = "v1.81";
+		public static readonly string Version = "v1.8";
 
 		public static readonly string DataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"/VexTrack - Preview";
 		public static readonly string LegacyDataFolder = @"dat";
@@ -18,6 +18,8 @@ namespace VexTrack.Core
 		public static readonly string SettingsPath = DataFolder + @"/settings.json";
 		public static readonly string DataPath = DataFolder + @"/data.json";
 		public static readonly string LegacyDataPath = DataFolder + @"/config.json";
+		public static readonly string ManifestFile = @"/manifest.json";
+		public static readonly string FileListFile = @"/fileList.txt";
 
 		public static readonly int BattlepassLevels = 50;
 		public static readonly int EpilogueLevels = 5;

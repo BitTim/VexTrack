@@ -1,6 +1,6 @@
 # VexTrack
 
-![Status badge](https://img.shields.io/badge/Status-Stable-green?style=for-the-badge "Development Status") [![Language badge](https://img.shields.io/badge/Language-C%23_.NET_6.0-inactive?logo=visual-studio&logoColor=ffffff&style=for-the-badge)](https://dotnet.microsoft.com/download/dotnet/6.0 "Language") 
+![Status badge](https://img.shields.io/badge/Status-Stable-green?style=for-the-badge "Development Status") [![Language badge](https://img.shields.io/badge/Language-C%23_.NET_5.0-inactive?logo=visual-studio&logoColor=ffffff&style=for-the-badge)](https://dotnet.microsoft.com/download/dotnet/5.0 "Language") 
 ![GitHub License](https://img.shields.io/github/license/BitTim/VexTrack?logo=github&style=for-the-badge "License")
 ![GitHub repo size](https://img.shields.io/github/repo-size/BitTim/VexTrack?logo=github&style=for-the-badge) ![GitHub contributors](https://img.shields.io/github/contributors/BitTim/VexTrack?logo=github&style=for-the-badge "Contributors") ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/BitTim/VexTrack?logo=github&style=for-the-badge "Last commit")
 

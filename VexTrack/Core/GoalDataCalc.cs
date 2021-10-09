@@ -101,6 +101,20 @@ namespace VexTrack.Core
 			return ret;
 		}
 
+		public static bool checkPaused(GoalGroup gg, Goal g)
+		{
+			if (g.Dependency != "")
+			{
+				int index = gg.Goals.FindIndex(x => x.UUID == g.Dependency);
+				if (index < 0) return true; // Has invalid Dependency = Dont show
+
+				Goal nextG = gg.Goals[index];
+				return checkPaused(gg, nextG);
+			}
+
+			return g.Paused;
+		}
+
 		public static (List<LineSeries>, List<TextAnnotation>) CalcGraphGoals(string sUUID)
 		{
 			List<LineSeries> lsret = new();
@@ -119,6 +133,7 @@ namespace VexTrack.Core
 					int val = totalCollected - ge.Collected + ge.Total;
 
 					if (val <= 0) continue;
+					if (checkPaused(gg, g)) continue;
 
 					ls.Points.Add(new DataPoint(0, val));
 					ls.Points.Add(new DataPoint(TrackingDataHelper.GetDuration(sUUID), val));

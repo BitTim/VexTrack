@@ -100,7 +100,7 @@ namespace VexTrack.Core
 			ret.MinimumX = duration - bufferDays;
 			ret.MaximumX = duration;
 			ret.MinimumY = 0;
-			ret.MaximumY = total;
+			ret.MaximumY = total * 3;
 
 			ret.Fill = OxyColor.FromAColor(64, OxyColors.Red);
 			return ret;

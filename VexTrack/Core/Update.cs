@@ -192,6 +192,10 @@ namespace VexTrack.Core
 			HttpResponseMessage response = await client.SendAsync(request);
 			string res = await response.Content.ReadAsStringAsync();
 
+			List<string> changelog = new();
+			List<string> warnings = new();
+			bool collectChangelog = false;
+
 			JArray ja = JArray.Parse(res);
 			foreach(JObject release in ja)
 			{
@@ -204,14 +208,11 @@ namespace VexTrack.Core
 				if (currentVersion >= newestVersion && !forceUpdate) break;
 				if ((bool)release["prerelease"] && SettingsHelper.Data.IgnorePreReleases) continue;
 
-
 				latestVersionTag = (string)release["tag_name"];
 
 				string rawDesc = (string)release["body"];
 				List<string> desc = rawDesc.Split("##").ToList();
 
-				List<string> changelog = new();
-				List<string> warnings = new();
 				List<string> requiredVersion = new();
 
 				foreach (string d in desc)
@@ -227,23 +228,22 @@ namespace VexTrack.Core
 
 					if (splitDesc.Count < 2) continue;
 
-					if(splitDesc[0].Contains("Changelog")) changelog = splitDesc.GetRange(1, splitDesc.Count - 1).ToList();
-					if(splitDesc[0].Contains("Warning")) warnings = splitDesc.GetRange(1, splitDesc.Count - 1).ToList();
+					if(splitDesc[0].Contains("Changelog")) changelog.AddRange(splitDesc.GetRange(1, splitDesc.Count - 1).ToList());
+					if(splitDesc[0].Contains("Warning")) warnings.AddRange(splitDesc.GetRange(1, splitDesc.Count - 1).ToList());
 					if(splitDesc[0].Contains("Required Version")) requiredVersion = splitDesc.GetRange(1, splitDesc.Count - 1).ToList();
 				}
 
-				if (!requiredVersion.Contains(Constants.Version)) continue;
+				if (!requiredVersion.Contains(Constants.Version) && !collectChangelog) continue;
 
-				if ((bool)release["prerelease"]) warnings.Add("This release is a pre-release");
-
-				UpdateAvailablePopupViewModel UpdateAvailablePopup = (UpdateAvailablePopupViewModel)ViewModelManager.ViewModels["UpdateAvailablePopup"];
-				MainViewModel MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
-
-				UpdateAvailablePopup.SetData(changelog, warnings, latestVersionTag);
-				MainVM.QueuePopup(UpdateAvailablePopup);
-
-				break;
+				if ((bool)release["prerelease"] && !collectChangelog) warnings.Add("This release is a pre-release");
+				collectChangelog = true;
 			}
+
+			UpdateAvailablePopupViewModel UpdateAvailablePopup = (UpdateAvailablePopupViewModel)ViewModelManager.ViewModels["UpdateAvailablePopup"];
+			MainViewModel MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
+
+			UpdateAvailablePopup.SetData(changelog, warnings, latestVersionTag);
+			MainVM.QueuePopup(UpdateAvailablePopup);
 		}
 
 		public static async void GetUpdate()

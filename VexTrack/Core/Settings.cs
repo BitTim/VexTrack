@@ -1,14 +1,8 @@
 ﻿using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using VexTrack.MVVM.ViewModel;
 
@@ -23,12 +17,12 @@ namespace VexTrack.Core
 		public bool IgnorePreReleases;
 		public bool ForceEpilogue;
 		public bool SingleSeasonHistory;
-		
+
 		public string Theme;
 		public string SystemTheme; //Not part of saved settings file
 		public string Accent;
-		
-		public Settings() {}
+
+		public Settings() { }
 		public Settings(string username, int bufferDays, bool ignoreInactiveDays, bool ignoreInit, bool ignorePreReleases, bool forceEpilogue, bool singleSeasonHistory, string theme, string systemTheme, string accent)
 		{
 			Username = username;
@@ -62,7 +56,7 @@ namespace VexTrack.Core
 	{
 		public static Settings Data { get; set; }
 		public static Settings Default { get; set; }
-		
+
 		public static void Init()
 		{
 			Data = new Settings();
@@ -128,7 +122,7 @@ namespace VexTrack.Core
 			if (jo["accent"] == null) resave = true;
 			else Data.Accent = (string)jo["accent"];
 
-			
+
 
 			if (resave) SaveSettings();
 			ApplyVisualSettings();

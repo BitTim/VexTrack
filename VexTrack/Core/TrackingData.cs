@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Newtonsoft.Json.Linq;
 using VexTrack.MVVM.ViewModel;
 using VexTrack.MVVM.ViewModel.Popups;
 
@@ -317,7 +317,7 @@ namespace VexTrack.Core
 			streak = streak.OrderByDescending(t => t.Date).ToList();
 
 			List<GoalGroup> goalGroups = new();
-			foreach(JObject goalGroup in jo["goals"])
+			foreach (JObject goalGroup in jo["goals"])
 			{
 				JToken source = goalGroup["goals"];
 				bool convertToGrouped = false;
@@ -329,7 +329,7 @@ namespace VexTrack.Core
 				}
 
 				List<Goal> goals = new();
-				foreach(JObject goal in source)
+				foreach (JObject goal in source)
 				{
 					string uuid = (string)goal["uuid"];
 					string name = (string)goal["name"];
@@ -352,7 +352,7 @@ namespace VexTrack.Core
 						collected = (int)goal["collected"];
 					}
 
-					if(goal["paused"] == null)
+					if (goal["paused"] == null)
 					{
 						paused = false;
 						reSave = true;
@@ -396,7 +396,7 @@ namespace VexTrack.Core
 			JObject jo = new();
 
 			JArray goalGroups = new();
-			foreach(GoalGroup goalGroup in Data.Goals)
+			foreach (GoalGroup goalGroup in Data.Goals)
 			{
 				JObject goalGroubObj = new();
 				goalGroubObj.Add("uuid", goalGroup.UUID);
@@ -424,7 +424,7 @@ namespace VexTrack.Core
 
 			Data.Streak = Data.Streak.OrderByDescending(t => t.Date).ToList();
 			JArray streak = new();
-			foreach(StreakEntry streakEntry in Data.Streak)
+			foreach (StreakEntry streakEntry in Data.Streak)
 			{
 				JObject streakEntryObj = new();
 				streakEntryObj.Add("uuid", streakEntry.UUID);
@@ -487,8 +487,8 @@ namespace VexTrack.Core
 
 			//Get Completed goals
 			List<string> completedGoals = new();
-			foreach (GoalGroup gg in Data.Goals) 
-				foreach(Goal g in gg.Goals)
+			foreach (GoalGroup gg in Data.Goals)
+				foreach (Goal g in gg.Goals)
 					if (g.Collected >= g.Total) completedGoals.Add(g.UUID);
 
 			//Recalculate total collected XP, collected XP in level and current level
@@ -512,7 +512,7 @@ namespace VexTrack.Core
 			}
 			iter--;
 
-			for(int i = CurrentSeasonData.ActiveBPLevel - 1; i > iter - 1; i--)
+			for (int i = CurrentSeasonData.ActiveBPLevel - 1; i > iter - 1; i--)
 				lost.Add("Battlepass Level " + i.ToString());
 
 			for (int i = CurrentSeasonData.ActiveBPLevel; i < iter; i++)
@@ -599,7 +599,7 @@ namespace VexTrack.Core
 				List<HistoryEntry> SortedHistory = Data.Seasons[i].History.OrderBy(h => h.Time).ToList();
 				Data.Seasons[i].History = SortedHistory;
 			}
-			
+
 			SaveData();
 			MainViewModel MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
 			MainVM.Update();
@@ -686,7 +686,7 @@ namespace VexTrack.Core
 		{
 			int index = Data.Goals[Data.Goals.FindIndex(gg => gg.UUID == groupUUID)]
 							.Goals.FindIndex(g => g.UUID == uuid);
-			if(index >= 0)
+			if (index >= 0)
 			{
 				Data.Goals[Data.Goals.FindIndex(gg => gg.UUID == groupUUID)]
 					.Goals[index] = data;
@@ -705,7 +705,7 @@ namespace VexTrack.Core
 							.Goals.FindIndex(g => g.UUID == uuid)];
 
 			AddGoal(dstGroupUUID, goal);
-			if(deleteGoalFromGroup) RemoveGoal(srcGroupUUID, uuid);
+			if (deleteGoalFromGroup) RemoveGoal(srcGroupUUID, uuid);
 		}
 
 
@@ -779,7 +779,7 @@ namespace VexTrack.Core
 			List<string> activeSeasons = new();
 			DateTimeOffset today = DateTimeOffset.Now.ToLocalTime().Date;
 
-			foreach(Season s in Data.Seasons)
+			foreach (Season s in Data.Seasons)
 			{
 				if (DateTimeOffset.Parse(s.EndDate).ToLocalTime().Date > today) activeSeasons.Add(s.UUID);
 			}

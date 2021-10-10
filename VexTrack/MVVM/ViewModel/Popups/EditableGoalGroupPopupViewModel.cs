@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VexTrack.Core;
 
 namespace VexTrack.MVVM.ViewModel.Popups
@@ -70,17 +67,18 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			CanCancel = true;
 
 			OnBackClicked = new RelayCommand(o => { if (CanCancel) Close(); });
-			OnDoneClicked = new RelayCommand(o => {
+			OnDoneClicked = new RelayCommand(o =>
+			{
 				if (EditMode) TrackingDataHelper.EditGoalGroup(UUID, Name);
 				else
 				{
 					TrackingDataHelper.AddGoalGroup(new GoalGroup(UUID, Name, new List<Goal>()));
 
-					if(GenerateAgentGoals)
+					if (GenerateAgentGoals)
 					{
 						string prevUUID = "";
 
-						for(int i = ActiveTier; i < Constants.AgentTiers + 1; i++)
+						for (int i = ActiveTier; i < Constants.AgentTiers + 1; i++)
 						{
 							string uuid = Guid.NewGuid().ToString();
 							TrackingDataHelper.AddGoal(UUID, new Goal(uuid, Name + " Tier " + i.ToString(), CalcUtil.CalcMaxForTier(i), i == ActiveTier ? Collected : 0, "", prevUUID, false));

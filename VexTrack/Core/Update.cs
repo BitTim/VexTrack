@@ -7,7 +7,6 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using VexTrack.MVVM.ViewModel;
@@ -49,7 +48,7 @@ namespace VexTrack.Core
 			startTime = DateTimeOffset.Now;
 
 			i = 0;
-			for(int len = packageStream.Read(buffer, 0, 1024 * 1024); len != 0; len = packageStream.Read(buffer, 0, 1024 * 1024))
+			for (int len = packageStream.Read(buffer, 0, 1024 * 1024); len != 0; len = packageStream.Read(buffer, 0, 1024 * 1024))
 			{
 
 				packageTotalBytesRead += len;
@@ -88,7 +87,7 @@ namespace VexTrack.Core
 				double updaterProgress = CalcUtil.CalcProgress(updaterContentLength, updaterTotalBytesRead);
 				UpdateDownloadPopup.SetUpdaterData(updaterContentLength, updaterTotalBytesRead, updaterProgress);
 
-				if(i % 15  == 0)
+				if (i % 15 == 0)
 				{
 					double downloadSpeed = updaterTotalBytesRead / (DateTimeOffset.Now - startTime).TotalSeconds;
 					UpdateDownloadPopup.SetDownloadSpeed(downloadSpeed);
@@ -119,12 +118,12 @@ namespace VexTrack.Core
 			if (NewVersionString != newVersionString) return 1;
 
 			string fileList = "";
-			foreach(JValue file in jo["files"])
+			foreach (JValue file in jo["files"])
 			{
 				fileList += file.ToString() + "\n";
 			}
 
-			if(!File.Exists(extractTarget + Constants.FileListFile)) File.CreateText(extractTarget + Constants.FileListFile).Close();
+			if (!File.Exists(extractTarget + Constants.FileListFile)) File.CreateText(extractTarget + Constants.FileListFile).Close();
 			File.WriteAllText(extractTarget + Constants.FileListFile, fileList);
 
 			ProcessStartInfo startInfo = new();
@@ -148,7 +147,7 @@ namespace VexTrack.Core
 			if (isSpeed) unit = " B/s";
 
 			int divisions = 0;
-			while(size > 1)
+			while (size > 1)
 			{
 				size /= 1024;
 				divisions++;
@@ -156,7 +155,7 @@ namespace VexTrack.Core
 				if (divisions > 3) break;
 			}
 
-			if(divisions > 0)
+			if (divisions > 0)
 			{
 				size *= 1024;
 				divisions--;
@@ -183,7 +182,7 @@ namespace VexTrack.Core
 
 		public static async void CheckUpdateAsync(bool forceUpdate = false)
 		{
-			if(Directory.Exists(Constants.UpdateFolder)) Directory.Delete(Constants.UpdateFolder, true);
+			if (Directory.Exists(Constants.UpdateFolder)) Directory.Delete(Constants.UpdateFolder, true);
 
 			HttpRequestMessage request = new HttpRequestMessage() { RequestUri = new Uri(Constants.ReleasesURL), Method = HttpMethod.Get };
 			request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -198,7 +197,7 @@ namespace VexTrack.Core
 			bool showDialog = false;
 
 			JArray ja = JArray.Parse(res);
-			foreach(JObject release in ja)
+			foreach (JObject release in ja)
 			{
 				List<string> tokenizedName = release["name"].ToString().Split().ToList();
 				if (tokenizedName[0] != Constants.AppName) continue;
@@ -221,17 +220,17 @@ namespace VexTrack.Core
 					List<string> splitDesc = d.Split("\r\n").ToList();
 					splitDesc.RemoveAll(x => string.IsNullOrWhiteSpace(x));
 
-					for(int i = 0; i < splitDesc.Count; i++)
+					for (int i = 0; i < splitDesc.Count; i++)
 					{
-						if(splitDesc[i].StartsWith("-")) splitDesc[i] = splitDesc[i].Substring(1);
-						if(splitDesc[i].StartsWith(" ")) splitDesc[i] = splitDesc[i].Substring(1);
+						if (splitDesc[i].StartsWith("-")) splitDesc[i] = splitDesc[i].Substring(1);
+						if (splitDesc[i].StartsWith(" ")) splitDesc[i] = splitDesc[i].Substring(1);
 					}
 
 					if (splitDesc.Count < 2) continue;
 
-					if(splitDesc[0].Contains("Changelog")) changelog.AddRange(splitDesc.GetRange(1, splitDesc.Count - 1).ToList());
-					if(splitDesc[0].Contains("Warning")) warnings.AddRange(splitDesc.GetRange(1, splitDesc.Count - 1).ToList());
-					if(splitDesc[0].Contains("Required Version")) requiredVersion = splitDesc.GetRange(1, splitDesc.Count - 1).ToList();
+					if (splitDesc[0].Contains("Changelog")) changelog.AddRange(splitDesc.GetRange(1, splitDesc.Count - 1).ToList());
+					if (splitDesc[0].Contains("Warning")) warnings.AddRange(splitDesc.GetRange(1, splitDesc.Count - 1).ToList());
+					if (splitDesc[0].Contains("Required Version")) requiredVersion = splitDesc.GetRange(1, splitDesc.Count - 1).ToList();
 				}
 
 				if (!requiredVersion.Contains(Constants.Version) && !collectChangelog) continue;
@@ -251,7 +250,7 @@ namespace VexTrack.Core
 
 		public static async void GetUpdate()
 		{
-			if(!Directory.Exists(Constants.UpdateFolder)) Directory.CreateDirectory(Constants.UpdateFolder);
+			if (!Directory.Exists(Constants.UpdateFolder)) Directory.CreateDirectory(Constants.UpdateFolder);
 
 			await UpdateUtil.DownloadUpdate(SourceFile, UpdaterFile, latestVersionTag, client);
 			int extractResult = UpdateUtil.ExtractUpdate(SourceFile, ExtractTarget);

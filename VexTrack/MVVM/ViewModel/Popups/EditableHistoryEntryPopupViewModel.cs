@@ -118,7 +118,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			set
 			{
 				_surrenderedLoss = value;
-				if(_surrenderedLoss == true) SurrenderedWin = false;
+				if (_surrenderedLoss == true) SurrenderedWin = false;
 
 				OnPropertyChanged();
 				OnPropertyChanged(nameof(Result));

@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VexTrack.Core;
 
 namespace VexTrack.MVVM.ViewModel.Popups
@@ -55,7 +52,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			CanCancel = true;
 
 			OnBackClicked = new RelayCommand(o => { if (CanCancel) Close(); });
-			OnDoneClicked = new RelayCommand(o => {
+			OnDoneClicked = new RelayCommand(o =>
+			{
 				CanCancel = true;
 				MainVM.InterruptUpdate = false;
 

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VexTrack.Core;
+﻿using VexTrack.Core;
 
 namespace VexTrack.MVVM.ViewModel.Popups
 {
@@ -13,7 +8,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public RelayCommand OnEditClicked { get; set; }
 		public RelayCommand OnDeleteClicked { get; set; }
 		private EditableGoalPopupViewModel EditableGoalPopup { get; set; }
-		private DeleteGoalConfirmationPopupViewModel DeleteGoalConfirmationPopup {  get; set; }
+		private DeleteGoalConfirmationPopupViewModel DeleteGoalConfirmationPopup { get; set; }
 
 		private GoalEntryData RawData { get; set; }
 		public string UUID { get; set; }
@@ -54,12 +49,14 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			CanCancel = true;
 
 			OnBackClicked = new RelayCommand(o => { Close(); });
-			OnEditClicked = new RelayCommand(o => {
+			OnEditClicked = new RelayCommand(o =>
+			{
 				EditableGoalPopup.SetParameters("Edit Goal", true);
 				EditableGoalPopup.SetData(RawData);
 				MainVM.QueuePopup(EditableGoalPopup);
 			});
-			OnDeleteClicked = new RelayCommand(o => {
+			OnDeleteClicked = new RelayCommand(o =>
+			{
 				IsInitialized = false;
 				DeleteGoalConfirmationPopup.SetData(GroupUUID, UUID);
 				MainVM.QueuePopup(DeleteGoalConfirmationPopup);
@@ -74,7 +71,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 		public void SetData(GoalEntryData data, string unit = " XP")
 		{
-			if(data == null) return;
+			if (data == null) return;
 			RawData = data;
 
 			UUID = data.UUID;

@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
@@ -16,7 +12,7 @@ namespace VexTrack.MVVM.Converter
 			bool val = (bool)value;
 
 			bool param;
-			if (parameter == null) param = false; 
+			if (parameter == null) param = false;
 			else param = bool.Parse((string)parameter);
 
 			if (val)

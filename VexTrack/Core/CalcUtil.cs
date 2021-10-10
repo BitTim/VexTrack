@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VexTrack.Core
 {
@@ -40,10 +36,10 @@ namespace VexTrack.Core
 		{
 			return Constants.Level2Offset + (level * Constants.XPPerLevel);
 		}
-		
+
 		public static int CalcMaxForTier(int tier)
 		{
-			switch(tier)
+			switch (tier)
 			{
 				case 1: return 20000;
 				case 2: return 30000;

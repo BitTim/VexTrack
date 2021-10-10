@@ -3,8 +3,6 @@ using OxyPlot.Series;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VexTrack.Core
 {
@@ -32,8 +30,8 @@ namespace VexTrack.Core
 				dailyCollected += h.Amount;
 			}
 
-			int total = (int)Math.Ceiling((double)(totalData.Remaining + dailyCollected) / (double)idealRemainingDays);
-			if(total <= 0) total = 0;
+			int total = (int)Math.Ceiling((totalData.Remaining + dailyCollected) / (double)idealRemainingDays);
+			if (total <= 0) total = 0;
 
 			ret.Total = total;
 			ret.Collected = dailyCollected;
@@ -69,12 +67,12 @@ namespace VexTrack.Core
 
 			int initAmount = (int)performance.Points.First().Y;
 			if (performance.Points.Count > 1) initAmount = (int)performance.Points[performance.Points.Count - 1 - startOffset].Y;
-			double dailyTotal = (double)(total - initAmount) / (double)effectiveRemaining;
+			double dailyTotal = (total - initAmount) / (double)effectiveRemaining;
 			if (dailyTotal <= 0) return ret;
 
 			amounts.Add(initAmount);
 
-			for(int i = 1; i < remainingDays + 2; i++)
+			for (int i = 1; i < remainingDays + 2; i++)
 			{
 				int amount = (int)Math.Ceiling(i * dailyTotal + initAmount);
 				if (amount > total) amount = total;
@@ -110,7 +108,7 @@ namespace VexTrack.Core
 				int amount = (int)ret.Points.Last().Y + average;
 				if (amount > total)
 				{
-					double x = ((double)total - (double)performance.Points[daysPassed - 1].Y) / (double)average + daysPassed - 1;
+					double x = (total - (double)performance.Points[daysPassed - 1].Y) / average + daysPassed - 1;
 					ret.Points.Add(new DataPoint(x, total));
 					break;
 				}

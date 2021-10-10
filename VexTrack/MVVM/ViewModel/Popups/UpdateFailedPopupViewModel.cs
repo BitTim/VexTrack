@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VexTrack.Core;
+﻿using VexTrack.Core;
 
 namespace VexTrack.MVVM.ViewModel.Popups
 {
@@ -14,7 +9,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 		public string ErrorMessage
 		{
-			get {  return _errorMessage; }
+			get { return _errorMessage; }
 			set
 			{
 				_errorMessage = value;

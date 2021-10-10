@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VexTrack.Core;
+﻿using VexTrack.Core;
 
 namespace VexTrack.MVVM.ViewModel.Popups
 {
@@ -15,7 +10,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		private bool _keepGoals = false;
 		public bool KeepGoals
 		{
-			get { return _keepGoals;}
+			get { return _keepGoals; }
 			set
 			{
 				_keepGoals = value;
@@ -29,10 +24,11 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		{
 			CanCancel = true;
 
-			OnYesClicked = new RelayCommand(o => {
-				if(KeepGoals)
-				{ 
-					foreach(Goal goal in TrackingDataHelper.Data.Goals.Find(gg => gg.UUID == UUID).Goals)
+			OnYesClicked = new RelayCommand(o =>
+			{
+				if (KeepGoals)
+				{
+					foreach (Goal goal in TrackingDataHelper.Data.Goals.Find(gg => gg.UUID == UUID).Goals)
 					{
 						TrackingDataHelper.MoveGoal(UUID, Constants.DefaultGroupUUID, goal.UUID);
 					}

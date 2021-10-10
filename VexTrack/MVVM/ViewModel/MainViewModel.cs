@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using VexTrack.Core;
 using VexTrack.MVVM.ViewModel.Popups;
@@ -58,7 +56,8 @@ namespace VexTrack.MVVM.ViewModel
 		public object CurrentView
 		{
 			get { return _currentView; }
-			set {
+			set
+			{
 				_currentView = value;
 				OnPropertyChanged();
 			}
@@ -107,12 +106,12 @@ namespace VexTrack.MVVM.ViewModel
 
 		public MainViewModel()
 		{
-			if(Directory.Exists(Constants.LegacyDataFolder))
+			if (Directory.Exists(Constants.LegacyDataFolder))
 			{
 				DirectoryInfo targetDir = new DirectoryInfo(Constants.DataFolder);
-				if(!targetDir.Exists) Directory.CreateDirectory(Constants.DataFolder);
+				if (!targetDir.Exists) Directory.CreateDirectory(Constants.DataFolder);
 
-				foreach(string f in Directory.GetFiles(Constants.LegacyDataFolder))
+				foreach (string f in Directory.GetFiles(Constants.LegacyDataFolder))
 				{
 					FileInfo file = new FileInfo(f);
 					file.MoveTo(targetDir + "\\" + file.Name);
@@ -142,7 +141,7 @@ namespace VexTrack.MVVM.ViewModel
 			DateTime now = DateTime.Now.ToLocalTime();
 			DateTime midnight = DateTime.Today.ToLocalTime();
 
-			if(now > midnight) midnight = midnight.AddDays(1).ToLocalTime();
+			if (now > midnight) midnight = midnight.AddDays(1).ToLocalTime();
 			int msUntilMidnight = (int)(midnight - now).TotalMilliseconds;
 			updateTimer.Change(msUntilMidnight, Timeout.Infinite);
 
@@ -230,9 +229,9 @@ namespace VexTrack.MVVM.ViewModel
 			if (InterruptUpdate) return;
 			if (!ViewModelsInitialized) InitViewModels();
 
-			if(TrackingDataHelper.CurrentSeasonData.ActiveBPLevel > Constants.BattlepassLevels && SettingsHelper.Data.ForceEpilogue)
+			if (TrackingDataHelper.CurrentSeasonData.ActiveBPLevel > Constants.BattlepassLevels && SettingsHelper.Data.ForceEpilogue)
 			{
-				if(!Epilogue) Epilogue = true;
+				if (!Epilogue) Epilogue = true;
 				EpilogueButtonEnabled = false;
 			}
 			else EpilogueButtonEnabled = true;
@@ -275,7 +274,7 @@ namespace VexTrack.MVVM.ViewModel
 
 		public void UpdateTimerCallback(object state)
 		{
-			Application.Current.Dispatcher.Invoke((Action)delegate { Update(); });
+			Application.Current.Dispatcher.Invoke(delegate { Update(); });
 		}
 
 

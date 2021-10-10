@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VexTrack.Core
 {
 	static class Constants
 	{
 		public static readonly string AppName = "VexTrack";
-		public static readonly string Version = "v1.85";
+		public static readonly string Version = "v1.86";
 
 		public static readonly string DataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"/VexTrack - Preview";
 		public static readonly string LegacyDataFolder = @"dat";

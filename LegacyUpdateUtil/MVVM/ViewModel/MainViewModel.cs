@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using LegacyUpdateUtil.Core;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using LegacyUpdateUtil.Core;
 
 namespace LegacyUpdateUtil.MVVM.ViewModel
 {
@@ -162,12 +156,12 @@ namespace LegacyUpdateUtil.MVVM.ViewModel
 
 		public MainViewModel()
 		{
-			if(Directory.Exists(Constants.LegacyDataFolder))
+			if (Directory.Exists(Constants.LegacyDataFolder))
 			{
 				DirectoryInfo targetDir = new DirectoryInfo(Constants.DataFolder);
-				if(!targetDir.Exists) Directory.CreateDirectory(Constants.DataFolder);
+				if (!targetDir.Exists) Directory.CreateDirectory(Constants.DataFolder);
 
-				foreach(string f in Directory.GetFiles(Constants.LegacyDataFolder))
+				foreach (string f in Directory.GetFiles(Constants.LegacyDataFolder))
 				{
 					FileInfo file = new FileInfo(f);
 					file.MoveTo(targetDir + "\\" + file.Name);

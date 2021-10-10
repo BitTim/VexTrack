@@ -126,10 +126,10 @@ namespace VexTrack.MVVM.ViewModel
 
 		public void EditEntry(HistoryEntryData data)
 		{
-			foreach(HistoryGroupData g in Groups)
+			foreach (HistoryGroupData g in Groups)
 			{
 				HistoryEntryData obj = g.Entries.FirstOrDefault(e => e.HUUID == data.HUUID);
-				if(obj != null)
+				if (obj != null)
 				{
 					g.Entries.Remove(obj);
 					break;

@@ -4,8 +4,6 @@ using OxyPlot.Series;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
@@ -25,7 +23,7 @@ namespace VexTrack.Core
 
 			int initCollected = TrackingDataHelper.GetFirstHistoryEntry(sUUID).Amount;
 			int initRemaining = total - initCollected;
-			double totalDaily = (double)initRemaining / (double)(duration - bufferDays);
+			double totalDaily = initRemaining / (double)(duration - bufferDays);
 
 			ret.Points.Add(new DataPoint(0, initCollected));
 			for (int i = 1; i < duration + 1; i++)

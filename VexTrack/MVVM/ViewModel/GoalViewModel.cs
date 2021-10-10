@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VexTrack.Core;
 using VexTrack.MVVM.ViewModel.Popups;
 
@@ -67,20 +65,24 @@ namespace VexTrack.MVVM.ViewModel
 
 			BuiltinGoalButtonClick = new RelayCommand(OnBuiltinGoalButtonClick);
 			UserGoalButtonClick = new RelayCommand(OnUserGoalButtonClick);
-			OnAddClicked = new RelayCommand(o => {
+			OnAddClicked = new RelayCommand(o =>
+			{
 				EditableGoalPopup.SetParameters("Create Goal", false);
 				MainVM.QueuePopup(EditableGoalPopup);
 			});
-			OnGroupAddClicked = new RelayCommand(o => {
+			OnGroupAddClicked = new RelayCommand(o =>
+			{
 				EditableGoalGroupPopup.SetParameters("Create Group", false);
 				MainVM.QueuePopup(EditableGoalGroupPopup);
 			});
-			OnGroupEditClicked = new RelayCommand(o => {
+			OnGroupEditClicked = new RelayCommand(o =>
+			{
 				EditableGoalGroupPopup.SetParameters("Edit Group", true);
 				EditableGoalGroupPopup.SetData(UserEntries.Where(x => x.UUID == (string)o).FirstOrDefault());
 				MainVM.QueuePopup(EditableGoalGroupPopup);
 			});
-			OnGroupDeleteClicked = new RelayCommand(o => {
+			OnGroupDeleteClicked = new RelayCommand(o =>
+			{
 				DeleteGoalGroupConfirmationPopup.SetData((string)o);
 				MainVM.QueuePopup(DeleteGoalGroupConfirmationPopup);
 			});

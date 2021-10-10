@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using VexTrack.Core;
 
 namespace VexTrack.MVVM.Model
@@ -21,7 +11,7 @@ namespace VexTrack.MVVM.Model
 		public static DependencyProperty HueProperty = DependencyProperty.Register("Hue", typeof(int), typeof(ColorPickerModel), new PropertyMetadata(0, OnHSVChanged));
 		public static DependencyProperty SaturationProperty = DependencyProperty.Register("Saturation", typeof(float), typeof(ColorPickerModel), new PropertyMetadata(0f, OnHSVChanged));
 		public static DependencyProperty ValueProperty = DependencyProperty.Register("Lightness", typeof(float), typeof(ColorPickerModel), new PropertyMetadata(1f, OnHSVChanged));
-		
+
 		public static DependencyProperty RedProperty = DependencyProperty.Register("Red", typeof(byte), typeof(ColorPickerModel), new PropertyMetadata((byte)255, OnRGBChanged));
 		public static DependencyProperty GreenProperty = DependencyProperty.Register("Green", typeof(byte), typeof(ColorPickerModel), new PropertyMetadata((byte)255, OnRGBChanged));
 		public static DependencyProperty BlueProperty = DependencyProperty.Register("Blue", typeof(byte), typeof(ColorPickerModel), new PropertyMetadata((byte)255, OnRGBChanged));
@@ -122,7 +112,7 @@ namespace VexTrack.MVVM.Model
 		{
 			LinearGradientBrush brush = new LinearGradientBrush();
 			brush.StartPoint = new Point(0, 0);
-			
+
 			if (dir == "Horizontal") brush.EndPoint = new Point(1, 0);
 			if (dir == "Vertical") brush.EndPoint = new Point(0, 1);
 
@@ -176,7 +166,7 @@ namespace VexTrack.MVVM.Model
 			Saturation = convertedColor.GetSaturation();
 			Value = ColorUtil.getValue(convertedColor);
 
-			if(clickableBorder != null) HighlightMargin = new Thickness(Saturation * clickableBorder.ActualWidth, (1f - Value) * clickableBorder.ActualHeight, 0, 0);
+			if (clickableBorder != null) HighlightMargin = new Thickness(Saturation * clickableBorder.ActualWidth, (1f - Value) * clickableBorder.ActualHeight, 0, 0);
 		}
 
 		private void UpdateHex(Color currentColor)

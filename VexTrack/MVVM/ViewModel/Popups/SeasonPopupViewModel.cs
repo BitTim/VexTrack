@@ -2,11 +2,8 @@
 using OxyPlot.Annotations;
 using OxyPlot.Axes;
 using OxyPlot.Series;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using VexTrack.Core;
@@ -52,12 +49,14 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			CanCancel = true;
 
 			OnBackClicked = new RelayCommand(o => { Close(); });
-			OnEditClicked = new RelayCommand(o => {
+			OnEditClicked = new RelayCommand(o =>
+			{
 				EditableSeasonPopup.SetParameters("Edit Season", true);
 				EditableSeasonPopup.SetData(RawData);
 				MainVM.QueuePopup(EditableSeasonPopup);
 			});
-			OnDeleteClicked = new RelayCommand(o => {
+			OnDeleteClicked = new RelayCommand(o =>
+			{
 				IsInitialized = false;
 				TrackingDataHelper.RemoveSeason(UUID);
 			});

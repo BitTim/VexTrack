@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VexTrack.Core;
 
 namespace VexTrack.MVVM.ViewModel.Popups
@@ -140,7 +137,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			CanCancel = true;
 
 			OnBackClicked = new RelayCommand(o => { if (CanCancel) Close(); });
-			OnDoneClicked = new RelayCommand(o => {
+			OnDoneClicked = new RelayCommand(o =>
+			{
 				if (EditMode) TrackingDataHelper.EditGoal(Group, UUID, new Goal(UUID, Title, Total, Collected, Color, Dependency, Paused));
 				else TrackingDataHelper.AddGoal(Group, new Goal(UUID, Title, Total, Collected, Color, Dependency, Paused));
 				Close();
@@ -187,7 +185,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			StartXP = data.StartXP;
 			Paused = data.Paused;
 
-			if(AvailableGroups.FindIndex(gg => gg.UUID == data.GroupUUID) == -1) Group = Constants.DefaultGroupUUID;
+			if (AvailableGroups.FindIndex(gg => gg.UUID == data.GroupUUID) == -1) Group = Constants.DefaultGroupUUID;
 			else Group = data.GroupUUID;
 
 			if (AvailableDependencies.FindIndex(d => d.UUID == data.DepUUID) == -1) Dependency = "";

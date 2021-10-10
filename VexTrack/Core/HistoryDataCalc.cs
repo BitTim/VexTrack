@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VexTrack.Core
 {
@@ -11,7 +7,7 @@ namespace VexTrack.Core
 	{
 		public static string CalcHistoryResultFromScores(string scoreType, int score, int enemyScore, bool surrenderedWin, bool surrenderedLoss)
 		{
-			if(scoreType == "Score")
+			if (scoreType == "Score")
 			{
 				if (surrenderedWin) return "Surrendered Win";
 				if (surrenderedLoss) return "Surrendered Loss";
@@ -23,7 +19,7 @@ namespace VexTrack.Core
 			if (enemyScore == -1)
 			{
 				if (score == -1) return "";
-				
+
 				string scoreString = score.ToString();
 				string suffix = "th";
 
@@ -48,9 +44,9 @@ namespace VexTrack.Core
 			string[] splitDesc = description.Split(" ");
 			string scoreStr = "";
 
-			foreach(string token in splitDesc)
+			foreach (string token in splitDesc)
 			{
-				if(!token.Contains("-")) { continue; }
+				if (!token.Contains("-")) { continue; }
 				scoreStr = token;
 
 				if (scoreStr == "") return "";

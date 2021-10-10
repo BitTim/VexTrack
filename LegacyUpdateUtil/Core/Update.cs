@@ -8,7 +8,6 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -46,7 +45,7 @@ namespace LegacyUpdateUtil.Core
 			startTime = DateTimeOffset.Now;
 
 			i = 0;
-			for(int len = packageStream.Read(buffer, 0, 1024 * 1024); len != 0; len = packageStream.Read(buffer, 0, 1024 * 1024))
+			for (int len = packageStream.Read(buffer, 0, 1024 * 1024); len != 0; len = packageStream.Read(buffer, 0, 1024 * 1024))
 			{
 
 				packageTotalBytesRead += len;
@@ -85,7 +84,7 @@ namespace LegacyUpdateUtil.Core
 				double updaterProgress = CalcUtil.CalcProgress(updaterContentLength, updaterTotalBytesRead);
 				MainVM.SetUpdaterData(updaterContentLength, updaterTotalBytesRead, updaterProgress);
 
-				if(i % 15  == 0)
+				if (i % 15 == 0)
 				{
 					double downloadSpeed = updaterTotalBytesRead / (DateTimeOffset.Now - startTime).TotalSeconds;
 					MainVM.SetDownloadSpeed(downloadSpeed);
@@ -124,7 +123,7 @@ namespace LegacyUpdateUtil.Core
 			if (isSpeed) unit = " B/s";
 
 			int divisions = 0;
-			while(size > 1)
+			while (size > 1)
 			{
 				size /= 1024;
 				divisions++;
@@ -132,7 +131,7 @@ namespace LegacyUpdateUtil.Core
 				if (divisions > 3) break;
 			}
 
-			if(divisions > 0)
+			if (divisions > 0)
 			{
 				size *= 1024;
 				divisions--;
@@ -159,7 +158,7 @@ namespace LegacyUpdateUtil.Core
 
 		public static async void CheckUpdateAsync(bool forceUpdate = false)
 		{
-			if(Directory.Exists(Constants.UpdateFolder)) Directory.Delete(Constants.UpdateFolder, true);
+			if (Directory.Exists(Constants.UpdateFolder)) Directory.Delete(Constants.UpdateFolder, true);
 
 			HttpRequestMessage request = new HttpRequestMessage() { RequestUri = new Uri(Constants.ReleasesURL), Method = HttpMethod.Get };
 			request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -169,7 +168,7 @@ namespace LegacyUpdateUtil.Core
 			string res = await response.Content.ReadAsStringAsync();
 
 			JArray ja = JArray.Parse(res);
-			foreach(JObject release in ja)
+			foreach (JObject release in ja)
 			{
 				List<string> tokenizedName = release["name"].ToString().Split().ToList();
 				if (tokenizedName[0] != Constants.AppName) continue;
@@ -189,7 +188,7 @@ namespace LegacyUpdateUtil.Core
 
 		public static async void GetUpdate()
 		{
-			if(!Directory.Exists(Constants.UpdateFolder)) Directory.CreateDirectory(Constants.UpdateFolder);
+			if (!Directory.Exists(Constants.UpdateFolder)) Directory.CreateDirectory(Constants.UpdateFolder);
 
 			await UpdateUtil.DownloadUpdate(SourceFile, UpdaterFile, latestVersionTag, client);
 			UpdateUtil.ExtractUpdate(SourceFile, ExtractTarget);

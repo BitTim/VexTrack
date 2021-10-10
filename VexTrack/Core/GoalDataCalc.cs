@@ -1,11 +1,7 @@
 ﻿using OxyPlot;
 using OxyPlot.Annotations;
 using OxyPlot.Series;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
@@ -20,7 +16,7 @@ namespace VexTrack.Core
 			ret.Title = "Total XP";
 
 			ret.Total = CalcUtil.CumulativeSum(Constants.BattlepassLevels, Constants.Level2Offset, Constants.XPPerLevel);
-			if(epilogue) ret.Total += Constants.EpilogueLevels * Constants.XPPerEpilogueLevel;
+			if (epilogue) ret.Total += Constants.EpilogueLevels * Constants.XPPerEpilogueLevel;
 
 			ret.Collected = CalcUtil.CalcTotalCollected(activeLevel, cxp);
 			ret.Remaining = ret.Total - ret.Collected;
@@ -103,8 +99,12 @@ namespace VexTrack.Core
 
 		public static bool checkPaused(GoalGroup gg, Goal g)
 		{
+			if (g.Collected >= g.Total) return false; // If done, it cannot be paused
+
 			if (g.Dependency != "")
 			{
+				if (g.Paused) return true; // Break chain if something other than the root is paused
+
 				int index = gg.Goals.FindIndex(x => x.UUID == g.Dependency);
 				if (index < 0) return true; // Has invalid Dependency = Dont show
 

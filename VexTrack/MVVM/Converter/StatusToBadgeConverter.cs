@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
@@ -36,7 +32,7 @@ namespace VexTrack.MVVM.Converter
 				return null;
 			}
 
-			if(mode == "Color")
+			if (mode == "Color")
 			{
 				if (status == "Done") return green;
 				if (status == "Failed") return red;

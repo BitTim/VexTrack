@@ -5,8 +5,6 @@ using OxyPlot.Series;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using VexTrack.Core;
@@ -181,7 +179,7 @@ namespace VexTrack.MVVM.ViewModel
 
 			SolidColorBrush Foreground = (SolidColorBrush)Application.Current.FindResource("Foreground");
 			SolidColorBrush Shade = (SolidColorBrush)Application.Current.FindResource("Shade");
-			
+
 			xAxis.Position = AxisPosition.Bottom;
 			xAxis.AbsoluteMinimum = 0;
 			xAxis.TickStyle = TickStyle.None;
@@ -283,7 +281,7 @@ namespace VexTrack.MVVM.ViewModel
 			int deviationIdeal = (int)performance.Points[t].Y - (int)ideal.Points[t].Y;
 
 			int deviationDaily = 0;
-			if(dailyIdeal.Points.Count > 0) deviationDaily = (int)performance.Points[t].Y - (int)dailyIdeal.Points[1].Y;
+			if (dailyIdeal.Points.Count > 0) deviationDaily = (int)performance.Points[t].Y - (int)dailyIdeal.Points[1].Y;
 
 			return (deviationIdeal, deviationDaily);
 		}

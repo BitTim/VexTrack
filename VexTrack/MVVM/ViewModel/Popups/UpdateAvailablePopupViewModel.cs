@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VexTrack.Core;
 
 namespace VexTrack.MVVM.ViewModel.Popups
@@ -55,7 +51,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 				OnPropertyChanged();
 			}
 		}
-		
+
 		public string NewVersion
 		{
 			get { return _newVersion; }
@@ -70,7 +66,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		{
 			CanCancel = true;
 			OnCancelClicked = new RelayCommand(o => { Close(); });
-			OnUpdateClicked = new RelayCommand(o => {
+			OnUpdateClicked = new RelayCommand(o =>
+			{
 				UpdateHelper.GetUpdate();
 				Close();
 			});

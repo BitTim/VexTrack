@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
@@ -15,12 +13,12 @@ namespace VexTrack.Core
 			int streak = 0;
 			List<string> targetStatus = new();
 			targetStatus.Add(Constants.StreakStatusOrder.Keys.ElementAt(2));
-			if(!epilogue) targetStatus.Add(Constants.StreakStatusOrder.Keys.ElementAt(1));
+			if (!epilogue) targetStatus.Add(Constants.StreakStatusOrder.Keys.ElementAt(1));
 
 			DateTimeOffset today = DateTimeOffset.Now.ToLocalTime().Date;
 			DateTimeOffset prevDate = DateTimeOffset.FromUnixTimeSeconds(TrackingDataHelper.Data.Streak[0].Date);
 
-			foreach(StreakEntry streakEntry in TrackingDataHelper.Data.Streak)
+			foreach (StreakEntry streakEntry in TrackingDataHelper.Data.Streak)
 			{
 				if ((prevDate - DateTimeOffset.FromUnixTimeSeconds(streakEntry.Date)).Days > 1) break;
 				prevDate = DateTimeOffset.FromUnixTimeSeconds(streakEntry.Date);
@@ -54,7 +52,7 @@ namespace VexTrack.Core
 
 		public static Brush GetStreakColor(DateTimeOffset date, bool epilogue)
 		{
-			Dictionary<string,  Brush> brushes = new Dictionary<string, Brush>();
+			Dictionary<string, Brush> brushes = new Dictionary<string, Brush>();
 			brushes.Add(Constants.StreakStatusOrder.Keys.ElementAt(0), (Brush)Application.Current.FindResource("Shade"));
 			brushes.Add(Constants.StreakStatusOrder.Keys.ElementAt(1), (Brush)Application.Current.FindResource("AccOrange"));
 			brushes.Add(Constants.StreakStatusOrder.Keys.ElementAt(2), (Brush)Application.Current.FindResource("AccBlue"));

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VexTrack.Core;
+﻿using VexTrack.Core;
 
 namespace VexTrack.MVVM.ViewModel.Popups
 {
@@ -30,12 +25,14 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			CanCancel = true;
 
 			OnBackClicked = new RelayCommand(o => { Close(); });
-			OnEditClicked = new RelayCommand(o => {
+			OnEditClicked = new RelayCommand(o =>
+			{
 				EditableHEPopup.SetParameters("Edit History Entry", true);
 				EditableHEPopup.SetData(RawData);
 				MainVM.QueuePopup(EditableHEPopup);
 			});
-			OnDeleteClicked = new RelayCommand(o => {
+			OnDeleteClicked = new RelayCommand(o =>
+			{
 				IsInitialized = false;
 				TrackingDataHelper.RemoveHistoryEntry(SUUID, HUUID);
 			});

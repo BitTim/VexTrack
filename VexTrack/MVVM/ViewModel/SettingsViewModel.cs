@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls.Primitives;
-using System.Windows.Markup;
-using VexTrack.Core;
+﻿using VexTrack.Core;
 using VexTrack.MVVM.ViewModel.Popups;
 
 namespace VexTrack.MVVM.ViewModel
@@ -77,7 +69,7 @@ namespace VexTrack.MVVM.ViewModel
 				_bufferDays = value;
 				SettingsHelper.Data.BufferDays = value;
 				OnPropertyChanged();
-				if(!NoUpdate) SettingsHelper.CallUpdate();
+				if (!NoUpdate) SettingsHelper.CallUpdate();
 			}
 		}
 		public bool IgnoreInactive
@@ -155,15 +147,18 @@ namespace VexTrack.MVVM.ViewModel
 			ThemeButtonCommand = new RelayCommand(theme => SetTheme((string)theme));
 			AccentButtonCommand = new RelayCommand(accent => SetAccent((string)accent));
 
-			OnDefaultsClicked = new RelayCommand(o => {
+			OnDefaultsClicked = new RelayCommand(o =>
+			{
 				SettingsHelper.Data.SetDefault();
 				SettingsHelper.ApplyVisualSettings();
 				SettingsHelper.CallUpdate();
 			});
-			OnResetClicked = new RelayCommand(o => {
+			OnResetClicked = new RelayCommand(o =>
+			{
 				MainVM.QueuePopup(ResetDataConfirmationPopup);
 			});
-			OnAboutClicked = new RelayCommand(o => {
+			OnAboutClicked = new RelayCommand(o =>
+			{
 				MainVM.QueuePopup(AboutPopup);
 			});
 

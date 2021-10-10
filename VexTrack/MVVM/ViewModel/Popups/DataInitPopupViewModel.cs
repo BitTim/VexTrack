@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VexTrack.Core;
 
 namespace VexTrack.MVVM.ViewModel.Popups
@@ -53,8 +50,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 				_collected = value;
 
 				int maxForLevel = CalcUtil.CalcMaxForLevel(ActiveBPLevel);
-				if(_collected >= maxForLevel) _collected = maxForLevel - 1;
-				
+				if (_collected >= maxForLevel) _collected = maxForLevel - 1;
+
 				CalcProgress();
 
 				OnPropertyChanged();
@@ -78,7 +75,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		{
 			CanCancel = false;
 
-			OnDoneClicked = new RelayCommand(o => {
+			OnDoneClicked = new RelayCommand(o =>
+			{
 				CanCancel = true;
 				MainVM.InterruptUpdate = false;
 
@@ -97,7 +95,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		{
 			int total = CalcUtil.CumulativeSum(Constants.BattlepassLevels, Constants.Level2Offset, Constants.XPPerLevel);
 			int collected = CalcUtil.CalcTotalCollected(ActiveBPLevel, Collected);
-			Progress =  CalcUtil.CalcProgress(total, collected);
+			Progress = CalcUtil.CalcProgress(total, collected);
 		}
 
 		public void InitData()

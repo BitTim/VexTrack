@@ -115,6 +115,23 @@ namespace VexTrack.Core
 			return g.Paused;
 		}
 
+		public static int calcGoalOffset(GoalGroup gg, Goal g)
+		{
+			int offset = g.Total;
+			if (g.Dependency != "")
+			{
+				if (g.Paused || g.Collected >= g.Total) return 0; // If paused or finished, goal does not affect offset
+
+				int index = gg.Goals.FindIndex(x => x.UUID == g.Dependency);
+				if (index < 0) return 0; // If goal does not exits, goal does not affect offset
+
+				Goal nextG = gg.Goals[index];
+				return calcGoalOffset(gg, nextG) + offset;
+			}
+
+			return offset - g.Collected;
+		}
+
 		public static (List<LineSeries>, List<TextAnnotation>) CalcGraphGoals(string sUUID)
 		{
 			List<LineSeries> lsret = new();
@@ -124,16 +141,17 @@ namespace VexTrack.Core
 			{
 				foreach (Goal g in gg.Goals)
 				{
+					if (checkPaused(gg, g)) continue;
+
 					LineSeries ls = new();
 					TextAnnotation ta = new();
 					byte alpha = 128;
 
 					GoalEntryData ge = CalcUserGoal(gg.UUID, g);
 					int totalCollected = CalcUtil.CalcTotalCollected(TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP);
-					int val = totalCollected - ge.Collected + ge.Total;
+					int val = totalCollected + calcGoalOffset(gg, g);
 
 					if (val <= 0) continue;
-					if (checkPaused(gg, g)) continue;
 
 					ls.Points.Add(new DataPoint(0, val));
 					ls.Points.Add(new DataPoint(TrackingDataHelper.GetDuration(sUUID), val));

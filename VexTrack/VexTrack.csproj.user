@@ -122,6 +122,9 @@
     <Page Update="MVVM\View\Popups\UpdateFailedPopup.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="MVVM\View\GenerateView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="MVVM\View\SeasonView.xaml">
       <SubType>Designer</SubType>
     </Page>

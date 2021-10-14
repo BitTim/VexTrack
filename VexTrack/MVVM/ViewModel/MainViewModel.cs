@@ -18,12 +18,14 @@ namespace VexTrack.MVVM.ViewModel
 		public RelayCommand SeasonViewCommand { get; set; }
 		public RelayCommand HistoryViewCommand { get; set; }
 		public RelayCommand SettingsViewCommand { get; set; }
+		public RelayCommand GenerateViewCommand { get; set; }
 
 		public DashboardViewModel DashboardVM { get; set; }
 		public GoalViewModel GoalVM { get; set; }
 		public SeasonViewModel SeasonVM { get; set; }
 		public HistoryViewModel HistoryVM { get; set; }
 		public SettingsViewModel SettingsVM { get; set; }
+		public GenerateViewModel GenerateVM { get; set; }
 
 		private HistoryEntryPopupViewModel HEPopup { get; set; }
 		private EditableHistoryEntryPopupViewModel EditableHEPopup { get; set; }
@@ -131,6 +133,7 @@ namespace VexTrack.MVVM.ViewModel
 			SeasonViewCommand = new RelayCommand(o => SetView(SeasonVM));
 			HistoryViewCommand = new RelayCommand(o => SetView(HistoryVM));
 			SettingsViewCommand = new RelayCommand(o => SetView(SettingsVM));
+			GenerateViewCommand = new RelayCommand(o => SetView(GenerateVM));
 
 			TrackingDataHelper.LoadData();
 			SettingsHelper.LoadSettings();
@@ -157,12 +160,14 @@ namespace VexTrack.MVVM.ViewModel
 			SeasonVM = new SeasonViewModel();
 			HistoryVM = new HistoryViewModel();
 			SettingsVM = new SettingsViewModel();
+			GenerateVM = new GenerateViewModel();
 
 			ViewModelManager.ViewModels.Add("Dashboard", DashboardVM);
 			ViewModelManager.ViewModels.Add("Goal", GoalVM);
 			ViewModelManager.ViewModels.Add("Season", SeasonVM);
 			ViewModelManager.ViewModels.Add("History", HistoryVM);
 			ViewModelManager.ViewModels.Add("Settings", SettingsVM);
+			ViewModelManager.ViewModels.Add("Generate", GenerateVM);
 
 			CurrentView = DashboardVM;
 			ViewModelsInitialized = true;

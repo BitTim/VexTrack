@@ -9,5 +9,16 @@
 ![GitHub Contributors](https://img.shields.io/github/contributors/BitTim/VexTrack?logo=github&style=for-the-badge "Contributors")
 ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/BitTim/VexTrack?logo=github&style=for-the-badge "Last commit")
 
+## Features
+- Easy tracking of gained XP in Valorant
+- View History of gained XP
+- Automatically calculates daily XP needed to complete Battlepass
+- Keeps track of streak
+- Custom goals
+- Generation of Goals for Agent Contracts
+- Insights for Seasons
+- Automatic Updates
+- Variety of Accent Colors
+
 ## Installation
 Download either VexTrack_vX.X.zip or VexTrack_vX.X-Setup.exe from ![here](https://github.com/BitTim/VexTrack/releases) and extract all contents in a folder / run the installer. After opening VexTrack for the first time, a new folder called "VexTrack" will be created in %localappdata%

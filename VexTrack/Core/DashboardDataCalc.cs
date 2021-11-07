@@ -20,6 +20,8 @@ namespace VexTrack.Core
 			int bufferDays = SettingsHelper.Data.BufferDays;
 			int idealRemainingDays = TrackingDataHelper.GetRemainingDays(TrackingDataHelper.CurrentSeasonUUID) - bufferDays;
 
+			// TODO: FIX CRASH ON STARTUP ON NEW SEASON
+
 			if (idealRemainingDays > -bufferDays && idealRemainingDays <= 0) idealRemainingDays = 1;
 			else if (idealRemainingDays <= -bufferDays && idealRemainingDays <= 0) TrackingDataHelper.CreateSeasonInitPopup();
 

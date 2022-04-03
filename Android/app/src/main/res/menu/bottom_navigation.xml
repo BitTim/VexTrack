@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_dashboard"
+        android:icon="@drawable/ic_baseline_dashboard_24"
+        android:title="Dashboard" />
+
+    <item
+        android:id="@+id/nav_goals"
+        android:icon="@drawable/ic_baseline_flag_24"
+        android:title="Goals" />
+
+    <item
+        android:id="@+id/nav_seasons"
+        android:icon="@drawable/ic_baseline_cloud_24"
+        android:title="Seasons" />
+
+    <item
+        android:id="@+id/nav_history"
+        android:icon="@drawable/ic_baseline_history_24"
+        android:title="History" />
+</menu>

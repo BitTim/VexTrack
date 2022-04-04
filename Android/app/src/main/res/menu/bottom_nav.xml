@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/home"
+        android:icon="@drawable/ic_baseline_home_24"
+        android:title="@string/home_frag_name" />
+
+    <item
+        android:id="@+id/goals"
+        android:icon="@drawable/ic_baseline_goals_24"
+        android:title="@string/goals_frag_name" />
+
+    <item
+        android:id="@+id/seasons"
+        android:icon="@drawable/ic_baseline_seasons_24"
+        android:title="@string/seasons_frag_name" />
+
+    <item
+        android:id="@+id/history"
+        android:icon="@drawable/ic_baseline_history_24"
+        android:title="@string/history_frag_name" />
+</menu>

@@ -1,5 +1,11 @@
 <resources>
     <string name="app_name">VexTrack</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="home_frag_name">Home</string>
+    <string name="goals_frag_name">Goals</string>
+    <string name="seasons_frag_name">Seasons</string>
+    <string name="history_frag_name">History</string>
+    <string name="add_button_content_desc">Add</string>
+    <string name="account_button_content_desc">Account</string>
+    <string name="epilogue_button_content_desc">Toggle Epilogue</string>
 </resources>

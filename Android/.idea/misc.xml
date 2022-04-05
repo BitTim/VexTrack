@@ -3,6 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/drawable/button_empty.xml" value="0.505" />
+        <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/drawable/button_gradient.xml" value="0.505" />
+        <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/drawable/circular_progress_gradient.xml" value="0.5" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/drawable/epilogue_toggle_gradient.xml" value="0.505" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/drawable/epilogue_toggle_tint.xml" value="0.505" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/drawable/fab_gradient.xml" value="0.505" />
@@ -18,7 +21,12 @@
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/drawable/ic_baseline_settings_24.xml" value="0.505" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/drawable/ic_baseline_user_24.xml" value="0.505" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/action_bar.xml" value="0.55" />
-        <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/activity_login.xml" value="0.55" />
+        <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/activity_main.xml" value="0.5" />
+        <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/activity_register.xml" value="0.55" />
+        <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/activity_sign_in.xml" value="0.5" />
+        <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/activity_signin.xml" value="0.5" />
+        <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/activity_welcome.xml" value="0.5" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/menu/bottom_nav.xml" value="0.55" />
       </map>
     </option>

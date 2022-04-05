@@ -1,4 +1,4 @@
-package de.bittim.vextrack
+package com.bittim.vextrack
 
 import org.junit.Test
 

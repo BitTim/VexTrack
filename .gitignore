@@ -18,3 +18,4 @@ obj/
 .vs/
 VexTrack Package\AppPackages
 x64/
+google-services.json

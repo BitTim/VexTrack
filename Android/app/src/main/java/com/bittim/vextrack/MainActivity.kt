@@ -1,8 +1,8 @@
-package de.bittim.vextrack
+package com.bittim.vextrack
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import de.bittim.vextrack.databinding.ActivityMainBinding
+import com.bittim.vextrack.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding

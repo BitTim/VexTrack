@@ -1,9 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE resources [
-    <!ENTITY appname "VexTrack">
-    <!ENTITY version "v2.0">
-    <!ENTITY author "BitTim (Tim Anhalt)">
-]>
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE resources [<!ENTITY appname "VexTrack"><!ENTITY version "v2.0"><!ENTITY author "BitTim (Tim Anhalt)">]>
 
 <resources>
     <string name="app_name">&appname;</string>
@@ -14,15 +9,15 @@
     <string name="welcome_content_text">Welcome to &appname;, a statistics tracker for Valorant that guides you to your in-game goals! Start tracking now and get an insight into your performance!</string>
     <string name="welcome_creator_text">&appname; &version; by &author;</string>
 
-    <string name="welcome_sign_in_text">Sign in here:</string>
-    <string name="welcome_sign_up_text">Create an account here:</string>
+    <string name="welcome_log_in_text">Log in to &appname;</string>
+    <string name="welcome_sign_up_text">Create an account</string>
     <string name="email_input_hint">E-Mail</string>
     <string name="password_input_hint">Password</string>
-    <string name="sign_in_button_text">Sign in</string>
+    <string name="log_in_button_text">Log in</string>
     <string name="sign_up_button_text">Sign up</string>
     <string name="forgot_password_clickable_text">Forgot password?</string>
     <string name="sign_up_clickable_text">Need an account?</string>
-    <string name="sign_in_clickable_text">Already have an account?</string>
+    <string name="log_in_clickable_text">Already have an account?</string>
 
     <string name="home_frag_name">Home</string>
     <string name="goals_frag_name">Goals</string>

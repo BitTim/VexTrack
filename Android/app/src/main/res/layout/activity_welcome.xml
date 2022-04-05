@@ -7,7 +7,7 @@
     tools:context=".WelcomeActivity">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/welcome_title_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -23,7 +23,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/welcome_desc_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -33,7 +33,20 @@
         android:textAlignment="textStart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/welcome_title_text" />
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/welcome_ViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/welcome_desc_text"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/welcome_creator_text"
@@ -70,17 +83,19 @@
             android:background="@drawable/button_empty"
             android:elevation="6dp"
             android:text="@string/sign_up_button_text"
+            android:textAllCaps="false"
             android:textColor="?android:attr/textColor" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/welcome_signIn_Button"
+            android:id="@+id/welcome_logIn_Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:background="@drawable/button_gradient"
             android:elevation="6dp"
-            android:text="@string/sign_in_button_text"
+            android:text="@string/log_in_button_text"
+            android:textAllCaps="false"
             android:textColor="?attr/colorOnPrimary" />
     </LinearLayout>
 

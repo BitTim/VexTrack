@@ -1,16 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingHorizontal="16dp"
     tools:context=".fragments.LogInFragment">
 
     <TextView
+        android:id="@+id/signUp_title_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
+        android:layout_marginHorizontal="16dp"
+        android:text="@string/welcome_sign_up_text"
         android:textSize="20sp"
-        android:text="@string/welcome_sign_up_text" />
+        android:textStyle="bold" />
 
-</FrameLayout>
+    <EditText
+        android:id="@+id/signUp_username_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/signUp_title_text"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:autofillHints=".AUTOFILL_HINT_NEW_USERNAME"
+        android:background="@drawable/button_empty"
+        android:elevation="6dp"
+        android:ems="10"
+        android:hint="@string/username_input_hint"
+        android:inputType="textEmailAddress"
+        android:minHeight="48dp"
+        android:paddingHorizontal="16dp"
+        android:textCursorDrawable="@drawable/edit_text_cursor_gradient" />
+
+    <EditText
+        android:id="@+id/signUp_email_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/signUp_username_editText"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:autofillHints=".AUTOFILL_HINT_EMAIL_ADDRESS"
+        android:background="@drawable/button_empty"
+        android:elevation="6dp"
+        android:ems="10"
+        android:hint="@string/email_input_hint"
+        android:inputType="textEmailAddress"
+        android:minHeight="48dp"
+        android:paddingHorizontal="16dp"
+        android:textCursorDrawable="@drawable/edit_text_cursor_gradient" />
+
+    <EditText
+        android:id="@+id/signUp_password_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/signUp_email_editText"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:autofillHints=".AUTOFILL_HINT_NEW_PASSWORD"
+        android:background="@drawable/button_empty"
+        android:elevation="6dp"
+        android:ems="10"
+        android:hint="@string/password_input_hint"
+        android:inputType="textPassword"
+        android:minHeight="48dp"
+        android:paddingHorizontal="16dp"
+        android:textCursorDrawable="@drawable/edit_text_cursor_gradient" />
+
+    <LinearLayout
+        android:id="@+id/signUp_buttons_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/signUp_password_editText"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/signUp_logIn_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="1"
+            android:background="@drawable/button_empty"
+            android:elevation="6dp"
+            android:text="@string/log_in_button_text"
+            android:textAllCaps="false"
+            android:textColor="?android:attr/textColor" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/signUp_signUp_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:background="@drawable/button_gradient"
+            android:elevation="6dp"
+            android:text="@string/sign_up_button_text"
+            android:textAllCaps="false"
+            android:textColor="?attr/colorOnPrimary" />
+    </LinearLayout>
+</RelativeLayout>

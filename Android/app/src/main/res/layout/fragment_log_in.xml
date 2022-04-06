@@ -3,14 +3,96 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingHorizontal="16dp"
     tools:context=".fragments.LogInFragment">
 
     <TextView
+        android:id="@+id/logIn_title_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
         android:text="@string/welcome_log_in_text"
         android:textSize="20sp"
         android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/logIn_email_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/logIn_title_text"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:autofillHints=".AUTOFILL_HINT_EMAIL_ADDRESS"
+        android:background="@drawable/button_empty"
+        android:elevation="6dp"
+        android:ems="10"
+        android:hint="@string/email_input_hint"
+        android:inputType="textEmailAddress"
+        android:minHeight="48dp"
+        android:paddingHorizontal="16dp"
+        android:textCursorDrawable="@drawable/edit_text_cursor_gradient" />
+
+    <EditText
+        android:id="@+id/logIn_password_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/logIn_email_editText"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:autofillHints=".AUTOFILL_HINT_PASSWORD"
+        android:background="@drawable/button_empty"
+        android:elevation="6dp"
+        android:ems="10"
+        android:hint="@string/password_input_hint"
+        android:inputType="textPassword"
+        android:minHeight="48dp"
+        android:paddingHorizontal="16dp"
+        android:textCursorDrawable="@drawable/edit_text_cursor_gradient" />
+
+    <LinearLayout
+        android:id="@+id/logIn_buttons_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/logIn_password_editText"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/logIn_forgotPassword_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="1"
+            android:background="@drawable/button_empty"
+            android:elevation="6dp"
+            android:text="@string/forgot_password_clickable_text"
+            android:textAllCaps="false"
+            android:textColor="?android:attr/textColor" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/logIn_signUp_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:background="@drawable/button_empty"
+            android:elevation="6dp"
+            android:text="@string/sign_up_text"
+            android:textAllCaps="false"
+            android:textColor="?android:attr/textColor" />
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/logIn_logIn_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/logIn_buttons_layout"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/button_gradient"
+        android:elevation="6dp"
+        android:text="@string/log_in_button_text"
+        android:textAllCaps="false"
+        android:textColor="?attr/colorOnPrimary" />
 
 </RelativeLayout>

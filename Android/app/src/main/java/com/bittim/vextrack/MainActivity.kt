@@ -50,6 +50,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun initTitle() { binding.title.setText(R.string.home_frag_name) }
 
+    private fun initTabs()
+    {
+
+    }
+
     private fun initButtons()
     {
         binding.epilogueButton.setOnClickListener { onEpilogueButtonClicked() }

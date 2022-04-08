@@ -31,7 +31,11 @@
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/activity_signin.xml" value="0.5" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/activity_test.xml" value="0.55" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/activity_welcome.xml" value="0.5" />
+        <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/fragment_goals.xml" value="0.32019927536231885" />
+        <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/fragment_history.xml" value="0.32019927536231885" />
+        <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/fragment_home.xml" value="0.55" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/fragment_log_in.xml" value="0.55" />
+        <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/fragment_seasons.xml" value="0.32019927536231885" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/fragment_sign_up.xml" value="0.55" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/menu/bottom_nav.xml" value="0.55" />
       </map>

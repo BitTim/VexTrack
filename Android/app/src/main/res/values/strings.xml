@@ -28,4 +28,6 @@
     <string name="epilogue_button_content_desc">Toggle Epilogue</string>
     <string name="logo_content_desc">VexTrack Logo</string>
     <string name="username_input_hint">Username</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

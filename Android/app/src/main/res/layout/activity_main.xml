@@ -26,13 +26,16 @@
             android:text="@string/app_name" />
 
         <ImageButton
+            android:layout_marginStart="-8dp"
             android:id="@+id/accountButton"
             android:layout_width="?attr/actionBarSize"
             android:layout_height="?attr/actionBarSize"
             android:layout_gravity="end"
+            android:adjustViewBounds="true"
+            android:background="@drawable/actionbar_button_empty"
             android:contentDescription="@string/account_button_content_desc"
-            android:src="@drawable/ic_baseline_user_24"
-            tools:layout_editor_absoluteX="355dp" />
+            android:elevation="2dp"
+            android:scaleType="centerCrop" />
 
         <ImageButton
             android:id="@+id/epilogueButton"
@@ -43,11 +46,9 @@
             android:contentDescription="@string/epilogue_button_content_desc"
             android:elevation="2dp"
             android:src="@drawable/ic_baseline_epilogue_24"
-            app:tint="@color/epilogue_toggle_tint"
-            tools:layout_editor_absoluteX="299dp" />
+            app:tint="@color/epilogue_toggle_tint" />
 
     </androidx.appcompat.widget.Toolbar>
-
 
 
     <!-- Content -->
@@ -80,7 +81,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:background="@drawable/fab_gradient"
-        android:contentDescription="@string/account_button_content_desc"
+        android:contentDescription="@string/add_button_content_desc"
         android:elevation="6dp"
         android:padding="16dp"
         android:src="@drawable/ic_baseline_add_24"

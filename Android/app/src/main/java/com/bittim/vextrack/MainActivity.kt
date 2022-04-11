@@ -1,8 +1,10 @@
 package com.bittim.vextrack
 
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.viewpager.widget.ViewPager
 import com.bittim.vextrack.databinding.ActivityMainBinding
 import com.bittim.vextrack.fragments.GoalsFragment
@@ -12,6 +14,12 @@ import com.bittim.vextrack.fragments.SeasonsFragment
 import com.bittim.vextrack.fragments.adapters.ViewPagerAdapter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserProfileChangeRequest
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -46,6 +54,9 @@ class MainActivity : AppCompatActivity() {
                 finish()
             }
         }
+
+        binding.accountButton.setImageURI(user?.photoUrl)
+        binding.accountButton.clipToOutline = true
     }
 
 
@@ -126,5 +137,38 @@ class MainActivity : AppCompatActivity() {
     private fun onEpilogueButtonClicked()
     {
         binding.epilogueButton.isActivated = !binding.epilogueButton.isActivated
+    }
+
+
+
+
+
+    // TODO: Move to Settings Fragment
+    private fun updateProfile()
+    {
+        auth.currentUser?.let { user ->
+            //val username = binding.settings_username_editText
+            val photoURI = Uri.parse("android.resource://$packageName/${R.drawable.helddersteine}")
+            val profileUpdates = UserProfileChangeRequest.Builder()
+                //.setDisplayName(username)
+                .setPhotoUri(photoURI)
+                .build()
+
+            CoroutineScope(Dispatchers.IO).launch {
+                try
+                {
+                	user.updateProfile(profileUpdates).await()
+                    withContext(Dispatchers.Main)
+                    {
+                        Toast.makeText(this@MainActivity, "Successfully updated Profile", Toast.LENGTH_LONG).show()
+                    }
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main)
+                    {
+                        Toast.makeText(this@MainActivity, e.message, Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+        }
     }
 }

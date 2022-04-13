@@ -39,24 +39,7 @@ class MainActivity : AppCompatActivity() {
     override fun onStart()
     {
         super.onStart()
-
-        val user: FirebaseUser? = auth.currentUser
-        if (user == null)
-        {
-            startActivity(Intent(this@MainActivity, WelcomeActivity::class.java))
-            finish()
-        }
-
-        user?.reload()?.addOnCompleteListener {
-            if(!it.isSuccessful)
-            {
-                startActivity(Intent(this@MainActivity, WelcomeActivity::class.java))
-                finish()
-            }
-        }
-
-        binding.accountButton.setImageURI(user?.photoUrl)
-        binding.accountButton.clipToOutline = true
+        checkUser()
     }
 
 
@@ -126,6 +109,7 @@ class MainActivity : AppCompatActivity() {
     private fun initButtons()
     {
         binding.epilogueButton.setOnClickListener { onEpilogueButtonClicked() }
+        binding.accountButton.setOnClickListener { onAccountButtonClicked() }
     }
 
 
@@ -139,6 +123,41 @@ class MainActivity : AppCompatActivity() {
         binding.epilogueButton.isActivated = !binding.epilogueButton.isActivated
     }
 
+    private fun onAccountButtonClicked()
+    {
+        auth.signOut()
+        checkUser()
+    }
+
+
+
+    // ================================
+    //  Utility
+    // ================================
+
+    private fun checkUser()
+    {
+        val user: FirebaseUser? = auth.currentUser
+        if (user == null)
+        {
+            startActivity(Intent(this@MainActivity, WelcomeActivity::class.java))
+            finish()
+        }
+
+        user?.reload()?.addOnCompleteListener {
+            if(!it.isSuccessful)
+            {
+                startActivity(Intent(this@MainActivity, WelcomeActivity::class.java))
+                finish()
+            }
+        }
+
+        binding.accountButton.setImageURI(user?.photoUrl)
+        binding.accountButton.clipToOutline = true
+    }
+
+
+
 
 
 
@@ -148,10 +167,10 @@ class MainActivity : AppCompatActivity() {
     {
         auth.currentUser?.let { user ->
             //val username = binding.settings_username_editText
-            val photoURI = Uri.parse("android.resource://$packageName/${R.drawable.helddersteine}")
+            //val photoURI = Uri.parse("android.resource://$packageName/${R.drawable.helddersteine}")
             val profileUpdates = UserProfileChangeRequest.Builder()
                 //.setDisplayName(username)
-                .setPhotoUri(photoURI)
+                //.setPhotoUri(photoURI)
                 .build()
 
             CoroutineScope(Dispatchers.IO).launch {

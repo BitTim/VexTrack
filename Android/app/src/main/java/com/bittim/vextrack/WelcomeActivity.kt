@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.bittim.vextrack.databinding.ActivityWelcomeBinding
+import com.bittim.vextrack.fragments.ForgotFragment
 import com.bittim.vextrack.fragments.LogInFragment
 import com.bittim.vextrack.fragments.SignUpFragment
 import com.google.firebase.auth.FirebaseAuth
@@ -18,6 +19,7 @@ class WelcomeActivity : AppCompatActivity() {
 
     private var logInFragment: LogInFragment = LogInFragment()
     private var signUpFragment: SignUpFragment = SignUpFragment()
+    private var forgotFragment: ForgotFragment = ForgotFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +46,7 @@ class WelcomeActivity : AppCompatActivity() {
     //  Utility
     // ================================
 
+    public fun changeFragmentForgot() { replaceFragment(forgotFragment, true) }
     public fun changeFragmentSignUp() { replaceFragment(signUpFragment, false) }
     public fun changeFragmentLogIn(reversed: Boolean = false) { replaceFragment(logInFragment, reversed) }
 

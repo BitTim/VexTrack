@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.ForgotFragment">
+
+    <TextView
+        android:id="@+id/forgot_title_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:text="@string/welcome_forgot_text"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/forgot_email_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/forgot_title_text"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:autofillHints=".AUTOFILL_HINT_EMAIL_ADDRESS"
+        android:background="@drawable/button_empty"
+        android:elevation="6dp"
+        android:ems="10"
+        android:hint="@string/email_input_hint"
+        android:inputType="textEmailAddress"
+        android:minHeight="48dp"
+        android:paddingHorizontal="16dp"
+        android:textCursorDrawable="@drawable/edit_text_cursor_gradient" />
+
+    <LinearLayout
+        android:id="@+id/forgot_buttons_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/forgot_email_editText"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/forgot_cancel_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="1"
+            android:background="@drawable/button_empty"
+            android:elevation="6dp"
+            android:text="@string/forgot_cancel_button"
+            android:textAllCaps="false"
+            android:textColor="?android:attr/textColor" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/forgot_reset_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/button_gradient"
+            android:elevation="6dp"
+            android:text="@string/forgot_reset_button_text"
+            android:textAllCaps="false"
+            android:textColor="?attr/colorOnPrimary" />
+    </LinearLayout>
+
+</RelativeLayout>

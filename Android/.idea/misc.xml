@@ -16,6 +16,8 @@
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/drawable/fab_gradient.xml" value="0.505" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/drawable/gradient.xml" value="0.505" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/drawable/ic_baseline_add_24.xml" value="0.505" />
+        <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/drawable/ic_baseline_appearance_24.xml" value="0.505" />
+        <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/drawable/ic_baseline_back_24.xml" value="0.505" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/drawable/ic_baseline_empty_24.xml" value="0.378" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/drawable/ic_baseline_epilogue_24.xml" value="0.505" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/drawable/ic_baseline_goals_24.xml" value="0.35" />
@@ -31,19 +33,24 @@
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/activity_login.xml" value="0.55" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/activity_register.xml" value="0.55" />
+        <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/activity_settings.xml" value="0.33" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/activity_sign_in.xml" value="0.5" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/activity_signin.xml" value="0.5" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/activity_test.xml" value="0.55" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/activity_welcome.xml" value="0.5" />
+        <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/fragment_appearance.xml" value="0.55" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/fragment_forgot.xml" value="0.55" />
+        <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/fragment_general.xml" value="0.55" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/fragment_goals.xml" value="0.32019927536231885" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/fragment_history.xml" value="0.32019927536231885" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/fragment_home.xml" value="0.55" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/fragment_log_in.xml" value="0.55" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/fragment_seasons.xml" value="0.32019927536231885" />
+        <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/fragment_settings.xml" value="0.32019927536231885" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/fragment_sign_up.xml" value="0.55" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/menu/account_popup.xml" value="0.55" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/menu/bottom_nav.xml" value="0.55" />
+        <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/menu/settings_nav.xml" value="0.55" />
       </map>
     </option>
   </component>

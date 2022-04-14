@@ -33,4 +33,11 @@
     <string name="welcome_forgot_text">Password recovery</string>
     <string name="popup_settings">Settings</string>
     <string name="popup_sign_out">Sign Out</string>
+    <string name="content_area_content_desc">Content Area</string>
+    <string name="account_profile_picture_content_desc">Profile Picture</string>
+    <string name="settings_update_profile_button_text">Update Profile</string>
+    <string name="back_button">Back</string>
+    <string name="general_frag_name">General</string>
+    <string name="account_frag_name">Account</string>
+    <string name="appearance_frag_name">Appearance</string>
 </resources>

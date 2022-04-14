@@ -26,7 +26,7 @@
         android:elevation="6dp"
         android:ems="10"
         android:hint="@string/username_input_hint"
-        android:inputType="textEmailAddress"
+        android:inputType="text"
         android:minHeight="48dp"
         android:paddingHorizontal="16dp"
         android:textCursorDrawable="@drawable/edit_text_cursor_gradient" />

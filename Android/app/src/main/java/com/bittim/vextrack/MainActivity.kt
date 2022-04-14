@@ -1,16 +1,17 @@
 package com.bittim.vextrack
 
 import android.content.Intent
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuInflater
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.viewpager.widget.ViewPager
 import com.bittim.vextrack.databinding.ActivityMainBinding
-import com.bittim.vextrack.fragments.GoalsFragment
-import com.bittim.vextrack.fragments.HistoryFragment
-import com.bittim.vextrack.fragments.HomeFragment
-import com.bittim.vextrack.fragments.SeasonsFragment
+import com.bittim.vextrack.fragments.main.GoalsFragment
+import com.bittim.vextrack.fragments.main.HistoryFragment
+import com.bittim.vextrack.fragments.main.HomeFragment
+import com.bittim.vextrack.fragments.main.SeasonsFragment
 import com.bittim.vextrack.fragments.adapters.ViewPagerAdapter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -124,6 +125,33 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onAccountButtonClicked()
+    {
+        val popup: PopupMenu = PopupMenu(this, binding.accountButton)
+        popup.menuInflater.inflate(R.menu.account_popup, popup.menu)
+        popup.show()
+
+        popup.setOnMenuItemClickListener {
+            when(it.itemId)
+            {
+                R.id.popup_settings -> {
+                    onSettingsPopupClicked()
+                    true
+                }
+                R.id.popup_sign_out -> {
+                    onSignOutPopupClicked()
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
+    private fun onSettingsPopupClicked()
+    {
+
+    }
+
+    private fun onSignOutPopupClicked()
     {
         auth.signOut()
         checkUser()

@@ -1,4 +1,4 @@
-package com.bittim.vextrack.fragments
+package com.bittim.vextrack.fragments.main
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,17 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bittim.vextrack.R
+import com.bittim.vextrack.databinding.FragmentHomeBinding
 import com.bittim.vextrack.databinding.FragmentLogInBinding
-import com.bittim.vextrack.databinding.FragmentSeasonsBinding
 
-class SeasonsFragment : Fragment()
+class HomeFragment : Fragment()
 {
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
 		super.onCreate(savedInstanceState)
 	}
 
-	private var _binding: FragmentSeasonsBinding? = null
+	private var _binding: FragmentHomeBinding? = null
 	private val binding get() = _binding!!
 
 	override fun onCreateView(
@@ -24,7 +24,7 @@ class SeasonsFragment : Fragment()
 		savedInstanceState: Bundle?
 	): View?
 	{
-		_binding = FragmentSeasonsBinding.inflate(inflater, container, false)
+		_binding = FragmentHomeBinding.inflate(inflater, container, false)
 
 		return binding.root
 	}

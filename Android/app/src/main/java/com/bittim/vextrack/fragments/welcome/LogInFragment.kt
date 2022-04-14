@@ -1,4 +1,4 @@
-package com.bittim.vextrack.fragments
+package com.bittim.vextrack.fragments.welcome
 
 import android.content.Intent
 import android.os.Bundle
@@ -11,15 +11,15 @@ import android.widget.Toast
 import com.bittim.vextrack.MainActivity
 import com.bittim.vextrack.R
 import com.bittim.vextrack.WelcomeActivity
-import com.bittim.vextrack.databinding.FragmentForgotBinding
+import com.bittim.vextrack.databinding.FragmentLogInBinding
 import com.google.firebase.auth.FirebaseAuth
 
-class ForgotFragment : Fragment() {
+class LogInFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
 
-    private var _binding: FragmentForgotBinding? = null
+    private var _binding: FragmentLogInBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var auth: FirebaseAuth
@@ -29,7 +29,7 @@ class ForgotFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentForgotBinding.inflate(inflater, container, false)
+        _binding = FragmentLogInBinding.inflate(inflater, container, false)
         initButtons()
 
         auth = FirebaseAuth.getInstance()
@@ -49,8 +49,9 @@ class ForgotFragment : Fragment() {
 
     private fun initButtons()
     {
-        binding.forgotCancelButton.setOnClickListener { (activity as WelcomeActivity).changeFragmentLogIn(false) }
-        binding.forgotResetButton.setOnClickListener { resetPassword() }
+        binding.logInForgotPasswordButton.setOnClickListener { (activity as WelcomeActivity).changeFragmentForgot() }
+        binding.logInSignUpButton.setOnClickListener { (activity as WelcomeActivity).changeFragmentSignUp() }
+        binding.logInLogInButton.setOnClickListener { logInUser() }
     }
 
 
@@ -59,22 +60,29 @@ class ForgotFragment : Fragment() {
     //  Utility
     // ================================
 
-    private fun resetPassword()
+    private fun logInUser()
     {
-        val email: String = binding.forgotEmailEditText.text.toString()
+        val email: String = binding.logInEmailEditText.text.toString()
+        val password: String = binding.logInPasswordEditText.text.toString()
 
         if (TextUtils.isEmpty(email))
         {
-            binding.forgotEmailEditText.error = "E-Mail cannot be empty"
-            binding.forgotEmailEditText.requestFocus()
+            binding.logInEmailEditText.error = "E-Mail cannot be empty"
+            binding.logInEmailEditText.requestFocus()
             return
         }
 
-        auth.sendPasswordResetEmail(email).addOnCompleteListener {
+        if (TextUtils.isEmpty(password))
+        {
+            binding.logInPasswordEditText.error = "Password cannot be empty"
+            binding.logInPasswordEditText.requestFocus()
+            return
+        }
+
+        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener {
             if (it.isSuccessful)
             {
-                (activity as WelcomeActivity).changeFragmentLogIn()
-                Toast.makeText(activity as WelcomeActivity, "Recovery E-Mail sent to: $email. Make sure to check your spam folder", Toast.LENGTH_LONG).show()
+                (activity as WelcomeActivity).startMainActivity()
             }
             else
             {

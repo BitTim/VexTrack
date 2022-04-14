@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/popup_settings"
+        android:title="@string/popup_settings" />
+
+    <item
+        android:id="@+id/popup_sign_out"
+        android:title="@string/popup_sign_out" />
+</menu>

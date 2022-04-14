@@ -1,4 +1,4 @@
-package com.bittim.vextrack.fragments
+package com.bittim.vextrack.fragments.welcome
 
 import android.os.Bundle
 import android.text.TextUtils
@@ -84,13 +84,14 @@ class SignUpFragment : Fragment() {
             return
         }
 
-        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener {
-            if (it.isSuccessful)
+        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+            if (task.isSuccessful)
             {
                 auth.signInWithEmailAndPassword(email, password).addOnCompleteListener {
                     if (it.isSuccessful)
                     {
                         auth.currentUser?.updateProfile(UserProfileChangeRequest.Builder().setDisplayName(username).build())
+                        auth.currentUser?.sendEmailVerification()
                         (activity as WelcomeActivity).startMainActivity()
                     }
                     else
@@ -101,7 +102,7 @@ class SignUpFragment : Fragment() {
             }
             else
             {
-                Toast.makeText(activity as WelcomeActivity, "Error: " + it.exception?.message, Toast.LENGTH_LONG).show()
+                Toast.makeText(activity as WelcomeActivity, "Error: " + task.exception?.message, Toast.LENGTH_LONG).show()
             }
         }
     }

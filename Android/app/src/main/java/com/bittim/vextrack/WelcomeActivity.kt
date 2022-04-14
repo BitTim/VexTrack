@@ -4,14 +4,12 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.bittim.vextrack.databinding.ActivityWelcomeBinding
-import com.bittim.vextrack.fragments.ForgotFragment
-import com.bittim.vextrack.fragments.LogInFragment
-import com.bittim.vextrack.fragments.SignUpFragment
+import com.bittim.vextrack.fragments.welcome.ForgotFragment
+import com.bittim.vextrack.fragments.welcome.LogInFragment
+import com.bittim.vextrack.fragments.welcome.SignUpFragment
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 
 class WelcomeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityWelcomeBinding

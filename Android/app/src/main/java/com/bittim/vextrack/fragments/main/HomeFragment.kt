@@ -6,8 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bittim.vextrack.R
-import com.bittim.vextrack.databinding.FragmentHomeBinding
-import com.bittim.vextrack.databinding.FragmentLogInBinding
+import com.bittim.vextrack.databinding.FragmentMainHomeBinding
 
 class HomeFragment : Fragment()
 {
@@ -16,7 +15,7 @@ class HomeFragment : Fragment()
 		super.onCreate(savedInstanceState)
 	}
 
-	private var _binding: FragmentHomeBinding? = null
+	private var _binding: FragmentMainHomeBinding? = null
 	private val binding get() = _binding!!
 
 	override fun onCreateView(
@@ -24,7 +23,7 @@ class HomeFragment : Fragment()
 		savedInstanceState: Bundle?
 	): View?
 	{
-		_binding = FragmentHomeBinding.inflate(inflater, container, false)
+		_binding = FragmentMainHomeBinding.inflate(inflater, container, false)
 
 		return binding.root
 	}

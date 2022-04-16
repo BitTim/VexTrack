@@ -17,19 +17,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageButton
-            android:id="@+id/backButton"
-            android:layout_width="?attr/actionBarSize"
-            android:layout_height="?attr/actionBarSize"
-            android:layout_gravity="start"
-            android:adjustViewBounds="true"
-            android:background="@drawable/actionbar_button_empty"
-            android:contentDescription="@string/back_button"
-            android:src="@drawable/ic_baseline_back_24"
-            app:tint="?android:attr/textColor"
-            android:layout_marginEnd="16dp"
-            android:elevation="2dp" />
-
         <TextView
             android:id="@+id/title"
             style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
@@ -38,6 +25,18 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="@string/app_name" />
+
+        <ImageButton
+            android:id="@+id/doneButton"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="end"
+            android:adjustViewBounds="true"
+            android:background="@drawable/actionbar_button_empty"
+            android:contentDescription="@string/done_button"
+            android:src="@drawable/ic_baseline_done_24"
+            app:tint="?android:attr/textColor"
+            android:elevation="2dp" />
     </androidx.appcompat.widget.Toolbar>
 
 

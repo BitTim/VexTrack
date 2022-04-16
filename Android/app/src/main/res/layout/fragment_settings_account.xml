@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    tools:context=".fragments.settings.AccountFragment">
+
+    <LinearLayout
+        android:id="@+id/settings_profilePicture_generalLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:layout_marginEnd="8dp">
+
+            <ImageButton
+                android:id="@+id/settings_profilePicture_imageButton"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:adjustViewBounds="false"
+                android:background="@drawable/button_empty"
+                android:contentDescription="@string/account_profile_picture_content_desc"
+                android:elevation="6dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintDimensionRatio="1:1"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:id="@+id/settings_profilePicture_rightLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/username_input_hint"
+                android:layout_marginStart="2dp"
+                android:layout_marginBottom="2dp"
+                android:textColor="?android:attr/textColor" />
+
+            <EditText
+                android:id="@+id/settings_username_editText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints=".AUTOFILL_HINT_NEW_USERNAME"
+                android:background="@drawable/button_empty"
+                android:elevation="6dp"
+                android:ems="10"
+                android:hint="@string/username_input_hint"
+                android:inputType="text"
+                android:minHeight="48dp"
+                android:paddingHorizontal="16dp"
+                android:textCursorDrawable="@drawable/edit_text_cursor_gradient" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/settings_profilePicture_generalLayout">
+
+    </LinearLayout>
+</RelativeLayout>

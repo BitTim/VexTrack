@@ -1,9 +1,15 @@
 package com.bittim.vextrack
 
+import android.content.Context
 import android.content.Intent
+import android.graphics.Rect
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuInflater
+import android.view.MotionEvent
+import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.viewpager.widget.ViewPager
@@ -41,6 +47,27 @@ class MainActivity : AppCompatActivity() {
     {
         super.onStart()
         checkUser()
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean
+    {
+        if (ev?.action == MotionEvent.ACTION_DOWN)
+        {
+            val v: View? = currentFocus
+            if (v is EditText)
+            {
+                val outRect = Rect()
+                v.getGlobalVisibleRect(outRect)
+                if (!outRect.contains(ev.getRawX().toInt(), ev.getRawY().toInt()))
+                {
+                    v.clearFocus()
+                    val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(v.windowToken, 0)
+                }
+            }
+        }
+
+        return super.dispatchTouchEvent(ev)
     }
 
 
@@ -148,7 +175,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun onSettingsPopupClicked()
     {
-
+        startActivity(Intent(this@MainActivity, SettingsActivity::class.java))
     }
 
     private fun onSignOutPopupClicked()
@@ -182,40 +209,5 @@ class MainActivity : AppCompatActivity() {
 
         binding.accountButton.setImageURI(user?.photoUrl)
         binding.accountButton.clipToOutline = true
-    }
-
-
-
-
-
-
-
-    // TODO: Move to Settings Fragment
-    private fun updateProfile()
-    {
-        auth.currentUser?.let { user ->
-            //val username = binding.settings_username_editText
-            //val photoURI = Uri.parse("android.resource://$packageName/${R.drawable.helddersteine}")
-            val profileUpdates = UserProfileChangeRequest.Builder()
-                //.setDisplayName(username)
-                //.setPhotoUri(photoURI)
-                .build()
-
-            CoroutineScope(Dispatchers.IO).launch {
-                try
-                {
-                	user.updateProfile(profileUpdates).await()
-                    withContext(Dispatchers.Main)
-                    {
-                        Toast.makeText(this@MainActivity, "Successfully updated Profile", Toast.LENGTH_LONG).show()
-                    }
-                } catch (e: Exception) {
-                    withContext(Dispatchers.Main)
-                    {
-                        Toast.makeText(this@MainActivity, e.message, Toast.LENGTH_LONG).show()
-                    }
-                }
-            }
-        }
     }
 }

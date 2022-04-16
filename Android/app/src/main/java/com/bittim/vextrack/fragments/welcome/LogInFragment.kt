@@ -11,7 +11,7 @@ import android.widget.Toast
 import com.bittim.vextrack.MainActivity
 import com.bittim.vextrack.R
 import com.bittim.vextrack.WelcomeActivity
-import com.bittim.vextrack.databinding.FragmentLogInBinding
+import com.bittim.vextrack.databinding.FragmentWelcomeLogInBinding
 import com.google.firebase.auth.FirebaseAuth
 
 class LogInFragment : Fragment() {
@@ -19,7 +19,7 @@ class LogInFragment : Fragment() {
         super.onCreate(savedInstanceState)
     }
 
-    private var _binding: FragmentLogInBinding? = null
+    private var _binding: FragmentWelcomeLogInBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var auth: FirebaseAuth
@@ -29,7 +29,7 @@ class LogInFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentLogInBinding.inflate(inflater, container, false)
+        _binding = FragmentWelcomeLogInBinding.inflate(inflater, container, false)
         initButtons()
 
         auth = FirebaseAuth.getInstance()

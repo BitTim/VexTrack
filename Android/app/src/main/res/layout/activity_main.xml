@@ -30,6 +30,7 @@
             android:layout_width="?attr/actionBarSize"
             android:layout_height="?attr/actionBarSize"
             android:layout_gravity="end"
+            android:layout_marginStart="-8dp"
             android:adjustViewBounds="true"
             android:background="@drawable/actionbar_button_empty"
             android:contentDescription="@string/account_button_content_desc"
@@ -51,7 +52,6 @@
     </androidx.appcompat.widget.Toolbar>
 
 
-
     <!-- Content -->
 
     <androidx.viewpager.widget.ViewPager
@@ -62,7 +62,6 @@
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
         app:layout_constraintTop_toBottomOf="@+id/action_bar"
         tools:layout_editor_absoluteX="0dp" />
-
 
 
     <!-- Bottom Navigation and FAB -->

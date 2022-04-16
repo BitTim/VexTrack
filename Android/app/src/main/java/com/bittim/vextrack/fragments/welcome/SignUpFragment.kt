@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.bittim.vextrack.WelcomeActivity
-import com.bittim.vextrack.databinding.FragmentSignUpBinding
+import com.bittim.vextrack.databinding.FragmentWelcomeSignUpBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
 
@@ -17,7 +17,7 @@ class SignUpFragment : Fragment() {
         super.onCreate(savedInstanceState)
     }
 
-    private var _binding: FragmentSignUpBinding? = null
+    private var _binding: FragmentWelcomeSignUpBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var auth: FirebaseAuth
@@ -27,7 +27,7 @@ class SignUpFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentSignUpBinding.inflate(inflater, container, false)
+        _binding = FragmentWelcomeSignUpBinding.inflate(inflater, container, false)
         initButtons()
 
         auth = FirebaseAuth.getInstance()

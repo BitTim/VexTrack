@@ -35,9 +35,17 @@
     <string name="popup_sign_out">Sign Out</string>
     <string name="content_area_content_desc">Content Area</string>
     <string name="account_profile_picture_content_desc">Profile Picture</string>
-    <string name="settings_update_profile_button_text">Update Profile</string>
-    <string name="back_button">Back</string>
+
+    <string name="done_button">Done</string>
     <string name="general_frag_name">General</string>
     <string name="account_frag_name">Account</string>
     <string name="appearance_frag_name">Appearance</string>
+
+    <string name="buffer_days_input_hint">Buffer days</string>
+    <string name="setting_general_buffer_days">Buffer days</string>
+    <string name="setting_general_ignore_inactive">Ignore inactive days</string>
+    <string name="setting_general_ignore_init">Ignore initialization</string>
+    <string name="setting_general_force_epilogue">Force epilogue</string>
+    <string name="setting_general_single_season">Single season history</string>
+    <string name="settings_select_image_button_text">Select image</string>
 </resources>

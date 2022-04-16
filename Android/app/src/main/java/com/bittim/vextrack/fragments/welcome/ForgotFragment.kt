@@ -11,7 +11,7 @@ import android.widget.Toast
 import com.bittim.vextrack.MainActivity
 import com.bittim.vextrack.R
 import com.bittim.vextrack.WelcomeActivity
-import com.bittim.vextrack.databinding.FragmentForgotBinding
+import com.bittim.vextrack.databinding.FragmentWelcomeForgotBinding
 import com.google.firebase.auth.FirebaseAuth
 
 class ForgotFragment : Fragment() {
@@ -19,7 +19,7 @@ class ForgotFragment : Fragment() {
         super.onCreate(savedInstanceState)
     }
 
-    private var _binding: FragmentForgotBinding? = null
+    private var _binding: FragmentWelcomeForgotBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var auth: FirebaseAuth
@@ -29,7 +29,7 @@ class ForgotFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentForgotBinding.inflate(inflater, container, false)
+        _binding = FragmentWelcomeForgotBinding.inflate(inflater, container, false)
         initButtons()
 
         auth = FirebaseAuth.getInstance()

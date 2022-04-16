@@ -6,8 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bittim.vextrack.R
-import com.bittim.vextrack.databinding.FragmentHistoryBinding
-import com.bittim.vextrack.databinding.FragmentLogInBinding
+import com.bittim.vextrack.databinding.FragmentMainHistoryBinding
 
 class HistoryFragment : Fragment()
 {
@@ -16,7 +15,7 @@ class HistoryFragment : Fragment()
 		super.onCreate(savedInstanceState)
 	}
 
-	private var _binding: FragmentHistoryBinding? = null
+	private var _binding: FragmentMainHistoryBinding? = null
 	private val binding get() = _binding!!
 
 	override fun onCreateView(
@@ -24,7 +23,7 @@ class HistoryFragment : Fragment()
 		savedInstanceState: Bundle?
 	): View?
 	{
-		_binding = FragmentHistoryBinding.inflate(inflater, container, false)
+		_binding = FragmentMainHistoryBinding.inflate(inflater, container, false)
 
 		return binding.root
 	}

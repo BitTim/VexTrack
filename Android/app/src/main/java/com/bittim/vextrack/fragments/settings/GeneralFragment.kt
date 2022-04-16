@@ -6,9 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bittim.vextrack.R
-import com.bittim.vextrack.databinding.FragmentHomeBinding
-import com.bittim.vextrack.databinding.FragmentLogInBinding
-import com.bittim.vextrack.databinding.FragmentGeneralBinding
+import com.bittim.vextrack.databinding.FragmentSettingsGeneralBinding
 
 class GeneralFragment : Fragment()
 {
@@ -17,20 +15,21 @@ class GeneralFragment : Fragment()
 		super.onCreate(savedInstanceState)
 	}
 
-	private var _binding: FragmentGeneralBinding? = null
+	private var _binding: FragmentSettingsGeneralBinding? = null
 	private val binding get() = _binding!!
 
 	override fun onCreateView(
 		inflater: LayoutInflater, container: ViewGroup?,
 		savedInstanceState: Bundle?
-	): View?
+	): View
 	{
-		_binding = FragmentGeneralBinding.inflate(inflater, container, false)
+		_binding = FragmentSettingsGeneralBinding.inflate(inflater, container, false)
 
 		return binding.root
 	}
 
-	override fun onDestroyView() {
+	override fun onDestroyView()
+	{
 		super.onDestroyView()
 		_binding = null
 	}

@@ -124,7 +124,7 @@ class SettingsActivity : AppCompatActivity()
 	private fun initButtons()
 	{
 		binding.doneButton.setOnClickListener {
-			accountFragment.pushProfile()
+			accountFragment.pushProfile(this@SettingsActivity)
 			finish()
 		}
 	}

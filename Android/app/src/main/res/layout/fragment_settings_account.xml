@@ -14,14 +14,14 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="16dp"
-        android:orientation="horizontal"
-        android:baselineAligned="false">
+        android:baselineAligned="false"
+        android:orientation="horizontal">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:layout_marginEnd="8dp">
+            android:layout_marginEnd="8dp"
+            android:layout_weight="2">
 
             <ImageButton
                 android:id="@+id/settings_profilePicture_imageButton"
@@ -33,26 +33,26 @@
                 android:elevation="6dp"
                 android:scaleType="centerCrop"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintDimensionRatio="1:1"/>
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
             android:id="@+id/settings_profilePicture_rightLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
             android:layout_weight="1"
+            android:gravity="center"
             android:orientation="vertical">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/username_input_hint"
                 android:layout_marginStart="2dp"
                 android:layout_marginBottom="2dp"
+                android:text="@string/username_input_hint"
                 android:textColor="?android:attr/textColor" />
 
             <EditText
@@ -75,6 +75,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/settings_profilePicture_generalLayout">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/tmp_gen_image_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/button_empty"
+            android:elevation="6dp"
+            android:text="Generate"
+            android:textAllCaps="false"
+            android:textColor="?android:attr/textColor" />
 
     </LinearLayout>
 </RelativeLayout>

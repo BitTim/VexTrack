@@ -1,6 +1,7 @@
 package com.bittim.vextrack.fragments.settings
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -11,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import com.bittim.vextrack.SettingsActivity
+import com.bittim.vextrack.core.Utility
 import com.bittim.vextrack.databinding.FragmentSettingsAccountBinding
 import com.canhub.cropper.CropImage
 import com.canhub.cropper.CropImageContract
@@ -46,11 +48,15 @@ class AccountFragment : Fragment()
 		_binding = FragmentSettingsAccountBinding.inflate(inflater, container, false)
 
 		auth = FirebaseAuth.getInstance()
-		getProfile()
-
 		initButtons()
 		
 		return binding.root
+	}
+
+	override fun onStart()
+	{
+		super.onStart()
+		getProfile()
 	}
 
 	override fun onDestroyView() {
@@ -67,6 +73,10 @@ class AccountFragment : Fragment()
 	private fun initButtons()
 	{
 		binding.settingsProfilePictureImageButton.setOnClickListener { onProfilePicButtonClicked() }
+		binding.tmpGenImageBtn.setOnClickListener {
+			photoURI = Utility.genGenericProfilePic(activity as SettingsActivity, auth.currentUser?.displayName)
+			updateProfilePicture()
+		}
 	}
 
 
@@ -97,7 +107,7 @@ class AccountFragment : Fragment()
 	{
 		if (it.isSuccessful)
 		{
-			photoURI = it.originalUri
+			photoURI = it.uriContent
 			updateProfilePicture()
 		}
 	}
@@ -114,31 +124,24 @@ class AccountFragment : Fragment()
 
 		photoURI = user?.photoUrl
 		binding.settingsUsernameEditText.setText(user?.displayName)
+
+		updateProfilePicture()
 	}
 
-	public fun pushProfile()
+	fun pushProfile(context: Context)
 	{
-		auth.currentUser?.let { user ->
-			val username = binding.settingsUsernameEditText.text.toString()
-			val profileUpdates = UserProfileChangeRequest.Builder()
-				.setDisplayName(username)
-				.setPhotoUri(photoURI)
-				.build()
+		val username = binding.settingsUsernameEditText.text.toString()
+		val profileUpdates = UserProfileChangeRequest.Builder()
+			.setDisplayName(username)
+			.setPhotoUri(photoURI)
+			.build()
 
-			CoroutineScope(Dispatchers.IO).launch {
-				try
-				{
-					user.updateProfile(profileUpdates).await()
-					withContext(Dispatchers.Main)
-					{
-						Toast.makeText(activity as SettingsActivity, "Successfully updated Profile", Toast.LENGTH_LONG).show()
-					}
-				} catch (e: Exception) {
-					withContext(Dispatchers.Main)
-					{
-						Toast.makeText(activity as SettingsActivity, e.message, Toast.LENGTH_LONG).show()
-					}
-				}
+		auth.currentUser?.updateProfile(profileUpdates)?.addOnCompleteListener {
+			if (it.isSuccessful)
+			{
+				Toast.makeText(context, "Successfully updated Profile", Toast.LENGTH_SHORT).show()
+			} else {
+				Toast.makeText(context, it.exception?.message, Toast.LENGTH_LONG).show()
 			}
 		}
 	}

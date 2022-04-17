@@ -49,6 +49,13 @@ class MainActivity : AppCompatActivity() {
         checkUser()
     }
 
+    override fun onRestart()
+    {
+        // TODO: Fix reloading of user after exiting SettingsActivity
+        super.onRestart()
+        checkUser()
+    }
+
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean
     {
         if (ev?.action == MotionEvent.ACTION_DOWN)

@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.bittim.vextrack"
-        minSdk 26
+        minSdk 27
         targetSdk 32
         versionCode 1
         versionName "1.0"
@@ -55,5 +55,5 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.1'
 
     implementation 'com.github.CanHub:Android-Image-Cropper:4.2.1'
-    implementation 'com.github.brian-norman:RandomKolor:1.0'
+    implementation 'com.github.BitTIm:RandomKolor:1.1'
 }

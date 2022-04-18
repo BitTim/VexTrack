@@ -3,8 +3,9 @@
     <style name="Theme.VexTrack" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/aqua1</item>
-        <item name="colorPrimaryVariant">@color/aqua2</item>
         <item name="colorOnPrimary">@color/white</item>
+
+        <item name="colorSecondary">@color/aqua2</item>
 
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">@color/lightShade</item>

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.bittim.vextrack.WelcomeActivity
+import com.bittim.vextrack.core.Utility
 import com.bittim.vextrack.databinding.FragmentWelcomeSignUpBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
@@ -90,7 +91,12 @@ class SignUpFragment : Fragment() {
                 auth.signInWithEmailAndPassword(email, password).addOnCompleteListener {
                     if (it.isSuccessful)
                     {
-                        auth.currentUser?.updateProfile(UserProfileChangeRequest.Builder().setDisplayName(username).build())
+                        val profileBuilder = UserProfileChangeRequest.Builder()
+                            .setDisplayName(username)
+                            .setPhotoUri(Utility.genGenericProfilePic(activity as WelcomeActivity, username))
+                            .build()
+
+                        auth.currentUser?.updateProfile(profileBuilder)
                         auth.currentUser?.sendEmailVerification()
                         (activity as WelcomeActivity).startMainActivity()
                     }

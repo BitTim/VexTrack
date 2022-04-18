@@ -9,6 +9,7 @@ import com.example.randomkolor.src.RandomKolor
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
+import java.util.*
 
 class Utility
 {
@@ -17,6 +18,7 @@ class Utility
 		fun genGenericProfilePic(context: Context, name: String?, width: Int = 320, height: Int = 320): Uri?
 		{
 			var uri: Uri? = null
+			Random().setSeed(System.currentTimeMillis())
 
 			// Create Bitmap
 			val bm: Bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
@@ -25,6 +27,14 @@ class Utility
 			// Setup colors
 			val bgPaint = Paint()
 			val fgPaint = Paint()
+
+			// Throw away a random amount of colors before using
+			val cycles = Random().nextInt(128)
+			for (i in 1 until cycles)
+			{
+				RandomKolor().randomColor(luminosity = Luminosity.DARK, format = Format.HEX)
+			}
+
 
 			bgPaint.color = Color.parseColor(RandomKolor().randomColor(luminosity = Luminosity.DARK, format = Format.HEX))
 			fgPaint.color = Color.WHITE

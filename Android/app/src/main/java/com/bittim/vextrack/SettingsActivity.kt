@@ -1,6 +1,8 @@
 package com.bittim.vextrack
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.Rect
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -124,7 +126,13 @@ class SettingsActivity : AppCompatActivity()
 	private fun initButtons()
 	{
 		binding.doneButton.setOnClickListener {
-			accountFragment.pushProfile(this@SettingsActivity)
+			val profileData: Pair<String, String> = accountFragment.getProfileData()
+			val intent: Intent = Intent()
+
+			intent.putExtra("username", profileData.first)
+			intent.putExtra("photoURI", profileData.second)
+
+			setResult(Activity.RESULT_OK, intent)
 			finish()
 		}
 	}

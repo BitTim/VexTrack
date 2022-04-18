@@ -1,8 +1,10 @@
 package com.bittim.vextrack
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuInflater
@@ -12,6 +14,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.PopupMenu
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.viewpager.widget.ViewPager
 import com.bittim.vextrack.databinding.ActivityMainBinding
 import com.bittim.vextrack.fragments.main.GoalsFragment
@@ -46,13 +50,6 @@ class MainActivity : AppCompatActivity() {
     override fun onStart()
     {
         super.onStart()
-        checkUser()
-    }
-
-    override fun onRestart()
-    {
-        // TODO: Fix reloading of user after exiting SettingsActivity
-        super.onRestart()
         checkUser()
     }
 
@@ -182,7 +179,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun onSettingsPopupClicked()
     {
-        startActivity(Intent(this@MainActivity, SettingsActivity::class.java))
+        val settingsIntent = Intent(this@MainActivity, SettingsActivity::class.java)
+        getSettingsResult.launch(settingsIntent)
     }
 
     private fun onSignOutPopupClicked()
@@ -197,7 +195,35 @@ class MainActivity : AppCompatActivity() {
     //  Utility
     // ================================
 
-    private fun checkUser()
+    private val getSettingsResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK)
+        {
+            val username: String? = it.data?.getStringExtra("username")
+            val photoURI: Uri = Uri.parse(it.data?.getStringExtra("photoURI"))
+            pushProfile(username, photoURI)
+        }
+    }
+
+    fun pushProfile(username: String?, photoURI: Uri)
+    {
+        val profileUpdates = UserProfileChangeRequest.Builder()
+            .setDisplayName(username)
+            .setPhotoUri(photoURI)
+            .build()
+
+        auth.currentUser?.updateProfile(profileUpdates)?.addOnCompleteListener {
+            if (it.isSuccessful)
+            {
+                checkUser()
+            }
+            else
+            {
+                Toast.makeText(this@MainActivity, it.exception?.message, Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    fun checkUser()
     {
         val user: FirebaseUser? = auth.currentUser
         if (user == null)
@@ -212,9 +238,11 @@ class MainActivity : AppCompatActivity() {
                 startActivity(Intent(this@MainActivity, WelcomeActivity::class.java))
                 finish()
             }
+            else
+            {
+                binding.accountButton.setImageURI(user.photoUrl)
+                binding.accountButton.clipToOutline = true
+            }
         }
-
-        binding.accountButton.setImageURI(user?.photoUrl)
-        binding.accountButton.clipToOutline = true
     }
 }

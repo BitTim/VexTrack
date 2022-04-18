@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import com.bittim.vextrack.MainActivity
 import com.bittim.vextrack.SettingsActivity
 import com.bittim.vextrack.core.Utility
 import com.bittim.vextrack.databinding.FragmentSettingsAccountBinding
@@ -128,21 +129,9 @@ class AccountFragment : Fragment()
 		updateProfilePicture()
 	}
 
-	fun pushProfile(context: Context)
+	fun getProfileData(): Pair<String, String>
 	{
 		val username = binding.settingsUsernameEditText.text.toString()
-		val profileUpdates = UserProfileChangeRequest.Builder()
-			.setDisplayName(username)
-			.setPhotoUri(photoURI)
-			.build()
-
-		auth.currentUser?.updateProfile(profileUpdates)?.addOnCompleteListener {
-			if (it.isSuccessful)
-			{
-				Toast.makeText(context, "Successfully updated Profile", Toast.LENGTH_SHORT).show()
-			} else {
-				Toast.makeText(context, it.exception?.message, Toast.LENGTH_LONG).show()
-			}
-		}
+		return Pair(username, photoURI.toString())
 	}
 }

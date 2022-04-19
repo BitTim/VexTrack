@@ -1,88 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:focusable="true"
-    android:focusableInTouchMode="true"
     tools:context=".fragments.settings.GeneralFragment">
 
-
-    <LinearLayout
-        android:id="@+id/settingsGeneral_bufferDays_layout"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="16dp">
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
-        <TextView
-            android:id="@+id/settingsGeneral_bufferDays_title"
+        <LinearLayout
+            android:id="@+id/settingsGeneral_bufferDays_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginEnd="4dp"
-            android:text="@string/setting_general_buffer_days" />
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp">
 
-        <EditText
-            android:id="@+id/settingsGeneral_bufferDays_editText"
+            <TextView
+                android:id="@+id/settingsGeneral_bufferDays_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:text="@string/setting_general_buffer_days" />
+
+            <EditText
+                android:id="@+id/settingsGeneral_bufferDays_editText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_empty"
+                android:digits="0123456789"
+                android:elevation="6dp"
+                android:ems="10"
+                android:hint="@string/buffer_days_input_hint"
+                android:importantForAutofill="no"
+                android:inputType="number"
+                android:minHeight="48dp"
+                android:paddingHorizontal="16dp"
+                android:textCursorDrawable="@drawable/edit_text_cursor_gradient"
+                tools:ignore="TextContrastCheck,DuplicateSpeakableTextCheck" />
+        </LinearLayout>
+
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/settingsGeneral_ignoreInactive_switch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_weight="1"
-            android:background="@drawable/button_empty"
-            android:digits="0123456789"
-            android:elevation="6dp"
-            android:ems="10"
-            android:hint="@string/buffer_days_input_hint"
-            android:importantForAutofill="no"
-            android:inputType="number"
-            android:minHeight="48dp"
-            android:paddingHorizontal="16dp"
-            android:textCursorDrawable="@drawable/edit_text_cursor_gradient"
-            tools:ignore="TextContrastCheck,DuplicateSpeakableTextCheck" />
-    </LinearLayout>
+            android:layout_below="@id/settingsGeneral_bufferDays_layout"
+            android:layout_marginHorizontal="16dp"
+            android:text="@string/setting_general_ignore_inactive"
+            android:textColor="?android:attr/textColor"
+            tools:ignore="TextContrastCheck" />
 
 
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/settingsGeneral_ignoreInactive_switch"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/settingsGeneral_bufferDays_layout"
-        android:layout_marginHorizontal="16dp"
-        android:text="@string/setting_general_ignore_inactive"
-        android:textColor="?android:attr/textColor"
-        tools:ignore="TextContrastCheck" />
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/settingsGeneral_ignoreInit_switch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/settingsGeneral_ignoreInactive_switch"
+            android:layout_marginHorizontal="16dp"
+            android:text="@string/setting_general_ignore_init"
+            android:textColor="?android:attr/textColor"
+            tools:ignore="TextContrastCheck" />
 
 
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/settingsGeneral_ignoreInit_switch"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/settingsGeneral_ignoreInactive_switch"
-        android:layout_marginHorizontal="16dp"
-        android:text="@string/setting_general_ignore_init"
-        android:textColor="?android:attr/textColor"
-        tools:ignore="TextContrastCheck" />
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/settingsGeneral_forceEpilogue_switch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/settingsGeneral_ignoreInit_switch"
+            android:layout_marginHorizontal="16dp"
+            android:text="@string/setting_general_force_epilogue"
+            android:textColor="?android:attr/textColor"
+            tools:ignore="TextContrastCheck" />
 
 
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/settingsGeneral_forceEpilogue_switch"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/settingsGeneral_ignoreInit_switch"
-        android:layout_marginHorizontal="16dp"
-        android:text="@string/setting_general_force_epilogue"
-        android:textColor="?android:attr/textColor"
-        tools:ignore="TextContrastCheck" />
-
-
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/settingsGeneral_singleSeason_switch"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/settingsGeneral_forceEpilogue_switch"
-        android:layout_marginHorizontal="16dp"
-        android:text="@string/setting_general_single_season"
-        android:textColor="?android:attr/textColor"
-        tools:ignore="TextContrastCheck" />
-</RelativeLayout>
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/settingsGeneral_singleSeason_switch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/settingsGeneral_forceEpilogue_switch"
+            android:layout_marginHorizontal="16dp"
+            android:text="@string/setting_general_single_season"
+            android:textColor="?android:attr/textColor"
+            tools:ignore="TextContrastCheck" />
+    </RelativeLayout>
+</ScrollView>

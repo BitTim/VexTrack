@@ -1,92 +1,187 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:focusable="true"
-    android:focusableInTouchMode="true"
     tools:context=".fragments.settings.AccountFragment">
 
-    <LinearLayout
-        android:id="@+id/settings_profilePicture_generalLayout"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="16dp"
-        android:baselineAligned="false"
-        android:orientation="horizontal">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="8dp"
-            android:layout_weight="2">
-
-            <ImageButton
-                android:id="@+id/settings_profilePicture_imageButton"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:adjustViewBounds="false"
-                android:background="@drawable/button_empty"
-                android:contentDescription="@string/account_profile_picture_content_desc"
-                android:elevation="6dp"
-                android:scaleType="centerCrop"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
         <LinearLayout
-            android:id="@+id/settings_profilePicture_rightLayout"
+            android:id="@+id/settings_profile_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="2">
+
+                <ImageButton
+                    android:id="@+id/settings_profilePicture_imageButton"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:adjustViewBounds="false"
+                    android:background="@drawable/button_empty"
+                    android:contentDescription="@string/account_profile_picture_content_desc"
+                    android:elevation="6dp"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:id="@+id/settings_username_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginBottom="2dp"
+                    android:text="@string/username_input_hint"
+                    android:textColor="?android:attr/textColor" />
+
+                <EditText
+                    android:id="@+id/settings_username_editText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints=".AUTOFILL_HINT_NEW_USERNAME"
+                    android:background="@drawable/button_empty"
+                    android:elevation="6dp"
+                    android:ems="10"
+                    android:hint="@string/username_input_hint"
+                    android:inputType="text"
+                    android:minHeight="48dp"
+                    android:paddingHorizontal="16dp"
+                    android:textCursorDrawable="@drawable/edit_text_cursor_gradient" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/settings_accountData_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/settings_profile_layout"
             android:orientation="vertical">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
+                android:layout_marginHorizontal="18dp"
                 android:layout_marginBottom="2dp"
-                android:text="@string/username_input_hint"
+                android:text="@string/email_input_hint"
                 android:textColor="?android:attr/textColor" />
 
             <EditText
-                android:id="@+id/settings_username_editText"
+                android:id="@+id/settings_email_editText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:autofillHints=".AUTOFILL_HINT_NEW_USERNAME"
+                android:layout_marginHorizontal="16dp"
+                android:autofillHints=".AUTOFILL_HINT_NEW_EMAIL"
                 android:background="@drawable/button_empty"
                 android:elevation="6dp"
                 android:ems="10"
-                android:hint="@string/username_input_hint"
-                android:inputType="text"
+                android:hint="@string/email_input_hint"
+                android:inputType="textEmailAddress"
                 android:minHeight="48dp"
                 android:paddingHorizontal="16dp"
                 android:textCursorDrawable="@drawable/edit_text_cursor_gradient" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/settings_changePassword_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:background="@drawable/button_empty"
+                android:elevation="6dp"
+                android:text="@string/setting_account_change_password_button"
+                android:textAllCaps="false"
+                android:textColor="?android:attr/textColor" />
         </LinearLayout>
-    </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/settings_profilePicture_generalLayout">
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/tmp_gen_image_btn"
+        <LinearLayout
+            android:id="@+id/settings_dangerZone_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/button_empty"
-            android:elevation="6dp"
-            android:text="Generate"
-            android:textAllCaps="false"
-            android:textColor="?android:attr/textColor" />
+            android:layout_below="@id/settings_accountData_layout"
+            android:orientation="vertical">
 
-    </LinearLayout>
-</RelativeLayout>
+            <TextView
+                android:id="@+id/settings_dangerZone_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="18dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/setting_account_danger_zone"
+                android:textColor="@color/red1"
+                android:textStyle="bold" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/settings_defaultSettings_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:background="@drawable/button_empty"
+                android:elevation="6dp"
+                android:text="@string/setting_account_default_settings_button"
+                android:textAllCaps="false"
+                android:textColor="@color/red1" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/settings_resetPic_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:background="@drawable/button_empty"
+                android:elevation="6dp"
+                android:text="@string/setting_account_reset_pic_button"
+                android:textAllCaps="false"
+                android:textColor="@color/red1" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/settings_deleteData_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:background="@drawable/button_danger_gradient"
+                android:elevation="6dp"
+                android:text="@string/setting_account_delete_data_button"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/settings_deleteAccount_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:background="@drawable/button_danger_gradient"
+                android:elevation="6dp"
+                android:text="@string/setting_account_delete_button"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+    </RelativeLayout>
+</ScrollView>

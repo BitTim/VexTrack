@@ -48,4 +48,14 @@
     <string name="setting_general_force_epilogue">Force epilogue</string>
     <string name="setting_general_single_season">Single season history</string>
     <string name="settings_select_image_button_text">Select image</string>
+    <string name="setting_account_reset_pic_button">Reset profile picture</string>
+    <string name="setting_account_default_settings_button">Default settings</string>
+    <string name="setting_account_delete_button">Delete account</string>
+    <string name="setting_account_delete_data_button">Delete data</string>
+    <string name="setting_account_danger_zone">Danger zone</string>
+    <string name="setting_account_change_password_button">Change password</string>
+    <string name="settings_reset_pic_dialog_title">Confirm Reset</string>
+    <string name="settings_reset_pic_dialog_message">Are you sure you want to reset your profile picture</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
 </resources>

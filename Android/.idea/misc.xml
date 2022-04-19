@@ -6,10 +6,13 @@
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/drawable/actionbar_button_empty.xml" value="0.505" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/drawable/actionbar_button_gradient.xml" value="0.505" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/drawable/actionbar_button_image.xml" value="0.505" />
+        <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/drawable/button_danger_gradient.xml" value="0.505" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/drawable/button_empty.xml" value="0.505" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/drawable/button_gradient.xml" value="0.505" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/drawable/button_mask.xml" value="0.505" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/drawable/circular_progress_gradient.xml" value="0.5" />
+        <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/drawable/dangerGradient.xml" value="0.505" />
+        <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/drawable/danger_gradient.xml" value="0.505" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/drawable/edit_text_cursor_gradient.xml" value="0.505" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/drawable/epilogue_toggle_gradient.xml" value="0.505" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/drawable/epilogue_toggle_tint.xml" value="0.505" />
@@ -49,7 +52,7 @@
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/fragment_log_in.xml" value="0.55" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/fragment_seasons.xml" value="0.32019927536231885" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/fragment_settings.xml" value="0.32019927536231885" />
-        <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/fragment_settings_account.xml" value="0.55" />
+        <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/fragment_settings_account.xml" value="0.5" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/fragment_settings_appearance.xml" value="0.55" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/fragment_settings_general.xml" value="0.55" />
         <entry key="..\:/Coding/VexTrack/Android/app/src/main/res/layout/fragment_sign_up.xml" value="0.55" />

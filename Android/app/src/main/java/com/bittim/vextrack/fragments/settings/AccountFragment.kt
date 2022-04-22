@@ -143,9 +143,10 @@ class AccountFragment : Fragment()
 		updateProfilePicture()
 	}
 
-	fun getProfileData(): Pair<String, String>
+	fun getProfileData(): Triple<String, String, String>
 	{
 		val username = binding.settingsUsernameEditText.text.toString()
-		return Pair(username, photoURI.toString())
+		val email = binding.settingsEmailEditText.text.toString()
+		return Triple(username, email, photoURI.toString())
 	}
 }

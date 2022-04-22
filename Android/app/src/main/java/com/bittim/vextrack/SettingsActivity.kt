@@ -126,11 +126,12 @@ class SettingsActivity : AppCompatActivity()
 	private fun initButtons()
 	{
 		binding.doneButton.setOnClickListener {
-			val profileData: Pair<String, String> = accountFragment.getProfileData()
+			val profileData: Triple<String, String, String> = accountFragment.getProfileData()
 			val intent: Intent = Intent()
 
 			intent.putExtra("username", profileData.first)
-			intent.putExtra("photoURI", profileData.second)
+			intent.putExtra("email", profileData.second)
+			intent.putExtra("photoURI", profileData.third)
 
 			setResult(Activity.RESULT_OK, intent)
 			finish()

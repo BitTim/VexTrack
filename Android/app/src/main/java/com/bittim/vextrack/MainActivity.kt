@@ -199,12 +199,13 @@ class MainActivity : AppCompatActivity() {
         if (it.resultCode == Activity.RESULT_OK)
         {
             val username: String? = it.data?.getStringExtra("username")
+            val email: String? = it.data?.getStringExtra("email")
             val photoURI: Uri = Uri.parse(it.data?.getStringExtra("photoURI"))
-            pushProfile(username, photoURI)
+            pushProfile(username, email, photoURI)
         }
     }
 
-    fun pushProfile(username: String?, photoURI: Uri)
+    private fun pushProfile(username: String?, email: String?, photoURI: Uri)
     {
         val profileUpdates = UserProfileChangeRequest.Builder()
             .setDisplayName(username)
@@ -221,9 +222,11 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this@MainActivity, it.exception?.message, Toast.LENGTH_LONG).show()
             }
         }
+
+        // TODO: Implement E-Mail changing
     }
 
-    fun checkUser()
+    private fun checkUser()
     {
         val user: FirebaseUser? = auth.currentUser
         if (user == null)

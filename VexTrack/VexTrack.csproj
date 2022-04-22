@@ -2,14 +2,14 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows10.0.20348.0</TargetFramework>
+    <TargetFramework>net6.0-windows10.0.22000.0</TargetFramework>
     <UseWPF>true</UseWPF>
-    <ApplicationIcon>P:\Visual Studio\VexTrack\VexTrack\Images\VexTrack.ico</ApplicationIcon>
-    <Version>1.7</Version>
+    <ApplicationIcon>Images\VexTrack.ico</ApplicationIcon>
+    <Version>1.87</Version>
     <Authors>BitTim</Authors>
     <Description />
     <PackageProjectUrl>https://github.com/BitTim/VexTrack</PackageProjectUrl>
-    <PackageIcon>VexTrack.png</PackageIcon>
+    <PackageIcon>VexTrack_128.png</PackageIcon>
     <PackageIconUrl />
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RepositoryUrl>https://github.com/BitTim/VexTrack</RepositoryUrl>
@@ -19,8 +19,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Images\VexTrack_128.png" />
     <None Remove="Images\VexTrack_64.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Images\VexTrack.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -56,6 +59,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Images\VexTrack_128.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

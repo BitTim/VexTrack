@@ -141,6 +141,7 @@ namespace VexTrack.Core
 			DateTimeOffset today = DateTimeOffset.Now.ToLocalTime().Date;
 
 			int remainingDays = (endDate - today).Days;
+			if ((endDate - today).Hours > 0) { remainingDays += 1; }
 			if (remainingDays < 0) remainingDays = 0;
 
 			return remainingDays;
@@ -148,10 +149,11 @@ namespace VexTrack.Core
 
 		public static int GetDuration(string sUUID)
 		{
-			DateTimeOffset endDate = DateTimeOffset.Parse(Data.Seasons.Find(s => s.UUID == sUUID).EndDate).ToLocalTime();
+			DateTimeOffset endDate = DateTimeOffset.Parse(Data.Seasons.Find(s => s.UUID == sUUID).EndDate).ToLocalTime().Date;
 			DateTimeOffset startDate = DateTimeOffset.FromUnixTimeSeconds(Data.Seasons.Find(s => s.UUID == sUUID).History.First().Time).ToLocalTime().Date;
 
 			int duration = (endDate - startDate).Days;
+			if ((endDate - startDate).Hours > 0) { duration += 1; }
 			if (duration < 0) duration = 0;
 
 			return duration;

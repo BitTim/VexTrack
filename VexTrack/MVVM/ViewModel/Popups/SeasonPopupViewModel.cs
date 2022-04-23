@@ -106,10 +106,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 			LineSeries ideal = GraphCalc.CalcIdealGraph(UUID, epilogue);
 			LineSeries performance = GraphCalc.CalcPerformanceGraph(UUID);
-
-			LineSeries idealPoint = DashboardDataCalc.CalcGraphPoint(ideal, OxyColor.FromArgb(GraphIdealPoint.Color.A, GraphIdealPoint.Color.R, GraphIdealPoint.Color.G, GraphIdealPoint.Color.B));
-			LineSeries performancePoint = DashboardDataCalc.CalcGraphPoint(performance, OxyColors.Maroon);
-
+			
 			RectangleAnnotation bufferZone = GraphCalc.CalcBufferZone(UUID, epilogue);
 
 			Graph.LegendPosition = LegendPosition.LeftTop;
@@ -126,8 +123,15 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			Graph.Series.Add(ideal);
 			Graph.Series.Add(performance);
 
-			Graph.Series.Add(idealPoint);
-			Graph.Series.Add(performancePoint);
+			// Only add points to current season
+			if (UUID == TrackingDataHelper.CurrentSeasonUUID)
+			{
+				LineSeries idealPoint = DashboardDataCalc.CalcGraphPoint(ideal, OxyColor.FromArgb(GraphIdealPoint.Color.A, GraphIdealPoint.Color.R, GraphIdealPoint.Color.G, GraphIdealPoint.Color.B));
+				LineSeries performancePoint = DashboardDataCalc.CalcGraphPoint(performance, OxyColors.Maroon);
+
+				Graph.Series.Add(idealPoint);
+				Graph.Series.Add(performancePoint);
+			}
 
 			Graph.Annotations.Add(bufferZone);
 

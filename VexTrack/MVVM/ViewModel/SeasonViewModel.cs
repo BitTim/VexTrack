@@ -8,8 +8,10 @@ namespace VexTrack.MVVM.ViewModel
 	class SeasonViewModel : ObservableObject
 	{
 		public RelayCommand SeasonButtonClick { get; set; }
+		public RelayCommand OnAddClicked { get; set; }
 
 		public SeasonPopupViewModel SeasonPopup { get; set; }
+		private SeasonEndConfirmationPopupViewModel SeasonEndPopup { get; set; }
 		private MainViewModel MainVM { get; set; }
 		private bool Epilogue { get; set; }
 
@@ -31,8 +33,15 @@ namespace VexTrack.MVVM.ViewModel
 		{
 			MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
 			SeasonPopup = (SeasonPopupViewModel)ViewModelManager.ViewModels["SeasonPopup"];
+			SeasonEndPopup = (SeasonEndConfirmationPopupViewModel)ViewModelManager.ViewModels["SeasonEndConfirmationPopup"];
 
 			SeasonButtonClick = new RelayCommand(OnSeasonButtonClick);
+			OnAddClicked = new RelayCommand(o =>
+			{
+				SeasonEndPopup.SetData(TrackingDataHelper.CurrentSeasonUUID);
+				MainVM.QueuePopup(SeasonEndPopup);
+			});
+
 			Update(false);
 		}
 

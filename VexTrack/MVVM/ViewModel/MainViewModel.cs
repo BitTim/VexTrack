@@ -41,6 +41,7 @@ namespace VexTrack.MVVM.ViewModel
 		private EditableGoalGroupPopupViewModel EditableGoalGroupPopup { get; set; }
 		private DeleteGoalConfirmationPopupViewModel DeleteGoalConfirmationPopup { get; set; }
 		private DeleteGoalGroupConfirmationPopupViewModel DeleteGoalGroupConfirmationPopup { get; set; }
+		private SeasonEndConfirmationPopupViewModel SeasonEndConfirmationPopup { get; set; }
 
 		private object _currentView;
 		private bool _epilogue;
@@ -217,6 +218,9 @@ namespace VexTrack.MVVM.ViewModel
 
 			EditableGoalGroupPopup = new EditableGoalGroupPopupViewModel();
 			ViewModelManager.ViewModels.Add("EditableGoalGroupPopup", EditableGoalGroupPopup);
+
+			SeasonEndConfirmationPopup = new SeasonEndConfirmationPopupViewModel();
+			ViewModelManager.ViewModels.Add("SeasonEndConfirmationPopup", SeasonEndConfirmationPopup);
 		}
 
 		public void SetView(object view)
@@ -228,6 +232,8 @@ namespace VexTrack.MVVM.ViewModel
 		{
 			if (InterruptUpdate) return;
 			if (!ViewModelsInitialized) InitViewModels();
+
+			if (InterruptUpdate) return;
 
 			if (TrackingDataHelper.CurrentSeasonData.ActiveBPLevel > Constants.BattlepassLevels && SettingsHelper.Data.ForceEpilogue)
 			{

@@ -52,7 +52,7 @@
 					<RowDefinition Height="32"/>
 					<RowDefinition Height="96"/>
 					<RowDefinition/>
-					<RowDefinition Height="128"/>
+					<RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
 
 				<!-- Window Buttons -->
@@ -210,7 +210,19 @@
 			
 				<StackPanel Grid.Row="3"
 							Margin="16, 0">
-					<Grid Margin="0, 0, 0, 16">
+                    
+                    <!-- 187 Easter Egg -->
+
+                    <TextBlock Foreground="{DynamicResource Background}"
+                                   Text="187"
+                               Opacity="0.25"
+                                   FontSize="100"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"
+                                   Grid.Column="1"
+                                   Grid.Row="3"/>
+
+                    <Grid Margin="0, 0, 0, 16">
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition/>
 							<ColumnDefinition/>
@@ -244,12 +256,11 @@
 
 				<!-- Content -->
 
-				<ContentControl Grid.Column="1"
+                <ContentControl Grid.Column="1"
 								Grid.Row="1"
 								Grid.RowSpan="4"
 								Content="{Binding CurrentView}"/>
-
-			</Grid>
+            </Grid>
 		</Border>
 
 		<!-- Popups -->

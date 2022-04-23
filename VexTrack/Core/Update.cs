@@ -195,6 +195,7 @@ namespace VexTrack.Core
 			List<string> warnings = new();
 			bool collectChangelog = false;
 			bool showDialog = false;
+			bool forceUpdateSkippedOnce = false;
 
 			JArray ja = JArray.Parse(res);
 			foreach (JObject release in ja)
@@ -205,7 +206,13 @@ namespace VexTrack.Core
 				float newestVersion = float.Parse(tokenizedName[1].Split("v")[1]);
 				float currentVersion = float.Parse(Constants.Version.Split("v")[1]);
 
-				if (currentVersion >= newestVersion && !forceUpdate) break;
+				if (forceUpdateSkippedOnce && forceUpdate) break;
+				if (currentVersion >= newestVersion)
+                {
+					if (!forceUpdate) break;
+					forceUpdateSkippedOnce = true;
+                }
+
 				if ((bool)release["prerelease"] && SettingsHelper.Data.IgnorePreReleases) continue;
 
 				latestVersionTag = (string)release["tag_name"];

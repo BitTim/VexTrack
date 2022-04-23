@@ -20,8 +20,13 @@ namespace VexTrack.Core
 			int bufferDays = SettingsHelper.Data.BufferDays;
 			int idealRemainingDays = TrackingDataHelper.GetRemainingDays(TrackingDataHelper.CurrentSeasonUUID) - bufferDays;
 
+			if (idealRemainingDays <= -bufferDays && idealRemainingDays <= 0)
+			{
+				TrackingDataHelper.CreateSeasonInitPopup();
+				return ret;
+			}
+
 			if (idealRemainingDays > -bufferDays && idealRemainingDays <= 0) idealRemainingDays = 1;
-			else if (idealRemainingDays <= -bufferDays && idealRemainingDays <= 0) TrackingDataHelper.CreateSeasonInitPopup();
 
 			int dailyCollected = 0;
 			foreach (HistoryEntry h in TrackingDataHelper.CurrentSeasonData.History.GetRange(1, TrackingDataHelper.CurrentSeasonData.History.Count - 1))

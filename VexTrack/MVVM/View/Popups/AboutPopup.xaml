@@ -49,6 +49,7 @@
 							<RowDefinition Height="Auto"/>
 							<RowDefinition Height="Auto"/>
 							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
 						</Grid.RowDefinitions>
 						
 						<TextBlock Grid.Row="0"
@@ -82,6 +83,15 @@
 						<TextBlock Text="Created by BitTim, Copyright ©2021 - 2022"
 								   Grid.Row="3"
 								   FontSize="14"
+								   TextWrapping="Wrap"
+								   HorizontalAlignment="Center"
+								   Foreground="{DynamicResource Foreground}"
+								   Margin="0, 0, 0, 32"/>
+
+						<TextBlock Text="v2.0 is gonna be big"
+								   Grid.Row="4"
+								   FontSize="14"
+                                   FontStyle="Italic"
 								   TextWrapping="Wrap"
 								   HorizontalAlignment="Center"
 								   Foreground="{DynamicResource Foreground}"

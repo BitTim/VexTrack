@@ -141,7 +141,7 @@ namespace VexTrack.Core
 			DateTimeOffset today = DateTimeOffset.Now.ToLocalTime().Date;
 
 			int remainingDays = (endDate - today).Days;
-			if ((endDate - today).Hours > 0) { remainingDays += 1; }
+			if ((endDate - today).Hours > 12) { remainingDays += 1; }
 			if (remainingDays < 0) remainingDays = 0;
 
 			return remainingDays;
@@ -153,7 +153,7 @@ namespace VexTrack.Core
 			DateTimeOffset startDate = DateTimeOffset.FromUnixTimeSeconds(Data.Seasons.Find(s => s.UUID == sUUID).History.First().Time).ToLocalTime().Date;
 
 			int duration = (endDate - startDate).Days;
-			if ((endDate - startDate).Hours > 0) { duration += 1; }
+			if ((endDate - startDate).Hours > 12) { duration += 1; }
 			if (duration < 0) duration = 0;
 
 			return duration;
@@ -748,6 +748,13 @@ namespace VexTrack.Core
 		public static void EditSeason(string uuid, Season data)
 		{
 			Data.Seasons[Data.Seasons.FindIndex(s => s.UUID == uuid)] = data;
+			CallUpdate();
+		}
+
+		public static void EndSeason(string uuid)
+		{
+			// Set end date to today
+			Data.Seasons[Data.Seasons.FindIndex(s => s.UUID == uuid)].EndDate = DateTime.Today.ToLocalTime().Date.ToString("d");
 			CallUpdate();
 		}
 

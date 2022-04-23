@@ -124,6 +124,10 @@
 			<DataTemplate DataType="{x:Type popupViewModel:DeleteGoalGroupConfirmationPopupViewModel}">
 				<popupView:DeleteGoalGroupConfirmationPopup/>
 			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type popupViewModel:SeasonEndConfirmationPopupViewModel}">
+				<popupView:SeasonEndConfirmationPopup/>
+			</DataTemplate>
 		</ResourceDictionary>
 	</Application.Resources>
 </Application>

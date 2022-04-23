@@ -12,6 +12,7 @@
 
 std::fstream logFile;
 bool legacyMode = false;
+const std::string logPath = "updateLog.txt";
 
 void startPorcess(LPSTR exePath)
 {
@@ -39,8 +40,16 @@ void startPorcess(LPSTR exePath)
 	CloseHandle(pi.hThread);
 }
 
+void initLog()
+{
+	logFile.open(logPath, std::ios::out);
+	logFile.close();
+}
+
 void log(std::string tag, std::string message)
 {
+	logFile.open(logPath, std::ios::app);
+
 	char buffer[256];
 	auto timeNow = std::chrono::system_clock::now();
 	std::time_t now = std::chrono::system_clock::to_time_t(timeNow);
@@ -51,18 +60,17 @@ void log(std::string tag, std::string message)
 	sprintf_s(buffer, "[%s] - (%s): %s\n", ss.str().c_str(), tag.c_str(), message.c_str());
 
 	logFile.write(buffer, strlen(buffer));
+	logFile.close();
 }
 
 int main(int argc, char* argv[])
 {
-	logFile.open("updateLog.txt", std::ios::out);
 	log("Initialization", "Started");
 
 	FreeConsole();
 	if (argc < 4)
 	{
 		log("Arguments", "Not enough arguments");
-		logFile.close();
 		return -1;
 	}
 
@@ -88,13 +96,11 @@ int main(int argc, char* argv[])
 	if (!std::filesystem::exists(exPackPath))
 	{
 		log("File Checks", "Extracted files do not exist");
-		logFile.close();
 		return -1;
 	}
 	if (!std::filesystem::exists(fileListPath) && !legacyMode)
 	{
 		log("File Checks", "File list does not exist");
-		logFile.close();
 		return -1;
 	}
 
@@ -138,7 +144,6 @@ int main(int argc, char* argv[])
 				if (!std::filesystem::remove(installPath + "\\" + file, ec))
 				{
 					log("Installation", ("Deletion failed for file: " + file).c_str());
-					logFile.close();
 					return -1;
 				}
 				log("Installation", (installPath + "\\" + file).c_str());
@@ -159,8 +164,15 @@ int main(int argc, char* argv[])
 	{
 		for (std::string file : fileList)
 		{
-			std::filesystem::copy(exPackPath + "\\" + file, installPath + "\\" + file);
-			log("Installation", (exPackPath + "\\" + file + " => " + installPath + "\\" + file).c_str());
+			if (std::filesystem::exists(exPackPath + "\\" + file))
+			{
+				std::filesystem::copy(exPackPath + "\\" + file, installPath + "\\" + file);
+				log("Installation", (exPackPath + "\\" + file + " => " + installPath + "\\" + file).c_str());
+			}
+			else
+			{
+				log("Installation", (exPackPath + "\\" + file + " not found, skipping...").c_str());
+			}
 		}
 	}
 	
@@ -176,6 +188,5 @@ int main(int argc, char* argv[])
 	startPorcess((LPSTR)exePath.c_str());
 
 	log("Finalization", "Closing");
-	logFile.close();
 	return 0;
 }

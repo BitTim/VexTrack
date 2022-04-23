@@ -233,6 +233,8 @@ namespace VexTrack.MVVM.ViewModel
 			if (InterruptUpdate) return;
 			if (!ViewModelsInitialized) InitViewModels();
 
+			if (InterruptUpdate) return;
+
 			if (TrackingDataHelper.CurrentSeasonData.ActiveBPLevel > Constants.BattlepassLevels && SettingsHelper.Data.ForceEpilogue)
 			{
 				if (!Epilogue) Epilogue = true;

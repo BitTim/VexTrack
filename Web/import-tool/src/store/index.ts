@@ -1,4 +1,4 @@
-import { defineStore } from "pinia";
+import { defineStore, acceptHMRUpdate } from "pinia";
 import router from "../router";
 import { auth } from "../firebase"
 import { authError } from "../firebase/errors";
@@ -21,17 +21,20 @@ export const useUserStore = defineStore({
 	},
 
 	actions: {
-		setUser(user: User) {
-			this.user = user
+		setUser(user: User)
+		{
+			this.$patch({user: user})
 		},
 
-		clearUser() {
-			this.user = null
+		clearUser()
+		{
+			this.$patch({user: null})
 		},
 
 
 
-		async login (email: string, password: string) {
+		async login (email: string, password: string) 
+		{
 			try {
 				await signInWithEmailAndPassword(auth, email, password)
 
@@ -44,7 +47,8 @@ export const useUserStore = defineStore({
 			router.push("/")
 		},
 
-		async signup (username: string, email: string, password: string) {
+		async signup (username: string, email: string, password: string)
+		{
 			try {
 				await createUserWithEmailAndPassword(auth, email, password)
 				await updateProfile(auth.currentUser as User, {displayName: username})
@@ -58,11 +62,30 @@ export const useUserStore = defineStore({
 			router.push("/")
 		},
 
-		async signout () {
+		async signout ()
+		{
 			await signOut(auth)
 
 			this.clearUser()
 			router.push("/login")
 		},
+
+		fetchUser()
+		{
+			auth.onAuthStateChanged(async user => {
+				if (user === null) {
+					this.clearUser();
+				} else {
+					this.setUser(user);
+
+					await router.isReady();
+					if(router.currentRoute.value.meta.requiresAuth) router.push("/");
+				}
+			})
+		}
 	},
-});
+})
+
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useUserStore, import.meta.hot))
+}

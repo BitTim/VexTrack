@@ -6,14 +6,16 @@
 			<input type="password" placeholder="Password" v-model="password" />
 			<input type="submit" value="Login" />
 		</form>
+		<button @click="routeSignUp">Need an account?</button>
 	</div>
 </template>
 
 <script lang="ts">
-import { ref } from "vue"
+import { defineComponent, ref } from "vue"
 import { useUserStore } from "../store"
+import router from "../router"
 
-export default {
+export default defineComponent({
 	setup: () => {
 		const email = ref("")
 		const password = ref("")
@@ -23,8 +25,12 @@ export default {
 			store.login(email.value, password.value);
 		}
 
-		return { email, password, login }
+		const routeSignUp = () => {
+			router.push("/signup")
+		}
+
+		return { email, password, login, routeSignUp }
 	}
-}
+})
 
 </script>

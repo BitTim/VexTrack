@@ -1,4 +1,6 @@
-const authError = (error) => {
+import { FirebaseError } from "firebase/app"
+
+const authError = (error : FirebaseError) => {
 	switch(error.code) {
 		case "auth/user-not-found":
 			alert("User not found")

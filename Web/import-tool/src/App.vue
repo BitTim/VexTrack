@@ -1,16 +1,18 @@
 <template>
-	<div>
-		<nav>
-			<router-link to="/"> Home </router-link> |
-			<router-link to="/tool"> Tool </router-link> |
-			<router-link to="/signup"> Sign up </router-link> |
-			<router-link to="/login"> Login </router-link> |
-		</nav>
-		<router-view />
-	</div>
+  <div>
+    <h1>VexTrack Import Tool</h1>
+
+    <nav>
+      <router-link to="/">Home</router-link> |
+      <router-link to="/login">Login</router-link> |
+      <router-link to="/signup">Sign Up</router-link> 
+    </nav>
+    
+    <router-view />
+  </div>
 </template>
 
-<script>
+<script setup lang="ts">
 
 </script>
 

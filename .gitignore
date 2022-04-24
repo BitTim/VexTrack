@@ -5,7 +5,6 @@ dat/
 dist/
 *.toc
 *.pyz
-*.html
 *.pkg
 *.exe
 *.bak

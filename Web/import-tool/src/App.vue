@@ -3,10 +3,10 @@
 		<h1>VexTrack Import Tool</h1>
 
 		<nav>
-			<router-link to="/" v-if="store.user">Home</router-link> |
-			<router-link to="/login">Login</router-link> |
-			<router-link to="/signup">Sign Up</router-link> |
-			<button>Logout</button>
+			<router-link to="/" v-if="store.user">Home</router-link>
+			<router-link to="/login" v-if="!store.user">Login</router-link>
+			<router-link to="/signup" v-if="!store.user">Sign Up</router-link>
+			<button v-if="store.user" @click="store.signout()">Logout</button>
 		</nav>
 		
 		<router-view />
@@ -31,5 +31,7 @@ export default {
 </script>
 
 <style>
-
+nav > * {
+	margin: 1%;
+}
 </style>

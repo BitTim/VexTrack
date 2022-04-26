@@ -1,17 +1,20 @@
-var data = null;
+var data: null | Object = null
 
 const loadFile = (file: File) => {
     const reader = new FileReader();
 
     reader.onload = e => {
-        const result = JSON.parse(e.target.result.toString());
-        parseData(result);
+        const content = e.target?.result?.toString();
+        if (content === null) return;
+
+        const result = JSON.parse(content as string);
+        data = result
     }
     reader.readAsText(file);
 }
 
-const parseData = (json: Object) => {
-
+const parseData = () => {
+    console.log(JSON.stringify(data, null, 4));
 }
 
 export { loadFile, parseData }

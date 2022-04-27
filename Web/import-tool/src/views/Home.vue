@@ -1,31 +1,28 @@
 <template>
 	<div>
 		<h1>Home</h1>
-		<form>
-			<p>Please select your data.json here. It is located in %localappdata%/VexTrack/data.json</p>
-			<input ref="dataFile" type="file" @change="fileChanged()" />
-			<input type="submit" accept=".json" @click.prevent="fileSelected()" />
-		</form>
+		<p>Please select your data.json here. It is located in %localappdata%/VexTrack/data.json</p>
+		<input type="file" accept=".json" @change="fileChanged" />
+		<button @click.prevent="importClicked">Import</button>
 	</div>
 </template>
 
 <script lang="ts">
 import { ref } from "vue";
-import { loadFile, parseData } from "../core"
+import { loadFile, parsePreview, parseData } from "../core"
 
 export default {
 	setup: () => {
-		const dataFile = ref();
-
-		const fileChanged = async () => {
-			loadFile(dataFile.value)
+		const fileChanged = async (event: any) => {
+			loadFile(event?.target?.files[0]);
+			parsePreview();
 		}
 
-		const fileSelected = async () => {
+		const importClicked = async () => {
 			parseData()
 		}
 
-		return { dataFile, fileChanged, fileSelected }
+		return { fileChanged, importClicked }
 	}
 }
 </script>

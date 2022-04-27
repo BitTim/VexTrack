@@ -1,3 +1,6 @@
+const NUM_PREVIEW_HISTORY_ENTRIES = 10;
+const NUM_PREVIEW_SEASON_ENTRIES = 3;
+
 var data: null | Object = null
 
 const loadFile = (file: File) => {
@@ -13,8 +16,16 @@ const loadFile = (file: File) => {
     reader.readAsText(file);
 }
 
+
+
+
+const parsePreview = () => {
+    
+}
+
+
 const parseData = () => {
     console.log(JSON.stringify(data, null, 4));
 }
 
-export { loadFile, parseData }
+export { loadFile, parsePreview, parseData }

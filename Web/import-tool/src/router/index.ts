@@ -41,13 +41,13 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-	if(to.matched.some(record => !record.meta.requiresAuth) && auth.currentUser)
+	if(to.matched.some(record => record.meta.requiresAuth === false) && auth.currentUser)
 	{
 		next("/");
 		return;
 	}
 
-	if(to.matched.some(record => record.meta.requiresAuth) && !auth.currentUser)
+	if(to.matched.some(record => record.meta.requiresAuth === true) && !auth.currentUser)
 	{
 		next("/login")
 		return;

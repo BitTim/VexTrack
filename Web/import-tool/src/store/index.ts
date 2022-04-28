@@ -78,8 +78,9 @@ export const useUserStore = defineStore({
 				} else {
 					this.setUser(user);
 
-					await router.isReady();
-					if(router.currentRoute.value.meta.requiresAuth) router.push("/");
+					router.isReady().then(() => {
+						if(!router.currentRoute.value.meta.requiresAuth) router.push("/");
+					});
 				}
 			})
 		}

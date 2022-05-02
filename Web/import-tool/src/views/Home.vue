@@ -10,17 +10,16 @@
 
 <script lang="ts">
 import { ref } from "vue";
-import { loadFile, parsePreview, parseData } from "../core"
+import { loadFile, defaultPreview, parseData } from "../core"
 import DataPreviewComponent from "../components/DataPreviewComponent.vue";
 import { GameModel } from "../models/GameModel";
 
 export default {
     setup: () => {
-		var preview: any;
+		var preview: any = defaultPreview;
 
         const fileChanged = async (event: any) => {
-            loadFile(event?.target?.files[0]);
-            preview = parsePreview();
+            preview = loadFile(event?.target?.files[0]);
         };
         const importClicked = async () => {
             parseData();

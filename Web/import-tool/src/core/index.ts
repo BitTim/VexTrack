@@ -4,8 +4,10 @@ const NUM_PREVIEW_HISTORY_ENTRIES = 10;
 
 var data: any = null
 
-const loadFile = (file: File) => {
+function loadFile (file: File): any
+{
     const reader = new FileReader();
+    var preview: any = null;
 
     reader.onload = e => {
         const content = e.target?.result?.toString();
@@ -13,27 +15,42 @@ const loadFile = (file: File) => {
 
         const result = JSON.parse(content as string);
         data = result
+        preview = parsePreview();
     }
     reader.readAsText(file);
+
+    //TODO: Make preview promise
+
+    if (preview === null) return defaultPreview();
+    return preview;
 }
 
 
 
 
-// TODO: Fix this
+function defaultPreview (): any
+{
+    var ret: any = {}
+
+    ret.season_name = "No preview available"
+    ret.season_endDate = ""
+    ret.season_activeLevel = 0
+    ret.season_activeXP = 0
+    ret.season_history = []
+
+    return ret;
+}
 
 function parsePreview (): any
 {
     var ret: any = {}
 
-    console.log(data)
     if (data === null || data?.seasons === null || data?.seasons?.length <= 0)
     {
         alert("Inavlid file")
         data = null;
-        return null;
+        return defaultPreview();
     }
-    console.log(data?.seasons)
     const season: any = data?.seasons[data?.seasons?.length - 1];
 
     ret.season_name = season.name as string;
@@ -44,7 +61,9 @@ function parsePreview (): any
     
     for (let i = 0; i < NUM_PREVIEW_HISTORY_ENTRIES; i++)
     {
-        const mode: string = season.history[i].mode;
+        if (season.history[i] === undefined) break;
+
+        const mode: string = season.history[i].gameMode;
         const time: number = season.history[i].time;
         const xp: number = season.history[i].amount;
         const map: string = season.history[i].map;
@@ -59,6 +78,7 @@ function parsePreview (): any
         ret.season_history.push(game)
     }
 
+    console.log(ret);
     return ret;
 }
 
@@ -67,4 +87,4 @@ const parseData = () => {
     console.log(JSON.stringify(data, null, 4));
 }
 
-export { loadFile, parsePreview, parseData }
+export { loadFile, defaultPreview, parseData }

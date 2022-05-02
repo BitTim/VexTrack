@@ -6,19 +6,15 @@
 </template>
 
 <script lang="ts">
-import { GameModel } from "../models/GameModel"
+import { defaultPreview } from "../core"
 
 export default {
-	data () {
-		return {
-			season_endDate: String,
-			season_activeLevel: Number,
-			season_activeXP: Number,
-			season_history: [] as GameModel[],
+	props: {
+		preview: {
+			type: Object,
+			required: true,
+			default: defaultPreview()
 		}
-	},
-	props: [
-		"preview"
-	]
+	}
 }
 </script>

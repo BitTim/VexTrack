@@ -4,8 +4,15 @@
 		<p>Please select your data.json here. It is located in %localappdata%/VexTrack/data.json</p>
 		<input type="file" accept=".json" @change="fileChanged" />
 		<button @click.prevent="importClicked">Import</button>
+        <br>
+
 		<DataPreviewComponent v-bind="preview"/>
 	</div>
+
+    <br>
+    <br>
+    <br>
+    <br>
 </template>
 
 <script lang="ts">

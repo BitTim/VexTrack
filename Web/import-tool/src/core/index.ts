@@ -52,7 +52,7 @@ function parsePreview (data: any): any
     ret.season_activeXP = season.cXP as number;
     ret.season_history = [];
     
-    for (let i = 0; i < NUM_PREVIEW_HISTORY_ENTRIES; i++)
+    for (let i = season.history.length - 1; i > season.history.length - NUM_PREVIEW_HISTORY_ENTRIES - 1; i--)
     {
         if (season.history[i] === undefined) break;
 

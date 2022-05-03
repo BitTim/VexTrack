@@ -12,7 +12,7 @@ function loadFile (file: File): any
             if (content === null) return;
     
             const result = JSON.parse(content as string);
-            resolve(parsePreview(result));
+            resolve(result);
         }
         reader.readAsText(file);
     });
@@ -76,8 +76,8 @@ function parsePreview (data: any): any
 }
 
 
-const parseData = (data: any) => {
+const importData = (data: any) => {
     console.log(JSON.stringify(data, null, 4));
 }
 
-export { loadFile, defaultPreview, parseData }
+export { loadFile, defaultPreview, parsePreview,  importData }

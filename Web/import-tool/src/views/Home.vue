@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import { ref } from "vue";
-import { loadFile, defaultPreview, parseData } from "../core"
+import { loadFile, defaultPreview, parsePreview, importData } from "../core"
 import DataPreviewComponent from "../components/DataPreviewComponent.vue";
 import { GameModel } from "../models/GameModel";
 
@@ -25,11 +25,17 @@ export default {
     setup: () => {
 		const preview: any = ref(defaultPreview());
 
+        var file: File | null = null;
+
         const fileChanged = async (event: any) => {
-            preview.value = await loadFile(event?.target?.files[0]);
+            file = event?.target?.files[0];
+
+            if(file === null) alert("Invalid file");
+            preview.value = parsePreview(await loadFile(file as File));
         };
         const importClicked = async () => {
-            //parseData();
+            if(file === null) alert("Invalid file");
+            importData(await loadFile(file as File))
         };
         return { fileChanged, importClicked, preview };
     },

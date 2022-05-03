@@ -2,27 +2,20 @@ import { GameModel } from "../models/GameModel"
 
 const NUM_PREVIEW_HISTORY_ENTRIES = 10;
 
-var data: any = null
-
 function loadFile (file: File): any
 {
     const reader = new FileReader();
-    var preview: any = null;
 
-    reader.onload = e => {
-        const content = e.target?.result?.toString();
-        if (content === null) return;
-
-        const result = JSON.parse(content as string);
-        data = result
-        preview = parsePreview();
-    }
-    reader.readAsText(file);
-
-    //TODO: Make preview promise
-
-    if (preview === null) return defaultPreview();
-    return preview;
+    return new Promise((resolve, reject) => {
+        reader.onload = e => {
+            const content = e.target?.result?.toString();
+            if (content === null) return;
+    
+            const result = JSON.parse(content as string);
+            resolve(parsePreview(result));
+        }
+        reader.readAsText(file);
+    });
 }
 
 
@@ -41,7 +34,7 @@ function defaultPreview (): any
     return ret;
 }
 
-function parsePreview (): any
+function parsePreview (data: any): any
 {
     var ret: any = {}
 
@@ -83,7 +76,7 @@ function parsePreview (): any
 }
 
 
-const parseData = () => {
+const parseData = (data: any) => {
     console.log(JSON.stringify(data, null, 4));
 }
 

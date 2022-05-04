@@ -2,7 +2,7 @@
 	<div>
 		<h1>Home</h1>
 		<p>Please select your data.json here. It is located in %localappdata%/VexTrack/data.json</p>
-		<input type="file" accept=".json" @change="fileChanged" />
+		<input type="file" accept=".json" ref="fileInput" @change="fileChanged" />
 		<button @click.prevent="importClicked">Import</button>
         <br>
 
@@ -24,6 +24,7 @@ import { GameModel } from "../models/GameModel";
 export default {
     setup: () => {
 		const preview: any = ref(defaultPreview());
+        const fileInput = ref();
 
         var file: File | null = null;
 
@@ -33,11 +34,17 @@ export default {
             if(file === null) alert("Invalid file");
             preview.value = parsePreview(await loadFile(file as File));
         };
+        
         const importClicked = async () => {
             if(file === null) alert("Invalid file");
             await importData(await loadFile(file as File))
+
+            file = null;
+            fileInput.value.value = '';
+            preview.value = defaultPreview();
         };
-        return { fileChanged, importClicked, preview };
+        
+        return { fileChanged, importClicked, preview, fileInput };
     },
 
     components: { DataPreviewComponent }

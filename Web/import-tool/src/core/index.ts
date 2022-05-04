@@ -1,4 +1,6 @@
 import { GameModel } from "../models/GameModel"
+import { collection, getDocs } from "firebase/firestore"; 
+import { db } from "../firebase";
 
 const NUM_PREVIEW_HISTORY_ENTRIES = 10;
 
@@ -76,7 +78,7 @@ function parsePreview (data: any): any
 }
 
 
-const importData = (data: any) => {
+const importData = async (data: any) => {
     console.log(JSON.stringify(data, null, 4));
 }
 

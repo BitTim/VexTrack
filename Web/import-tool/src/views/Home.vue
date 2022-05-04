@@ -35,7 +35,7 @@ export default {
         };
         const importClicked = async () => {
             if(file === null) alert("Invalid file");
-            importData(await loadFile(file as File))
+            await importData(await loadFile(file as File))
         };
         return { fileChanged, importClicked, preview };
     },

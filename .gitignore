@@ -17,4 +17,4 @@ obj/
 .vs/
 VexTrack Package\AppPackages
 x64/
-google-services.json
+Android/app/google-services.json

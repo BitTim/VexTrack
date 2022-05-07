@@ -1,18 +1,29 @@
 <template>
-	<div>
-		<h1>Home</h1>
-		<p>Please select your data.json here. It is located in %localappdata%/VexTrack/data.json</p>
-		<input type="file" accept=".json" ref="fileInput" @change="fileChanged" />
-		<button @click.prevent="importClicked">Import</button>
+    <div>
+        <h1 class="font-bold text-2xl">Home</h1>
+        <p>All possible files that can be imported are located in <code>%localappdata%/VexTrack/</code></p>
+        
+        <div class="mt-4 grid grid-cols-2">
+            <div>
+                <h2 class="font-bold text-xl">Data Import</h2>
+                <p>Please select your data.json here</p>
+                <input type="file" accept=".json" ref="fileInput" @change="fileChanged" />
+                <button @click.prevent="importClicked">Import</button>
+                <br>
+
+                <DataPreviewComponent v-bind="preview"/>
+            </div>
+            <div>
+                <h2 class="font-bold text-xl">Settings Import</h2>
+                <p>Please select your settings.json here</p>
+            </div>
+        </div>
+
         <br>
-
-		<DataPreviewComponent v-bind="preview"/>
-	</div>
-
-    <br>
-    <br>
-    <br>
-    <br>
+        <br>
+        <br>
+        <br>
+    </div>
 </template>
 
 <script lang="ts">

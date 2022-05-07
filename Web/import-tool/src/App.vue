@@ -3,7 +3,7 @@
 		<nav class="flex flex-wrap 
 			bg-LightShade dark:bg-DarkShade 
 			items-center justify-start
-			h-16 pl-4 pr-4 p-2
+			h-16 pl-4 pr-4 p-2 mb-4
 			shadow-lg rounded-lg">
 			<img class="h-full" src="./assets/logo.png"/>
 			<h1 class="font-bold text-xl pl-4">VexTrack Import Tool</h1>
@@ -17,7 +17,7 @@
 			</div>
 		</nav>
 		
-		<router-view />
+		<router-view/>
 	</div>
 </template>
 

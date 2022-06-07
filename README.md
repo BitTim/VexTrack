@@ -1,13 +1,14 @@
 # VexTrack
 
-![Status badge](https://img.shields.io/badge/Status-Stable-green?style=for-the-badge "Development Status")
-![Latest badge](https://img.shields.io/badge/Latest%20Version-v1.87-9cf?style=for-the-badge "Latest Version")
-![Platform badge](https://img.shields.io/badge/Platform-Windows%2010/11-informational?logo=windows&style=for-the-badge "Platform")
-[![Language badge](https://img.shields.io/badge/Language-C%23_.NET_6.0-blueviolet?logo=visual-studio&logoColor=ffffff&style=for-the-badge)](https://dotnet.microsoft.com/download/dotnet/6.0 "Language") 
-![GitHub License](https://img.shields.io/github/license/BitTim/VexTrack?logo=github&style=for-the-badge "License")
-![GitHub repo size](https://img.shields.io/github/repo-size/BitTim/VexTrack?logo=github&style=for-the-badge)
-![GitHub Contributors](https://img.shields.io/github/contributors/BitTim/VexTrack?logo=github&style=for-the-badge "Contributors")
-![GitHub last commit (branch)](https://img.shields.io/github/last-commit/BitTim/VexTrack?logo=github&style=for-the-badge "Last commit")
+![Status badge](https://img.shields.io/badge/Status-Stable-green "Development Status")
+![Latest badge](https://img.shields.io/badge/Latest%20Version-v1.87-9cf "Latest Version")
+![Platform badge](https://img.shields.io/badge/Platform-Windows%2010/11-informational?logo=windows "Platform")
+[![Language badge](https://img.shields.io/badge/Language-C%23_.NET_6.0-blueviolet?logo=visual-studio&logoColor=ffffff)](https://dotnet.microsoft.com/download/dotnet/6.0 "Language") 
+![GitHub License](https://img.shields.io/github/license/BitTim/VexTrack?logo=github "License")
+![GitHub repo size](https://img.shields.io/github/repo-size/BitTim/VexTrack?logo=github)
+![GitHub Contributors](https://img.shields.io/github/contributors/BitTim/VexTrack?logo=github "Contributors")
+![GitHub last commit (branch)](https://img.shields.io/github/last-commit/BitTim/VexTrack?logo=github "Last commit")
+[![Codemagic build status](https://api.codemagic.io/apps/629f09fa463af7f0ae545daa/629f09fa463af7f0ae545da9/status_badge.svg)](https://codemagic.io/apps/629f09fa463af7f0ae545daa/629f09fa463af7f0ae545da9/latest_build)
 
 ## Features
 - Easy tracking of gained XP in Valorant

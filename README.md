@@ -9,5 +9,7 @@
 ![GitHub Contributors](https://img.shields.io/github/contributors/BitTim/VexTrack?logo=github&style=for-the-badge "Contributors")
 ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/BitTim/VexTrack?logo=github&style=for-the-badge "Last commit")
 
+An app to track match related data from Valorant
+
 ## Installation
 Download either VexTrack_vX.X.zip or VexTrack_vX.X-Setup.exe from ![here](https://github.com/BitTim/VexTrack/releases) and extract all contents in a folder / run the installer. After opening VexTrack for the first time, a new folder called "VexTrack" will be created in %localappdata%

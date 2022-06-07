@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/vextrack/vextrack.iml" filepath="$PROJECT_DIR$/vextrack/vextrack.iml" />
-      <module fileurl="file://$PROJECT_DIR$/vextrack/android/vextrack_android.iml" filepath="$PROJECT_DIR$/vextrack/android/vextrack_android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/vextrack.iml" filepath="$PROJECT_DIR$/vextrack.iml" />
     </modules>
   </component>
 </project>

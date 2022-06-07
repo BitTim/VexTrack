@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item app:state_win="true">
+        <layer-list>
+            <item android:drawable="@drawable/map_image"/>
+            <item>
+                <shape>
+                    <corners android:radius="8dp"/>
+                    <gradient
+                        android:type="linear"
+                        android:angle="315"
+                        android:startColor="@color/win1"
+                        android:centerColor="@color/win2"
+                        android:endColor="@color/transparent" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+
+    <item app:state_loss="true">
+        <layer-list>
+            <item android:drawable="@drawable/map_image"/>
+            <item>
+                <shape>
+                    <corners android:radius="8dp"/>
+                    <gradient
+                        android:type="linear"
+                        android:angle="315"
+                        android:startColor="@color/loss1"
+                        android:centerColor="@color/loss2"
+                        android:endColor="@color/transparent" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+
+    <item>
+        <layer-list>
+            <item android:drawable="@drawable/map_image"/>
+            <item>
+                <shape>
+                    <corners android:radius="8dp"/>
+                    <gradient
+                        android:type="linear"
+                        android:angle="315"
+                        android:startColor="?attr/colorDraw1"
+                        android:centerColor="?attr/colorDraw2"
+                        android:endColor="@color/transparent" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+</selector>

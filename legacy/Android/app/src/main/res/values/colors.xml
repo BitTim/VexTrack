@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">#ffffffff</color>
+    <color name="black">#ff000000</color>
+    <color name="transparent">#00000000</color>
+
+    <color name="lightBG">#ffffffff</color>
+    <color name="lightShade">#ffe5e5e5</color>
+    <color name="lightFG">#ff515151</color>
+
+    <color name="darkBG">#ff404040</color>
+    <color name="darkShade">#ff333333</color>
+    <color name="darkFG">#ffffffff</color>
+
+    <color name="blue1">#ff1684fc</color>
+    <color name="blue2">#ff6975e8</color>
+    <color name="teal1">#ff10a780</color>
+    <color name="teal2">#ff009e97</color>
+    <color name="green1">#ff0ac903</color>
+    <color name="green2">#ff00bd5c</color>
+    <color name="yellow1">#ffefb431</color>
+    <color name="yellow2">#ffde9321</color>
+    <color name="orange1">#fffc8316</color>
+    <color name="orange2">#fff7595f</color>
+    <color name="red1">#ffe2030b</color>
+    <color name="red2">#ffd40058</color>
+    <color name="purple1">#ff8a16fc</color>
+    <color name="purple2">#ffff00b9</color>
+
+    <color name="cyberpunk1">#ff1ae699</color>
+    <color name="cyberpunk2">#ffdd0070</color>
+    <color name="cyberpunk3">#ffe70efc</color>
+    <color name="cyberpunk4">#ff31f96f</color>
+    <color name="lavender1">#ff7a13b1</color>
+    <color name="lavender2">#ffd086bb</color>
+    <color name="aqua1">#ff463bac</color>
+    <color name="aqua2">#ff17fbe5</color>
+    <color name="nature1">#ff18a358</color>
+    <color name="nature2">#ffc58c73</color>
+    <color name="emerald1">#ff2ea783</color>
+    <color name="emerald2">#ff108321</color>
+    <color name="chocolate1">#ff89384c</color>
+    <color name="chocolate2">#ffdb6a3a</color>
+
+    <color name="win1">#ff66c2a9</color>
+    <color name="win2">#cc19b2b5</color>
+    <color name="loss1">#fff05c57</color>
+    <color name="loss2">#cce54c7c</color>
+
+    <color name="lightDraw1">#ffffffff</color>
+    <color name="lightDraw2">#cce5e5e5</color>
+    <color name="darkDraw1">#ff404040</color>
+    <color name="darkDraw2">#cc333333</color>
+</resources>

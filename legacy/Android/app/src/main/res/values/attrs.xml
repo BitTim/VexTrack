@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="HistoryEntryStates">
+        <attr name="state_win" format="boolean"/>
+        <attr name="state_loss" format="boolean"/>
+        <attr name="state_draw" format="boolean"/>
+
+        <attr name="state_ascent" format="boolean"/>
+        <attr name="state_bind" format="boolean"/>
+        <attr name="state_breeze" format="boolean"/>
+        <attr name="state_fracture" format="boolean"/>
+        <attr name="state_haven" format="boolean"/>
+        <attr name="state_icebox" format="boolean"/>
+        <attr name="state_split" format="boolean"/>
+    </declare-styleable>
+
+    <attr name="colorDraw1" format="color"/>
+    <attr name="colorDraw2" format="color"/>
+</resources>

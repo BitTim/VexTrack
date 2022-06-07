@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        app:state_ascent="true"
+        app:state_bind="false"
+        app:state_breeze="false"
+        app:state_fracture="false"
+        app:state_haven="false"
+        app:state_icebox="false"
+        app:state_split="false"
+
+        android:drawable="@drawable/map_banner_ascent"
+        />
+
+    <item
+        app:state_ascent="false"
+        app:state_bind="true"
+        app:state_breeze="false"
+        app:state_fracture="false"
+        app:state_haven="false"
+        app:state_icebox="false"
+        app:state_split="false"
+
+        android:drawable="@drawable/map_banner_bind"
+        />
+
+    <item
+        app:state_ascent="false"
+        app:state_bind="false"
+        app:state_breeze="true"
+        app:state_fracture="false"
+        app:state_haven="false"
+        app:state_icebox="false"
+        app:state_split="false"
+
+        android:drawable="@drawable/map_banner_breeze"
+        />
+
+    <item
+        app:state_ascent="false"
+        app:state_bind="false"
+        app:state_breeze="false"
+        app:state_fracture="true"
+        app:state_haven="false"
+        app:state_icebox="false"
+        app:state_split="false"
+
+        android:drawable="@drawable/map_banner_fracture"
+        />
+
+    <item
+        app:state_ascent="false"
+        app:state_bind="false"
+        app:state_breeze="false"
+        app:state_fracture="false"
+        app:state_haven="true"
+        app:state_icebox="false"
+        app:state_split="false"
+
+        android:drawable="@drawable/map_banner_haven"
+        />
+
+    <item
+        app:state_ascent="false"
+        app:state_bind="false"
+        app:state_breeze="false"
+        app:state_fracture="false"
+        app:state_haven="false"
+        app:state_icebox="true"
+        app:state_split="false"
+
+        android:drawable="@drawable/map_banner_icebox"
+        />
+
+    <item
+        app:state_ascent="false"
+        app:state_bind="false"
+        app:state_breeze="false"
+        app:state_fracture="false"
+        app:state_haven="false"
+        app:state_icebox="false"
+        app:state_split="true"
+
+        android:drawable="@drawable/map_banner_split"
+        />
+
+    <item>
+        <shape>
+            <solid android:color="?attr/colorSurface"/>
+        </shape>
+    </item>
+</selector>

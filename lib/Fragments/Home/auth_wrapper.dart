@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vextrack/Screens/main_widget.dart';
+import 'package:vextrack/Screens/home.dart';
 
-import 'Screens/login.dart';
+import '../../Screens/auth.dart';
 
 class AuthWrapper extends StatelessWidget
 {
@@ -14,7 +14,7 @@ class AuthWrapper extends StatelessWidget
   {
     final user = context.watch<User?>();
     // ignore: unnecessary_null_comparison
-    if (user != null) return const Main();
-    return Login();
+    if (user != null) return const Home();
+    return const Auth();
   }
 }

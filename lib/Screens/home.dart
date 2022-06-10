@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../Core/auth_service.dart';
+import '../Services/auth_service.dart';
 
-class _MainState extends State
+class _HomeState extends State
 {
 	int _currentPage = 0;
 	final List<bool> _epilogueState = [ false ];
@@ -77,13 +77,13 @@ class _MainState extends State
  }
 }
 
-class Main extends StatefulWidget
+class Home extends StatefulWidget
 {
-	const Main({Key? key}) : super(key: key);
+	const Home({Key? key}) : super(key: key);
 
 	@override
 	State createState()
 	{
-		return _MainState();
+		return _HomeState();
 	}
 }

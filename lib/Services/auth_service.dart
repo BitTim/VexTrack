@@ -21,12 +21,26 @@ class AuthService {
     }
   }
 
-  Future<String> signUp({required String email, required String password}) async
+  Future<String> signUp({required String username, required String email, required String password}) async
   {
     try
     {
       await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      _auth.currentUser?.updateDisplayName(username);
       return "Signup successful";
+    }
+    catch(e)
+    {
+      return e.toString();
+    }
+  }
+
+  Future<String> forgot({required String email}) async
+  {
+    try
+    {
+      await _auth.sendPasswordResetEmail(email: email);
+      return "Password reset email sent";
     }
     catch(e)
     {

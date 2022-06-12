@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:vextrack/Fragments/Auth/login_widget.dart';
-import 'package:vextrack/Fragments/Auth/signup_widget.dart';
+import 'package:vextrack/Fragments/Auth/login.dart';
+import 'package:vextrack/Fragments/Auth/signup.dart';
 
-import '../Fragments/Auth/forgot_widget.dart';
+import '../Fragments/Auth/forgot.dart';
 
 enum AuthFragments
 {
@@ -33,11 +33,11 @@ class _AuthState extends State
             const Text('Welcome to VexTrack'),
             
             if(screenID == AuthFragments.login.index)
-              LoginWidget(notifyParent: _changeScreen),
+              LoginFragment(notifyParent: _changeScreen),
             if(screenID == AuthFragments.signup.index)
-              SignupWidget(notifyParent: _changeScreen),
+              SignupFragment(notifyParent: _changeScreen),
             if(screenID == AuthFragments.forgot.index)
-              ForgotWidget(notifyParent: _changeScreen),
+              ForgotFragment(notifyParent: _changeScreen),
           ],
         ),
       )
@@ -47,7 +47,8 @@ class _AuthState extends State
 
 class Auth extends StatefulWidget
 {
-  const Auth({Key? key}) : super(key: key);
+  final Function(int) notifyParent;
+  const Auth({Key? key, required this.notifyParent}) : super(key: key);
 
   @override
   State createState()

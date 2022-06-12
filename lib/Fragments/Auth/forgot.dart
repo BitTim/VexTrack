@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../Screens/auth.dart';
-import '../../Services/auth_service.dart';
+import '../../Services/auth.dart';
 import '../../colors.dart';
 
-class ForgotWidget extends StatelessWidget {
+class ForgotFragment extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
 
   final Function(int) notifyParent;
-  ForgotWidget({Key? key, required this.notifyParent}) : super(key: key);
+  ForgotFragment({Key? key, required this.notifyParent}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

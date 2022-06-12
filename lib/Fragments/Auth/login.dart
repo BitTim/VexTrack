@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../Screens/auth.dart';
-import '../../Services/auth_service.dart';
+import '../../Services/auth.dart';
 import '../../colors.dart';
 
-class LoginWidget extends StatelessWidget {
+class LoginFragment extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   final Function(int) notifyParent;
-  LoginWidget({Key? key, required this.notifyParent}) : super(key: key);
+  LoginFragment({Key? key, required this.notifyParent}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

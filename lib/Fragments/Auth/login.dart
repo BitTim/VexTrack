@@ -14,6 +14,8 @@ class LoginFragment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+  final authService = Provider.of<AuthService>(context);
+
     return Column(children: [
       Padding(
         padding: const EdgeInsets.only(bottom: 8.0),
@@ -46,10 +48,10 @@ class LoginFragment extends StatelessWidget {
       
       ElevatedButton(
         onPressed: () {
-          context.read<AuthService>().logIn(
-                email: emailController.text,
-                password: passwordController.text,
-              );
+          authService.logIn(
+            email: emailController.text,
+            password: passwordController.text,
+          );
         },
         child: const Text("Log in"),
       ),

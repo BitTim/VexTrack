@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vextrack/Fragments/Home/home.dart';
 import 'package:vextrack/screen_manager.dart';
 
 import '../Services/auth.dart';
@@ -11,7 +12,7 @@ class _HomeState extends State
 	int _currentPage = 0;
 	final List<bool> _epilogueState = [ false ];
   final List _children = [
-		const Center(child: Text('Home'),),
+		const Center(child: HomeFragment(),),
 		const Center(child: Text('Goals'),),
 		const Center(child: Text('Seasons'),),
 		const Center(child: Text('History'),),

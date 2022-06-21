@@ -15,6 +15,8 @@ class SignupFragment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
+
     return Column(children: [
       Padding(
         padding: const EdgeInsets.only(bottom: 8.0),
@@ -62,11 +64,11 @@ class SignupFragment extends StatelessWidget {
       
       ElevatedButton(
         onPressed: () {
-          context.read<AuthService>().signUp(
-                username: usernameController.text,
-                email: emailController.text,
-                password: passwordController.text,
-              );
+          authService.signUp(
+            username: usernameController.text,
+            email: emailController.text,
+            password: passwordController.text,
+          );
         },
         child: const Text("Submit"),
       ),

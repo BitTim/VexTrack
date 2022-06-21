@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'Screens/auth.dart';
@@ -15,12 +16,12 @@ enum Screens
 
 class _ScreenManagerState extends State
 {
-  int _currentPage = Screens.home.index;
+  int _currentScreen = Screens.home.index;
 
-  void changePage(int id)
+  void changeScreen(int id)
   {
     setState(() {
-      _currentPage = id;
+      _currentScreen = id;
     });
   }
 
@@ -29,12 +30,19 @@ class _ScreenManagerState extends State
   {
     final user = context.watch<User?>();
     // ignore: unnecessary_null_comparison
-    if (user != null) _currentPage = Screens.auth.index;
-    
-    if(_currentPage == Screens.auth.index) return Auth(notifyParent: changePage);
-    if(_currentPage == Screens.settings.index) return Settings(notifyParent: changePage);
-
-    return Home(notifyParent: changePage);
+    if (user == null)
+    {
+      _currentScreen = Screens.auth.index;
+    }
+    // ignore: unnecessary_null_comparison
+    else if(user != null && _currentScreen == Screens.auth.index)
+    {
+      _currentScreen = Screens.home.index;
+    }
+          
+    if(_currentScreen == Screens.auth.index) return Auth(notifyParent: changeScreen);
+    if(_currentScreen == Screens.settings.index) return Settings(notifyParent: changeScreen);
+    return Home(notifyParent: changeScreen);
   }
 }
 

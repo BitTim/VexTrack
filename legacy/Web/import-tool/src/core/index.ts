@@ -170,12 +170,69 @@ const importData = async (data: any) => {
 	// Push Data to Database
 	await setDoc(doc(db, "users", userID), {
 		userid: userID,
-		goalgroups: goalgroups,
-		streak: streak,
-		seasons: seasons,
-	}).then(() => {
-		alert("Successfully imported VexTrack Data to account: " + auth.currentUser?.displayName);
-	});
+	})
+
+	// Create all goal documents
+	for(let gg of goalgroups)
+	{
+		await setDoc(doc(db, "users/" + userID + "/goalgroups", gg.uuid), {
+			uuid: gg.uuid,
+			name: gg.name,
+		})
+
+		for(let g of gg.goals)
+		{
+			await setDoc(doc(db, "users/" + userID + "/goalgroups/" + gg.uuid + "/goals", g.uuid), {
+				uuid: g.uuid,
+				name: g.name,
+				total: g.total,
+				collected: g.collected,
+				color: g.color,
+				dependency: g.dependency,
+				paused: g.paused,
+			})
+		}
+	}
+
+	// Create all streak documents
+	for(let se of streak)
+	{
+		await setDoc(doc(db, "users/" + userID + "/streak", se.uuid), {
+			uuid: se.uuid,
+			date: se.date,
+			status: se.status,
+		})
+	}
+
+	// Create all history documents
+	for(let s of seasons)
+	{
+		await setDoc(doc(db, "users/" + userID + "/seasons", s.uuid), {
+			uuid: s.uuid,
+			name: s.name,
+			endDate: s.endDate,
+			activeLevel: s.activeLevel,
+			activeXP: s.activeXP,
+		})
+
+		for(let he of s.history)
+		{
+			await setDoc(doc(db, "users/" + userID + "/seasons/" + s.uuid + "/history", he.uuid), {
+				uuid: he.uuid,
+				mode: he.mode,
+				time: he.time,
+				xp: he.xp,
+				map: he.map,
+				desc: he.desc,
+				score: he.score,
+				enemyScore: he.enemyScore,
+				surrenderedWin: he.surrenderedWin,
+				surrenderedLoss: he.surrenderedLoss,
+			})
+		}
+	}
+
+	alert("Successfully imported VexTrack Data to account: " + auth.currentUser?.displayName);
 }
 
 export { loadFile, defaultPreview, parsePreview,  importData }

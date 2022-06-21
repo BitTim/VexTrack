@@ -13,12 +13,12 @@ enum AuthFragments
 
 class _AuthState extends State
 {
-  int screenID = 0;
+  int fragmentID = 0;
 
-  void _changeScreen(int id)
+  void _changeFragment(int id)
   {
     setState(() {
-      screenID = id;
+      fragmentID = id;
     });
   }
 
@@ -32,12 +32,12 @@ class _AuthState extends State
           children: [
             const Text('Welcome to VexTrack'),
             
-            if(screenID == AuthFragments.login.index)
-              LoginFragment(notifyParent: _changeScreen),
-            if(screenID == AuthFragments.signup.index)
-              SignupFragment(notifyParent: _changeScreen),
-            if(screenID == AuthFragments.forgot.index)
-              ForgotFragment(notifyParent: _changeScreen),
+            if(fragmentID == AuthFragments.login.index)
+              LoginFragment(notifyParent: _changeFragment),
+            if(fragmentID == AuthFragments.signup.index)
+              SignupFragment(notifyParent: _changeFragment),
+            if(fragmentID == AuthFragments.forgot.index)
+              ForgotFragment(notifyParent: _changeFragment),
           ],
         ),
       )

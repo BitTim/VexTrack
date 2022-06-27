@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../../Screens/auth.dart';
 import '../../Services/auth.dart';
@@ -14,8 +13,6 @@ class LoginFragment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  final authService = Provider.of<AuthService>(context);
-
     return Column(children: [
       Padding(
         padding: const EdgeInsets.only(bottom: 8.0),
@@ -48,7 +45,7 @@ class LoginFragment extends StatelessWidget {
       
       ElevatedButton(
         onPressed: () {
-          authService.logIn(
+          AuthService.logIn(
             email: emailController.text,
             password: passwordController.text,
           );

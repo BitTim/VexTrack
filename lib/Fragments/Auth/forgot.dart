@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../../Screens/auth.dart';
 import '../../Services/auth.dart';
@@ -31,7 +30,7 @@ class ForgotFragment extends StatelessWidget {
       
       ElevatedButton(
         onPressed: () {
-          context.read<AuthService>().forgot(
+          AuthService.forgot(
                 email: emailController.text,
               );
         },

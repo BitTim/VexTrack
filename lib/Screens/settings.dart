@@ -66,8 +66,10 @@ class _SettingsState extends State {
 
 class Settings extends StatefulWidget
 {
+  final String uid;
   final Function(int) notifyParent;
-  const Settings({Key? key, required this.notifyParent}) : super(key: key);
+
+  const Settings({Key? key, required this.uid, required this.notifyParent}) : super(key: key);
 
   @override
   State createState()

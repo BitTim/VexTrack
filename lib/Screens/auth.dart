@@ -11,7 +11,7 @@ enum AuthFragments
   forgot,
 }
 
-class _AuthState extends State
+class _AuthState extends State<Auth>
 {
   int fragmentID = 0;
 
@@ -48,6 +48,7 @@ class _AuthState extends State
 class Auth extends StatefulWidget
 {
   final Function(int) notifyParent;
+  
   const Auth({Key? key, required this.notifyParent}) : super(key: key);
 
   @override

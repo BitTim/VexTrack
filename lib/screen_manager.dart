@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import 'Screens/auth.dart';
 import 'Screens/home.dart';
@@ -14,7 +13,7 @@ enum Screens
   settings
 }
 
-class _ScreenManagerState extends State
+class _ScreenManagerState extends State<ScreenManager>
 {
   int _currentScreen = Screens.home.index;
 
@@ -28,21 +27,23 @@ class _ScreenManagerState extends State
   @override
   Widget build(BuildContext context)
   {
-    final user = context.watch<User?>();
-    // ignore: unnecessary_null_comparison
-    if (user == null)
-    {
-      _currentScreen = Screens.auth.index;
-    }
-    // ignore: unnecessary_null_comparison
-    else if(user != null && _currentScreen == Screens.auth.index)
-    {
-      _currentScreen = Screens.home.index;
-    }
-          
-    if(_currentScreen == Screens.auth.index) return Auth(notifyParent: changeScreen);
-    if(_currentScreen == Screens.settings.index) return Settings(notifyParent: changeScreen);
-    return Home(notifyParent: changeScreen);
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (BuildContext context, snapshot) {
+        if (snapshot.hasData) {
+          if(_currentScreen == Screens.auth.index) _currentScreen = Screens.home.index; // Set current screen to home when user is logged in
+
+          //FIXME: Might be a problem that on every screen change a new instance of the screen is returned
+          if(_currentScreen == Screens.settings.index) return Settings(uid: snapshot.data!.uid, notifyParent: changeScreen);
+          return Home(uid: snapshot.data!.uid, notifyParent: changeScreen); 
+        }
+        else
+        {
+          _currentScreen = Screens.auth.index;
+          return Auth(notifyParent: changeScreen);
+        }
+      }
+    );
   }
 }
 

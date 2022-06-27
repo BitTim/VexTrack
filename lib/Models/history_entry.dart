@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class HistoryEntry {
   String uuid;
   String desc;
@@ -23,18 +25,18 @@ class HistoryEntry {
     this.surrenderedLoss
   );
 
-  static HistoryEntry fromJSON(Map<String, dynamic> json) {
+  static HistoryEntry fromDoc(DocumentSnapshot doc) {
     return HistoryEntry(
-      json['uuid'] as String,
-      json['desc'] as String,
-      json['map'] as String,
-      json['mode'] as String,
-      json['xp'] as int,
-      json['score'] as int,
-      json['enemyScore'] as int,
-      json['time'] as int,
-      json['surrenderedWin'] as bool,
-      json['surrenderedLoss'] as bool
+      doc['uuid'] as String,
+      doc['desc'] as String,
+      (doc['map'] as String).toLowerCase(),
+      doc['mode'] as String,
+      doc['xp'] as int,
+      doc['score'] as int,
+      doc['enemyScore'] as int,
+      doc['time'] as int,
+      doc['surrenderedWin'] as bool,
+      doc['surrenderedLoss'] as bool
     );
   }
 }

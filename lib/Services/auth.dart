@@ -1,54 +1,62 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService{
-  final FirebaseAuth _auth;
-  AuthService(this._auth);
+  static final _auth = FirebaseAuth.instance;
+  static final _firestore = FirebaseFirestore.instance;
 
-  Stream<User?> get authStateChanges => _auth.authStateChanges();
-  String? get currentUID => _auth.currentUser?.uid;
-
-  Future<void> signOut() async
+  static void signOut() async
   {
     await _auth.signOut();
   }
 
-  Future<String> logIn({required String email, required String password}) async
+  static Future<bool> logIn({required String email, required String password}) async
   {
     try
     {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
-      return "Login successful";
+      return true;
     }
     catch(e)
     {
-      return e.toString();
+      return false;
     }
   }
 
-  Future<String> signUp({required String username, required String email, required String password}) async
+  static Future<bool> signUp({required String username, required String email, required String password}) async
   {
     try
     {
-      await _auth.createUserWithEmailAndPassword(email: email, password: password);
-      _auth.currentUser?.updateDisplayName(username);
-      return "Signup successful";
+      UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);      
+      User? signedInUser = result.user;
+
+      if (signedInUser != null) {
+        _firestore.collection('users').doc(signedInUser.uid).set({
+          'username': username,
+          'email': email,
+          'profilePicture': ''
+        });
+        return true;
+      }
+
+      return false;
     }
     catch(e)
     {
-      return e.toString();
+      return false;
     }
   }
 
-  Future<String> forgot({required String email}) async
+  static Future<bool> forgot({required String email}) async
   {
     try
     {
       await _auth.sendPasswordResetEmail(email: email);
-      return "Password reset email sent";
+      return true;
     }
     catch(e)
     {
-      return e.toString();
+      return false;
     }
   }
 }

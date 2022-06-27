@@ -1,4 +1,4 @@
-import 'package:vextrack/Models/history_entry.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Season
 {
@@ -7,18 +7,17 @@ class Season
   int activeLevel;
   int activeXP;
   String endDate;
-  Set<HistoryEntry> history = {};
 
   Season(this.uuid, this.name, this.activeLevel, this.activeXP, this.endDate);
 
-  static Season fromJSON(Map<String, dynamic> json)
+  static Season fromDoc(DocumentSnapshot doc)
   {
     return Season(
-      json['uuid'] as String,
-      json['name'] as String,
-      json['activeLevel'] as int,
-      json['activeXP'] as int,
-      json['endDate'] as String
+      doc['uuid'] as String,
+      doc['name'] as String,
+      doc['activeLevel'] as int,
+      doc['activeXP'] as int,
+      doc['endDate'] as String
     );
   }
 }

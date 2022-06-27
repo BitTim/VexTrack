@@ -1,11 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:vextrack/Services/auth.dart';
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:vextrack/Services/data.dart';
 import 'package:vextrack/screen_manager.dart';
 import 'firebase_options.dart';
 
@@ -21,27 +16,13 @@ class MyApp extends StatelessWidget {
 	// This widget is the root of your application.
 	@override
 	Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        Provider<AuthService>(
-          create: (_) => AuthService(FirebaseAuth.instance),
-        ),
-        ChangeNotifierProxyProvider<AuthService, DataService>(
-          create: (BuildContext context) => DataService(FirebaseFirestore.instance, Provider.of<AuthService>(context, listen: false)),
-          update: (BuildContext context, AuthService auth, DataService? data) => DataService(FirebaseFirestore.instance, auth),
-        ),
-        StreamProvider(
-          create: ((context) => context.read<AuthService>().authStateChanges), 
-          initialData: null,
-        )
-      ],
-        child: MaterialApp(
-        title: 'VexTrack',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home: const ScreenManager(),
-      )
+    return MaterialApp(
+      title: 'VexTrack',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const ScreenManager(),
     );
 	}
 }

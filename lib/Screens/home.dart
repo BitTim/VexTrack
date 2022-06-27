@@ -1,22 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:vextrack/Fragments/Home/home.dart';
+import 'package:vextrack/Fragments/Home/history.dart';
 import 'package:vextrack/screen_manager.dart';
 
 import '../Services/auth.dart';
 
-class _HomeState extends State
+class _HomeState extends State<Home>
 {
   late Function(int) _notifyParent;
 
 	int _currentPage = 0;
 	final List<bool> _epilogueState = [ false ];
-  final List _children = [
-		const Center(child: HomeFragment(),),
-		const Center(child: Text('Goals'),),
-		const Center(child: Text('Seasons'),),
-		const Center(child: Text('History'),),
-	];
 
   _HomeState(Function(int) notifyParent)
   {
@@ -47,7 +40,7 @@ class _HomeState extends State
             onSelected: (value) {
               if(value == 'logout')
               {
-                Provider.of<AuthService>(context, listen: false).signOut();
+                AuthService.signOut();
               }
               else if(value == 'settings')
               {
@@ -68,7 +61,20 @@ class _HomeState extends State
 				],
 			),
 
-			body: _children[_currentPage],
+      body: [
+        const Center(
+          child: Text("Home"),
+        ),
+        const Center(
+          child: Text("Goals"),
+        ),
+        const Center(
+          child: Text("Seasons"),
+        ),
+        HistoryFragment(
+          uid: widget.uid,
+        ),
+      ].elementAt(_currentPage),
 
 			bottomNavigationBar: BottomNavigationBar(
         onTap: onTabTapped,
@@ -107,8 +113,10 @@ class _HomeState extends State
 
 class Home extends StatefulWidget
 {
+  final String uid;
   final Function(int) notifyParent;
-	const Home({Key? key, required this.notifyParent}) : super(key: key);
+
+	const Home({Key? key, required this.uid, required this.notifyParent}) : super(key: key);
 
 	@override
 	State createState()

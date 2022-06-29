@@ -39,4 +39,18 @@ class HistoryEntry {
       doc['surrenderedLoss'] as bool
     );
   }
+
+  String getParsedDesc() {
+    if (desc != "") return desc;
+    return "$mode $score-$enemyScore";
+  }
+
+  String getParsedTime() {
+    return DateTime.fromMillisecondsSinceEpoch(time * 1000).toLocal().toString();
+  }
+
+  bool hasWon() { return score > enemyScore || surrenderedWin; }
+  bool hasLost() { return score < enemyScore || surrenderedLoss; }
+  bool isDraw() { return score == enemyScore; }
+  bool hasSurrendered() { return surrenderedWin || surrenderedLoss; }
 }

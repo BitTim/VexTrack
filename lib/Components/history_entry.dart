@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:vextrack/Constants/colors.dart';
 import 'package:vextrack/Models/game_map.dart';
 import 'package:vextrack/Models/history_entry.dart';
 import 'package:vextrack/Services/data.dart';
@@ -9,40 +10,13 @@ class HistoryEntryWidget extends StatefulWidget
 {
   const HistoryEntryWidget({
     Key? key,
-    this.desc = "",
-    this.xp = 0,
-    this.time = "00:00 01.01.1970",
-    this.map = "None",
-    this.surrendered = false,
+    required this.model,
   }) : super(key: key);
 
-  final String desc;
-  final int xp;
-  final String time;
-  final String map;
-  final bool surrendered;
+  final HistoryEntry model;
 
   @override
   HistoryEntryWidgetState createState() => HistoryEntryWidgetState();
-
-  static HistoryEntryWidget fromModel(HistoryEntry he)
-  {
-    String desc = he.desc != "" ? he.desc : "${he.mode} ${he.score}-${he.enemyScore}";
-    int xp = he.xp;
-    String time = DateTime.fromMillisecondsSinceEpoch(he.time * 1000).toLocal().toString();
-    String map = he.map.toLowerCase();
-    bool surrendered = he.surrenderedLoss || he.surrenderedWin;
-
-    final heWidget = HistoryEntryWidget(
-      desc: desc,
-      xp: xp,
-      time: time,
-      map: map,
-      surrendered: surrendered,
-    );
-
-    return heWidget;
-  }
 }
 
 class HistoryEntryWidgetState extends State<HistoryEntryWidget>
@@ -51,59 +25,126 @@ class HistoryEntryWidgetState extends State<HistoryEntryWidget>
   Widget build(BuildContext context)
   {
     return Card(
-      child: Stack(
-        children: [
-          FutureBuilder<GameMap>(
-            future: DataService.getMap(widget.map),
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return Text("Something went wrong! ${snapshot.error}");
-              }
-              else if (snapshot.hasData && snapshot.data != null) {
-                return FutureBuilder<String>(
-                  future: DataService.getMapImgUrl(widget.map),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done)
-                    {
-                      return Image.network(snapshot.data.toString());
-                    }
-                    else
-                    {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                  },
-                );
-              }
-              else
-              {
-                return const Center(child: CircularProgressIndicator());
-              }
-            },
-          ),
-          Container(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      children: [
-                        Text(widget.desc),
-                        Row(
-                          children: [
-                            Text("${widget.xp} XP"),
-                            Text(widget.time),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  Text(widget.map.toUpperCase()),
-                ]
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      child: SizedBox(
+        height: 74,
+        child: Stack(
+          children: [
+            Align(
+              child: FutureBuilder<GameMap>(
+                future: DataService.getMap(widget.model.map),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Text("Something went wrong! ${snapshot.error}");
+                  }
+                  else if (snapshot.hasData && snapshot.data != null) {
+                    return FutureBuilder<String>(
+                      future: DataService.getMapImgUrl(widget.model.map),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done)
+                        {
+                          return CachedNetworkImage(
+                            imageUrl: snapshot.data.toString(),
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height * 1,
+                            fit: BoxFit.cover,
+                          );
+                        }
+                        else
+                        {
+                          return const SizedBox.shrink();
+                        }
+                      },
+                    );
+                  }
+                  else
+                  {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                },
               ),
             ),
-          )
-        ],
+            Align(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: widget.model.hasWon() ? AppColors.winGradient : widget.model.hasLost() ? AppColors.lossGradient : AppColors.drawGradient,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                widget.model.getParsedDesc(),
+                                style: GoogleFonts.titilliumWeb(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+                                    child: Text(
+                                      "${widget.model.xp} XP",
+                                      style: GoogleFonts.titilliumWeb(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                                    child: Text(
+                                      widget.model.getParsedTime(),
+                                      style: GoogleFonts.titilliumWeb(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
+                        child: Text(
+                          widget.model.map.toUpperCase(),
+                          style: GoogleFonts.titilliumWeb(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ]
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
       )
     );
   }

@@ -23,7 +23,7 @@ class _HistoryFragmentState extends State<HistoryFragment>
     for(HistoryEntry he in _history)
     {
       historyEntryList.add(
-        HistoryEntryWidget.fromModel(he)
+        HistoryEntryWidget(model: he)
       );
     }
 
@@ -50,13 +50,16 @@ class _HistoryFragmentState extends State<HistoryFragment>
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: () => setupHistory(),
-      child: ListView(
-        physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-        children: _history.isEmpty && _loading == false ? [
-          const Center(child: Text("No history"))
-        ] : showHistory()
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: RefreshIndicator(
+        onRefresh: () => setupHistory(),
+        child: ListView(
+          physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+          children: _history.isEmpty && _loading == false ? [
+            const Center(child: Text("No history"))
+          ] : showHistory()
+        ),
       ),
     );
   }

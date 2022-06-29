@@ -62,9 +62,16 @@ class HistoryEntryWidgetState extends State<HistoryEntryWidget>
                   }
                   else
                   {
-                    return const Center(child: CircularProgressIndicator());
+                    return const SizedBox.shrink();
                   }
                 },
+              ),
+            ),
+            Align(
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Color(0x58000000),
+                ),
               ),
             ),
             Align(

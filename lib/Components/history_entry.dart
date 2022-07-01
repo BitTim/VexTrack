@@ -91,6 +91,7 @@ class HistoryEntryWidgetState extends State<HistoryEntryWidget>
                           padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
                           child: Column(
                             mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
@@ -136,13 +137,27 @@ class HistoryEntryWidgetState extends State<HistoryEntryWidget>
                       ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
-                        child: Text(
-                          widget.model.map.toUpperCase(),
-                          style: GoogleFonts.titilliumWeb(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                          ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            if(widget.model.hasSurrendered()) const Padding(
+                              padding: EdgeInsets.fromLTRB(0, 0, 0, 4),
+                              child: Icon(
+                                Icons.flag_rounded,
+                                color: Colors.white,
+                              ),
+                            ),
+                            Text(
+                              widget.model.map.toUpperCase(),
+                              style: GoogleFonts.titilliumWeb(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ]

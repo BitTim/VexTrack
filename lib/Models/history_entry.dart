@@ -1,4 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
+import 'package:universal_io/io.dart';
+import 'package:vextrack/Services/data.dart';
 
 class HistoryEntry {
   String uuid;
@@ -40,17 +43,67 @@ class HistoryEntry {
     );
   }
 
-  String getParsedDesc() {
+  DateTime getDateTime() { return DateTime.fromMillisecondsSinceEpoch(time * 1000).toLocal(); }
+  DateTime getDate()
+  {
+    DateTime dt = getDateTime();
+    return DateTime(dt.year, dt.month, dt.day);
+  }
+
+  String getScoreFormat()
+  {
+    return DataService.getModeScoreFormat(mode.toLowerCase().replaceAll(RegExp(' +'), '-'));
+  }
+
+  String getPlacementSuffix()
+  {
+    if(score == 1) return "st";
+    if(score == 2) return "nd";
+    if(score == 3) return "rd";
+    return "th";
+  }
+
+  String getResult()
+  {
+    String scoreFormat = getScoreFormat();
+
+    if(scoreFormat == "default" || scoreFormat == "")
+    {
+      if(score > enemyScore || surrenderedWin) return "win";
+      if(score < enemyScore || surrenderedLoss) return "loss";
+    }
+    else if(scoreFormat == "placement")
+    {
+      if(score < 4) return "win";
+      if(score > DataService.getModeScoreLimit(mode.toLowerCase()) - 3) return "loss";
+    }
+
+    return "draw";
+  }
+
+  String getFormattedDesc() {
     if (desc != "") return desc;
-    return "$mode $score-$enemyScore";
+
+    String scoreFormat = getScoreFormat();
+    String formattedDesc;
+    if(scoreFormat == "default" || scoreFormat == "")
+    {
+      formattedDesc = "$mode $score-$enemyScore";
+    }
+    else
+    {
+      formattedDesc = "$mode $score${getPlacementSuffix()}";
+    }
+
+    return formattedDesc;
   }
 
-  String getParsedTime() {
-    return DateTime.fromMillisecondsSinceEpoch(time * 1000).toLocal().toString();
+  String getFormattedTime() {
+    return DateFormat.Hm(Platform.localeName).format(getDateTime());
   }
 
-  bool hasWon() { return score > enemyScore || surrenderedWin; }
-  bool hasLost() { return score < enemyScore || surrenderedLoss; }
-  bool isDraw() { return score == enemyScore; }
+  bool hasWon() { return getResult() == "win"; }
+  bool hasLost() { return getResult() == "loss"; }
+  bool isDraw() { return getResult() == "draw"; }
   bool hasSurrendered() { return surrenderedWin || surrenderedLoss; }
 }

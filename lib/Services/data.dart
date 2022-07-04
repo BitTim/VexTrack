@@ -1,14 +1,20 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:vextrack/Constants/references.dart';
+import 'package:vextrack/Models/game_mode.dart';
 import 'package:vextrack/Models/history_entry.dart';
 import 'package:vextrack/Models/game_map.dart';
 import 'package:vextrack/Models/season.dart';
 
 class DataService
 {
+  static Map<String, GameMode> modes = {};
+
+  static void init() async
+  {
+    DataService.modes = await getModes();
+  }
+
   // ===============================
   //  User data
   // ===============================
@@ -80,5 +86,35 @@ class DataService
     String storageURL = await getMap(id).then((map) => map.imgURL);
     String imgURL = await FirebaseStorage.instance.refFromURL(storageURL).getDownloadURL();
     return imgURL;
+  }
+
+  // ===============================
+  //  Mode Data
+  // ===============================
+
+  static Future<Map<String, GameMode>> getModes() async
+  {
+    QuerySnapshot loadedModes = await modesRef.get();
+    Map<String, GameMode> modes = {};
+
+    for(QueryDocumentSnapshot doc in loadedModes.docs)
+    {
+      GameMode mode = GameMode.fromDoc(doc);
+      modes[doc.id] = mode;
+    }
+
+    return modes;
+  }
+
+  static String getModeScoreFormat(String id)
+  {
+    if (DataService.modes[id] == null) return "";
+    return DataService.modes[id]!.scoreFormat;
+  }
+
+  static int getModeScoreLimit(String id)
+  {
+    if (DataService.modes[id] == null) return -1;
+    return DataService.modes[id]!.scoreLimit;
   }
 }

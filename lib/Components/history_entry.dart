@@ -95,7 +95,7 @@ class HistoryEntryWidgetState extends State<HistoryEntryWidget>
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                widget.model.getParsedDesc(),
+                                widget.model.getFormattedDesc(),
                                 style: GoogleFonts.titilliumWeb(
                                   fontSize: 24,
                                   fontWeight: FontWeight.w700,
@@ -110,7 +110,7 @@ class HistoryEntryWidgetState extends State<HistoryEntryWidget>
                                   Padding(
                                     padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
                                     child: Text(
-                                      "${widget.model.xp} XP",
+                                      widget.model.getFormattedTime(),
                                       style: GoogleFonts.titilliumWeb(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w500,
@@ -121,7 +121,7 @@ class HistoryEntryWidgetState extends State<HistoryEntryWidget>
                                   Padding(
                                     padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
                                     child: Text(
-                                      widget.model.getParsedTime(),
+                                      "${widget.model.xp} XP",
                                       style: GoogleFonts.titilliumWeb(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w500,

@@ -1,6 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:universal_io/io.dart';
+import 'package:vextrack/Services/data.dart';
 
 import 'Screens/auth.dart';
 import 'Screens/home.dart';
@@ -22,6 +25,13 @@ class _ScreenManagerState extends State<ScreenManager>
     setState(() {
       _currentScreen = id;
     });
+  }
+
+  @override
+  void initState() {
+    initializeDateFormatting(Platform.localeName, null);
+    DataService.init();
+    super.initState();
   }
 
   @override

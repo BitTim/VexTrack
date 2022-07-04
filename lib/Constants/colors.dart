@@ -6,11 +6,13 @@ class AppColors
   static const lightShade = Color(0xffe5e5e5);
   static const lightShade_semiTransparent = Color(0xcce5e5e5);
   static const lightText = Color(0xff515151);
+  static const lightTextSecondary = Color(0xff626262);
 
   static const darkBG = Color(0xff404040);
   static const darkShade = Color(0xff333333);
   static const darkShade_semiTransparent = Color(0xcc333333);
   static const darkText = Color(0xffffffff);
+  static const darkTextSecondary = Color(0xffcacaca);
 
   static const accBlue = [
     Color(0xff1684fc),

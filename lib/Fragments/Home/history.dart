@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:vextrack/Components/history_entry.dart';
+import 'package:vextrack/Components/history_entry_group.dart';
+import 'package:vextrack/Core/history_calc.dart';
 import 'package:vextrack/Models/history_entry.dart';
+import 'package:vextrack/Models/history_entry_group.dart';
 import 'package:vextrack/Services/data.dart';
 
 class HistoryFragment extends StatefulWidget {
@@ -14,29 +17,29 @@ class HistoryFragment extends StatefulWidget {
 
 class _HistoryFragmentState extends State<HistoryFragment>
 {
-  List _history = [];
+  List<HistoryEntryGroup> _history = [];
   bool _loading = false;
 
   showHistory() {
-    List<Widget> historyEntryList = [];
+    List<Widget> historyEntryGroupList = [];
     
-    for(HistoryEntry he in _history)
+    for(HistoryEntryGroup heg in _history)
     {
-      historyEntryList.add(
-        HistoryEntryWidget(model: he)
+      historyEntryGroupList.add(
+        HistoryEntryGroupWidget(model: heg)
       );
     }
 
-    return historyEntryList;
+    return historyEntryGroupList;
   }
 
   setupHistory() async
   {
     setState(() => _loading = true);
-    List history = await DataService.getFullHistory(widget.uid);
+    List<HistoryEntry> history = await DataService.getFullHistory(widget.uid);
     if (mounted) {
       setState(() {
-        _history = history;
+        _history = HistoryCalc.groupHistoryByDate(history);
         _loading = false;
       });
     }
@@ -51,7 +54,7 @@ class _HistoryFragmentState extends State<HistoryFragment>
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
       child: RefreshIndicator(
         onRefresh: () => setupHistory(),
         child: ListView(

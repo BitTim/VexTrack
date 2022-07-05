@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vextrack/Fragments/Home/history.dart';
+import 'package:vextrack/Fragments/Home/seasons.dart';
 import 'package:vextrack/screen_manager.dart';
 
 import '../Services/auth.dart';
@@ -68,8 +69,8 @@ class _HomeState extends State<Home>
         const Center(
           child: Text("Goals"),
         ),
-        const Center(
-          child: Text("Seasons"),
+        SeasonsFragment(
+          uid: widget.uid
         ),
         HistoryFragment(
           uid: widget.uid,

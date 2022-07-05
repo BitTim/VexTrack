@@ -34,30 +34,16 @@ class HistoryEntryWidgetState extends State<HistoryEntryWidget>
         child: Stack(
           children: [
             Align(
-              child: FutureBuilder<GameMap>(
-                future: DataService.getMap(widget.model.map),
+              child: FutureBuilder<String>(
+                future: DataService.getMapImgUrl(widget.model.map),
                 builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return Text("Something went wrong! ${snapshot.error}");
-                  }
-                  else if (snapshot.hasData && snapshot.data != null) {
-                    return FutureBuilder<String>(
-                      future: DataService.getMapImgUrl(widget.model.map),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.done)
-                        {
-                          return CachedNetworkImage(
-                            imageUrl: snapshot.data.toString(),
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height * 1,
-                            fit: BoxFit.cover,
-                          );
-                        }
-                        else
-                        {
-                          return const SizedBox.shrink();
-                        }
-                      },
+                  if (snapshot.connectionState == ConnectionState.done)
+                  {
+                    return CachedNetworkImage(
+                      imageUrl: snapshot.data.toString(),
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height * 1,
+                      fit: BoxFit.cover,
                     );
                   }
                   else
@@ -150,7 +136,7 @@ class HistoryEntryWidgetState extends State<HistoryEntryWidget>
                               ),
                             ),
                             Text(
-                              widget.model.map.toUpperCase(),
+                              DataService.getMapName(widget.model.map),
                               style: GoogleFonts.titilliumWeb(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,

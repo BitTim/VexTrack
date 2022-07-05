@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:vextrack/Components/history_entry.dart';
 import 'package:vextrack/Components/history_entry_group.dart';
 import 'package:vextrack/Core/history_calc.dart';
 import 'package:vextrack/Models/history_entry.dart';
@@ -11,11 +10,10 @@ class HistoryFragment extends StatefulWidget {
   const HistoryFragment({Key? key, required this.uid}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
-  _HistoryFragmentState createState() => _HistoryFragmentState();
+  HistoryFragmentState createState() => HistoryFragmentState();
 }
 
-class _HistoryFragmentState extends State<HistoryFragment>
+class HistoryFragmentState extends State<HistoryFragment>
 {
   List<HistoryEntryGroup> _history = [];
   bool _loading = false;

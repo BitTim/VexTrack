@@ -44,6 +44,7 @@ dependencies:
   google_fonts: ^3.0.1
   intl: ^0.17.0
   universal_io: ^2.0.4
+  percent_indicator: ^4.2.2
 
 dev_dependencies:
   flutter_test:

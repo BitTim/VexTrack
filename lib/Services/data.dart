@@ -1,28 +1,40 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:vextrack/Constants/references.dart';
+import 'package:vextrack/Models/battlepass_params.dart';
 import 'package:vextrack/Models/game_mode.dart';
 import 'package:vextrack/Models/history_entry.dart';
 import 'package:vextrack/Models/game_map.dart';
 import 'package:vextrack/Models/season.dart';
+import 'package:vextrack/Models/season_meta.dart';
 
 class DataService
 {
+  static late BattlepassParams battlepassParams;
   static Map<String, GameMode> modes = {};
+  static Map<String, GameMap> maps = {};
+  static Map<String, SeasonMeta> seasonMetas = {};
 
   static void init() async
   {
+    DataService.battlepassParams = await getBattlepassParams();
     DataService.modes = await getModes();
+    DataService.maps = await getMaps();
+    DataService.seasonMetas = await getSeasonMetas();
+  }
+
+  // ===============================
+  //  Parameter data
+  // ===============================
+
+  static Future<BattlepassParams> getBattlepassParams() async
+  {
+    DocumentSnapshot doc = await parametersRef.doc('battlepass').get();
+    return BattlepassParams.fromDoc(doc);
   }
 
   // ===============================
   //  User data
-  // ===============================
-
- 
-
-  // ===============================
-  //  Season data
   // ===============================
 
   static Future<List<Season>> getAllSeasons(String uid) async {
@@ -70,20 +82,77 @@ class DataService
   }
 
   // ===============================
+  //  Season meta data
+  // ===============================
+
+  static Future<Map<String, SeasonMeta>> getSeasonMetas() async
+  {
+    QuerySnapshot loadedSeasonMetas = await seasonsRef.get();
+    Map<String, SeasonMeta> seasonMetas = {};
+
+    for(QueryDocumentSnapshot doc in loadedSeasonMetas.docs)
+    {
+      SeasonMeta seasonMeta = SeasonMeta.fromDoc(doc);
+      seasonMetas[doc.id] = seasonMeta;
+    }
+
+    return seasonMetas;
+  }
+
+  static String getSeasonName(String id)
+  {
+    if(DataService.seasonMetas[id] == null) return "";
+    return DataService.seasonMetas[id]!.name;
+  }
+
+  static String getSeasonFormattedStartDate(String id)
+  {
+    if(DataService.seasonMetas[id] == null) return "";
+    return DataService.seasonMetas[id]!.getFormattedStartDate();
+  }
+
+  static String getSeasonFormattedEndDate(String id)
+  {
+    if(DataService.seasonMetas[id] == null) return "";
+    return DataService.seasonMetas[id]!.getFormattedEndDate();
+  }
+
+  static Future<String> getSeasonImgUrl(String id) async
+  {
+    if(DataService.seasonMetas[id] == null) id = "none";
+    String storageURL = DataService.seasonMetas[id]!.imgURL;
+    String imgURL = await FirebaseStorage.instance.refFromURL(storageURL).getDownloadURL();
+    return imgURL;
+  }
+
+  // ===============================
   //  Map data
   // ===============================
 
-  static Future<GameMap> getMap(String id) async
+  static Future<Map<String, GameMap>> getMaps() async
   {
-    final loadedMap = await mapsRef.doc(id).get();
+    QuerySnapshot loadedMaps = await mapsRef.get();
+    Map<String, GameMap> maps = {};
 
-    GameMap map = GameMap.fromDoc(loadedMap);
-    return map;
+    for (QueryDocumentSnapshot doc in loadedMaps.docs)
+    {
+      GameMap map = GameMap.fromDoc(doc);
+      maps[doc.id] = map;
+    }
+
+    return maps;
+  }
+
+  static String getMapName(String id)
+  {
+    if(DataService.maps[id] == null) return "";
+    return DataService.maps[id]!.name;
   }
 
   static Future<String> getMapImgUrl(String id) async
   {
-    String storageURL = await getMap(id).then((map) => map.imgURL);
+    if(DataService.maps[id] == null) id = "none";
+    String storageURL = DataService.maps[id]!.imgURL;
     String imgURL = await FirebaseStorage.instance.refFromURL(storageURL).getDownloadURL();
     return imgURL;
   }

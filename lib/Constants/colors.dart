@@ -14,6 +14,9 @@ class AppColors
   static const darkText = Color(0xffffffff);
   static const darkTextSecondary = Color(0xffcacaca);
 
+
+
+
   static const accBlue = [
     Color(0xff1684fc),
     Color(0xff6975e8),
@@ -72,36 +75,115 @@ class AppColors
     Color(0xffdb6a3a),
   ];
 
-  static const winGradient = LinearGradient(
+
+
+
+  static const win = [
+    Color(0xff66c2a9),
+    Color(0xff19b2b5),
+    Color(0xcc19b2b5),
+  ];
+
+  static const loss = [
+    Color(0xfff05c57),
+    Color(0xffe54c7c),
+    Color(0xcce54c7c),
+  ];
+
+  static const epilogue = [
+    Color(0xff2978a0),
+    Color(0xff061a40),
+    Color(0xcc061a40),
+  ];
+
+
+
+
+  static final winToTransparentGradient = LinearGradient(
     colors: [
-      Color(0xff66c2a9),
-      Color(0xcc19b2b5),
+      win[0],
+      win[2],
       Colors.transparent
     ],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    stops: [0.0, 0.5, 1.0],
+    stops: const [0.0, 0.5, 1.0],
   );
 
-  static const lossGradient = LinearGradient(
+  static final lossToTransparentGradient = LinearGradient(
     colors: [
-      Color(0xfff05c57),
-      Color(0xcce54c7c),
+      loss[0],
+      loss[2],
       Colors.transparent
     ],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    stops: [0.0, 0.5, 1.0],
+    stops: const [0.0, 0.5, 1.0],
   );
 
-  static const drawGradient = LinearGradient(
+  static const drawToTransparentGradient = LinearGradient(
     colors: [
       darkBG,
       darkShade_semiTransparent,
-      Colors.transparent
+      Colors.transparent,
     ],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     stops: [0.0, 0.5, 1.0],
+  );
+
+  static const defaultToTransparentGradient = LinearGradient(
+    colors: [
+      lightBG,
+      lightShade_semiTransparent,
+      Colors.transparent,
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    stops: [0.0, 0.5, 1.0],
+  );
+
+  static final accentToTransparentGradient = LinearGradient(
+    colors: [
+      accBlue[0],
+      accBlue[1],
+      Colors.transparent,
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    stops: const [0.0, 0.5, 1.0],
+  );
+
+
+
+
+  static final winGradient = LinearGradient(
+    colors: [
+      win[0],
+      win[1]
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    stops: const [0.0, 1.0],
+  );
+
+  static final lossGradient = LinearGradient(
+    colors: [
+      loss[0],
+      loss[1]
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    stops: const [0.0, 1.0],
+  );
+
+  static final epilogueGradient = LinearGradient(
+    colors: [
+      epilogue[0],
+      epilogue[1]
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    stops: const [0.0, 1.0],
   );
 }

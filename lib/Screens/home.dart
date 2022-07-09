@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vextrack/Fragments/Home/history.dart';
 import 'package:vextrack/Fragments/Home/seasons.dart';
+import 'package:vextrack/Services/data.dart';
 import 'package:vextrack/screen_manager.dart';
 
 import '../Services/auth.dart';
@@ -11,6 +12,13 @@ class _HomeState extends State<Home>
 
 	int _currentPage = 0;
 	final List<bool> _epilogueState = [ false ];
+
+  @override
+  void initState()
+  {
+    DataService.init();
+    super.initState();
+  }
 
   _HomeState(Function(int) notifyParent)
   {

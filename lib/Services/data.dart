@@ -10,7 +10,7 @@ import 'package:vextrack/Models/season_meta.dart';
 
 class DataService
 {
-  static late BattlepassParams battlepassParams;
+  static BattlepassParams? battlepassParams;
   static Map<String, GameMode> modes = {};
   static Map<String, GameMap> maps = {};
   static Map<String, SeasonMeta> seasonMetas = {};
@@ -21,7 +21,7 @@ class DataService
     DataService.modes = await getModes();
     DataService.maps = await getMaps();
     DataService.seasonMetas = await getSeasonMetas();
-  }
+  }  
 
   // ===============================
   //  Parameter data

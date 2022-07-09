@@ -30,7 +30,6 @@ class _ScreenManagerState extends State<ScreenManager>
   @override
   void initState() {
     initializeDateFormatting(Platform.localeName, null);
-    DataService.init();
     super.initState();
   }
 

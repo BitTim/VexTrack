@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vextrack/Constants/colors.dart';
-import 'package:vextrack/Models/game_map.dart';
 import 'package:vextrack/Models/history_entry.dart';
 import 'package:vextrack/Services/data.dart';
 
@@ -63,7 +62,7 @@ class HistoryEntryWidgetState extends State<HistoryEntryWidget>
             Align(
               child: Container(
                 decoration: BoxDecoration(
-                  gradient: widget.model.hasWon() ? AppColors.winGradient : widget.model.hasLost() ? AppColors.lossGradient : AppColors.drawGradient,
+                  gradient: widget.model.hasWon() ? AppColors.winToTransparentGradient : widget.model.hasLost() ? AppColors.lossToTransparentGradient : AppColors.drawToTransparentGradient,
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),

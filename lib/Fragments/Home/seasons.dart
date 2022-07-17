@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vextrack/Components/season.dart';
-import 'package:vextrack/Models/season.dart';
+import 'package:vextrack/Models/Seasons/season.dart';
 import 'package:vextrack/Services/data.dart';
 
 class SeasonsFragment extends StatefulWidget {

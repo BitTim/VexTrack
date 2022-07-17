@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vextrack/Constants/colors.dart';
-import 'package:vextrack/Models/history_entry.dart';
+import 'package:vextrack/Models/History/history_entry.dart';
 import 'package:vextrack/Services/data.dart';
 
 class HistoryEntryWidget extends StatefulWidget
@@ -23,136 +23,140 @@ class HistoryEntryWidgetState extends State<HistoryEntryWidget>
   @override
   Widget build(BuildContext context)
   {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      child: SizedBox(
-        height: 74,
-        child: Stack(
-          children: [
-            Align(
-              child: FutureBuilder<String>(
-                future: DataService.getMapImgUrl(widget.model.map),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done)
-                  {
-                    return CachedNetworkImage(
-                      imageUrl: snapshot.data.toString(),
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height * 1,
-                      fit: BoxFit.cover,
-                    );
-                  }
-                  else
-                  {
-                    return const SizedBox.shrink();
-                  }
-                },
-              ),
-            ),
-            Align(
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Color(0x58000000),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        elevation: 8,
+        child: SizedBox(
+          height: 74,
+          child: Stack(
+            children: [
+              Align(
+                child: FutureBuilder<String>(
+                  future: DataService.getMapImgUrl(widget.model.map),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done)
+                    {
+                      return CachedNetworkImage(
+                        imageUrl: snapshot.data.toString(),
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height * 1,
+                        fit: BoxFit.cover,
+                      );
+                    }
+                    else
+                    {
+                      return const SizedBox.shrink();
+                    }
+                  },
                 ),
               ),
-            ),
-            Align(
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: widget.model.hasWon() ? AppColors.winToTransparentGradient : widget.model.hasLost() ? AppColors.lossToTransparentGradient : AppColors.drawToTransparentGradient,
+              Align(
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Color(0x58000000),
+                  ),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
+              ),
+              Align(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: widget.model.hasWon() ? AppColors.winToTransparentGradient : widget.model.hasLost() ? AppColors.lossToTransparentGradient : AppColors.drawToTransparentGradient,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  widget.model.getFormattedDesc(),
+                                  style: GoogleFonts.titilliumWeb(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+                                      child: Text(
+                                        widget.model.getFormattedTime(),
+                                        style: GoogleFonts.titilliumWeb(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                                      child: Text(
+                                        "${widget.model.xp} XP",
+                                        style: GoogleFonts.titilliumWeb(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
                           child: Column(
                             mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
+                              if(widget.model.hasSurrendered()) const Padding(
+                                padding: EdgeInsets.fromLTRB(0, 0, 0, 4),
+                                child: Icon(
+                                  Icons.flag_rounded,
+                                  color: Colors.white,
+                                ),
+                              ),
                               Text(
-                                widget.model.getFormattedDesc(),
+                                DataService.getMapName(widget.model.map),
                                 style: GoogleFonts.titilliumWeb(
-                                  fontSize: 24,
+                                  fontSize: 18,
                                   fontWeight: FontWeight.w700,
                                   color: Colors.white,
                                 ),
                               ),
-                              Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
-                                    child: Text(
-                                      widget.model.getFormattedTime(),
-                                      style: GoogleFonts.titilliumWeb(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-                                    child: Text(
-                                      "${widget.model.xp} XP",
-                                      style: GoogleFonts.titilliumWeb(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
                             ],
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            if(widget.model.hasSurrendered()) const Padding(
-                              padding: EdgeInsets.fromLTRB(0, 0, 0, 4),
-                              child: Icon(
-                                Icons.flag_rounded,
-                                color: Colors.white,
-                              ),
-                            ),
-                            Text(
-                              DataService.getMapName(widget.model.map),
-                              style: GoogleFonts.titilliumWeb(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ]
+                      ]
+                    ),
                   ),
                 ),
-              ),
-            )
-          ],
-        ),
-      )
+              )
+            ],
+          ),
+        )
+      ),
     );
   }
 }

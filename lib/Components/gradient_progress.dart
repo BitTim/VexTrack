@@ -22,7 +22,8 @@ class GradientProgressState extends State<GradientProgress>
 {
   @override
   Widget build(BuildContext context) {
-    final double width = widget.width ?? MediaQuery.of(context).size.width;
+    double width = widget.width ?? MediaQuery.of(context).size.width;
+    width -= widget.segments * 4;
 
     double getWidthMutltiplier(val, min, max)
     {

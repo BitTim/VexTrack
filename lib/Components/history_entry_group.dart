@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:vextrack/Components/history_entry.dart';
 import 'package:vextrack/Constants/colors.dart';
-import 'package:vextrack/Models/history_entry_group.dart';
+import 'package:vextrack/Models/History/history_entry_group.dart';
 
 class HistoryEntryGroupWidget extends StatefulWidget
 {

@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:universal_io/io.dart';
-import 'package:vextrack/Models/history_entry.dart';
+import 'package:vextrack/Models/History/history_entry.dart';
 
 class HistoryEntryGroup {
   DateTime date;

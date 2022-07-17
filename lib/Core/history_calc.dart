@@ -1,6 +1,5 @@
-import 'package:vextrack/Models/history_entry_group.dart';
-
-import '../Models/history_entry.dart';
+import 'package:vextrack/Models/History/history_entry.dart';
+import 'package:vextrack/Models/History/history_entry_group.dart';
 
 class HistoryCalc
 {

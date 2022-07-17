@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vextrack/Fragments/Home/goals.dart';
 import 'package:vextrack/Fragments/Home/history.dart';
 import 'package:vextrack/Fragments/Home/seasons.dart';
 import 'package:vextrack/Services/data.dart';
@@ -12,11 +13,18 @@ class _HomeState extends State<Home>
 
 	int _currentPage = 0;
 	final List<bool> _epilogueState = [ false ];
+  List<Widget> fragments = [];
 
   @override
   void initState()
   {
     DataService.init();
+
+    fragments.add(const Center(child: Text("Home")));
+    fragments.add(GoalsFragment(uid: widget.uid));
+    fragments.add(SeasonsFragment(uid: widget.uid));
+    fragments.add(HistoryFragment(uid: widget.uid));
+
     super.initState();
   }
 
@@ -70,20 +78,7 @@ class _HomeState extends State<Home>
 				],
 			),
 
-      body: [
-        const Center(
-          child: Text("Home"),
-        ),
-        const Center(
-          child: Text("Goals"),
-        ),
-        SeasonsFragment(
-          uid: widget.uid
-        ),
-        HistoryFragment(
-          uid: widget.uid,
-        ),
-      ].elementAt(_currentPage),
+      body: fragments.elementAt(_currentPage),
 
 			bottomNavigationBar: BottomNavigationBar(
         onTap: onTabTapped,

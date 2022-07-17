@@ -1,12 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:vextrack/Constants/references.dart';
+import 'package:vextrack/Models/Goals/goal.dart';
+import 'package:vextrack/Models/Goals/progression.dart';
 import 'package:vextrack/Models/battlepass_params.dart';
 import 'package:vextrack/Models/game_mode.dart';
-import 'package:vextrack/Models/history_entry.dart';
+import 'package:vextrack/Models/History/history_entry.dart';
 import 'package:vextrack/Models/game_map.dart';
-import 'package:vextrack/Models/season.dart';
-import 'package:vextrack/Models/season_meta.dart';
+import 'package:vextrack/Models/Seasons/season.dart';
+import 'package:vextrack/Models/Seasons/season_meta.dart';
 
 class DataService
 {
@@ -185,5 +187,32 @@ class DataService
   {
     if (DataService.modes[id] == null) return -1;
     return DataService.modes[id]!.scoreLimit;
+  }
+
+  // ===============================
+  //  Goal Data
+  // ===============================
+
+  static Future<List<Progression>> getAllProgressions(String uid) async
+  {
+    QuerySnapshot loadedProgressions = await usersRef.doc(uid)
+      .collection("progressions")
+      .get();
+
+    List<Progression> progressions = loadedProgressions.docs.map((doc) => Progression.fromDoc(doc)).toList();
+
+    for (Progression p in progressions)
+    {
+      QuerySnapshot loadedGoals = await usersRef.doc(uid)
+        .collection("progressions")
+        .doc(p.id)
+        .collection("goals")
+        .orderBy("order", descending: false)
+        .get();
+      
+      p.goals = loadedGoals.docs.map((doc) => Goal.fromDoc(doc, p)).toList();
+    }
+
+    return progressions;
   }
 }

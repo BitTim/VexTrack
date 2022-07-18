@@ -21,63 +21,104 @@ class GoalWidgetState extends State<GoalWidget>
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
       child: SizedBox(
-        height: 72,
-        child: Align(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      widget.model.name,
-                      style: GoogleFonts.titilliumWeb(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.lightText,
-                      ),
-                    ),
-                  ]
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 4, 8, 0),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
-                      child: GradientProgress(
-                        width: MediaQuery.of(context).size.width * 0.684,
-                        value: widget.model.getProgress(),
-                        height: 8,
-                        borderRadius: 4,
-                        segments: 1,
-                        segmentStops: const [0.0, 1.0],
-                        gradient: widget.model.getGradient(),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
-                      child: Text(
-                        widget.model.getPrecentage(),
-                        style: GoogleFonts.titilliumWeb(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.lightText,
+        height: 88,
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          widget.model.name,
+                          style: GoogleFonts.titilliumWeb(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.lightText,
+                          ),
                         ),
-                      )
+                      ]
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 4, 8, 0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
+                          child: GradientProgress(
+                            width: MediaQuery.of(context).size.width * 0.684,
+                            value: widget.model.getProgress(),
+                            height: 8,
+                            borderRadius: 4,
+                            segments: 1,
+                            segmentStops: const [0.0, 1.0],
+                            gradient: widget.model.getGradient(),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
+                          child: Text(
+                            widget.model.getPrecentage(),
+                            style: GoogleFonts.titilliumWeb(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.lightText,
+                            ),
+                          )
+                        )
+                      ],
                     )
-                  ],
-                )
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "${widget.model.xp} XP / ${widget.model.total} XP",
+                          style: GoogleFonts.titilliumWeb(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.lightText,
+                          ),
+                        ),
+                        Text(
+                          "Remaining: ${widget.model.getRemaining()} XP",
+                          style: GoogleFonts.titilliumWeb(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.lightText,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               )
-            ],
-          )
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
+              child: IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                icon: const Icon(Icons.more_vert),
+                color: AppColors.lightText,
+                onPressed: () { },
+              ),
+            )
+          ],
         ),
       ),
     );

@@ -43,7 +43,7 @@ class ProgressionWidgetState extends State<ProgressionWidget>
         elevation: 8,
         child: ExpandablePanel(
           header: SizedBox(
-            height: 96,
+            height: 140,
             child: Align(
               child: Column(
                 mainAxisSize: MainAxisSize.max,
@@ -67,7 +67,7 @@ class ProgressionWidgetState extends State<ProgressionWidget>
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 4, 8, 0),
+                    padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -99,14 +99,68 @@ class ProgressionWidgetState extends State<ProgressionWidget>
                     )
                   ),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-                    child: Text(
-                      "Next Unlock: ${widget.model.getNextUnlockName()} (${widget.model.getNextUnlockPercentage()})",
-                      style: GoogleFonts.titilliumWeb(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.lightText,
-                      ),
+                    padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "${widget.model.getXP()} XP / ${widget.model.getTotal()} XP",
+                          style: GoogleFonts.titilliumWeb(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.lightText,
+                          ),
+                        ),
+                        Text(
+                          "Remaining: ${widget.model.getRemaining()} XP",
+                          style: GoogleFonts.titilliumWeb(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.lightText,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Next Unlock: ",
+                          style: GoogleFonts.titilliumWeb(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.lightText,
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                "${widget.model.getNextUnlockName()} (${widget.model.getNextUnlockPercentage()})",
+                                style: GoogleFonts.titilliumWeb(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.lightText,
+                                ),
+                              ),
+                              Text(
+                                "Remaining: ${widget.model.getNextUnlock()?.getRemaining()} XP",
+                                style: GoogleFonts.titilliumWeb(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.lightText,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
                     ),
                   ),
                 ],

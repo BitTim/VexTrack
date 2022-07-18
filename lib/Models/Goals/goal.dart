@@ -38,4 +38,9 @@ class Goal
   {
     return parent.getGradient();
   }
+
+  int getRemaining()
+  {
+    return total - xp;
+  }
 }

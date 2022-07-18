@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:universal_io/io.dart';
-import 'package:vextrack/Services/data.dart';
 
 import 'Screens/auth.dart';
 import 'Screens/home.dart';
@@ -42,7 +41,6 @@ class _ScreenManagerState extends State<ScreenManager>
         if (snapshot.hasData) {
           if(_currentScreen == Screens.auth.index) _currentScreen = Screens.home.index; // Set current screen to home when user is logged in
 
-          //FIXME: Might be a problem that on every screen change a new instance of the screen is returned
           if(_currentScreen == Screens.settings.index) return Settings(uid: snapshot.data!.uid, notifyParent: changeScreen);
           return Home(uid: snapshot.data!.uid, notifyParent: changeScreen); 
         }

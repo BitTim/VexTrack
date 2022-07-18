@@ -12,7 +12,6 @@ class _HomeState extends State<Home>
   late Function(int) _notifyParent;
 
 	int _currentPage = 0;
-	final List<bool> _epilogueState = [ false ];
   List<Widget> fragments = [];
 
   @override
@@ -39,19 +38,6 @@ class _HomeState extends State<Home>
 			appBar: AppBar(
 				title: const Text('VexTrack'),
 				actions: [
-					ToggleButtons(
-						isSelected: _epilogueState,
-						selectedBorderColor: Colors.blue,
-						borderColor: Colors.grey,
-						onPressed: (int index) {
-							setState(() {
-								_epilogueState[index] = !_epilogueState[index];
-							});
-						},
-						children: const <Widget>[
-							Icon(Icons.rocket_launch),
-						],
-					),
 					PopupMenuButton(
 						icon: const Icon(Icons.account_circle),
             onSelected: (value) {

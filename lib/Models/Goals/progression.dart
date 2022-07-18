@@ -51,6 +51,11 @@ class Progression
     return xp;
   }
 
+  int getRemaining()
+  {
+    return getTotal() - getXP();
+  }
+
   double getProgress()
   {
     int total = getTotal();

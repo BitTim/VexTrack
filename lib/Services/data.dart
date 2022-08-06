@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:vextrack/Constants/references.dart';
+import 'package:vextrack/Core/xp_calc.dart';
 import 'package:vextrack/Models/Goals/goal.dart';
-import 'package:vextrack/Models/Goals/progression.dart';
+import 'package:vextrack/Models/Goals/contract.dart';
 import 'package:vextrack/Models/battlepass_params.dart';
 import 'package:vextrack/Models/game_mode.dart';
 import 'package:vextrack/Models/History/history_entry.dart';
@@ -42,20 +43,32 @@ class DataService
   static Future<List<Season>> getAllSeasons(String uid) async {
     QuerySnapshot loadedSeasons = await usersRef.doc(uid)
       .collection("seasons")
-      .orderBy("endDate", descending: true)
       .get();
 
-    List<Season> seasons = loadedSeasons.docs.map((doc) => Season.fromDoc(doc)).toList();
+    Map<int, Season> seasonOrder = {};
+    for (QueryDocumentSnapshot doc in loadedSeasons.docs)
+    {
+      Season s = Season.fromDoc(doc, seasonMetas[doc['id'] as String]!);
+      int idx = seasonMetas.keys.toList().indexOf(s.id);
+      seasonOrder[idx] = s;
+    }
+    List<int> indecies = seasonOrder.keys.toList();
+    indecies.sort();
+
+    List<Season> seasons = [
+      for (int i in indecies) seasonOrder[i]!
+    ];
+
     return seasons;
   }
 
-  static Future<Season> getSeason(String uid, String uuid) async {
+  static Future<Season> getSeason(String uid, String id) async {
     DocumentSnapshot loadedSeason = await usersRef.doc(uid)
       .collection("seasons")
-      .doc(uuid)
+      .doc(id)
       .get();
 
-    Season season = Season.fromDoc(loadedSeason);
+    Season season = Season.fromDoc(loadedSeason, seasonMetas[loadedSeason['id'] as String]!);
     return season;
   }
 
@@ -89,12 +102,24 @@ class DataService
 
   static Future<Map<String, SeasonMeta>> getSeasonMetas() async
   {
-    QuerySnapshot loadedSeasonMetas = await seasonsRef.get();
+    QuerySnapshot loadedSeasonMetas = await seasonsRef.orderBy("end", descending: true).get();
     Map<String, SeasonMeta> seasonMetas = {};
 
     for(QueryDocumentSnapshot doc in loadedSeasonMetas.docs)
     {
-      SeasonMeta seasonMeta = SeasonMeta.fromDoc(doc);
+      QuerySnapshot loadedBattlepass = await seasonsRef.doc(doc.id)
+        .collection("battlepass")
+        .orderBy("level", descending: false)
+        .get();
+      List<List<String>> battlepass = loadedBattlepass.docs.map((doc) => doc.get("rewards").cast<String>() as List<String>).toList();
+
+      QuerySnapshot loadedEpilogue = await seasonsRef.doc(doc.id)
+        .collection("epilogue")
+        .orderBy("level", descending: false)
+        .get();
+      List<List<String>> epilogue = loadedEpilogue.docs.map((doc) => doc.get("rewards").cast<String>() as List<String>).toList();
+
+      SeasonMeta seasonMeta = SeasonMeta.fromDoc(doc, doc.id, battlepass, epilogue);
       seasonMetas[doc.id] = seasonMeta;
     }
 
@@ -125,6 +150,21 @@ class DataService
     String storageURL = DataService.seasonMetas[id]!.imgURL;
     String imgURL = await FirebaseStorage.instance.refFromURL(storageURL).getDownloadURL();
     return imgURL;
+  }
+
+  static SeasonMeta? getActiveSeasonMeta()
+  {
+    int now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+
+    for(SeasonMeta meta in DataService.seasonMetas.values)
+    {
+      if(meta.startDate <= now && meta.endDate >= now)
+      {
+        return meta;
+      }
+    }
+
+    return null;
   }
 
   // ===============================
@@ -193,15 +233,96 @@ class DataService
   //  Goal Data
   // ===============================
 
-  static Future<List<Progression>> getAllProgressions(String uid) async
+  static Future<List<Contract>> getBattlepassContracts(String uid) async
   {
+    List<Contract> progressions = [];
+    int levels = DataService.battlepassParams!.levels;
+    int epilogue = DataService.battlepassParams!.epilogue;
+
+    // Small Passes here, like aniversary pass, etc.
+
+    SeasonMeta? activeMeta = getActiveSeasonMeta();
+    if(activeMeta == null) return progressions;
+    
+    Season season = await getSeason(uid, activeMeta.id);
+
+    // Battlepass
+
+    Contract bpProgression = Contract(
+      "battlepass",
+      "Battlepass",
+      "",
+      "",
+      "",
+      false
+    );
+
+    for(int i = 1; i <= levels; i++)
+    {
+      int xp = season.activeXP;
+
+      if (i < season.activeLevel) xp = XPCalc.getLevelTotal(i);
+      if (i > season.activeLevel || i == 1) xp = 0;
+
+      bpProgression.goals.add(Goal(
+        bpProgression,
+        "Level $i",
+        XPCalc.getLevelTotal(i),
+        xp,
+        i,
+        activeMeta.battlepass[i - 1],
+      ));
+    }
+
+    progressions.add(bpProgression); //TODO: Keep goals but change progress bar to a similar one to seasons
+    // TODO: Create Item object for "reward" for goals and have battlepass levels only have one goal
+
+    // Epilogue
+
+    Contract epProgression = Contract(
+      "epilogue",
+      "Epilogue",
+      "",
+      "",
+      "",
+      false
+    );
+
+    for(int i = levels + 1; i <= epilogue; i++)
+    {
+      int xp = season.activeXP;
+
+      if (i < season.activeLevel) xp = XPCalc.getLevelTotal(i);
+      if (i > season.activeLevel) xp = 0;
+
+      epProgression.goals.add(Goal(
+        epProgression,
+        "Level $i",
+        XPCalc.getLevelTotal(i),
+        xp,
+        i,
+        activeMeta.battlepass[i - levels - 1]
+      ));
+    }
+
+    progressions.add(epProgression);
+
+    return progressions;
+  }
+
+  static Future<List<Contract>> getAllContracts(String uid) async
+  {
+    List<Contract> progressions = [];
+    //progressions = await getBattlepassContracts(uid);
+
     QuerySnapshot loadedProgressions = await usersRef.doc(uid)
       .collection("progressions")
       .get();
 
-    List<Progression> progressions = loadedProgressions.docs.map((doc) => Progression.fromDoc(doc)).toList();
+    List<Contract> userProgressions = [];
+    userProgressions = loadedProgressions.docs.map((doc) => Contract.fromDoc(doc)).toList();
 
-    for (Progression p in progressions)
+    for (Contract p in userProgressions)
     {
       QuerySnapshot loadedGoals = await usersRef.doc(uid)
         .collection("progressions")
@@ -213,6 +334,7 @@ class DataService
       p.goals = loadedGoals.docs.map((doc) => Goal.fromDoc(doc, p)).toList();
     }
 
+    progressions.addAll(userProgressions);
     return progressions;
   }
 }

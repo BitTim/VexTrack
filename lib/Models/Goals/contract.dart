@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:vextrack/Constants/colors.dart';
 import 'package:vextrack/Core/util.dart';
 import 'package:vextrack/Models/Goals/goal.dart';
 
-class Progression
+class Contract
 {
   String id;
   String name;
@@ -13,11 +14,11 @@ class Progression
   bool paused;
   List<Goal> goals = [];
 
-  Progression(this.id, this.name, this.startColor, this.endColor, this.dependency, this.paused);
+  Contract(this.id, this.name, this.startColor, this.endColor, this.dependency, this.paused);
 
-  static Progression fromDoc(DocumentSnapshot doc)
+  static Contract fromDoc(DocumentSnapshot doc)
   {
-    return Progression(
+    return Contract(
       doc.id,
       doc['name'] as String,
       doc['startColor'] as String,
@@ -60,6 +61,8 @@ class Progression
   {
     int total = getTotal();
     int xp = getXP();
+
+    if(total == 0) return 1.0;
     return xp.toDouble() / total.toDouble();
   }
 
@@ -74,7 +77,11 @@ class Progression
 
     for (Goal g in goals)
     {
-      stops.add(stops.last + (g.total.toDouble() / getTotal().toDouble()));
+      double offset = 0.0;
+      if(getTotal() == 0) { offset = 0.0; }
+      else { offset = (g.total.toDouble() / getTotal().toDouble()); }
+
+      stops.add(stops.last + offset);
     }
 
     return stops;
@@ -88,14 +95,19 @@ class Progression
 
   LinearGradient getGradient()
   {
-    return LinearGradient(
-      colors: [
-        startColor.toColor(),
-        endColor.toColor(),
-      ],
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-    );
+    if (startColor != "" && endColor != "")
+    {
+      return LinearGradient(
+        colors: [
+          startColor.toColor(),
+          endColor.toColor(),
+        ],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      );
+    }
+
+    return AppColors.accentGradient;
   }
 
   Goal? getNextUnlock()
@@ -119,5 +131,13 @@ class Progression
   String getNextUnlockPercentage()
   {
     return getNextUnlock()?.getPrecentage() ?? "0%";
+  }
+
+  bool isActive()
+  {
+    if (paused) return false;
+    if (getRemaining() <= 0) return false;
+
+    return true;
   }
 }

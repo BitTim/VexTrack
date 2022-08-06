@@ -27,7 +27,10 @@ class GradientProgressState extends State<GradientProgress>
 
     double getWidthMutltiplier(val, min, max)
     {
-      double multiplier = (val - min) / (max - min);
+      double multiplier = 0;
+      if (max - min == 0) { multiplier = 0; }
+      else { multiplier = (val - min) / (max - min); }
+      
       if (multiplier < 0) multiplier = 0;
       if (multiplier > 1) multiplier = 1;
 

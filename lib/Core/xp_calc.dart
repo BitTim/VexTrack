@@ -66,4 +66,29 @@ class XPCalc
   {
     return xp.toDouble() / total.toDouble();
   }
+
+
+
+
+  static getLevelTotal(int level)
+  {
+    int lvl2Offset = DataService.battlepassParams!.lvl2Offset;
+    int levels = DataService.battlepassParams!.levels;
+    int xpStep = DataService.battlepassParams!.xpStep;
+    int xpEpilogueStep = DataService.battlepassParams!.xpEpilogueStep;
+
+    int xp = 0;
+    if(level == 1) return xp;    
+
+    if (level <= levels)
+    {
+      xp = lvl2Offset + (level - 1) * xpStep;
+    }
+    else
+    {
+      xp = xpEpilogueStep;
+    }
+
+    return xp;
+  }
 }

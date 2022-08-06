@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:vextrack/Core/xp_calc.dart';
+import 'package:vextrack/Models/Seasons/season_meta.dart';
 
 class Season
 {
@@ -7,16 +8,18 @@ class Season
   String id;
   int activeLevel;
   int activeXP;
+  SeasonMeta meta;
 
-  Season(this.uuid, this.id, this.activeLevel, this.activeXP);
+  Season(this.uuid, this.id, this.activeLevel, this.activeXP, this.meta);
 
-  static Season fromDoc(DocumentSnapshot doc)
+  static Season fromDoc(DocumentSnapshot doc, SeasonMeta meta)
   {
     return Season(
       doc['uuid'] as String,
       doc['id'] as String,
       doc['activeLevel'] as int,
       doc['activeXP'] as int,
+      meta,
     );
   }
 
@@ -43,4 +46,6 @@ class Season
   bool hasEpilogue() { return getProgress() >= XPCalc.getMaxProgress(); }
   bool hasCompleted() { return getProgress() >= 1.0; }
   bool hasFailed() { return getProgress() < 1.0; }
+
+  bool isActive() { return (DateTime.now().millisecondsSinceEpoch / 1000) < meta.endDate; }
 }

@@ -46,6 +46,7 @@ dependencies:
   universal_io: ^2.0.4
   percent_indicator: ^4.2.2
   expandable: ^5.0.1
+  sortedmap: ^0.5.1
 
 dev_dependencies:
   flutter_test:

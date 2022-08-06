@@ -4,17 +4,23 @@ import 'package:universal_io/io.dart';
 
 class SeasonMeta
 {
+  String id;
   String name;
+  List<List<String>> battlepass;
+  List<List<String>> epilogue;
   int startDate;
   int endDate;
   String imgURL;
 
-  SeasonMeta(this.name, this.startDate, this.endDate, this.imgURL);
+  SeasonMeta(this.id, this.name, this.battlepass, this.epilogue, this.startDate, this.endDate, this.imgURL);
 
-  static SeasonMeta fromDoc(DocumentSnapshot doc)
+  static SeasonMeta fromDoc(DocumentSnapshot doc, String id, List<List<String>> battlepass, List<List<String>> epilogue)
   {
     return SeasonMeta(
+      id,
       doc['name'] as String,
+      battlepass,
+      epilogue,
       doc['start'] as int,
       doc['end'] as int,
       doc['img'] as String

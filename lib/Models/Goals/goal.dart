@@ -1,18 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:vextrack/Models/Goals/progression.dart';
+import 'package:vextrack/Models/Goals/contract.dart';
 
 class Goal
 {
-  Progression parent;
+  Contract parent;
   String name;
   int total;
   int xp;
   int order;
+  List<String> rewards;
 
-  Goal(this.parent, this.name, this.total, this.xp, this.order);
+  Goal(this.parent, this.name, this.total, this.xp, this.order, this.rewards);
 
-  static Goal fromDoc(DocumentSnapshot doc, Progression parent)
+  static Goal fromDoc(DocumentSnapshot doc, Contract parent)
   {
     return Goal(
       parent,
@@ -20,11 +21,13 @@ class Goal
       doc['total'] as int,
       doc['xp'] as int,
       doc['order'] as int,
+      doc['rewards'].cast<String>(),
     );
   }
 
   double getProgress()
   {
+    if(total == 0) return 1.0;
     return xp.toDouble() / total.toDouble();
   }
 

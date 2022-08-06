@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:vextrack/Fragments/Home/goals.dart';
+import 'package:vextrack/Fragments/Home/contracts.dart';
 import 'package:vextrack/Fragments/Home/history.dart';
-import 'package:vextrack/Fragments/Home/seasons.dart';
-import 'package:vextrack/Services/data.dart';
 import 'package:vextrack/screen_manager.dart';
 
 import '../Services/auth.dart';
@@ -17,11 +15,8 @@ class _HomeState extends State<Home>
   @override
   void initState()
   {
-    DataService.init();
-
     fragments.add(const Center(child: Text("Home")));
-    fragments.add(GoalsFragment(uid: widget.uid));
-    fragments.add(SeasonsFragment(uid: widget.uid));
+    fragments.add(ProgressionsFragment(uid: widget.uid));
     fragments.add(HistoryFragment(uid: widget.uid));
 
     super.initState();
@@ -79,11 +74,7 @@ class _HomeState extends State<Home>
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.flag),
-            label: 'Goals',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.cloud),
-            label: 'Seasons',
+            label: 'Contracts',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.history),

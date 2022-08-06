@@ -29,90 +29,92 @@ class SeasonWidgetState extends State<SeasonWidget>
       ),
       clipBehavior: Clip.antiAliasWithSaveLayer,
       elevation: 8,
-      child: ExpandablePanel(
-        header: SizedBox(
-          height: 96,
-          child: Align(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        DataService.getSeasonName(widget.model.id),
-                        style: GoogleFonts.titilliumWeb(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.lightText,
-                        ),
-                      ),
-                      ShaderMask(
-                        shaderCallback: (Rect bounds) {
-                          Gradient gradient = widget.model.hasEpilogue() ? AppColors.epilogueGradient : widget.model.hasCompleted() ? AppColors.winGradient : AppColors.lossGradient;
-                          return gradient.createShader(bounds);
-                        },
-                        child: Icon(
-                          widget.model.hasEpilogue() ? Icons.verified : widget.model.hasCompleted() ? Icons.check : Icons.close,
-                          color: widget.model.hasEpilogue() ? AppColors.epilogue[0] : widget.model.hasCompleted() ? AppColors.win[0] : AppColors.loss[0],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 4, 8, 0),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
-                        child: GradientProgress(
-                          width: MediaQuery.of(context).size.width * 0.684,
-                          value: widget.model.getProgress(),
-                          height: 8,
-                          borderRadius: 4,
-                          segments: 2,
-                          segmentStops: [0.0, 1.0, XPCalc.getMaxProgress()],
-                          gradient: widget.model.hasEpilogue() ? AppColors.epilogueGradient : widget.model.hasCompleted() ? AppColors.winGradient : AppColors.lossGradient,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
-                        child: Text(
-                          widget.model.getPrecentage(),
+      child: ExpandableNotifier(
+        child: ExpandablePanel(
+          header: SizedBox(
+            height: 96,
+            child: Align(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          DataService.getSeasonName(widget.model.id),
                           style: GoogleFonts.titilliumWeb(
-                            fontSize: 14,
+                            fontSize: 24,
                             fontWeight: FontWeight.w700,
                             color: AppColors.lightText,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-                  child: Text(
-                    "${DataService.getSeasonFormattedStartDate(widget.model.id)} - ${DataService.getSeasonFormattedEndDate(widget.model.id)}",
-                    style: GoogleFonts.titilliumWeb(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.lightText,
+                        ShaderMask(
+                          shaderCallback: (Rect bounds) {
+                            Gradient gradient = widget.model.hasEpilogue() ? AppColors.epilogueGradient : widget.model.hasCompleted() ? AppColors.winGradient : AppColors.lossGradient;
+                            return gradient.createShader(bounds);
+                          },
+                          child: Icon(
+                            widget.model.hasEpilogue() ? Icons.verified : widget.model.hasCompleted() ? Icons.check : Icons.close,
+                            color: widget.model.hasEpilogue() ? AppColors.epilogue[0] : widget.model.hasCompleted() ? AppColors.win[0] : AppColors.loss[0],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 4, 8, 0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
+                          child: GradientProgress(
+                            width: MediaQuery.of(context).size.width * 0.684,
+                            value: widget.model.getProgress(),
+                            height: 8,
+                            borderRadius: 4,
+                            segments: 2,
+                            segmentStops: [0.0, 1.0, XPCalc.getMaxProgress()],
+                            gradient: widget.model.hasEpilogue() ? AppColors.epilogueGradient : widget.model.hasCompleted() ? AppColors.winGradient : AppColors.lossGradient,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
+                          child: Text(
+                            widget.model.getPrecentage(),
+                            style: GoogleFonts.titilliumWeb(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.lightText,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+                    child: Text(
+                      "${DataService.getSeasonFormattedStartDate(widget.model.id)} - ${DataService.getSeasonFormattedEndDate(widget.model.id)}",
+                      style: GoogleFonts.titilliumWeb(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.lightText,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
+          collapsed: const SizedBox.shrink(),
+          expanded: const Text("Insert Info here later"),
         ),
-        collapsed: const SizedBox.shrink(),
-        expanded: const SizedBox.shrink(),
       ),
     );
   }

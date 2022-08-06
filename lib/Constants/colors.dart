@@ -4,13 +4,13 @@ class AppColors
 {
   static const lightBG = Color(0xffffffff);
   static const lightShade = Color(0xffe5e5e5);
-  static const lightShade_semiTransparent = Color(0xcce5e5e5);
+  static const lightShadeSemiTransparent = Color(0xcce5e5e5);
   static const lightText = Color(0xff515151);
   static const lightTextSecondary = Color(0xff626262);
 
   static const darkBG = Color(0xff404040);
   static const darkShade = Color(0xff333333);
-  static const darkShade_semiTransparent = Color(0xcc333333);
+  static const darkShadeSemiTransparent = Color(0xcc333333);
   static const darkText = Color(0xffffffff);
   static const darkTextSecondary = Color(0xffcacaca);
 
@@ -124,7 +124,7 @@ class AppColors
   static const drawToTransparentGradient = LinearGradient(
     colors: [
       darkBG,
-      darkShade_semiTransparent,
+      darkShadeSemiTransparent,
       Colors.transparent,
     ],
     begin: Alignment.topLeft,
@@ -135,7 +135,7 @@ class AppColors
   static const defaultToTransparentGradient = LinearGradient(
     colors: [
       lightBG,
-      lightShade_semiTransparent,
+      lightShadeSemiTransparent,
       Colors.transparent,
     ],
     begin: Alignment.topLeft,
@@ -181,6 +181,16 @@ class AppColors
     colors: [
       epilogue[0],
       epilogue[1]
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    stops: const [0.0, 1.0],
+  );
+
+  static final accentGradient = LinearGradient(
+    colors: [
+      accBlue[0],
+      accBlue[1]
     ],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,

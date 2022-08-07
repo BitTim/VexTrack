@@ -54,12 +54,12 @@ class SeasonWidgetState extends State<SeasonWidget>
                         ),
                         ShaderMask(
                           shaderCallback: (Rect bounds) {
-                            Gradient gradient = widget.model.hasEpilogue() ? AppColors.epilogueGradient : widget.model.hasCompleted() ? AppColors.winGradient : AppColors.lossGradient;
+                            Gradient gradient = widget.model.hasEpilogue() ? AppColors.epilogueGradient : widget.model.hasCompleted() ? AppColors.winGradient : widget.model.isActive() ? AppColors.warnGradient : AppColors.warnGradient;
                             return gradient.createShader(bounds);
                           },
                           child: Icon(
-                            widget.model.hasEpilogue() ? Icons.verified : widget.model.hasCompleted() ? Icons.check : Icons.close,
-                            color: widget.model.hasEpilogue() ? AppColors.epilogue[0] : widget.model.hasCompleted() ? AppColors.win[0] : AppColors.loss[0],
+                            widget.model.hasEpilogue() ? Icons.verified : widget.model.hasCompleted() ? Icons.check : widget.model.isActive() ? Icons.warning_amber_rounded : Icons.close,
+                            color: widget.model.hasEpilogue() ? AppColors.epilogue[0] : widget.model.hasCompleted() ? AppColors.win[0] : widget.model.isActive() ? AppColors.warn[0] : AppColors.loss[0],
                           ),
                         ),
                       ],
@@ -80,7 +80,7 @@ class SeasonWidgetState extends State<SeasonWidget>
                             borderRadius: 4,
                             segments: 2,
                             segmentStops: [0.0, 1.0, XPCalc.getMaxProgress()],
-                            gradient: widget.model.hasEpilogue() ? AppColors.epilogueGradient : widget.model.hasCompleted() ? AppColors.winGradient : AppColors.lossGradient,
+                            gradient: widget.model.hasEpilogue() ? AppColors.epilogueGradient : widget.model.hasCompleted() ? AppColors.winGradient : widget.model.isActive() ? AppColors.warnGradient : AppColors.lossGradient,
                           ),
                         ),
                         Padding(

@@ -59,7 +59,7 @@ class SeasonWidgetState extends State<SeasonWidget>
       child: ExpandableNotifier(
         child: ExpandablePanel(
           header: SizedBox(
-            height: 96,
+            height: 128,
             child: Align(
               child: Column(
                 mainAxisSize: MainAxisSize.max,
@@ -123,6 +123,32 @@ class SeasonWidgetState extends State<SeasonWidget>
                       ],
                     ),
                   ),
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+                        child: Text(
+                          "${widget.model.getFormattedXP()} / ${widget.model.getFormattedTotal()}",
+                          style: GoogleFonts.titilliumWeb(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.lightText,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+                        child: Text(
+                          "Remaining: ${widget.model.getFormattedRemaining()}",
+                          style: GoogleFonts.titilliumWeb(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.lightText,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
                     child: Text(
@@ -145,25 +171,32 @@ class SeasonWidgetState extends State<SeasonWidget>
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Wrap(
+                  direction: Axis.horizontal,
+                  alignment: WrapAlignment.start,
+                  spacing: 16,
                   children: [
-                    Text(
-                      "${widget.model.getXP()} / ${widget.model.getFormattedTotal()}",
-                      style: GoogleFonts.titilliumWeb(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.lightText,
-                      ),
-                    ),
-                    Text(
-                      "Remaining: ${widget.model.getRemaining()}",
-                      style: GoogleFonts.titilliumWeb(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.lightText,
-                      ),
+                    
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "Daily average: ",
+                          style: GoogleFonts.titilliumWeb(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.lightText,
+                          ),
+                        ),
+                        Text(
+                          widget.model.getFormattedDailyAvg(),
+                          style: GoogleFonts.titilliumWeb(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.lightText,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

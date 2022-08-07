@@ -91,4 +91,13 @@ class Season
     int remaining = getRemaining();
     return '$remaining XP';
   }
+
+  String getFormattedDailyAvg() {
+    int total = getTotal();
+    if (hasCompleted()) total += getEpilogueTotal();
+    int xp = getXP();
+
+    int dailyAvg = xp ~/ meta.getDateTime(meta.endDate).difference(meta.getDateTime(meta.startDate)).inDays;
+    return '$dailyAvg XP';
+  }
 }

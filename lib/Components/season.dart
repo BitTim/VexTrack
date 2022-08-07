@@ -21,6 +21,33 @@ class SeasonWidget extends StatefulWidget {
 
 class SeasonWidgetState extends State<SeasonWidget>
 {
+  Gradient getGradient()
+  {
+    if (widget.model.hasEpilogue()) return AppColors.epilogueGradient;
+    if (widget.model.hasCompleted()) return AppColors.winGradient;
+    if (widget.model.isActive()) return AppColors.warnGradient;
+    
+    return AppColors.lossGradient;
+  }
+
+  IconData getIcon()
+  {
+    if (widget.model.hasEpilogue()) return Icons.verified_rounded;
+    if (widget.model.hasCompleted()) return Icons.check_rounded;
+    if (widget.model.isActive()) return Icons.warning_amber_rounded;
+    
+    return Icons.close_rounded;
+  }
+
+  Color getColor()
+  {
+    if (widget.model.hasEpilogue()) return AppColors.epilogue[0];
+    if (widget.model.hasCompleted()) return AppColors.win[0];
+    if (widget.model.isActive()) return AppColors.warn[0];
+    
+    return AppColors.loss[0];
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -54,12 +81,11 @@ class SeasonWidgetState extends State<SeasonWidget>
                         ),
                         ShaderMask(
                           shaderCallback: (Rect bounds) {
-                            Gradient gradient = widget.model.hasEpilogue() ? AppColors.epilogueGradient : widget.model.hasCompleted() ? AppColors.winGradient : AppColors.lossGradient;
-                            return gradient.createShader(bounds);
+                            return getGradient().createShader(bounds);
                           },
                           child: Icon(
-                            widget.model.hasEpilogue() ? Icons.verified : widget.model.hasCompleted() ? Icons.check : Icons.close,
-                            color: widget.model.hasEpilogue() ? AppColors.epilogue[0] : widget.model.hasCompleted() ? AppColors.win[0] : AppColors.loss[0],
+                            getIcon(),
+                            color: getColor(),
                           ),
                         ),
                       ],
@@ -80,7 +106,7 @@ class SeasonWidgetState extends State<SeasonWidget>
                             borderRadius: 4,
                             segments: 2,
                             segmentStops: [0.0, 1.0, XPCalc.getMaxProgress()],
-                            gradient: widget.model.hasEpilogue() ? AppColors.epilogueGradient : widget.model.hasCompleted() ? AppColors.winGradient : AppColors.lossGradient,
+                            gradient: getGradient() as LinearGradient,
                           ),
                         ),
                         Padding(

@@ -84,6 +84,12 @@ class AppColors
     Color(0xcc19b2b5),
   ];
 
+  static const warn = [
+    Color(0xfff9e500),
+    Color(0xfff6c900),
+    Color(0xccf6c900),
+  ];
+
   static const loss = [
     Color(0xfff05c57),
     Color(0xffe54c7c),
@@ -161,6 +167,16 @@ class AppColors
     colors: [
       win[0],
       win[1]
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    stops: const [0.0, 1.0],
+  );
+
+  static final warnGradient = LinearGradient(
+    colors: [
+      warn[0],
+      warn[1]
     ],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,

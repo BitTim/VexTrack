@@ -38,4 +38,9 @@ class SeasonMeta
   {
     return DateFormat.yMd(Platform.localeName).format(getDateTime(endDate));
   }
+
+  String getFormattedDuration() {
+    var duration = getDateTime(endDate).difference(getDateTime(startDate));
+    return '${duration.inDays} days';
+  }
 }

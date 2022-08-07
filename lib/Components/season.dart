@@ -100,7 +100,7 @@ class SeasonWidgetState extends State<SeasonWidget>
                   Padding(
                     padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
                     child: Text(
-                      "${DataService.getSeasonFormattedStartDate(widget.model.id)} - ${DataService.getSeasonFormattedEndDate(widget.model.id)}",
+                      "${DataService.getSeasonFormattedStartDate(widget.model.id)} - ${DataService.getSeasonFormattedEndDate(widget.model.id)} (${DataService.getSeasonFormattedDuration(widget.model.id)})",
                       style: GoogleFonts.titilliumWeb(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
@@ -112,8 +112,38 @@ class SeasonWidgetState extends State<SeasonWidget>
               ),
             ),
           ),
+
           collapsed: const SizedBox.shrink(),
-          expanded: const Text("Insert Info here later"),
+
+          expanded: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "${widget.model.getXP()} / ${widget.model.getFormattedTotal()}",
+                      style: GoogleFonts.titilliumWeb(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.lightText,
+                      ),
+                    ),
+                    Text(
+                      "Remaining: ${widget.model.getRemaining()}",
+                      style: GoogleFonts.titilliumWeb(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.lightText,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

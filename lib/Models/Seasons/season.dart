@@ -23,10 +23,36 @@ class Season
     );
   }
 
+  int getTotal()
+  {
+    return XPCalc.getSeasonTotal();
+  }
+
+  int getEpilogueTotal()
+  {
+    return XPCalc.getEpilogueTotal();
+  }
+
+  int getXP()
+  {
+    return XPCalc.toTotal(activeLevel, activeXP);
+  }
+
+  int getRemaining()
+  {
+    int total = getTotal();
+    if (hasCompleted()) total += getEpilogueTotal();
+
+    int remaining = total - getXP();
+    if (remaining < 0) remaining = 0;
+
+    return remaining;
+  }
+
   double getProgress()
   {
-    int xp = XPCalc.toTotal(activeLevel, activeXP);
-    int total = XPCalc.getSeasonTotal();
+    int xp = getXP();
+    int total = getTotal();
 
     double maxProgress = XPCalc.getMaxProgress();
     
@@ -48,4 +74,21 @@ class Season
   bool hasFailed() { return getProgress() < 1.0; }
 
   bool isActive() { return (DateTime.now().millisecondsSinceEpoch / 1000) < meta.endDate; }
+
+  String getFormattedTotal() {
+    int total = getTotal();
+    if (hasCompleted()) total += getEpilogueTotal();
+
+    return '$total XP';
+  }
+
+  String getFormattedXP() {
+    int xp = getXP();
+    return '$xp XP';
+  }
+
+  String getFormattedRemaining() {
+    int remaining = getRemaining();
+    return '$remaining XP';
+  }
 }

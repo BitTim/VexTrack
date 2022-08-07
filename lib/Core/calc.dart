@@ -2,10 +2,10 @@ class Calc
 {
   static int cumulativeSum(int iterations, int offset, int step)
   {
-    int sum = offset;
-    for(int i = 0; i < iterations; i++)
+    int sum = 0;
+    for(int i = 2; i <= iterations; i++)
     {
-      sum += i * step;
+      sum += (i * step) + offset;
     }
     return sum;
   }

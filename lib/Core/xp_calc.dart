@@ -36,6 +36,7 @@ class XPCalc
     int xpEpilogueStep = DataService.battlepassParams!.xpEpilogueStep;
 
     int xp = 0;
+    level = level - 1; // Since last level is the currently active one, represented by lxp
 
     int extraLevels = 0;
     if (level > levels)

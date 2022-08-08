@@ -24,4 +24,48 @@ class HistoryCalc
 
     return groupedHistory;
   }
+
+  static Map<String, dynamic> getExtremeDays(List<HistoryEntry> history)
+  {
+    DateTime prevDate = history[0].getDate();
+    int dayTotal = 0;
+
+    DateTime strongestDate = prevDate;
+    int strongestXP = 0;
+
+    DateTime weakestDate = prevDate;
+    int weakestXP = 0;
+
+    for (HistoryEntry he in history)
+    {
+      if (he.getDate() == prevDate)
+      {
+        dayTotal += he.xp;
+      }
+      else
+      {
+        if (dayTotal > strongestXP)
+        {
+          strongestXP = dayTotal;
+          strongestDate = prevDate;
+        }
+
+        if (dayTotal < weakestXP || weakestXP == 0)
+        {
+          weakestXP = dayTotal;
+          weakestDate = prevDate;
+        }
+
+        prevDate = he.getDate();
+        dayTotal = he.xp;
+      }
+    }
+
+    return {
+      "strongestDate": strongestDate,
+      "strongestXP": strongestXP,
+      "weakestDate": weakestDate,
+      "weakestXP": weakestXP,
+    };
+  }
 }

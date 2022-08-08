@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:vextrack/Core/xp_calc.dart';
+import 'package:vextrack/Models/History/history_entry.dart';
 import 'package:vextrack/Models/Seasons/season_meta.dart';
 
 class Season
@@ -9,10 +10,11 @@ class Season
   int activeLevel;
   int activeXP;
   SeasonMeta meta;
+  List<HistoryEntry> history;
 
-  Season(this.uuid, this.id, this.activeLevel, this.activeXP, this.meta);
+  Season(this.uuid, this.id, this.activeLevel, this.activeXP, this.meta, this.history);
 
-  static Season fromDoc(DocumentSnapshot doc, SeasonMeta meta)
+  static Season fromDoc(DocumentSnapshot doc, SeasonMeta meta, List<HistoryEntry> history)
   {
     return Season(
       doc['uuid'] as String,
@@ -20,6 +22,7 @@ class Season
       doc['activeLevel'] as int,
       doc['activeXP'] as int,
       meta,
+      history,
     );
   }
 
@@ -93,8 +96,6 @@ class Season
   }
 
   String getFormattedDailyAvg() {
-    int total = getTotal();
-    if (hasCompleted()) total += getEpilogueTotal();
     int xp = getXP();
 
     int dailyAvg = xp ~/ meta.getDateTime(meta.endDate).difference(meta.getDateTime(meta.startDate)).inDays;

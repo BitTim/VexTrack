@@ -48,7 +48,9 @@ class DataService
     Map<int, Season> seasonOrder = {};
     for (QueryDocumentSnapshot doc in loadedSeasons.docs)
     {
-      Season s = Season.fromDoc(doc, seasonMetas[doc['id'] as String]!);
+      List<HistoryEntry> history = await getHistory(uid, doc.id);
+
+      Season s = Season.fromDoc(doc, seasonMetas[doc['id'] as String]!, history);
       int idx = seasonMetas.keys.toList().indexOf(s.id);
       seasonOrder[idx] = s;
     }
@@ -68,7 +70,9 @@ class DataService
       .doc(id)
       .get();
 
-    Season season = Season.fromDoc(loadedSeason, seasonMetas[loadedSeason['id'] as String]!);
+    List<HistoryEntry> history = await getHistory(uid, id);
+
+    Season season = Season.fromDoc(loadedSeason, seasonMetas[loadedSeason['id'] as String]!, history);
     return season;
   }
 

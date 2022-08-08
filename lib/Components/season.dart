@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vextrack/Components/gradient_progress.dart';
 import 'package:vextrack/Constants/colors.dart';
+import 'package:vextrack/Core/formatter.dart';
+import 'package:vextrack/Core/history_calc.dart';
 import 'package:vextrack/Core/xp_calc.dart';
 import 'package:vextrack/Models/Seasons/season.dart';
 import 'package:vextrack/Services/data.dart';
@@ -48,8 +50,12 @@ class SeasonWidgetState extends State<SeasonWidget>
     return AppColors.loss[0];
   }
 
+
+
   @override
   Widget build(BuildContext context) {
+    Map<String, dynamic> extremeDays = HistoryCalc.getExtremeDays(widget.model.history);
+
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
@@ -176,7 +182,6 @@ class SeasonWidgetState extends State<SeasonWidget>
                   alignment: WrapAlignment.start,
                   spacing: 16,
                   children: [
-                    
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -190,6 +195,50 @@ class SeasonWidgetState extends State<SeasonWidget>
                         ),
                         Text(
                           widget.model.getFormattedDailyAvg(),
+                          style: GoogleFonts.titilliumWeb(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.lightText,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "Strongest day: ",
+                          style: GoogleFonts.titilliumWeb(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.lightText,
+                          ),
+                        ),
+                        Text(
+                          "${Formatter.formatDate(extremeDays['strongestDate'])} (${Formatter.formatXP(extremeDays['strongestXP'])})",
+                          style: GoogleFonts.titilliumWeb(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.lightText,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "Weakest day: ",
+                          style: GoogleFonts.titilliumWeb(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.lightText,
+                          ),
+                        ),
+                        Text(
+                          "${Formatter.formatDate(extremeDays['weakestDate'])} (${Formatter.formatXP(extremeDays['weakestXP'])})",
                           style: GoogleFonts.titilliumWeb(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,

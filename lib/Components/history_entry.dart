@@ -20,6 +20,14 @@ class HistoryEntryWidget extends StatefulWidget
 
 class HistoryEntryWidgetState extends State<HistoryEntryWidget>
 {
+  Gradient getGradient()
+  {
+    if (widget.model.hasWon()) return AppColors.winToTransparentGradient;
+    if (widget.model.hasLost()) return AppColors.lossToTransparentGradient;
+
+    return AppColors.drawToTransparentGradient;
+  }
+
   @override
   Widget build(BuildContext context)
   {
@@ -65,7 +73,7 @@ class HistoryEntryWidgetState extends State<HistoryEntryWidget>
               Align(
                 child: Container(
                   decoration: BoxDecoration(
-                    gradient: widget.model.hasWon() ? AppColors.winToTransparentGradient : widget.model.hasLost() ? AppColors.lossToTransparentGradient : AppColors.drawToTransparentGradient,
+                    gradient: getGradient(),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -109,7 +117,7 @@ class HistoryEntryWidgetState extends State<HistoryEntryWidget>
                                     Padding(
                                       padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
                                       child: Text(
-                                        "${widget.model.xp} XP",
+                                        widget.model.getFormattedXP(),
                                         style: GoogleFonts.titilliumWeb(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w500,

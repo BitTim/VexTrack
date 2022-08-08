@@ -118,7 +118,7 @@ class SeasonWidgetState extends State<SeasonWidget>
                         Padding(
                           padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
                           child: Text(
-                            widget.model.getPrecentage(),
+                            widget.model.getFormattedProgress(),
                             style: GoogleFonts.titilliumWeb(
                               fontSize: 14,
                               fontWeight: FontWeight.w700,

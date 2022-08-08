@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:vextrack/Core/formatter.dart';
 import 'package:vextrack/Core/xp_calc.dart';
 import 'package:vextrack/Models/History/history_entry.dart';
 import 'package:vextrack/Models/Seasons/season_meta.dart';
@@ -66,11 +67,12 @@ class Season
     return progress;
   }
 
-  String getPrecentage()
-  {
-    double progress = getProgress();
-    return '${(progress * 100).toStringAsFixed(0)}%';
-  }
+
+
+
+  // --------------------------------
+  // Flags
+  // --------------------------------
 
   bool hasEpilogue() { return getProgress() >= XPCalc.getMaxProgress(); }
   bool hasCompleted() { return getProgress() >= 1.0; }
@@ -78,27 +80,40 @@ class Season
 
   bool isActive() { return (DateTime.now().millisecondsSinceEpoch / 1000) < meta.endDate; }
 
-  String getFormattedTotal() {
+
+
+
+  // --------------------------------
+  // Formatted getters
+  // --------------------------------
+
+  String getFormattedTotal()
+  {
     int total = getTotal();
     if (hasCompleted()) total += getEpilogueTotal();
 
-    return '$total XP';
+    return Formatter.formatXP(total);
   }
 
-  String getFormattedXP() {
-    int xp = getXP();
-    return '$xp XP';
+  String getFormattedXP()
+  {
+    return Formatter.formatXP(getXP());
   }
 
-  String getFormattedRemaining() {
-    int remaining = getRemaining();
-    return '$remaining XP';
+  String getFormattedRemaining()
+  {
+    return Formatter.formatXP(getRemaining());
   }
 
   String getFormattedDailyAvg() {
     int xp = getXP();
-
     int dailyAvg = xp ~/ meta.getDateTime(meta.endDate).difference(meta.getDateTime(meta.startDate)).inDays;
-    return '$dailyAvg XP';
+    
+    return Formatter.formatXP(dailyAvg);
+  }
+
+  String getFormattedProgress()
+  {
+    return Formatter.formatPercentage(getProgress());
   }
 }

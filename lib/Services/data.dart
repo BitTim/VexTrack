@@ -129,31 +129,7 @@ class DataService
 
     return seasonMetas;
   }
-
-  static String getSeasonName(String id)
-  {
-    if(DataService.seasonMetas[id] == null) return "";
-    return DataService.seasonMetas[id]!.name;
-  }
-
-  static String getSeasonFormattedStartDate(String id)
-  {
-    if(DataService.seasonMetas[id] == null) return "";
-    return DataService.seasonMetas[id]!.getFormattedStartDate();
-  }
-
-  static String getSeasonFormattedEndDate(String id)
-  {
-    if(DataService.seasonMetas[id] == null) return "";
-    return DataService.seasonMetas[id]!.getFormattedEndDate();
-  }
-
-  static String getSeasonFormattedDuration(String id)
-  {
-    if(DataService.seasonMetas[id] == null) return "";
-    return DataService.seasonMetas[id]!.getFormattedDuration();
-  }
-
+  
   static Future<String> getSeasonImgUrl(String id) async
   {
     if(DataService.seasonMetas[id] == null) id = "none";

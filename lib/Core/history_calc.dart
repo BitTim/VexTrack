@@ -25,6 +25,26 @@ class HistoryCalc
     return groupedHistory;
   }
 
+  static List<int> getXPPerDay(List<HistoryEntry> history) {
+    List<int> amounts = [0];
+    DateTime prevDate = history[0].getDate();
+
+    for (HistoryEntry he in history)
+    {
+      if(he.getDate() == prevDate)
+      {
+        amounts.last += he.getXP();
+      }
+      else 
+      {
+        amounts.add(he.getXP());
+        prevDate = he.getDate();
+      }
+    }
+
+    return amounts;
+  }
+
   static Map<String, dynamic> getExtremeDays(List<HistoryEntry> history)
   {
     DateTime prevDate = history[0].getDate();

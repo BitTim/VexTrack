@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart';
-import 'package:universal_io/io.dart';
 
 class SeasonMeta
 {
@@ -28,19 +26,7 @@ class SeasonMeta
   }
 
   DateTime getDateTime(int timestamp) { return DateTime.fromMillisecondsSinceEpoch(timestamp * 1000).toLocal(); }
-
-  String getFormattedStartDate()
-  {
-    return DateFormat.yMd(Platform.localeName).format(getDateTime(startDate));
-  }
-
-  String getFormattedEndDate()
-  {
-    return DateFormat.yMd(Platform.localeName).format(getDateTime(endDate));
-  }
-
-  String getFormattedDuration() {
-    var duration = getDateTime(endDate).difference(getDateTime(startDate));
-    return '${duration.inDays} days';
-  }
+  DateTime getStartDate() { return getDateTime(startDate); }
+  DateTime getEndDate() { return getDateTime(endDate); }
+  Duration getDuration() { return getEndDate().difference(getStartDate()); }
 }

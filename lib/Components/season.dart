@@ -7,7 +7,6 @@ import 'package:vextrack/Core/formatter.dart';
 import 'package:vextrack/Core/history_calc.dart';
 import 'package:vextrack/Core/xp_calc.dart';
 import 'package:vextrack/Models/Seasons/season.dart';
-import 'package:vextrack/Services/data.dart';
 
 class SeasonWidget extends StatefulWidget {
   const SeasonWidget({
@@ -78,7 +77,7 @@ class SeasonWidgetState extends State<SeasonWidget>
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          DataService.getSeasonName(widget.model.id),
+                          widget.model.meta.name,
                           style: GoogleFonts.titilliumWeb(
                             fontSize: 24,
                             fontWeight: FontWeight.w700,
@@ -158,7 +157,7 @@ class SeasonWidgetState extends State<SeasonWidget>
                   Padding(
                     padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
                     child: Text(
-                      "${DataService.getSeasonFormattedStartDate(widget.model.id)} - ${DataService.getSeasonFormattedEndDate(widget.model.id)} (${DataService.getSeasonFormattedDuration(widget.model.id)})",
+                      "${Formatter.formatDate(widget.model.meta.getStartDate())} - ${Formatter.formatDate(widget.model.meta.getEndDate())} (${Formatter.formatDurationDays(widget.model.meta.getDuration())})",
                       style: GoogleFonts.titilliumWeb(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,

@@ -25,20 +25,36 @@ class HistoryCalc
     return groupedHistory;
   }
 
-  static List<int> getXPPerDay(List<HistoryEntry> history) {
+  static List<int> getXPPerDay(List<HistoryEntry> history, bool isActive, int duration) {
     List<int> amounts = [0];
     DateTime prevDate = history[0].getDate();
 
     for (HistoryEntry he in history)
     {
-      if(he.getDate() == prevDate)
+      DateTime cDate = he.getDate();
+      if(cDate == prevDate)
       {
         amounts.last += he.getXP();
       }
       else 
       {
+        for (int i = 0; cDate.difference(prevDate).inDays - 1 > i; i++)
+        {
+          amounts.add(0);
+        }
+
         amounts.add(he.getXP());
         prevDate = he.getDate();
+      }
+    }
+
+    if (!isActive) // Fill missing entries for completed seasons
+    {
+      int missingEntries = duration - amounts.length;
+      
+      for (int i = missingEntries; i > 0; i--)
+      {
+        amounts.add(0);
       }
     }
 

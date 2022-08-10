@@ -193,6 +193,16 @@ class AppColors
     stops: const [0.0, 1.0],
   );
 
+  static const drawGradient = LinearGradient(
+    colors: [
+      darkBG,
+      darkShade,
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    stops: [0.0, 1.0],
+  );
+
   static final epilogueGradient = LinearGradient(
     colors: [
       epilogue[0],

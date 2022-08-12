@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:vextrack/Constants/colors.dart';
 import 'package:vextrack/Core/xp_calc.dart';
 import 'package:vextrack/Models/Seasons/performance.dart';
@@ -63,6 +64,7 @@ class PerformanceChartState extends State<PerformanceChart> {
           dotData: FlDotData(
             show: false,
           ),
+          isStepLineChart: false,
         ),
 
         LineChartBarData( // User XP
@@ -75,6 +77,7 @@ class PerformanceChartState extends State<PerformanceChart> {
           dotData: FlDotData(
             show: false,
           ),
+          isStepLineChart: false,
         ),
 
         LineChartBarData( // User Avg
@@ -88,8 +91,10 @@ class PerformanceChartState extends State<PerformanceChart> {
             show: false,
           ),
           dashArray: [10, 5, 1, 5],
+          isStepLineChart: false,
         ),
       ],
+
       gridData: FlGridData(
         drawHorizontalLine: false,
         drawVerticalLine: true,
@@ -99,10 +104,12 @@ class PerformanceChartState extends State<PerformanceChart> {
           strokeWidth: 1,
         ),
       ),
+
       borderData: FlBorderData( // TODO: Change to actual border
         show: false,
       ),
-      titlesData: FlTitlesData( // TODO: Change to actual titles
+
+      titlesData: FlTitlesData(
         bottomTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
@@ -112,14 +119,32 @@ class PerformanceChartState extends State<PerformanceChart> {
               if(value % 5 == 0) text = "${value.toInt()}";
 
               return Text(
-                text
+                text,
+                style: GoogleFonts.titilliumWeb(
+                  color: AppColors.lightText,
+                  fontSize: 12,
+                ),
               );
             },
           ),
         ),
-        leftTitles: AxisTitles(
+        leftTitles: AxisTitles( // TODO: Fix formating
           sideTitles: SideTitles(
-            showTitles: false,
+            showTitles: true,
+            interval: widget.model.cumulative ? 100000 : 10000,
+            reservedSize: 32,
+            getTitlesWidget: (value, meta) {
+              String text = "";
+              if(value % (widget.model.cumulative ? 100000 : 10000) == 0) text = "${(value ~/ 1000).toInt()} k";
+
+              return Text(
+                text,
+                style: GoogleFonts.titilliumWeb(
+                  color: AppColors.lightText,
+                  fontSize: 12,
+                ),
+              );
+            },
           )
         ),
         topTitles: AxisTitles(
@@ -133,6 +158,7 @@ class PerformanceChartState extends State<PerformanceChart> {
           ),
         ),
       ),
+
       extraLinesData: ExtraLinesData(
         extraLinesOnTop: false,
         horizontalLines: getBattlepassLines(),
@@ -142,8 +168,52 @@ class PerformanceChartState extends State<PerformanceChart> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return Column(
       children: [
+        Row( // TODO: Make button appearance toggle with buttons // TODO: Somehow integaret Buttons into layout
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Text(
+              "Performance",
+              style: GoogleFonts.titilliumWeb(
+                color: AppColors.lightText,
+                fontWeight: FontWeight.w700,
+                fontSize: 18,
+              ),
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ShaderMask( // FIXME: Doesn't work
+                  shaderCallback: (Rect bounds) {
+                    if (widget.model.cumulative == true) return AppColors.accentGradient.createShader(bounds);
+                    return const LinearGradient(
+                      colors: [AppColors.lightText]
+                    ).createShader(bounds);
+                  },
+                  child: IconButton(
+                    icon: const Icon(Icons.line_axis_rounded),
+                    onPressed: () {
+                      setState(() {
+                        widget.model.cumulative = !widget.model.cumulative;
+                      });
+                    },
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.rocket_launch_rounded),
+                  onPressed: () {
+                    setState(() {
+                      widget.model.epilogue = !widget.model.epilogue;
+                    });
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+
         AspectRatio(
           aspectRatio: 1.5,
           child: LineChart(
@@ -152,26 +222,6 @@ class PerformanceChartState extends State<PerformanceChart> {
             swapAnimationDuration: const Duration(milliseconds: 250),
           ),
         ),
-        Row(
-          children: [
-            IconButton(
-              icon: const Icon(Icons.line_axis_rounded),
-              onPressed: () {
-                setState(() {
-                  widget.model.cumulative = !widget.model.cumulative;
-                });
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.rocket_launch_rounded),
-              onPressed: () {
-                setState(() {
-                  widget.model.epilogue = !widget.model.epilogue;
-                });
-              },
-            ),
-          ],
-        )
       ]
     );
   }

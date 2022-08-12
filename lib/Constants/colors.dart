@@ -105,6 +105,14 @@ class AppColors
 
 
 
+  static final acc = [
+    accBlue[0],
+    accBlue[1],
+  ];
+
+
+
+
   static final winToTransparentGradient = LinearGradient(
     colors: [
       win[0],
@@ -151,8 +159,8 @@ class AppColors
 
   static final accentToTransparentGradient = LinearGradient(
     colors: [
-      accBlue[0],
-      accBlue[1],
+      acc[0],
+      acc[1],
       Colors.transparent,
     ],
     begin: Alignment.topLeft,
@@ -215,8 +223,8 @@ class AppColors
 
   static final accentGradient = LinearGradient(
     colors: [
-      accBlue[0],
-      accBlue[1]
+      acc[0],
+      acc[1]
     ],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,

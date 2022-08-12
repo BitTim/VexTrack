@@ -1,11 +1,14 @@
+
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vextrack/Components/gradient_progress.dart';
+import 'package:vextrack/Components/performance_chart.dart';
 import 'package:vextrack/Constants/colors.dart';
 import 'package:vextrack/Core/formatter.dart';
 import 'package:vextrack/Core/history_calc.dart';
 import 'package:vextrack/Core/xp_calc.dart';
+import 'package:vextrack/Models/Seasons/performance.dart';
 import 'package:vextrack/Models/Seasons/season.dart';
 
 class SeasonWidget extends StatefulWidget {
@@ -48,6 +51,7 @@ class SeasonWidgetState extends State<SeasonWidget>
     
     return AppColors.loss[0];
   }
+
 
 
 
@@ -247,6 +251,13 @@ class SeasonWidgetState extends State<SeasonWidget>
                       ],
                     ),
                   ],
+                ),
+              ),
+
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: PerformanceChart(
+                  model: Performance.fromSeason(widget.model),
                 ),
               ),
             ],

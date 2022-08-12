@@ -38,4 +38,9 @@ class Formatter
   {
     return '${(progress * 100).toStringAsFixed(0)}%';
   }
+
+  static String formatLargeNumber(int number)
+  {
+    return NumberFormat.compact(locale: Platform.localeName).format(number);
+  }
 }

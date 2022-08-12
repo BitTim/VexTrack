@@ -1,18 +1,18 @@
-import 'dart:math';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vextrack/Constants/colors.dart';
+import 'package:vextrack/Core/formatter.dart';
 import 'package:vextrack/Core/xp_calc.dart';
 import 'package:vextrack/Models/Seasons/performance.dart';
 import 'package:vextrack/Services/data.dart';
 
 class PerformanceChart extends StatefulWidget
 {
-  Performance model;
+  final Performance model;
 
-  PerformanceChart({
+  const PerformanceChart({
     Key? key,
     required this.model,
   }) : super(key: key);
@@ -105,7 +105,7 @@ class PerformanceChartState extends State<PerformanceChart> {
         ),
       ),
 
-      borderData: FlBorderData( // TODO: Change to actual border
+      borderData: FlBorderData(
         show: false,
       ),
 
@@ -128,14 +128,12 @@ class PerformanceChartState extends State<PerformanceChart> {
             },
           ),
         ),
-        leftTitles: AxisTitles( // TODO: Fix formating
+        leftTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
-            interval: widget.model.cumulative ? 100000 : 10000,
             reservedSize: 32,
             getTitlesWidget: (value, meta) {
-              String text = "";
-              if(value % (widget.model.cumulative ? 100000 : 10000) == 0) text = "${(value ~/ 1000).toInt()} k";
+              String text = Formatter.formatLargeNumber(value.toInt());
 
               return Text(
                 text,
@@ -170,7 +168,7 @@ class PerformanceChartState extends State<PerformanceChart> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Row( // TODO: Make button appearance toggle with buttons // TODO: Somehow integaret Buttons into layout
+        Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.max,
           children: [
@@ -185,24 +183,44 @@ class PerformanceChartState extends State<PerformanceChart> {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                ShaderMask( // FIXME: Doesn't work
-                  shaderCallback: (Rect bounds) {
-                    if (widget.model.cumulative == true) return AppColors.accentGradient.createShader(bounds);
-                    return const LinearGradient(
-                      colors: [AppColors.lightText]
-                    ).createShader(bounds);
-                  },
-                  child: IconButton(
-                    icon: const Icon(Icons.line_axis_rounded),
-                    onPressed: () {
-                      setState(() {
-                        widget.model.cumulative = !widget.model.cumulative;
-                      });
+                IconButton(
+                  icon: ShaderMask(
+                    shaderCallback: (Rect bounds) {
+                      if (widget.model.cumulative == true) return AppColors.accentGradient.createShader(bounds);
+                      return const LinearGradient(
+                        colors: [AppColors.lightText, AppColors.lightText],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        stops: [0.0, 1.1],
+                      ).createShader(bounds);
                     },
+                    child: const Icon(
+                      Icons.line_axis_rounded,
+                      color: Colors.white,
+                    ),
                   ),
+                  onPressed: () {
+                    setState(() {
+                      widget.model.cumulative = !widget.model.cumulative;
+                    });
+                  },
                 ),
                 IconButton(
-                  icon: const Icon(Icons.rocket_launch_rounded),
+                  icon: ShaderMask(
+                    shaderCallback: (Rect bounds) {
+                      if (widget.model.epilogue == true) return AppColors.accentGradient.createShader(bounds);
+                      return const LinearGradient(
+                        colors: [AppColors.lightText, AppColors.lightText],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        stops: [0.0, 1.1],
+                      ).createShader(bounds);
+                    },
+                    child: const Icon(
+                      Icons.rocket_launch_rounded,
+                      color: Colors.white,
+                    ),
+                  ),
                   onPressed: () {
                     setState(() {
                       widget.model.epilogue = !widget.model.epilogue;

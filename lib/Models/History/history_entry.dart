@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart';
-import 'package:universal_io/io.dart';
 import 'package:vextrack/Core/formatter.dart';
 import 'package:vextrack/Services/data.dart';
 

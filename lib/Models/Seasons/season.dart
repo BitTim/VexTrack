@@ -53,6 +53,14 @@ class Season
     return remaining;
   }
 
+  int getDailyAvg()
+  {
+    int xp = getXP();
+    int dailyAvg = xp ~/ meta.getDateTime(meta.endDate).difference(meta.getDateTime(meta.startDate)).inDays;
+
+    return dailyAvg;
+  }
+
   double getProgress()
   {
     int xp = getXP();
@@ -106,10 +114,7 @@ class Season
   }
 
   String getFormattedDailyAvg() {
-    int xp = getXP();
-    int dailyAvg = xp ~/ meta.getDateTime(meta.endDate).difference(meta.getDateTime(meta.startDate)).inDays;
-    
-    return Formatter.formatXP(dailyAvg);
+    return Formatter.formatXP(getDailyAvg());
   }
 
   String getFormattedProgress()

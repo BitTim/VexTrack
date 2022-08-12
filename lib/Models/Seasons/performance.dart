@@ -11,6 +11,8 @@ class Performance
   int duration;
   int total;
   int epilogueTotal;
+  int avgDailyXP;
+  int activeXP;
   bool isActive;
   List<HistoryEntry> history;
 
@@ -21,6 +23,8 @@ class Performance
     required this.duration,
     required this.total,
     required this.epilogueTotal,
+    required this.avgDailyXP,
+    required this.activeXP,
     required this.isActive,
     required this.history,
   });
@@ -31,6 +35,8 @@ class Performance
       duration: season.meta.getDuration().inDays,
       total: season.getTotal(),
       epilogueTotal: season.getTotal() + season.getEpilogueTotal(),
+      avgDailyXP: season.getDailyAvg(),
+      activeXP: season.getXP(),
       isActive: season.isActive(),
       history: season.history,
     );
@@ -86,38 +92,24 @@ class Performance
 
   List<Point> getUserAverage()
   {
-    List<int> actualDailyXP = HistoryCalc.getXPPerDay(history, isActive, duration);
-    int effectiveDuration = actualDailyXP.length;
-
-    int activeXP = 0;
-    for (int i = 0; i < effectiveDuration; i++) { activeXP += actualDailyXP[i]; }
-
-    double avgDailyXP = activeXP / effectiveDuration;
-
     List<Point> points = [];
-    double cumulativeSum = 0;
+    int cumulativeSum = 0;
 
     for (int i = 0; i < duration; i++)
     {
-      double amount = 0;
-
-      if (i < effectiveDuration)
-      {
-        amount = avgDailyXP;
-        cumulativeSum += amount;
-      }
-
-      points.add(Point(i, cumulative ? cumulativeSum : amount));
+      cumulativeSum += avgDailyXP;
+      points.add(Point(i, cumulative ? cumulativeSum : avgDailyXP));
     }
 
     return points;
   }
 
-  List<Point>? getUserIdeal()
+  List<Point> getUserIdeal()
   {
-    if (!isActive) { return null; }
+    if (!isActive) return [];
 
-
+    List<Point> points = [];
+    return points;
   }
 
 
@@ -131,4 +123,5 @@ class Performance
   {
     return points.map((e) => FlSpot(e.x.toDouble(), e.y.toDouble())).toList();
   }
+
 }

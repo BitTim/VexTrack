@@ -256,8 +256,11 @@ class SeasonWidgetState extends State<SeasonWidget>
                 ),
               ),
 
-              PerformanceChart(
-                model: Performance.fromSeason(widget.model),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: PerformanceChart(
+                  model: Performance.fromSeason(widget.model),
+                ),
               ),
             ],
           ),

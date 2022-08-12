@@ -3,7 +3,9 @@ import 'dart:math';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:vextrack/Constants/colors.dart';
+import 'package:vextrack/Core/xp_calc.dart';
 import 'package:vextrack/Models/Seasons/performance.dart';
+import 'package:vextrack/Services/data.dart';
 
 class PerformanceChart extends StatefulWidget
 {
@@ -19,7 +21,33 @@ class PerformanceChart extends StatefulWidget
 }
 
 class PerformanceChartState extends State<PerformanceChart> {
-  bool cumulative = true;
+  List<HorizontalLine> getBattlepassLines()
+  {
+    List<HorizontalLine> lines = [];
+    if (!widget.model.cumulative) return lines;
+
+    int nLevels = DataService.battlepassParams!.levels;
+    if (widget.model.epilogue) nLevels += DataService.battlepassParams!.epilogue;
+
+    int cumulativeSum = 0;
+    for (int i = 1; i < nLevels + 1; i++)
+    {
+      Color col = AppColors.lightShade;
+      if (i % 5 == 0) col = AppColors.win[0];
+      if (i > DataService.battlepassParams!.levels) col = AppColors.epilogue[0];
+      cumulativeSum += XPCalc.getLevelTotal(i + 1) as int;
+
+      if (cumulativeSum < widget.model.activeXP) col = col.withAlpha(16);
+
+      lines.add(HorizontalLine(
+        color: col,
+        strokeWidth: 1,
+        y: cumulativeSum.toDouble(),
+      ));
+    }
+
+    return lines;
+  }
 
   LineChartData getChartData()
   {
@@ -55,22 +83,59 @@ class PerformanceChartState extends State<PerformanceChart> {
           isCurved: true,
           preventCurveOverShooting: true,
           isStrokeCapRound: true,
-          barWidth: 1,
+          barWidth: 3,
           dotData: FlDotData(
             show: false,
           ),
           dashArray: [10, 5, 1, 5],
         ),
       ],
-      gridData: FlGridData( //TODO: Change to actual lines
-        drawVerticalLine: false,
+      gridData: FlGridData(
         drawHorizontalLine: false,
+        drawVerticalLine: true,
+        verticalInterval: 5,
+        getDrawingVerticalLine: (value) => FlLine(
+          color: AppColors.lightShade,
+          strokeWidth: 1,
+        ),
       ),
       borderData: FlBorderData( // TODO: Change to actual border
         show: false,
       ),
       titlesData: FlTitlesData( // TODO: Change to actual titles
-        show: false,
+        bottomTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            interval: 5,
+            getTitlesWidget: (value, meta) {
+              String text = "";
+              if(value % 5 == 0) text = "${value.toInt()}";
+
+              return Text(
+                text
+              );
+            },
+          ),
+        ),
+        leftTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: false,
+          )
+        ),
+        topTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: false,
+          ),
+        ),
+        rightTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: false,
+          ),
+        ),
+      ),
+      extraLinesData: ExtraLinesData(
+        extraLinesOnTop: false,
+        horizontalLines: getBattlepassLines(),
       ),
     );
   }
@@ -82,7 +147,9 @@ class PerformanceChartState extends State<PerformanceChart> {
         AspectRatio(
           aspectRatio: 1.5,
           child: LineChart(
-            getChartData()
+            getChartData(),
+            swapAnimationCurve: Curves.easeInOutSine,
+            swapAnimationDuration: const Duration(milliseconds: 250),
           ),
         ),
         Row(

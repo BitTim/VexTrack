@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:vextrack/Constants/colors.dart';
+import 'package:vextrack/Core/formatter.dart';
 import 'package:vextrack/Core/util.dart';
 import 'package:vextrack/Models/Goals/goal.dart';
 
@@ -87,12 +88,6 @@ class Contract
     return stops;
   }
 
-  String getPrecentage()
-  {
-    double progress = getProgress();
-    return '${(progress * 100).toStringAsFixed(0)}%';
-  }
-
   LinearGradient getGradient()
   {
     if (startColor != "" && endColor != "")
@@ -123,15 +118,12 @@ class Contract
     return null;
   }
 
-  String getNextUnlockName()
-  {
-    return getNextUnlock()?.name ?? "None";
-  }
 
-  String getNextUnlockPercentage()
-  {
-    return getNextUnlock()?.getPrecentage() ?? "0%";
-  }
+
+
+  // -------------------------------
+  // Flags
+  // -------------------------------
 
   bool isActive()
   {
@@ -139,5 +131,42 @@ class Contract
     if (getRemaining() <= 0) return false;
 
     return true;
+  }
+
+
+
+
+  // --------------------------------
+  // Formatted getters
+  // --------------------------------
+
+  String getFormattedTotal()
+  {
+    return Formatter.formatXP(getTotal());
+  }
+
+  String getFormattedXP()
+  {
+    return Formatter.formatXP(getXP());
+  }
+
+  String getFormattedRemaining()
+  {
+    return Formatter.formatXP(getRemaining());
+  }
+
+  String getFormattedProgress()
+  {
+    return Formatter.formatPercentage(getProgress());
+  }
+
+  String getNextUnlockName()
+  {
+    return getNextUnlock()?.name ?? "None";
+  }
+
+  String getNextUnlockFormattedProgress()
+  {
+    return getNextUnlock()?.getFormattedProgress() ?? "0%";
   }
 }

@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart';
-import 'package:universal_io/io.dart';
+import 'package:vextrack/Core/formatter.dart';
 import 'package:vextrack/Services/data.dart';
 
 class HistoryEntry {
@@ -43,7 +42,9 @@ class HistoryEntry {
     );
   }
 
+  int getXP() { return xp; }
   DateTime getDateTime() { return DateTime.fromMillisecondsSinceEpoch(time * 1000).toLocal(); }
+  
   DateTime getDate()
   {
     DateTime dt = getDateTime();
@@ -81,7 +82,32 @@ class HistoryEntry {
     return "draw";
   }
 
-  String getFormattedDesc() {
+
+
+
+  // --------------------------------
+  // Flags
+  // --------------------------------
+
+  bool hasWon() { return getResult() == "win"; }
+  bool hasLost() { return getResult() == "loss"; }
+  bool isDraw() { return getResult() == "draw"; }
+  bool hasSurrendered() { return surrenderedWin || surrenderedLoss; }
+
+
+
+
+  // --------------------------------
+  // Formatted getters
+  // --------------------------------
+
+  String getFormattedXP()
+  {
+    return Formatter.formatXP(getXP());
+  }
+
+  String getFormattedDesc()
+  {
     if (desc != "") return desc;
 
     String scoreFormat = getScoreFormat();
@@ -98,12 +124,8 @@ class HistoryEntry {
     return formattedDesc;
   }
 
-  String getFormattedTime() {
-    return DateFormat.Hm(Platform.localeName).format(getDateTime());
+  String getFormattedTime()
+  {
+    return Formatter.formatTime(getDateTime());
   }
-
-  bool hasWon() { return getResult() == "win"; }
-  bool hasLost() { return getResult() == "loss"; }
-  bool isDraw() { return getResult() == "draw"; }
-  bool hasSurrendered() { return surrenderedWin || surrenderedLoss; }
 }

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:vextrack/Core/formatter.dart';
 import 'package:vextrack/Models/Goals/contract.dart';
 
 class Goal
@@ -25,16 +26,28 @@ class Goal
     );
   }
 
-  double getProgress()
+  int getTotal()
   {
-    if(total == 0) return 1.0;
-    return xp.toDouble() / total.toDouble();
+    return total;
   }
 
-  String getPrecentage()
+  int getXP()
   {
-    double progress = getProgress();
-    return '${(progress * 100).toStringAsFixed(0)}%';
+    return xp;
+  }
+
+  int getRemaining()
+  {
+    return getTotal() - getXP();
+  }
+
+  double getProgress()
+  {
+    int total = getTotal();
+    int xp = getXP();
+
+    if(total == 0) return 1.0;
+    return xp.toDouble() / total.toDouble();
   }
 
   LinearGradient getGradient()
@@ -42,8 +55,30 @@ class Goal
     return parent.getGradient();
   }
 
-  int getRemaining()
+
+
+
+  // --------------------------------
+  // Formatted getters
+  // --------------------------------
+
+  String getFormattedTotal()
   {
-    return total - xp;
+    return Formatter.formatXP(getTotal());
+  }
+
+  String getFormattedXP()
+  {
+    return Formatter.formatXP(getXP());
+  }
+
+  String getFormattedRemaining()
+  {
+    return Formatter.formatXP(getRemaining());
+  }
+
+  String getFormattedProgress()
+  {
+    return Formatter.formatPercentage(getProgress());
   }
 }

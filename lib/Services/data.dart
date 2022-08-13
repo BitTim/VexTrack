@@ -48,7 +48,9 @@ class DataService
     Map<int, Season> seasonOrder = {};
     for (QueryDocumentSnapshot doc in loadedSeasons.docs)
     {
-      Season s = Season.fromDoc(doc, seasonMetas[doc['id'] as String]!);
+      List<HistoryEntry> history = await getHistory(uid, doc.id);
+
+      Season s = Season.fromDoc(doc, seasonMetas[doc['id'] as String]!, history);
       int idx = seasonMetas.keys.toList().indexOf(s.id);
       seasonOrder[idx] = s;
     }
@@ -68,7 +70,9 @@ class DataService
       .doc(id)
       .get();
 
-    Season season = Season.fromDoc(loadedSeason, seasonMetas[loadedSeason['id'] as String]!);
+    List<HistoryEntry> history = await getHistory(uid, id);
+
+    Season season = Season.fromDoc(loadedSeason, seasonMetas[loadedSeason['id'] as String]!, history);
     return season;
   }
 
@@ -125,25 +129,7 @@ class DataService
 
     return seasonMetas;
   }
-
-  static String getSeasonName(String id)
-  {
-    if(DataService.seasonMetas[id] == null) return "";
-    return DataService.seasonMetas[id]!.name;
-  }
-
-  static String getSeasonFormattedStartDate(String id)
-  {
-    if(DataService.seasonMetas[id] == null) return "";
-    return DataService.seasonMetas[id]!.getFormattedStartDate();
-  }
-
-  static String getSeasonFormattedEndDate(String id)
-  {
-    if(DataService.seasonMetas[id] == null) return "";
-    return DataService.seasonMetas[id]!.getFormattedEndDate();
-  }
-
+  
   static Future<String> getSeasonImgUrl(String id) async
   {
     if(DataService.seasonMetas[id] == null) id = "none";
@@ -233,87 +219,9 @@ class DataService
   //  Goal Data
   // ===============================
 
-  static Future<List<Contract>> getBattlepassContracts(String uid) async
-  {
-    List<Contract> progressions = [];
-    int levels = DataService.battlepassParams!.levels;
-    int epilogue = DataService.battlepassParams!.epilogue;
-
-    // Small Passes here, like aniversary pass, etc.
-
-    SeasonMeta? activeMeta = getActiveSeasonMeta();
-    if(activeMeta == null) return progressions;
-    
-    Season season = await getSeason(uid, activeMeta.id);
-
-    // Battlepass
-
-    Contract bpProgression = Contract(
-      "battlepass",
-      "Battlepass",
-      "",
-      "",
-      "",
-      false
-    );
-
-    for(int i = 1; i <= levels; i++)
-    {
-      int xp = season.activeXP;
-
-      if (i < season.activeLevel) xp = XPCalc.getLevelTotal(i);
-      if (i > season.activeLevel || i == 1) xp = 0;
-
-      bpProgression.goals.add(Goal(
-        bpProgression,
-        "Level $i",
-        XPCalc.getLevelTotal(i),
-        xp,
-        i,
-        activeMeta.battlepass[i - 1],
-      ));
-    }
-
-    progressions.add(bpProgression); //TODO: Keep goals but change progress bar to a similar one to seasons
-    // TODO: Create Item object for "reward" for goals and have battlepass levels only have one goal
-
-    // Epilogue
-
-    Contract epProgression = Contract(
-      "epilogue",
-      "Epilogue",
-      "",
-      "",
-      "",
-      false
-    );
-
-    for(int i = levels + 1; i <= epilogue; i++)
-    {
-      int xp = season.activeXP;
-
-      if (i < season.activeLevel) xp = XPCalc.getLevelTotal(i);
-      if (i > season.activeLevel) xp = 0;
-
-      epProgression.goals.add(Goal(
-        epProgression,
-        "Level $i",
-        XPCalc.getLevelTotal(i),
-        xp,
-        i,
-        activeMeta.battlepass[i - levels - 1]
-      ));
-    }
-
-    progressions.add(epProgression);
-
-    return progressions;
-  }
-
   static Future<List<Contract>> getAllContracts(String uid) async
   {
     List<Contract> progressions = [];
-    //progressions = await getBattlepassContracts(uid);
 
     QuerySnapshot loadedProgressions = await usersRef.doc(uid)
       .collection("progressions")

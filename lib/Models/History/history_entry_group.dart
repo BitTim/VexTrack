@@ -1,5 +1,4 @@
-import 'package:intl/intl.dart';
-import 'package:universal_io/io.dart';
+import 'package:vextrack/Core/formatter.dart';
 import 'package:vextrack/Models/History/history_entry.dart';
 
 class HistoryEntryGroup {
@@ -8,7 +7,14 @@ class HistoryEntryGroup {
 
   HistoryEntryGroup(this.date, this.entries);
 
+
+
+
+  // --------------------------------
+  // Formatted getters
+  // --------------------------------
+
   String getFormattedDate() {
-    return DateFormat.yMd(Platform.localeName).format(date);
+    return Formatter.formatDate(date);
   }
 }

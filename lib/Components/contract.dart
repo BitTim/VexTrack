@@ -88,7 +88,7 @@ class ContractWidgetState extends State<ContractWidget>
                           Padding(
                             padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
                             child: Text(
-                              widget.model.getPrecentage(),
+                              widget.model.getFormattedProgress(),
                               style: GoogleFonts.titilliumWeb(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w700,
@@ -106,7 +106,7 @@ class ContractWidgetState extends State<ContractWidget>
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "${widget.model.getXP()} XP / ${widget.model.getTotal()} XP",
+                            "${widget.model.getFormattedXP()} / ${widget.model.getFormattedTotal()}",
                             style: GoogleFonts.titilliumWeb(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
@@ -114,7 +114,7 @@ class ContractWidgetState extends State<ContractWidget>
                             ),
                           ),
                           Text(
-                            "Remaining: ${widget.model.getRemaining()} XP",
+                            "Remaining: ${widget.model.getFormattedRemaining()}",
                             style: GoogleFonts.titilliumWeb(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
@@ -143,7 +143,7 @@ class ContractWidgetState extends State<ContractWidget>
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
-                                  "${widget.model.getNextUnlockName()} (${widget.model.getNextUnlockPercentage()})",
+                                  "${widget.model.getNextUnlockName()} (${widget.model.getNextUnlockFormattedProgress()})",
                                   style: GoogleFonts.titilliumWeb(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w500,
@@ -151,7 +151,7 @@ class ContractWidgetState extends State<ContractWidget>
                                   ),
                                 ),
                                 Text(
-                                  "Remaining: ${widget.model.getNextUnlock()?.getRemaining()} XP",
+                                  "Remaining: ${widget.model.getNextUnlock()?.getFormattedRemaining()}",
                                   style: GoogleFonts.titilliumWeb(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w500,

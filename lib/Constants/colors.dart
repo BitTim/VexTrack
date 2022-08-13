@@ -84,6 +84,12 @@ class AppColors
     Color(0xcc19b2b5),
   ];
 
+  static const warn = [
+    Color(0xfff9e500),
+    Color(0xfff6c900),
+    Color(0xccf6c900),
+  ];
+
   static const loss = [
     Color(0xfff05c57),
     Color(0xffe54c7c),
@@ -94,6 +100,14 @@ class AppColors
     Color(0xff2978a0),
     Color(0xff061a40),
     Color(0xcc061a40),
+  ];
+
+
+
+
+  static final acc = [
+    accBlue[0],
+    accBlue[1],
   ];
 
 
@@ -145,8 +159,8 @@ class AppColors
 
   static final accentToTransparentGradient = LinearGradient(
     colors: [
-      accBlue[0],
-      accBlue[1],
+      acc[0],
+      acc[1],
       Colors.transparent,
     ],
     begin: Alignment.topLeft,
@@ -167,6 +181,16 @@ class AppColors
     stops: const [0.0, 1.0],
   );
 
+  static final warnGradient = LinearGradient(
+    colors: [
+      warn[0],
+      warn[1]
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    stops: const [0.0, 1.0],
+  );
+
   static final lossGradient = LinearGradient(
     colors: [
       loss[0],
@@ -175,6 +199,16 @@ class AppColors
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     stops: const [0.0, 1.0],
+  );
+
+  static const drawGradient = LinearGradient(
+    colors: [
+      darkBG,
+      darkShade,
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    stops: [0.0, 1.0],
   );
 
   static final epilogueGradient = LinearGradient(
@@ -189,8 +223,8 @@ class AppColors
 
   static final accentGradient = LinearGradient(
     colors: [
-      accBlue[0],
-      accBlue[1]
+      acc[0],
+      acc[1]
     ],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,

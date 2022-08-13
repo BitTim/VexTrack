@@ -69,7 +69,7 @@ class GoalWidgetState extends State<GoalWidget>
                         Padding(
                           padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
                           child: Text(
-                            widget.model.getPrecentage(),
+                            widget.model.getFormattedProgress(),
                             style: GoogleFonts.titilliumWeb(
                               fontSize: 14,
                               fontWeight: FontWeight.w700,
@@ -87,7 +87,7 @@ class GoalWidgetState extends State<GoalWidget>
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "${widget.model.xp} XP / ${widget.model.total} XP",
+                          "${widget.model.getFormattedXP()} / ${widget.model.getFormattedTotal()}",
                           style: GoogleFonts.titilliumWeb(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
@@ -95,7 +95,7 @@ class GoalWidgetState extends State<GoalWidget>
                           ),
                         ),
                         Text(
-                          "Remaining: ${widget.model.getRemaining()} XP",
+                          "Remaining: ${widget.model.getFormattedRemaining()}",
                           style: GoogleFonts.titilliumWeb(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,

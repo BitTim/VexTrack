@@ -1,5 +1,6 @@
 import 'package:vextrack/Models/History/history_entry.dart';
 import 'package:vextrack/Models/History/history_entry_group.dart';
+import 'package:vextrack/Models/Seasons/season_meta.dart';
 
 class HistoryCalc
 {
@@ -25,7 +26,7 @@ class HistoryCalc
     return groupedHistory;
   }
 
-  static List<int> getXPPerDay(List<HistoryEntry> history, bool isActive, int duration) {
+  static List<int> getXPPerDay(List<HistoryEntry> history, SeasonMeta meta) {
     List<int> amounts = [0];
     DateTime prevDate = history[0].getDate();
 
@@ -48,9 +49,18 @@ class HistoryCalc
       }
     }
 
-    if (!isActive) // Fill missing entries for completed seasons
+    if (!meta.isActive()) // Fill missing entries for completed seasons
     {
-      int missingEntries = duration - amounts.length;
+      int missingEntries = meta.getDuration().inDays - amounts.length;
+      
+      for (int i = missingEntries; i > 0; i--)
+      {
+        amounts.add(0);
+      }
+    }
+    else // Fill entries up until current day for active season
+    {
+      int missingEntries = DateTime.now().difference(prevDate).inDays - amounts.length;
       
       for (int i = missingEntries; i > 0; i--)
       {

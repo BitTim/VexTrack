@@ -29,4 +29,6 @@ class SeasonMeta
   DateTime getStartDate() { return getDateTime(startDate); }
   DateTime getEndDate() { return getDateTime(endDate); }
   Duration getDuration() { return getEndDate().difference(getStartDate()); }
+
+  bool isActive() { return DateTime.now().compareTo(getEndDate()) < 0; }
 }

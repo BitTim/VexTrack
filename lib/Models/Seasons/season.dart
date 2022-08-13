@@ -78,7 +78,7 @@ class Season
 
   int getInactiveDays()
   {
-    List<int> xpPerDay = HistoryCalc.getXPPerDay(history, isActive(), meta.getDuration().inDays);
+    List<int> xpPerDay = HistoryCalc.getXPPerDay(history, meta);
     int inactiveDays = 0;
 
     for (int xp in xpPerDay)
@@ -100,7 +100,7 @@ class Season
   bool hasCompleted() { return getProgress() >= 1.0; }
   bool hasFailed() { return getProgress() < 1.0; }
 
-  bool isActive() { return (DateTime.now().millisecondsSinceEpoch / 1000) < meta.endDate; }
+  bool isActive() { return meta.isActive(); }
 
 
 

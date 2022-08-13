@@ -4,6 +4,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:vextrack/Core/history_calc.dart';
 import 'package:vextrack/Models/History/history_entry.dart';
 import 'package:vextrack/Models/Seasons/season.dart';
+import 'package:vextrack/Models/Seasons/season_meta.dart';
 import 'package:vextrack/Services/settings.dart';
 
 class Performance
@@ -13,7 +14,7 @@ class Performance
   int epilogueTotal;
   int avgDailyXP;
   int activeXP;
-  bool isActive;
+  SeasonMeta meta;
   List<HistoryEntry> history;
 
   bool cumulative = true;
@@ -25,7 +26,7 @@ class Performance
     required this.epilogueTotal,
     required this.avgDailyXP,
     required this.activeXP,
-    required this.isActive,
+    required this.meta,
     required this.history,
   });
 
@@ -37,7 +38,7 @@ class Performance
       epilogueTotal: season.getTotal() + season.getEpilogueTotal(),
       avgDailyXP: season.getDailyAvg(),
       activeXP: season.getXP(),
-      isActive: season.isActive(),
+      meta: season.meta,
       history: season.history,
     );
   }
@@ -77,7 +78,7 @@ class Performance
   List<Point> getUserXP()
   {
     List<Point> points = [];
-    List<int> dailyXP = HistoryCalc.getXPPerDay(history, isActive, duration);
+    List<int> dailyXP = HistoryCalc.getXPPerDay(history, meta);
     double cumulativeSum = 0;
 
     for (int i = 0; i < dailyXP.length; i++)
@@ -106,7 +107,7 @@ class Performance
 
   List<Point> getUserIdeal()
   {
-    if (!isActive) return [];
+    if (!meta.isActive()) return [];
 
     List<Point> points = [];
     return points;

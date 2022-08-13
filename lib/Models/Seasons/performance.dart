@@ -124,4 +124,19 @@ class Performance
     return points.map((e) => FlSpot(e.x.toDouble(), e.y.toDouble())).toList();
   }
 
+  int getMaxChartXP()
+  {
+    if (cumulative)
+    {
+      if (total > activeXP) return total;
+      return activeXP;
+    }
+    else
+    {
+      int maxXP = getUserXP().map((e) => e.y).reduce(max).toInt();
+      int maxIdeal = getAverageIdeal()[0].y.toInt();
+      if (maxIdeal > maxXP) return maxIdeal;
+      return maxXP;
+    }
+  }
 }

@@ -131,7 +131,8 @@ class PerformanceChartState extends State<PerformanceChart> {
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
-            reservedSize: 32,
+            reservedSize: 48,
+            interval: widget.model.getMaxChartXP() / 15,
             getTitlesWidget: (value, meta) {
               String text = Formatter.formatLargeNumber(value.toInt());
 

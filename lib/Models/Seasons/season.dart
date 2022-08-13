@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:vextrack/Core/formatter.dart';
+import 'package:vextrack/Core/history_calc.dart';
 import 'package:vextrack/Core/xp_calc.dart';
 import 'package:vextrack/Models/History/history_entry.dart';
 import 'package:vextrack/Models/Seasons/season_meta.dart';
@@ -75,6 +76,19 @@ class Season
     return progress;
   }
 
+  int getInactiveDays()
+  {
+    List<int> xpPerDay = HistoryCalc.getXPPerDay(history, isActive(), meta.getDuration().inDays);
+    int inactiveDays = 0;
+
+    for (int xp in xpPerDay)
+    {
+      if (xp == 0) inactiveDays++;
+    }
+
+    return inactiveDays;
+  }
+
 
 
 
@@ -120,5 +134,10 @@ class Season
   String getFormattedProgress()
   {
     return Formatter.formatPercentage(getProgress());
+  }
+
+  String getFormattedInactiveDays()
+  {
+    return Formatter.formatDays(getInactiveDays());
   }
 }

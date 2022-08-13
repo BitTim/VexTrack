@@ -57,8 +57,7 @@ class PerformanceChartState extends State<PerformanceChart> {
         LineChartBarData( // Avg Ideal
           spots: Performance.mapPointToSpot(widget.model.getAverageIdeal()),
           gradient: AppColors.drawGradient,
-          isCurved: true,
-          preventCurveOverShooting: true,
+          isCurved: false,
           isStrokeCapRound: true,
           barWidth: 3,
           dotData: FlDotData(
@@ -70,8 +69,7 @@ class PerformanceChartState extends State<PerformanceChart> {
         LineChartBarData( // User XP
           spots: Performance.mapPointToSpot(widget.model.getUserXP()),
           gradient: AppColors.lossGradient,
-          isCurved: true,
-          preventCurveOverShooting: true,
+          isCurved: false,
           isStrokeCapRound: true,
           barWidth: 3,
           dotData: FlDotData(
@@ -83,8 +81,7 @@ class PerformanceChartState extends State<PerformanceChart> {
         LineChartBarData( // User Avg
           spots: Performance.mapPointToSpot(widget.model.getUserAverage()),
           gradient: AppColors.warnGradient,
-          isCurved: true,
-          preventCurveOverShooting: true,
+          isCurved: false,
           isStrokeCapRound: true,
           barWidth: 3,
           dotData: FlDotData(

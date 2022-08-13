@@ -177,6 +177,7 @@ class SeasonWidgetState extends State<SeasonWidget>
           collapsed: const SizedBox.shrink(),
 
           expanded: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
@@ -206,12 +207,12 @@ class SeasonWidgetState extends State<SeasonWidget>
                         ),
                       ],
                     ),
-
+                
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          "Strongest day: ",
+                          "Inactive days: ",
                           style: GoogleFonts.titilliumWeb(
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
@@ -219,7 +220,7 @@ class SeasonWidgetState extends State<SeasonWidget>
                           ),
                         ),
                         Text(
-                          "${Formatter.formatDate(extremeDays['strongestDate'])} (${Formatter.formatXP(extremeDays['strongestXP'])})",
+                          widget.model.getFormattedInactiveDays(),
                           style: GoogleFonts.titilliumWeb(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
@@ -228,24 +229,57 @@ class SeasonWidgetState extends State<SeasonWidget>
                         ),
                       ],
                     ),
-
+                
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
-                          "Weakest day: ",
-                          style: GoogleFonts.titilliumWeb(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.lightText,
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                "Strongest day: ",
+                                style: GoogleFonts.titilliumWeb(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.lightText,
+                                ),
+                              ),
+                              Text(
+                                "${Formatter.formatDate(extremeDays['strongestDate'])} (${Formatter.formatXP(extremeDays['strongestXP'])})",
+                                style: GoogleFonts.titilliumWeb(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.lightText,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        Text(
-                          "${Formatter.formatDate(extremeDays['weakestDate'])} (${Formatter.formatXP(extremeDays['weakestXP'])})",
-                          style: GoogleFonts.titilliumWeb(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.lightText,
+                
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                "Weakest day: ",
+                                style: GoogleFonts.titilliumWeb(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.lightText,
+                                ),
+                              ),
+                              Text(
+                                "${Formatter.formatDate(extremeDays['weakestDate'])} (${Formatter.formatXP(extremeDays['weakestXP'])})",
+                                style: GoogleFonts.titilliumWeb(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.lightText,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],

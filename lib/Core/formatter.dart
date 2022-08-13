@@ -22,6 +22,11 @@ class Formatter
     return "${d.inDays} days";
   }
 
+  static String formatDays(int inactiveDays)
+  {
+    return "$inactiveDays days";
+  }
+
 
 
 

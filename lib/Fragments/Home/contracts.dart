@@ -54,7 +54,7 @@ class ProgressionsFragmentState extends State<ProgressionsFragment>
   setupSeasons() async
   {
     setState(() => _loading = true);
-    List<Season> seasons = await DataService.getAllSeasons(widget.uid);
+    List<Season> seasons = await DataService.getAllSeasons(uid: widget.uid);
     if (mounted) {
       setState(() {
         _seasonsActive = seasons.where((element) => element.isActive()).toList();

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:vextrack/Components/history_entry_group.dart';
-import 'package:vextrack/Core/history_calc.dart';
 import 'package:vextrack/Models/History/history_entry.dart';
 import 'package:vextrack/Models/History/history_entry_group.dart';
 import 'package:vextrack/Services/data.dart';
@@ -34,10 +33,11 @@ class HistoryFragmentState extends State<HistoryFragment>
   setupHistory() async
   {
     setState(() => _loading = true);
-    List<HistoryEntry> history = await DataService.getFullHistory(widget.uid);
+    List<HistoryEntryGroup> history = await DataService.getFullHistory(widget.uid);
+
     if (mounted) {
       setState(() {
-        _history = HistoryCalc.groupHistoryByDate(history);
+        _history = history;
         _loading = false;
       });
     }

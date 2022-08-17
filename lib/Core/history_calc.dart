@@ -4,49 +4,19 @@ import 'package:vextrack/Models/Seasons/season_meta.dart';
 
 class HistoryCalc
 {
-  static List<HistoryEntryGroup> groupHistoryByDate(List<HistoryEntry> history) {
-    List<HistoryEntryGroup> groupedHistory = [];
-
-    for (HistoryEntry he in history)
-    {
-      if (groupedHistory.isEmpty)
-      {
-        groupedHistory.add(HistoryEntryGroup(he.getDate(), [he]));
-      }
-      else
-      {
-        if (groupedHistory.last.date == he.getDate()) {
-          groupedHistory.last.entries.add(he);
-        } else {
-          groupedHistory.add(HistoryEntryGroup(he.getDate(), [he]));
-        }
-      }
-    }
-
-    return groupedHistory;
-  }
-
-  static List<int> getXPPerDay(List<HistoryEntry> history, SeasonMeta meta) {
+  static List<int> getXPPerDay(List<HistoryEntryGroup> history, SeasonMeta meta) {
     List<int> amounts = [0];
     DateTime prevDate = history[0].getDate();
 
-    for (HistoryEntry he in history)
+    for (HistoryEntryGroup heg in history)
     {
-      DateTime cDate = he.getDate();
-      if(cDate == prevDate)
-      {
-        amounts.last += he.getXP();
+      DateTime cDate = heg.getDate();
+      for (int i = 0; cDate.difference(prevDate).inDays - 1 > i; i++) {
+        amounts.add(0);
       }
-      else 
-      {
-        for (int i = 0; cDate.difference(prevDate).inDays - 1 > i; i++)
-        {
-          amounts.add(0);
-        }
 
-        amounts.add(he.getXP());
-        prevDate = he.getDate();
-      }
+      amounts.add(heg.total);
+      prevDate = cDate;
     }
 
     if (!meta.isActive()) // Fill missing entries for completed seasons
@@ -71,10 +41,9 @@ class HistoryCalc
     return amounts;
   }
 
-  static Map<String, dynamic> getExtremeDays(List<HistoryEntry> history)
+  static Map<String, dynamic> getExtremeDays(List<HistoryEntryGroup> history)
   {
-    DateTime prevDate = history[0].getDate();
-    int dayTotal = 0;
+    DateTime prevDate = DateTime(0);
 
     DateTime strongestDate = prevDate;
     int strongestXP = 0;
@@ -82,29 +51,21 @@ class HistoryCalc
     DateTime weakestDate = prevDate;
     int weakestXP = 0;
 
-    for (HistoryEntry he in history)
+    for (HistoryEntryGroup heg in history)
     {
-      if (he.getDate() == prevDate)
+      if (heg.total > strongestXP)
       {
-        dayTotal += he.xp;
+        strongestXP = heg.total;
+        strongestDate = prevDate;
       }
-      else
+
+      if (heg.total < weakestXP || weakestXP == 0)
       {
-        if (dayTotal > strongestXP)
-        {
-          strongestXP = dayTotal;
-          strongestDate = prevDate;
-        }
-
-        if (dayTotal < weakestXP || weakestXP == 0)
-        {
-          weakestXP = dayTotal;
-          weakestDate = prevDate;
-        }
-
-        prevDate = he.getDate();
-        dayTotal = he.xp;
+        weakestXP = heg.total;
+        weakestDate = prevDate;
       }
+
+      prevDate = heg.getDate();
     }
 
     return {

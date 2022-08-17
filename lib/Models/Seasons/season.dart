@@ -1,28 +1,27 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:vextrack/Core/formatter.dart';
-import 'package:vextrack/Core/history_calc.dart';
 import 'package:vextrack/Core/xp_calc.dart';
-import 'package:vextrack/Models/History/history_entry.dart';
+import 'package:vextrack/Models/History/history_entry_group.dart';
 import 'package:vextrack/Models/Seasons/season_meta.dart';
 
 class Season
 {
-  String uuid;
   String id;
   int activeLevel;
   int activeXP;
+  int inactiveDays;
   SeasonMeta meta;
-  List<HistoryEntry> history;
+  List<HistoryEntryGroup> history;
 
-  Season(this.uuid, this.id, this.activeLevel, this.activeXP, this.meta, this.history);
+  Season(this.id, this.activeLevel, this.activeXP, this.inactiveDays, this.meta, this.history);
 
-  static Season fromDoc(DocumentSnapshot doc, SeasonMeta meta, List<HistoryEntry> history)
+  static Season fromDoc(DocumentSnapshot doc, SeasonMeta meta, List<HistoryEntryGroup> history)
   {
     return Season(
-      doc['uuid'] as String,
-      doc['id'] as String,
+      doc.id,
       doc['activeLevel'] as int,
       doc['activeXP'] as int,
+      doc['inactiveDays'] as int,
       meta,
       history,
     );
@@ -76,19 +75,6 @@ class Season
     return progress;
   }
 
-  int getInactiveDays()
-  {
-    List<int> xpPerDay = HistoryCalc.getXPPerDay(history, meta);
-    int inactiveDays = 0;
-
-    for (int xp in xpPerDay)
-    {
-      if (xp == 0) inactiveDays++;
-    }
-
-    return inactiveDays;
-  }
-
 
 
 
@@ -138,6 +124,6 @@ class Season
 
   String getFormattedInactiveDays()
   {
-    return Formatter.formatDays(getInactiveDays());
+    return Formatter.formatDays(inactiveDays);
   }
 }

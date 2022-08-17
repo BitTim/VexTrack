@@ -114,109 +114,116 @@ class ProgressionsFragmentState extends State<ProgressionsFragment>
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-      child: ListView(
-        physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-        children: [
-          ExpandablePanel(
-            header: Text(
-              "Seasons",
-              style: GoogleFonts.titilliumWeb(
-                fontSize: 24,
-                fontWeight: FontWeight.w700,
-                color: AppColors.lightText,
+      child: RefreshIndicator(
+        onRefresh: () async {
+          DataService.refresh();
+          setupSeasons();
+          setupContracts();
+        },
+        child: ListView(
+          physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+          children: [
+            ExpandablePanel(
+              header: Text(
+                "Seasons",
+                style: GoogleFonts.titilliumWeb(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.lightText,
+                ),
               ),
-            ),
-            collapsed: Column(
-              children: _seasonsActive.isEmpty && _loading == false ? [
-                const Center(child: Text("No active seasons"))
-              ] : showActiveSeasons()
-            ),
-            expanded: Column(
-              children: [
-                Text(
-                  "Active",
-                  style: GoogleFonts.titilliumWeb(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.lightText,
-                  ),
-                ),
-                Column(
-                  children: _seasonsActive.isEmpty && _loading == false ? [
-                    const Center(child: Text("No active seasons"))
-                  ] : showActiveSeasons()
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                  child: Text(
-                    "Inactive",
+              collapsed: Column(
+                children: _seasonsActive.isEmpty && _loading == false ? [
+                  const Center(child: Text("No active seasons"))
+                ] : showActiveSeasons()
+              ),
+              expanded: Column(
+                children: [
+                  Text(
+                    "Active",
                     style: GoogleFonts.titilliumWeb(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
                       color: AppColors.lightText,
                     ),
                   ),
-                ),
-                Column(
-                  children: _seasonsInactive.isEmpty && _loading == false ? [
-                    const Center(child: Text("No inactive seasons"))
-                  ] : showInactiveSeasons()
-                ),
-              ],
-            ),
-          ),
-
-
-
-          ExpandablePanel(
-            header: Text(
-              "Contracts",
-              style: GoogleFonts.titilliumWeb(
-                fontSize: 24,
-                fontWeight: FontWeight.w700,
-                color: AppColors.lightText,
+                  Column(
+                    children: _seasonsActive.isEmpty && _loading == false ? [
+                      const Center(child: Text("No active seasons"))
+                    ] : showActiveSeasons()
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                    child: Text(
+                      "Inactive",
+                      style: GoogleFonts.titilliumWeb(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.lightText,
+                      ),
+                    ),
+                  ),
+                  Column(
+                    children: _seasonsInactive.isEmpty && _loading == false ? [
+                      const Center(child: Text("No inactive seasons"))
+                    ] : showInactiveSeasons()
+                  ),
+                ],
               ),
             ),
-            collapsed: Column(
-              children: _contractsActive.isEmpty && _loading == false ? [
-                const Center(child: Text("No active contracts"))
-              ] : showActiveContracts()
-            ),
-            expanded: Column(
-              children: [
-                Text(
-                  "Active",
-                  style: GoogleFonts.titilliumWeb(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.lightText,
-                  ),
+          
+          
+          
+            ExpandablePanel(
+              header: Text(
+                "Contracts",
+                style: GoogleFonts.titilliumWeb(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.lightText,
                 ),
-                Column(
-                  children: _contractsActive.isEmpty && _loading == false ? [
-                    const Center(child: Text("No active contracts"))
-                  ] : showActiveContracts()
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                  child: Text(
-                    "Inactive",
+              ),
+              collapsed: Column(
+                children: _contractsActive.isEmpty && _loading == false ? [
+                  const Center(child: Text("No active contracts"))
+                ] : showActiveContracts()
+              ),
+              expanded: Column(
+                children: [
+                  Text(
+                    "Active",
                     style: GoogleFonts.titilliumWeb(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
                       color: AppColors.lightText,
                     ),
                   ),
-                ),
-                Column(
-                  children: _contractsInactive.isEmpty && _loading == false ? [
-                    const Center(child: Text("No inactive contracts"))
-                  ] : showInactiveContracts()
-                ),
-              ],
+                  Column(
+                    children: _contractsActive.isEmpty && _loading == false ? [
+                      const Center(child: Text("No active contracts"))
+                    ] : showActiveContracts()
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                    child: Text(
+                      "Inactive",
+                      style: GoogleFonts.titilliumWeb(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.lightText,
+                      ),
+                    ),
+                  ),
+                  Column(
+                    children: _contractsInactive.isEmpty && _loading == false ? [
+                      const Center(child: Text("No inactive contracts"))
+                    ] : showInactiveContracts()
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       )
     );
   }

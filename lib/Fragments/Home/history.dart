@@ -54,7 +54,10 @@ class HistoryFragmentState extends State<HistoryFragment>
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
       child: RefreshIndicator(
-        onRefresh: () => setupHistory(),
+        onRefresh: () async {
+          DataService.refresh();
+          setupHistory();
+        },
         child: ListView(
           physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
           children: _history.isEmpty && _loading == false ? [

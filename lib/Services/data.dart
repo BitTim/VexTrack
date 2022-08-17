@@ -247,4 +247,10 @@ class DataService
     progressions.addAll(userProgressions);
     return progressions;
   }
+
+  static refresh() async
+  {
+    DataService.userData = null;
+    DataService.seasons = {};
+  }
 }

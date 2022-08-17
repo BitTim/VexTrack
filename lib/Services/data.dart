@@ -1,22 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:vextrack/Constants/references.dart';
-import 'package:vextrack/Core/xp_calc.dart';
 import 'package:vextrack/Models/Goals/goal.dart';
 import 'package:vextrack/Models/Goals/contract.dart';
+import 'package:vextrack/Models/History/history_entry_group.dart';
 import 'package:vextrack/Models/battlepass_params.dart';
 import 'package:vextrack/Models/game_mode.dart';
-import 'package:vextrack/Models/History/history_entry.dart';
 import 'package:vextrack/Models/game_map.dart';
 import 'package:vextrack/Models/Seasons/season.dart';
 import 'package:vextrack/Models/Seasons/season_meta.dart';
+import 'package:vextrack/Models/user_data.dart';
 
 class DataService
 {
+  static UserData? userData;
   static BattlepassParams? battlepassParams;
   static Map<String, GameMode> modes = {};
   static Map<String, GameMap> maps = {};
   static Map<String, SeasonMeta> seasonMetas = {};
+  static Map<String, Season> seasons = {};
 
   static void init() async
   {
@@ -24,7 +26,7 @@ class DataService
     DataService.modes = await getModes();
     DataService.maps = await getMaps();
     DataService.seasonMetas = await getSeasonMetas();
-  }  
+  }
 
   // ===============================
   //  Parameter data
@@ -40,20 +42,27 @@ class DataService
   //  User data
   // ===============================
 
-  static Future<List<Season>> getAllSeasons(String uid) async {
-    QuerySnapshot loadedSeasons = await usersRef.doc(uid)
-      .collection("seasons")
-      .get();
+  static Future<void> fetchUserData(String uid) async
+  {
+    DocumentSnapshot doc = await usersRef.doc(uid).get();
+    userData = UserData.fromDoc(doc);
+  }
+
+  static Future<List<Season>> getAllSeasons({required String uid, bool activeOnly = false}) async {
+    if(userData == null) await fetchUserData(uid);
 
     Map<int, Season> seasonOrder = {};
-    for (QueryDocumentSnapshot doc in loadedSeasons.docs)
+    for(Map<String, dynamic> s in userData!.seasonIDs)
     {
-      List<HistoryEntry> history = await getHistory(uid, doc.id);
+      bool active = s['active'];
+      String id = s['id'];
 
-      Season s = Season.fromDoc(doc, seasonMetas[doc['id'] as String]!, history);
-      int idx = seasonMetas.keys.toList().indexOf(s.id);
-      seasonOrder[idx] = s;
+      if(activeOnly && !active) continue;
+
+      int idx = seasonMetas.keys.toList().indexOf(id);
+      seasonOrder[idx] = await getSeason(uid, id);
     }
+    
     List<int> indecies = seasonOrder.keys.toList();
     indecies.sort();
 
@@ -65,38 +74,44 @@ class DataService
   }
 
   static Future<Season> getSeason(String uid, String id) async {
+    if (seasons[id] != null) return seasons[id]!;
+
     DocumentSnapshot loadedSeason = await usersRef.doc(uid)
       .collection("seasons")
       .doc(id)
       .get();
 
-    List<HistoryEntry> history = await getHistory(uid, id);
+    List<HistoryEntryGroup> history = await getHistory(uid, id);
 
-    Season season = Season.fromDoc(loadedSeason, seasonMetas[loadedSeason['id'] as String]!, history);
+    Season season = Season.fromDoc(loadedSeason, seasonMetas[id]!, history);
     return season;
   }
 
-  static Future<List<HistoryEntry>> getFullHistory(String uid) async {
-    List<HistoryEntry> history = [];
-    
-    List<Season> seasons = await getAllSeasons(uid);
-    for (Season season in seasons) {
-      List<HistoryEntry> seasonHistory = await getHistory(uid, season.uuid);
-      history.addAll(seasonHistory);
-    }
 
+
+  static Future<List<HistoryEntryGroup>> getHistory(String uid, String seasonID) async {
+    if(seasons[seasonID] != null) return seasons[seasonID]!.history;
+
+    QuerySnapshot loadedHistory = await usersRef.doc(uid)
+      .collection("seasons")
+      .doc(seasonID)
+      .collection("history")
+      .orderBy("day", descending: true)
+      .get();
+
+    List<HistoryEntryGroup> history = loadedHistory.docs.map((doc) => HistoryEntryGroup.fromDoc(doc)).toList();
     return history;
   }
 
-  static Future<List<HistoryEntry>> getHistory(String uid, String uuid) async {
-    QuerySnapshot loadedHistory = await usersRef.doc(uid)
-      .collection("seasons")
-      .doc(uuid)
-      .collection("history")
-      .orderBy("time", descending: true)
-      .get();
+  static Future<List<HistoryEntryGroup>> getFullHistory(String uid) async {
+    List<HistoryEntryGroup> history = [];
+    
+    List<Season> seasons = await getAllSeasons(uid: uid);
+    for (Season season in seasons) {
+      List<HistoryEntryGroup> seasonHistory = await getHistory(uid, season.id);
+      history.addAll(seasonHistory);
+    }
 
-    List<HistoryEntry> history = loadedHistory.docs.map((doc) => HistoryEntry.fromDoc(doc)).toList();
     return history;
   }
 
@@ -106,7 +121,7 @@ class DataService
 
   static Future<Map<String, SeasonMeta>> getSeasonMetas() async
   {
-    QuerySnapshot loadedSeasonMetas = await seasonsRef.orderBy("end", descending: true).get();
+    QuerySnapshot loadedSeasonMetas = await seasonsRef.orderBy("start", descending: true).get();
     Map<String, SeasonMeta> seasonMetas = {};
 
     for(QueryDocumentSnapshot doc in loadedSeasonMetas.docs)
@@ -129,25 +144,12 @@ class DataService
 
     return seasonMetas;
   }
-  
-  static Future<String> getSeasonImgUrl(String id) async
-  {
-    if(DataService.seasonMetas[id] == null) id = "none";
-    String storageURL = DataService.seasonMetas[id]!.imgURL;
-    String imgURL = await FirebaseStorage.instance.refFromURL(storageURL).getDownloadURL();
-    return imgURL;
-  }
 
   static SeasonMeta? getActiveSeasonMeta()
   {
-    int now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-
     for(SeasonMeta meta in DataService.seasonMetas.values)
     {
-      if(meta.startDate <= now && meta.endDate >= now)
-      {
-        return meta;
-      }
+      if(meta.isActive()) return meta;
     }
 
     return null;
@@ -244,5 +246,11 @@ class DataService
 
     progressions.addAll(userProgressions);
     return progressions;
+  }
+
+  static refresh() async
+  {
+    DataService.userData = null;
+    DataService.seasons = {};
   }
 }

@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:vextrack/Core/history_calc.dart';
-import 'package:vextrack/Models/History/history_entry.dart';
+import 'package:vextrack/Models/History/history_entry_group.dart';
 import 'package:vextrack/Models/Seasons/season.dart';
 import 'package:vextrack/Models/Seasons/season_meta.dart';
 import 'package:vextrack/Services/settings.dart';
@@ -15,7 +15,7 @@ class Performance
   int avgDailyXP;
   int activeXP;
   SeasonMeta meta;
-  List<HistoryEntry> history;
+  List<HistoryEntryGroup> history;
 
   bool cumulative = true;
   bool epilogue = false;

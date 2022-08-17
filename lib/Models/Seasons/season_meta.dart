@@ -6,11 +6,10 @@ class SeasonMeta
   String name;
   List<List<String>> battlepass;
   List<List<String>> epilogue;
-  int startDate;
-  int endDate;
-  String imgURL;
+  Timestamp startDate;
+  Timestamp endDate;
 
-  SeasonMeta(this.id, this.name, this.battlepass, this.epilogue, this.startDate, this.endDate, this.imgURL);
+  SeasonMeta(this.id, this.name, this.battlepass, this.epilogue, this.startDate, this.endDate);
 
   static SeasonMeta fromDoc(DocumentSnapshot doc, String id, List<List<String>> battlepass, List<List<String>> epilogue)
   {
@@ -19,13 +18,12 @@ class SeasonMeta
       doc['name'] as String,
       battlepass,
       epilogue,
-      doc['start'] as int,
-      doc['end'] as int,
-      doc['img'] as String
+      doc['start'] as Timestamp,
+      doc['end'] as Timestamp,
     );
   }
 
-  DateTime getDateTime(int timestamp) { return DateTime.fromMillisecondsSinceEpoch(timestamp * 1000).toLocal(); }
+  DateTime getDateTime(Timestamp timestamp) { return timestamp.toDate().toLocal(); }
   DateTime getStartDate() { return getDateTime(startDate); }
   DateTime getEndDate() { return getDateTime(endDate); }
   Duration getDuration() { return getEndDate().difference(getStartDate()); }

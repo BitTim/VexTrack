@@ -6,8 +6,9 @@ class GameMode {
   int scoreLimit;
   bool ranked;
   bool challenges;
+  bool canSurrender;
 
-  GameMode(this.name, this.scoreFormat, this.scoreLimit, this.ranked, this.challenges);
+  GameMode(this.name, this.scoreFormat, this.scoreLimit, this.ranked, this.challenges, this.canSurrender);
 
   static GameMode fromDoc(DocumentSnapshot doc) {
     return GameMode(
@@ -15,7 +16,8 @@ class GameMode {
       doc['scoreFormat'] as String,
       doc['scoreLimit'] as int,
       doc['ranked'] as bool,
-      doc['challenges'] as bool
+      doc['challenges'] as bool,
+      doc['canSurrender'] as bool,
     );
   }
 }

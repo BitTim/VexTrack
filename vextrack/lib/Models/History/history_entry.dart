@@ -10,8 +10,7 @@ class HistoryEntry {
   int score;
   int enemyScore;
   Timestamp time;
-  bool surrenderedWin;
-  bool surrenderedLoss;
+  String surrender;
 
   HistoryEntry(
     this.desc,
@@ -21,8 +20,7 @@ class HistoryEntry {
     this.score,
     this.enemyScore,
     this.time,
-    this.surrenderedWin,
-    this.surrenderedLoss
+    this.surrender,
   );
 
   static HistoryEntry fromMap(Map<String, dynamic> map) {
@@ -34,8 +32,7 @@ class HistoryEntry {
       map['score'] as int,
       map['enemyScore'] as int,
       map['time'] as Timestamp,
-      map['surrenderWin'] as bool,
-      map['surrenderLoss'] as bool
+      map['surrender'] as String,
     );
   }
 
@@ -67,8 +64,8 @@ class HistoryEntry {
 
     if(scoreFormat == "default" || scoreFormat == "")
     {
-      if(score > enemyScore || surrenderedWin) return "win";
-      if(score < enemyScore || surrenderedLoss) return "loss";
+      if(score > enemyScore || surrender == "enemy") return "win";
+      if(score < enemyScore || surrender == "you") return "loss";
     }
     else if(scoreFormat == "placement")
     {
@@ -89,7 +86,7 @@ class HistoryEntry {
   bool hasWon() { return getResult() == "win"; }
   bool hasLost() { return getResult() == "loss"; }
   bool isDraw() { return getResult() == "draw"; }
-  bool hasSurrendered() { return surrenderedWin || surrenderedLoss; }
+  bool hasSurrendered() { return surrender != "none"; }
 
 
 
@@ -107,15 +104,16 @@ class HistoryEntry {
   {
     if (desc != "") return desc;
 
+    String modeName = DataService.modes[mode]!.name;
     String scoreFormat = getScoreFormat();
     String formattedDesc;
     if(scoreFormat == "default" || scoreFormat == "")
     {
-      formattedDesc = "$mode $score-$enemyScore";
+      formattedDesc = "$modeName $score-$enemyScore";
     }
     else
     {
-      formattedDesc = "$mode $score${getPlacementSuffix()}";
+      formattedDesc = "$modeName $score${getPlacementSuffix()}";
     }
 
     return formattedDesc;

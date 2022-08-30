@@ -1,0 +1,61 @@
+// Allow read/write access on all documents to any user signed in to the application
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Static data managed by admins
+    match /agents/{agent=**} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid in get(/databases/$(database)/documents/users/admins).data.uid;
+    }
+    match /maps/{map=**} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid in get(/databases/$(database)/documents/users/admins).data.uid;
+    }   
+    match /modes/{mode=**} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid in get(/databases/$(database)/documents/users/admins).data.uid;
+    }
+    match /parameters/{parameter=**} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid in get(/databases/$(database)/documents/users/admins).data.uid;
+    }
+    match /presets/{preset=**} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid in get(/databases/$(database)/documents/users/admins).data.uid;
+    }
+    match /seasons/{season=**} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid in get(/databases/$(database)/documents/users/admins).data.uid;
+    }
+    
+    // User data managed by users
+  	match /users/{user} {
+      allow read, write: if request.auth != null && request.auth.uid == user;
+      
+      match /seasons/{season} {
+        allow read, write: if request.auth != null && request.auth.uid == user;
+        
+        match /history/{element=**} {
+          allow read, write: if request.auth != null && request.auth.uid == user;
+        }
+      }
+      
+      match /contracts/{contract=**} {
+        allow read, write: if request.auth != null && request.auth.uid == user;
+      }
+      match /progressions/{progression=**} { // TEMPORARY, same as above in future
+        allow read, write: if request.auth != null && request.auth.uid == user;
+      }
+      
+      match /streaks/{streak=**} {
+      	allow read, write: if request.auth != null && request.auth.uid == user;
+      }
+    }
+    
+    // List of Admins
+    match /users/admins {
+    	allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid in resource.data.uid; 
+    }
+  }
+}

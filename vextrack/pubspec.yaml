@@ -48,6 +48,7 @@ dependencies:
   expandable: ^5.0.1
   sortedmap: ^0.5.1
   fl_chart: ^0.55.1
+  uuid: ^3.0.6
 
 dev_dependencies:
   flutter_test:

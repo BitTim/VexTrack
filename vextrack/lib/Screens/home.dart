@@ -45,7 +45,7 @@ class _HomeState extends State<Home>
           var width = MediaQuery.of(context).size.width;
 
           return SizedBox(
-            width: width - 256,
+            width: width - 128,
             child: const Padding(
               padding: EdgeInsets.all(8.0),
               child: HistoryEntryForm(),

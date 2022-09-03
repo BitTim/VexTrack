@@ -14,8 +14,15 @@ class HistoryEntryGroup
 
   static HistoryEntryGroup fromDoc(DocumentSnapshot doc)
   {
-    List<Map<String, dynamic>> rawEntries = (doc['entries'] as List<dynamic>).map((e) => e as Map<String, dynamic>).toList();
-    List<HistoryEntry> entries = rawEntries.map((e) => HistoryEntry.fromMap(e)).toList();
+    Map<String, dynamic> rawEntriesWithIDs = (doc['entries'] as Map<String, dynamic>);
+    List<String> uuids = rawEntriesWithIDs.keys.toList();
+    List<Map<String, dynamic>> rawEntries = rawEntriesWithIDs.values.map((e) => e as Map<String, dynamic>).toList();
+    List<HistoryEntry> entries = [];
+
+    for (int i = 0; i < rawEntries.length; i++)
+    {
+      entries.add(HistoryEntry.fromMap(rawEntries[i], uuids[i]));
+    }
 
     return HistoryEntryGroup(
       doc.id,

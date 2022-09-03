@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:uuid/uuid.dart';
 import 'package:vextrack/Components/history_entry.dart';
+import 'package:vextrack/Core/formatter.dart';
 import 'package:vextrack/Models/History/history_entry.dart';
 import 'package:vextrack/Services/data.dart';
 
@@ -18,12 +21,64 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
 {
   String selectedModeID = DataService.modes.keys.last;
   String selectedMapID = DataService.maps.keys.first;
+  String surrender = "none";
+  String timeString = DateTime.now().toString();
+
   TextEditingController scoreController = TextEditingController();
   TextEditingController enemyScoreController = TextEditingController();
-  String surrender = "none";
-  TextEditingController timeController = TextEditingController();
   TextEditingController xpController = TextEditingController();
   TextEditingController descController = TextEditingController();
+
+  HistoryEntry model = HistoryEntry(
+    const Uuid().v4(),
+    "",
+    DataService.maps.keys.first,
+    DataService.modes.keys.last,
+    0,
+    0,
+    0,
+    Timestamp.fromMillisecondsSinceEpoch(0),
+    "none",
+  );
+
+  @override
+  void initState()
+  {
+    super.initState();
+    updateModel();
+
+    scoreController.addListener(updateModel);
+    enemyScoreController.addListener(updateModel);
+    xpController.addListener(updateModel);
+    descController.addListener(updateModel);
+  }
+
+  void updateModel()
+  {
+    int xp = int.tryParse(xpController.text) ?? 0;
+    int score = int.tryParse(scoreController.text) ?? 0;
+    int enemyScore = int.tryParse(enemyScoreController.text) ?? 0;
+
+    Timestamp time = Timestamp.fromDate(DateTime.tryParse(timeString) ?? DateTime.fromMillisecondsSinceEpoch(0));
+
+    if (selectedModeID == "custom") {
+      if(descController.text != model.desc) setState(() {model.desc = descController.text;});
+      if(model.score != 0) setState(() {model.score = 0;});
+      if(model.enemyScore != 0) setState(() {model.enemyScore = 0;});
+    } else {
+      if (model.desc != "") setState(() {model.desc = "";});
+    }
+
+    if (!DataService.modes[selectedModeID]!.canSurrender && model.surrender != "none") setState(() {model.surrender = "none";});
+    
+    if (selectedMapID != model.map) setState(() {model.map = selectedMapID;});
+    if (selectedModeID != model.mode) setState(() {model.mode = selectedModeID;});
+    if (xp != model.xp) setState(() {model.xp = xp;});
+    if (score != model.score) setState(() {model.score = score;});
+    if (enemyScore != model.enemyScore) setState(() {model.enemyScore = enemyScore;});
+    if (time != model.time) setState(() {model.time = time;});
+    if (surrender != model.surrender) setState(() {model.surrender = surrender;});
+  }
 
   List<DropdownMenuItem> createModeMenuItems()
   {
@@ -68,6 +123,7 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
           onSelected: (bool selected) {
             setState(() {
               surrender = "none";
+              updateModel();
             });
           },
         ),
@@ -83,6 +139,7 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
           onSelected: (bool selected) {
             setState(() {
               surrender = "you";
+              updateModel();
             });
           },
         ),
@@ -98,6 +155,7 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
           onSelected: (bool selected) {
             setState(() {
               surrender = "enemy";
+              updateModel();
             });
           },
         ),
@@ -115,12 +173,12 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
     {
       children.add(Expanded(
         child: TextFormField( // Score
+          controller: scoreController,
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly,
+            LengthLimitingTextInputFormatter(3),
+          ],
           keyboardType: TextInputType.number,
-          onChanged: (value) {
-            setState(() {
-              scoreController.text = value;
-            });
-          },
         ),
       )); 
     }
@@ -129,20 +187,22 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
       children.add(const Text("-"));
       children.add(Expanded(
         child: TextFormField( // EnemyScore
+          controller: enemyScoreController,
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly,
+            LengthLimitingTextInputFormatter(3),
+          ],
           keyboardType: TextInputType.number,
-          onChanged: (value) {
-            setState(() {
-              enemyScoreController.text = value;
-            });
-          },
         ),
       ));
     }
 
     if (children.isEmpty) return const SizedBox.shrink();
     return Expanded(
+      flex: 1,
       child: Column(
         mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(scoreFormat == "placement" ? "Placement" : "Score"),
           Row(
@@ -178,36 +238,14 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
       widgets.add(const Text("Description"));
       widgets.add(TextFormField(
         controller: descController,
+        inputFormatters: [
+          LengthLimitingTextInputFormatter(22),
+        ],
         keyboardType: TextInputType.text,
-        onChanged: (value) {
-          setState(() {
-            descController.text = value;
-          });
-        },
       ));
     }
     
     return widgets;
-  }
-
-  HistoryEntry createModel()
-  {
-    int xp = int.tryParse(xpController.text) ?? 0;
-    int score = int.tryParse(scoreController.text) ?? 0;
-    int enemyScore = int.tryParse(enemyScoreController.text) ?? 0;
-
-    Timestamp time = Timestamp.fromDate(DateTime.tryParse(timeController.text) ?? DateTime.fromMillisecondsSinceEpoch(0));
-
-    return HistoryEntry(
-      (selectedModeID == "custom") ? descController.text : "",
-      selectedMapID,
-      selectedModeID,
-      xp,
-      score,
-      enemyScore,
-      time,
-      surrender,
-    );
   }
 
   @override
@@ -219,22 +257,26 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
         children: [
           Row(
             mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  const Text('Mode'),
-                  DropdownButton(
-                    onChanged: (dynamic newValue) {
-                      setState(() {
-                        selectedModeID = newValue as String;
-                      });
-                    },
-                    items: createModeMenuItems(),
-                    value: selectedModeID,
-                  ),
-                ],
+              Expanded(
+                flex: 2,
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const Text('Mode'),
+                    DropdownButton(
+                      onChanged: (dynamic newValue) {
+                        setState(() {
+                          selectedModeID = newValue as String;
+                          updateModel();
+                        });
+                      },
+                      items: createModeMenuItems(),
+                      value: selectedModeID,
+                    ),
+                  ],
+                ),
               ),
           
               showScoreWithCondition(),
@@ -244,15 +286,52 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
           ...showSurrenderWithCondition(),
           ...showDescriptionWithCondition(),
 
-          const Text('Map'),
-          DropdownButton(
-            onChanged: (dynamic newValue) {
-              setState(() {
-                selectedMapID = newValue as String;
-              });
-            },
-            items: createMapMenuItems(),
-            value: selectedMapID,
+          Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const Text('Map'),
+                    DropdownButton(
+                      onChanged: (dynamic newValue) {
+                        setState(() {
+                          selectedMapID = newValue as String;
+                          updateModel();
+                        });
+                      },
+                      items: createMapMenuItems(),
+                      value: selectedMapID,
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const Text("Amount"),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField( // XP
+                            controller: xpController,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                              LengthLimitingTextInputFormatter(9),
+                            ],
+                            keyboardType: TextInputType.number,
+                          ),
+                        ),
+                        const Text("XP"),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
 
           Row(
@@ -260,32 +339,49 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
             children: [
               Flexible(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const Text("Time"),
-                    TextFormField( // Time
-                      controller: timeController,
-                      keyboardType: TextInputType.datetime,
-                      onChanged: (value) {
-                        setState(() {
-                          timeController.text = value;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              Flexible(
-                child: Column(
-                  children: [
-                    const Text("XP"),
-                    TextFormField( // XP
-                      controller: xpController,
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        setState(() {
-                          xpController.text = value;
-                        });
-                      },
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: Text(Formatter.formatDateTime(DateTime.parse(timeString))),
+                        ),
+                        
+                        Expanded(
+                          flex: 1,
+                          child: ElevatedButton(
+                            child: const Text("Change Time"),
+                            onPressed: () async {
+                              DateTime? pickedDate = await showDatePicker(
+                                context: context,
+                                //locale: const Locale('en', 'DE'),
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(2020),
+                                lastDate: DateTime.now().add(const Duration(days: 365)),
+                              );
+
+                              if(pickedDate == null) return;
+                        
+                              TimeOfDay? pickedTime = await showTimePicker(
+                                context: context,
+                                //locale: const Locale('en', 'DE'),
+                                initialTime: TimeOfDay.now()
+                              );
+                        
+                              if (pickedTime == null) return;
+
+                              DateTime picked = DateTime(pickedDate.year, pickedDate.month, pickedDate.day, pickedTime.hour, pickedTime.minute);
+                        
+                              setState(() {
+                                timeString = picked.toString();
+                                updateModel();
+                              });
+                            },
+                          ),
+                        )
+                      ],
                     ),
                   ],
                 ),
@@ -294,7 +390,7 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
           ),
 
           const Text("Preview"),
-          HistoryEntryWidget(model: createModel()),
+          HistoryEntryWidget(model: model),
         ],
       ),
     );

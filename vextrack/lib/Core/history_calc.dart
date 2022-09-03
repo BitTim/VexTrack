@@ -1,4 +1,3 @@
-import 'package:vextrack/Models/History/history_entry.dart';
 import 'package:vextrack/Models/History/history_entry_group.dart';
 import 'package:vextrack/Models/Seasons/season_meta.dart';
 

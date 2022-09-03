@@ -17,6 +17,11 @@ class Formatter
     return DateFormat.Hm(Platform.localeName).format(dt);
   }
 
+  static String formatDateTime(DateTime dt)
+  {
+    return "${formatDate(dt)} ${formatTime(dt)}";
+  }
+
   static formatDurationDays(Duration d)
   {
     return "${d.inDays} days";

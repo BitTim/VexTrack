@@ -3,6 +3,7 @@ import 'package:vextrack/Core/formatter.dart';
 import 'package:vextrack/Services/data.dart';
 
 class HistoryEntry {
+  String uuid;
   String desc;
   String map;
   String mode;
@@ -13,6 +14,7 @@ class HistoryEntry {
   String surrender;
 
   HistoryEntry(
+    this.uuid,
     this.desc,
     this.map,
     this.mode,
@@ -23,8 +25,9 @@ class HistoryEntry {
     this.surrender,
   );
 
-  static HistoryEntry fromMap(Map<String, dynamic> map) {
+  static HistoryEntry fromMap(Map<String, dynamic> map, String uuid) {
     return HistoryEntry(
+      uuid,
       map['desc'] as String,
       map['map'] as String,
       map['mode'] as String,
@@ -102,7 +105,7 @@ class HistoryEntry {
 
   String getFormattedDesc()
   {
-    if (desc != "") return desc;
+    if (mode == "custom") return desc;
 
     String modeName = DataService.modes[mode]!.name;
     String scoreFormat = getScoreFormat();

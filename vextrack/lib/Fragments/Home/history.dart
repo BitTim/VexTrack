@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:vextrack/Components/history_entry_group.dart';
-import 'package:vextrack/Models/History/history_entry.dart';
 import 'package:vextrack/Models/History/history_entry_group.dart';
 import 'package:vextrack/Services/data.dart';
 

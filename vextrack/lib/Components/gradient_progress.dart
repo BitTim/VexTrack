@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vextrack/Constants/colors.dart';
+import 'package:vextrack/themes.dart';
 
 class GradientProgress extends StatefulWidget
 {
@@ -8,11 +9,11 @@ class GradientProgress extends StatefulWidget
   final double value;
   final double borderRadius;
   final LinearGradient gradient;
-  final Color background;
+  final Color? background;
   final int segments;
   final List<double> segmentStops;
 
-  const GradientProgress({Key? key, this.width, this.height, required this.value, this.borderRadius = 8, required this.gradient, this.background = AppColors.lightShade, this.segments = 1, this.segmentStops = const [0, 1]}) : super(key: key);
+  const GradientProgress({Key? key, this.width, this.height, required this.value, this.borderRadius = 8, required this.gradient, this.background = null, this.segments = 1, this.segmentStops = const [0, 1]}) : super(key: key);
 
   @override
   GradientProgressState createState() => GradientProgressState();
@@ -52,7 +53,7 @@ class GradientProgressState extends State<GradientProgress>
           height: widget.height,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(widget.borderRadius),
-            color: widget.background,
+            color: widget.background ?? AppThemes.getTheme().colorScheme.surfaceVariant,
           ),
         ),
       );

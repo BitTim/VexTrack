@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:vextrack/Components/FAB/action_button.dart';
 import 'package:vextrack/Components/FAB/expandable_fab.dart';
 import 'package:vextrack/Fragments/Forms/history_entry.dart';
 import 'package:vextrack/Fragments/Home/contracts.dart';
 import 'package:vextrack/Fragments/Home/history.dart';
 import 'package:vextrack/screen_manager.dart';
+import 'package:vextrack/themes.dart';
 
+import '../Constants/colors.dart';
 import '../Services/auth.dart';
 
 class _HomeState extends State<Home>
@@ -58,6 +61,8 @@ class _HomeState extends State<Home>
 
 	@override
 	Widget build(BuildContext context) {
+    ThemeData theme = Theme.of(context);
+
 		return Scaffold(
 			appBar: AppBar(
 				title: const Text('VexTrack'),
@@ -90,25 +95,23 @@ class _HomeState extends State<Home>
 
       body: fragments.elementAt(_currentPage),
 
-			bottomNavigationBar: BottomNavigationBar(
-        onTap: onTabTapped,
-        currentIndex: _currentPage,
-        unselectedItemColor: Colors.grey,
-        selectedItemColor: Colors.blue,
-        elevation: 8,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_rounded),
+      bottomNavigationBar: NavigationBar(
+        labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+        onDestinationSelected: onTabTapped,
+        selectedIndex: _currentPage,
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.home),
             label: 'Home',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.flag_rounded),
+          NavigationDestination(
+            icon: Icon(Icons.flag),
             label: 'Contracts',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history_rounded),
+          NavigationDestination(
+            icon: Icon(Icons.history),
             label: 'History',
-          ),
+          )
         ],
       ),
 

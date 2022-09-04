@@ -37,6 +37,7 @@ class HistoryEntryWidgetState extends State<HistoryEntryWidget>
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
+        surfaceTintColor: Theme.of(context).colorScheme.surface,
         clipBehavior: Clip.antiAliasWithSaveLayer,
         elevation: 8,
         child: SizedBox(

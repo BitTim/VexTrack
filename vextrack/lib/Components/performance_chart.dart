@@ -2,11 +2,13 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vextrack/Constants/button_styles.dart';
 import 'package:vextrack/Constants/colors.dart';
 import 'package:vextrack/Core/formatter.dart';
 import 'package:vextrack/Core/xp_calc.dart';
 import 'package:vextrack/Models/Seasons/performance.dart';
 import 'package:vextrack/Services/data.dart';
+import 'package:vextrack/themes.dart';
 
 class PerformanceChart extends StatefulWidget
 {
@@ -33,7 +35,7 @@ class PerformanceChartState extends State<PerformanceChart> {
     int cumulativeSum = 0;
     for (int i = 1; i < nLevels + 1; i++)
     {
-      Color col = AppColors.lightShade;
+      Color col = AppThemes.getTheme().colorScheme.surfaceVariant;
       if (i % 5 == 0) col = AppColors.win[0];
       if (i > DataService.battlepassParams!.levels) col = AppColors.epilogue[0];
       cumulativeSum += XPCalc.getLevelTotal(i + 1) as int;
@@ -56,7 +58,7 @@ class PerformanceChartState extends State<PerformanceChart> {
       lineBarsData: [
         LineChartBarData( // Avg Ideal
           spots: Performance.mapPointToSpot(widget.model.getAverageIdeal()),
-          gradient: AppColors.drawGradient,
+          color: AppThemes.getTheme().colorScheme.onSurfaceVariant,
           isCurved: false,
           isStrokeCapRound: true,
           barWidth: 3,
@@ -97,7 +99,7 @@ class PerformanceChartState extends State<PerformanceChart> {
         drawVerticalLine: true,
         verticalInterval: 5,
         getDrawingVerticalLine: (value) => FlLine(
-          color: AppColors.lightShade,
+          color: Theme.of(context).colorScheme.surface,
           strokeWidth: 1,
         ),
       ),
@@ -118,7 +120,6 @@ class PerformanceChartState extends State<PerformanceChart> {
               return Text(
                 text,
                 style: GoogleFonts.titilliumWeb(
-                  color: AppColors.lightText,
                   fontSize: 12,
                 ),
               );
@@ -136,7 +137,6 @@ class PerformanceChartState extends State<PerformanceChart> {
               return Text(
                 text,
                 style: GoogleFonts.titilliumWeb(
-                  color: AppColors.lightText,
                   fontSize: 12,
                 ),
               );
@@ -164,16 +164,18 @@ class PerformanceChartState extends State<PerformanceChart> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = Theme.of(context);
+
     return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
               "Performance",
               style: GoogleFonts.titilliumWeb(
-                color: AppColors.lightText,
                 fontWeight: FontWeight.w700,
                 fontSize: 18,
               ),
@@ -182,21 +184,9 @@ class PerformanceChartState extends State<PerformanceChart> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
-                  icon: ShaderMask(
-                    shaderCallback: (Rect bounds) {
-                      if (widget.model.cumulative == true) return AppColors.accentGradient.createShader(bounds);
-                      return const LinearGradient(
-                        colors: [AppColors.lightText, AppColors.lightText],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        stops: [0.0, 1.1],
-                      ).createShader(bounds);
-                    },
-                    child: const Icon(
-                      Icons.line_axis_rounded,
-                      color: Colors.white,
-                    ),
-                  ),
+                  icon: const Icon(Icons.bar_chart),
+                  selectedIcon: const Icon(Icons.line_axis),
+                  isSelected: widget.model.cumulative,
                   onPressed: () {
                     setState(() {
                       widget.model.cumulative = !widget.model.cumulative;
@@ -204,21 +194,9 @@ class PerformanceChartState extends State<PerformanceChart> {
                   },
                 ),
                 IconButton(
-                  icon: ShaderMask(
-                    shaderCallback: (Rect bounds) {
-                      if (widget.model.epilogue == true) return AppColors.accentGradient.createShader(bounds);
-                      return const LinearGradient(
-                        colors: [AppColors.lightText, AppColors.lightText],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        stops: [0.0, 1.1],
-                      ).createShader(bounds);
-                    },
-                    child: const Icon(
-                      Icons.rocket_launch_rounded,
-                      color: Colors.white,
-                    ),
-                  ),
+                  icon: const Icon(Icons.rocket_launch_outlined),
+                  selectedIcon: const Icon(Icons.rocket_launch),
+                  isSelected: widget.model.epilogue,
                   onPressed: () {
                     setState(() {
                       widget.model.epilogue = !widget.model.epilogue;

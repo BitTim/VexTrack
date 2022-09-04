@@ -1,7 +1,9 @@
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:vextrack/screen_manager.dart';
+import 'package:vextrack/themes.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -17,13 +19,19 @@ class MyApp extends StatelessWidget {
 	// This widget is the root of your application.
 	@override
 	Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'VexTrack',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const ScreenManager(),
+    return DynamicColorBuilder(
+      builder: (ColorScheme? lightColorScheme, ColorScheme? darkColorScheme)
+      {
+        AppThemes.setThemes(lightColorScheme, darkColorScheme);
+
+        return MaterialApp(
+          title: 'VexTrack',
+          debugShowCheckedModeBanner: false,
+          theme: AppThemes.getTheme(forceLightMode: true),
+          darkTheme: AppThemes.getTheme(forceDarkMode: true),
+          home: const ScreenManager(),
+        );
+      }
     );
 	}
 }

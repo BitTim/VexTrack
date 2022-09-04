@@ -63,6 +63,7 @@ class SeasonWidgetState extends State<SeasonWidget>
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
+      surfaceTintColor: Theme.of(context).colorScheme.surface,
       clipBehavior: Clip.antiAliasWithSaveLayer,
       elevation: 8,
       child: ExpandableNotifier(
@@ -85,7 +86,6 @@ class SeasonWidgetState extends State<SeasonWidget>
                           style: GoogleFonts.titilliumWeb(
                             fontSize: 24,
                             fontWeight: FontWeight.w700,
-                            color: AppColors.lightText,
                           ),
                         ),
                         ShaderMask(
@@ -125,7 +125,6 @@ class SeasonWidgetState extends State<SeasonWidget>
                             style: GoogleFonts.titilliumWeb(
                               fontSize: 14,
                               fontWeight: FontWeight.w700,
-                              color: AppColors.lightText,
                             ),
                           ),
                         ),
@@ -141,7 +140,6 @@ class SeasonWidgetState extends State<SeasonWidget>
                           style: GoogleFonts.titilliumWeb(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
-                            color: AppColors.lightText,
                           ),
                         ),
                       ),
@@ -152,7 +150,6 @@ class SeasonWidgetState extends State<SeasonWidget>
                           style: GoogleFonts.titilliumWeb(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
-                            color: AppColors.lightText,
                           ),
                         ),
                       ),
@@ -165,7 +162,6 @@ class SeasonWidgetState extends State<SeasonWidget>
                       style: GoogleFonts.titilliumWeb(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
-                        color: AppColors.lightText,
                       ),
                     ),
                   ),
@@ -194,7 +190,6 @@ class SeasonWidgetState extends State<SeasonWidget>
                           style: GoogleFonts.titilliumWeb(
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
-                            color: AppColors.lightText,
                           ),
                         ),
                         Text(
@@ -202,7 +197,6 @@ class SeasonWidgetState extends State<SeasonWidget>
                           style: GoogleFonts.titilliumWeb(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
-                            color: AppColors.lightText,
                           ),
                         ),
                       ],
@@ -216,7 +210,6 @@ class SeasonWidgetState extends State<SeasonWidget>
                           style: GoogleFonts.titilliumWeb(
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
-                            color: AppColors.lightText,
                           ),
                         ),
                         Text(
@@ -224,7 +217,6 @@ class SeasonWidgetState extends State<SeasonWidget>
                           style: GoogleFonts.titilliumWeb(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
-                            color: AppColors.lightText,
                           ),
                         ),
                       ],
@@ -243,7 +235,6 @@ class SeasonWidgetState extends State<SeasonWidget>
                                 style: GoogleFonts.titilliumWeb(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w700,
-                                  color: AppColors.lightText,
                                 ),
                               ),
                               Text(
@@ -251,7 +242,6 @@ class SeasonWidgetState extends State<SeasonWidget>
                                 style: GoogleFonts.titilliumWeb(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
-                                  color: AppColors.lightText,
                                 ),
                               ),
                             ],
@@ -268,7 +258,6 @@ class SeasonWidgetState extends State<SeasonWidget>
                                 style: GoogleFonts.titilliumWeb(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w700,
-                                  color: AppColors.lightText,
                                 ),
                               ),
                               Text(
@@ -276,7 +265,6 @@ class SeasonWidgetState extends State<SeasonWidget>
                                 style: GoogleFonts.titilliumWeb(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
-                                  color: AppColors.lightText,
                                 ),
                               ),
                             ],

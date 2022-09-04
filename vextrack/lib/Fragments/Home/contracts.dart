@@ -129,7 +129,6 @@ class ProgressionsFragmentState extends State<ProgressionsFragment>
                 style: GoogleFonts.titilliumWeb(
                   fontSize: 24,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.lightText,
                 ),
               ),
               collapsed: Column(
@@ -144,7 +143,6 @@ class ProgressionsFragmentState extends State<ProgressionsFragment>
                     style: GoogleFonts.titilliumWeb(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.lightText,
                     ),
                   ),
                   Column(
@@ -159,7 +157,6 @@ class ProgressionsFragmentState extends State<ProgressionsFragment>
                       style: GoogleFonts.titilliumWeb(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.lightText,
                       ),
                     ),
                   ),
@@ -180,7 +177,6 @@ class ProgressionsFragmentState extends State<ProgressionsFragment>
                 style: GoogleFonts.titilliumWeb(
                   fontSize: 24,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.lightText,
                 ),
               ),
               collapsed: Column(
@@ -195,7 +191,6 @@ class ProgressionsFragmentState extends State<ProgressionsFragment>
                     style: GoogleFonts.titilliumWeb(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.lightText,
                     ),
                   ),
                   Column(
@@ -210,7 +205,6 @@ class ProgressionsFragmentState extends State<ProgressionsFragment>
                       style: GoogleFonts.titilliumWeb(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.lightText,
                       ),
                     ),
                   ),

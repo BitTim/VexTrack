@@ -22,7 +22,6 @@ class SignupFragment extends StatelessWidget {
           decoration: const InputDecoration(
             labelText: 'Username',
             prefixIcon: Icon(Icons.label),
-            fillColor: AppColors.lightBG,
             border: OutlineInputBorder(),
           ),
           keyboardType: TextInputType.text,
@@ -37,7 +36,6 @@ class SignupFragment extends StatelessWidget {
           decoration: const InputDecoration(
             labelText: 'Email',
             prefixIcon: Icon(Icons.email),
-            fillColor: AppColors.lightBG,
             border: OutlineInputBorder(),
           ),
           keyboardType: TextInputType.emailAddress,

@@ -42,7 +42,6 @@ class GoalWidgetState extends State<GoalWidget>
                           style: GoogleFonts.titilliumWeb(
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
-                            color: AppColors.lightText,
                           ),
                         ),
                       ]
@@ -73,7 +72,6 @@ class GoalWidgetState extends State<GoalWidget>
                             style: GoogleFonts.titilliumWeb(
                               fontSize: 14,
                               fontWeight: FontWeight.w700,
-                              color: AppColors.lightText,
                             ),
                           )
                         )
@@ -91,7 +89,6 @@ class GoalWidgetState extends State<GoalWidget>
                           style: GoogleFonts.titilliumWeb(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
-                            color: AppColors.lightText,
                           ),
                         ),
                         Text(
@@ -99,7 +96,6 @@ class GoalWidgetState extends State<GoalWidget>
                           style: GoogleFonts.titilliumWeb(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
-                            color: AppColors.lightText,
                           ),
                         ),
                       ],
@@ -114,7 +110,6 @@ class GoalWidgetState extends State<GoalWidget>
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
                 icon: const Icon(Icons.more_vert),
-                color: AppColors.lightText,
                 onPressed: () { },
               ),
             )

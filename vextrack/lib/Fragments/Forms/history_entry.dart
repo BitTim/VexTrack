@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:uuid/uuid.dart';
 import 'package:vextrack/Components/history_entry.dart';
+import 'package:vextrack/Constants/colors.dart';
 import 'package:vextrack/Core/formatter.dart';
 import 'package:vextrack/Models/History/history_entry.dart';
 import 'package:vextrack/Services/data.dart';
@@ -112,13 +113,13 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
       spacing: 8,
       children: [
         ChoiceChip(
-          label: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: const [
-              Icon(Icons.close_rounded),
-              Text("None"),
-            ],
+          avatar: const CircleAvatar(
+            foregroundColor: AppColors.lightText,
+            backgroundColor: AppColors.lightBG,
+            child: Icon(Icons.close_rounded),
           ),
+          label: const Text("None"),
+          backgroundColor: AppColors.lightShade,
           selected: surrender == "none" ? true : false,
           onSelected: (bool selected) {
             setState(() {
@@ -128,13 +129,13 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
           },
         ),
         ChoiceChip(
-          label: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: const [
-              Icon(Icons.person_rounded),
-              Text("You"),
-            ],
+          avatar: CircleAvatar(
+            foregroundColor: Colors.white,
+            backgroundColor: AppColors.loss.first,
+            child: const Icon(Icons.person_rounded),
           ),
+          label: const Text("You"),
+          backgroundColor: AppColors.lightShade,
           selected: surrender == "you" ? true : false,
           onSelected: (bool selected) {
             setState(() {
@@ -144,13 +145,13 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
           },
         ),
         ChoiceChip(
-          label: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: const [
-              Icon(Icons.bolt_rounded),
-              Text("Enemy"),
-            ],
+          avatar: CircleAvatar(
+            foregroundColor: Colors.white,
+            backgroundColor: AppColors.win.first,
+            child: const Icon(Icons.bolt_rounded),
           ),
+          label: const Text("Enemy"),
+          backgroundColor: AppColors.lightBG,
           selected: surrender == "enemy" ? true : false,
           onSelected: (bool selected) {
             setState(() {

@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:vextrack/Constants/colors.dart';
 import 'package:vextrack/Core/formatter.dart';
 import 'package:vextrack/Core/util.dart';
 import 'package:vextrack/Models/Goals/goal.dart';
+import 'package:vextrack/themes.dart';
 
 class Contract
 {
@@ -102,7 +104,7 @@ class Contract
       );
     }
 
-    return AppColors.accentGradient;
+    return LinearGradient(colors: [AppThemes.getTheme().colorScheme.secondary]);
   }
 
   Goal? getNextUnlock()

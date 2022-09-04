@@ -17,63 +17,7 @@ class AppColors
 
 
 
-  static const accBlue = [
-    Color(0xff1684fc),
-    Color(0xff6975e8),
-  ];
-  static const accTeal = [
-    Color(0xff10a780),
-    Color(0xff009e97),
-  ];
-  static const accGreen = [
-    Color(0xff0ac903),
-    Color(0xff00bd5c),
-  ];
-  static const accYellow = [
-    Color(0xffefb431),
-    Color(0xffde9321),
-  ];
-  static const accOrange = [
-    Color(0xfffc8316),
-    Color(0xfff7595f),
-  ];
-  static const accRed = [
-    Color(0xffe2030b),
-    Color(0xffd40058),
-  ];
-  static const accPurple = [
-    Color(0xff8a16fc),
-    Color(0xffff00b9),
-  ];
-
-  static const accCyberpunk1 = [
-    Color(0xff1ae699),
-    Color(0xffdd0070),
-  ];
-  static const accCyberpunk2 = [
-    Color(0xffe70efc),
-    Color(0xff31f96f),
-  ];
-  static const accLavender = [
-    Color(0xff7a13b1),
-    Color(0xffd086bb),
-  ];
-  static const accAqua = [
-    Color(0xff463bac),
-    Color(0xff17fbe5),
-  ];
-  static const accNature = [
-    Color(0xff18a358),
-    Color(0xffc58c73),
-  ];
-  static const accEmerald = [
-    Color(0xff2ea783),
-    Color(0xff108321),
-  ];
-  static const accChocolate = [
-    Color(0xff89384c),
-    Color(0xffdb6a3a),
-  ];
+  static const Color defaultAccent = Color(0xffC33149);
 
 
 
@@ -100,14 +44,6 @@ class AppColors
     Color(0xff2978a0),
     Color(0xff061a40),
     Color(0xcc061a40),
-  ];
-
-
-
-
-  static final acc = [
-    accBlue[0],
-    accBlue[1],
   ];
 
 
@@ -157,17 +93,6 @@ class AppColors
     stops: [0.0, 0.5, 1.0],
   );
 
-  static final accentToTransparentGradient = LinearGradient(
-    colors: [
-      acc[0],
-      acc[1],
-      Colors.transparent,
-    ],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    stops: const [0.0, 0.5, 1.0],
-  );
-
 
 
 
@@ -215,16 +140,6 @@ class AppColors
     colors: [
       epilogue[0],
       epilogue[1]
-    ],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    stops: const [0.0, 1.0],
-  );
-
-  static final accentGradient = LinearGradient(
-    colors: [
-      acc[0],
-      acc[1]
     ],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,

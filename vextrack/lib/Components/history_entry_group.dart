@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:vextrack/Components/history_entry.dart';
 import 'package:vextrack/Constants/colors.dart';
 import 'package:vextrack/Models/History/history_entry_group.dart';
@@ -25,8 +26,8 @@ class HistoryEntryGroupWidgetState extends State<HistoryEntryGroupWidget>
             padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
             child: Text(
               widget.model.getFormattedDate(),
-              style: const TextStyle(
-                color: AppColors.lightTextSecondary,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),

@@ -49,6 +49,8 @@ dependencies:
   sortedmap: ^0.5.1
   fl_chart: ^0.55.1
   uuid: ^3.0.6
+  google_nav_bar: ^5.0.6
+  dynamic_color: ^1.4.0
 
 dev_dependencies:
   flutter_test:

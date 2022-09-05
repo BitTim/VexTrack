@@ -29,6 +29,7 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
   TextEditingController enemyScoreController = TextEditingController();
   TextEditingController xpController = TextEditingController();
   TextEditingController descController = TextEditingController();
+  TextEditingController timeDisplayController = TextEditingController();
 
   HistoryEntry model = HistoryEntry(
     const Uuid().v4(),
@@ -42,6 +43,13 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
     "none",
   );
 
+  void setTimeDisplayText()
+  {
+    setState(() {
+      timeDisplayController.text = Formatter.formatDateTime(DateTime.parse(timeString));
+    });
+  }
+
   @override
   void initState()
   {
@@ -52,6 +60,8 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
     enemyScoreController.addListener(updateModel);
     xpController.addListener(updateModel);
     descController.addListener(updateModel);
+
+    setTimeDisplayText();
   }
 
   void updateModel()
@@ -61,6 +71,14 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
     int enemyScore = int.tryParse(enemyScoreController.text) ?? 0;
 
     Timestamp time = Timestamp.fromDate(DateTime.tryParse(timeString) ?? DateTime.fromMillisecondsSinceEpoch(0));
+    
+    if (selectedMapID != model.map) setState(() {model.map = selectedMapID;});
+    if (selectedModeID != model.mode) setState(() {model.mode = selectedModeID;});
+    if (xp != model.xp) setState(() {model.xp = xp;});
+    if (score != model.score) setState(() {model.score = score;});
+    if (enemyScore != model.enemyScore) setState(() {model.enemyScore = enemyScore;});
+    if (time != model.time) setState(() {model.time = time;});
+    if (surrender != model.surrender) setState(() {model.surrender = surrender;});
 
     if (selectedModeID == "custom") {
       if(descController.text != model.desc) setState(() {model.desc = descController.text;});
@@ -71,14 +89,6 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
     }
 
     if (!DataService.modes[selectedModeID]!.canSurrender && model.surrender != "none") setState(() {model.surrender = "none";});
-    
-    if (selectedMapID != model.map) setState(() {model.map = selectedMapID;});
-    if (selectedModeID != model.mode) setState(() {model.mode = selectedModeID;});
-    if (xp != model.xp) setState(() {model.xp = xp;});
-    if (score != model.score) setState(() {model.score = score;});
-    if (enemyScore != model.enemyScore) setState(() {model.enemyScore = enemyScore;});
-    if (time != model.time) setState(() {model.time = time;});
-    if (surrender != model.surrender) setState(() {model.surrender = surrender;});
   }
 
   List<DropdownMenuItem> createModeMenuItems()
@@ -112,14 +122,7 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
     return Wrap(
       spacing: 8,
       children: [
-        ChoiceChip(
-          avatar: const CircleAvatar(
-            foregroundColor: AppColors.lightText,
-            backgroundColor: AppColors.lightBG,
-            child: Icon(Icons.close_rounded),
-          ),
-          label: const Text("None"),
-          backgroundColor: AppColors.lightShade,
+        ChoiceChip(label: const Text("None"),
           selected: surrender == "none" ? true : false,
           onSelected: (bool selected) {
             setState(() {
@@ -129,13 +132,7 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
           },
         ),
         ChoiceChip(
-          avatar: CircleAvatar(
-            foregroundColor: Colors.white,
-            backgroundColor: AppColors.loss.first,
-            child: const Icon(Icons.person_rounded),
-          ),
           label: const Text("You"),
-          backgroundColor: AppColors.lightShade,
           selected: surrender == "you" ? true : false,
           onSelected: (bool selected) {
             setState(() {
@@ -145,13 +142,7 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
           },
         ),
         ChoiceChip(
-          avatar: CircleAvatar(
-            foregroundColor: Colors.white,
-            backgroundColor: AppColors.win.first,
-            child: const Icon(Icons.bolt_rounded),
-          ),
           label: const Text("Enemy"),
-          backgroundColor: AppColors.lightBG,
           selected: surrender == "enemy" ? true : false,
           onSelected: (bool selected) {
             setState(() {
@@ -179,13 +170,20 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
             FilteringTextInputFormatter.digitsOnly,
             LengthLimitingTextInputFormatter(3),
           ],
+          decoration: InputDecoration(
+            border: const OutlineInputBorder(),
+            suffixText: (scoreFormat == "placement" && int.tryParse(scoreController.text) != null) ? model.getPlacementSuffix(int.parse(scoreController.text)) : "",
+          ),
           keyboardType: TextInputType.number,
         ),
       )); 
     }
     if (scoreFormat == "default")
     {
-      children.add(const Text("-"));
+      children.add(const Padding(
+        padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
+        child: Text("-"),
+      ));
       children.add(Expanded(
         child: TextFormField( // EnemyScore
           controller: enemyScoreController,
@@ -193,6 +191,9 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
             FilteringTextInputFormatter.digitsOnly,
             LengthLimitingTextInputFormatter(3),
           ],
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+          ),
           keyboardType: TextInputType.number,
         ),
       ));
@@ -201,18 +202,21 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
     if (children.isEmpty) return const SizedBox.shrink();
     return Expanded(
       flex: 1,
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(scoreFormat == "placement" ? "Placement" : "Score"),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              ...children,
-            ],
-          ),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(scoreFormat == "placement" ? "Placement" : "Score"),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                ...children,
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -223,7 +227,10 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
 
     if(DataService.modes[selectedModeID]!.canSurrender)
     {
-      widgets.add(const Text("Surrender"));
+      widgets.add(const Padding(
+        padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
+        child: Text("Surrender"),
+      ));
       widgets.add(createSurrenderItems());
     }
 
@@ -236,12 +243,18 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
 
     if(selectedModeID == "custom")
     {
-      widgets.add(const Text("Description"));
+      widgets.add(const Padding(
+        padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
+        child: Text("Description"),
+      ));
       widgets.add(TextFormField(
         controller: descController,
         inputFormatters: [
           LengthLimitingTextInputFormatter(22),
         ],
+        decoration: const InputDecoration(
+          border: OutlineInputBorder(),
+        ),
         keyboardType: TextInputType.text,
       ));
     }
@@ -266,7 +279,10 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const Text('Mode'),
-                    DropdownButton(
+                    DropdownButtonFormField(
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                      ),
                       onChanged: (dynamic newValue) {
                         setState(() {
                           selectedModeID = newValue as String;
@@ -291,45 +307,51 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
             children: [
               Expanded(
                 flex: 2,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const Text('Map'),
-                    DropdownButton(
-                      onChanged: (dynamic newValue) {
-                        setState(() {
-                          selectedMapID = newValue as String;
-                          updateModel();
-                        });
-                      },
-                      items: createMapMenuItems(),
-                      value: selectedMapID,
-                    ),
-                  ],
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const Text('Map'),
+                      DropdownButtonFormField(
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                        onChanged: (dynamic newValue) {
+                          setState(() {
+                            selectedMapID = newValue as String;
+                            updateModel();
+                          });
+                        },
+                        items: createMapMenuItems(),
+                        value: selectedMapID,
+                      ),
+                    ],
+                  ),
                 ),
               ),
               Expanded(
                 flex: 1,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const Text("Amount"),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextFormField( // XP
-                            controller: xpController,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
-                              LengthLimitingTextInputFormatter(9),
-                            ],
-                            keyboardType: TextInputType.number,
-                          ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 8, 0, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const Text("Amount"),
+                      TextFormField( // XP
+                        controller: xpController,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(9),
+                        ],
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          suffixText: "XP",
                         ),
-                        const Text("XP"),
-                      ],
-                    ),
-                  ],
+                        keyboardType: TextInputType.number,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -339,58 +361,76 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
             mainAxisSize: MainAxisSize.max,
             children: [
               Flexible(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const Text("Time"),
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: Text(Formatter.formatDateTime(DateTime.parse(timeString))),
-                        ),
-                        
-                        Expanded(
-                          flex: 1,
-                          child: ElevatedButton(
-                            child: const Text("Change Time"),
-                            onPressed: () async {
-                              DateTime? pickedDate = await showDatePicker(
-                                context: context,
-                                //locale: const Locale('en', 'DE'),
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime(2020),
-                                lastDate: DateTime.now().add(const Duration(days: 365)),
-                              );
-
-                              if(pickedDate == null) return;
-                        
-                              TimeOfDay? pickedTime = await showTimePicker(
-                                context: context,
-                                //locale: const Locale('en', 'DE'),
-                                initialTime: TimeOfDay.now()
-                              );
-                        
-                              if (pickedTime == null) return;
-
-                              DateTime picked = DateTime(pickedDate.year, pickedDate.month, pickedDate.day, pickedTime.hour, pickedTime.minute);
-                        
-                              setState(() {
-                                timeString = picked.toString();
-                                updateModel();
-                              });
-                            },
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const Text("Time"),
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 2,
+                            child: TextFormField(
+                              readOnly: true,
+                              enabled: false,
+                              controller: timeDisplayController,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
                           ),
-                        )
-                      ],
-                    ),
-                  ],
+                          
+                          Expanded(
+                            flex: 1,
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                              child: ElevatedButton.icon(
+                                icon: const Icon(Icons.edit_calendar),
+                                label: const Text("Change"),
+                                onPressed: () async {
+                                  DateTime? pickedDate = await showDatePicker(
+                                    context: context,
+                                    //locale: const Locale('en', 'DE'),
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime(2020),
+                                    lastDate: DateTime.now().add(const Duration(days: 365)),
+                                  );
+
+                                  if(pickedDate == null) return;
+                          
+                                  TimeOfDay? pickedTime = await showTimePicker(
+                                    context: context,
+                                    //locale: const Locale('en', 'DE'),
+                                    initialTime: TimeOfDay.now()
+                                  );
+                          
+                                  if (pickedTime == null) return;
+
+                                  DateTime picked = DateTime(pickedDate.year, pickedDate.month, pickedDate.day, pickedTime.hour, pickedTime.minute);
+                          
+                                  setState(() {
+                                    timeString = picked.toString();
+                                    setTimeDisplayText();
+                                    updateModel();
+                                  });
+                                },
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
           ),
 
-          const Text("Preview"),
+          const Padding(
+            padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
+            child: Text("Preview"),
+          ),
           HistoryEntryWidget(model: model),
         ],
       ),

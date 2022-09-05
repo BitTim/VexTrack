@@ -48,7 +48,7 @@ class _HomeState extends State<Home>
           var width = MediaQuery.of(context).size.width;
 
           return SizedBox(
-            width: width - 128,
+            width: width - 128, //TODO: Responsive layout (Fullscrenn diag on phones, restrained width on Desktop)
             child: const Padding(
               padding: EdgeInsets.all(8.0),
               child: HistoryEntryForm(),
@@ -56,6 +56,21 @@ class _HomeState extends State<Home>
           );
         },
       ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text("Cancel"),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+            //TODO: Logic for creating history entries
+          },
+          child: const Text("Create"),
+        )
+      ],
     );
   }
 

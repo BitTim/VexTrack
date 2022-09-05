@@ -53,11 +53,19 @@ class HistoryEntry {
     return DataService.getModeScoreFormat(mode.toLowerCase().replaceAll(RegExp(' +'), '-'));
   }
 
-  String getPlacementSuffix()
+  String getPlacementSuffix(score)
   {
-    if(score == 1) return "st";
-    if(score == 2) return "nd";
-    if(score == 3) return "rd";
+    int lastDigit = score % 10;
+
+    if('$score'.length > 1)
+    {
+      int secondLastDigit = ((score - lastDigit) / 10) % 10;
+      if (secondLastDigit == 1) return "th";
+    }
+
+    if(lastDigit == 1) return "st";
+    if(lastDigit == 2) return "nd";
+    if(lastDigit == 3) return "rd";
     return "th";
   }
 
@@ -67,8 +75,8 @@ class HistoryEntry {
 
     if(scoreFormat == "default" || scoreFormat == "")
     {
-      if(score > enemyScore || surrender == "enemy") return "win";
-      if(score < enemyScore || surrender == "you") return "loss";
+      if((score > enemyScore && surrender != "you") || surrender == "enemy") return "win";
+      if((score < enemyScore && surrender != "enemy") || surrender == "you") return "loss";
     }
     else if(scoreFormat == "placement")
     {
@@ -116,7 +124,7 @@ class HistoryEntry {
     }
     else
     {
-      formattedDesc = "$modeName $score${getPlacementSuffix()}";
+      formattedDesc = "$modeName $score${getPlacementSuffix(score)}";
     }
 
     return formattedDesc;

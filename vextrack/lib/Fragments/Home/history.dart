@@ -45,6 +45,11 @@ class HistoryFragmentState extends State<HistoryFragment>
   @override
   void initState() {
     super.initState();
+    update();
+  }
+
+  void update()
+  {
     setupHistory();
   }
 

@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:vextrack/Constants/colors.dart';
 import 'package:vextrack/Core/formatter.dart';
 import 'package:vextrack/Core/util.dart';
 import 'package:vextrack/Models/Goals/goal.dart';
@@ -11,23 +10,25 @@ class Contract
 {
   String id;
   String name;
+  bool timed;
   String startColor;
   String endColor;
-  String dependency;
-  bool paused;
+  Timestamp? startTime;
+  Timestamp? endTime;
   List<Goal> goals = [];
 
-  Contract(this.id, this.name, this.startColor, this.endColor, this.dependency, this.paused);
+  Contract(this.id, this.name, this.timed, this.startColor, this.endColor, this.startTime, this.endTime);
 
   static Contract fromDoc(DocumentSnapshot doc)
   {
     return Contract(
       doc.id,
       doc['name'] as String,
+      doc['timed'] as bool,
       doc['startColor'] as String,
       doc['endColor'] as String,
-      doc['dependency'] as String,
-      doc['paused'] as bool,
+      doc['startTime'] as Timestamp?,
+      doc['endTime'] as Timestamp?,
     );
   }
 
@@ -129,7 +130,7 @@ class Contract
 
   bool isActive()
   {
-    if (paused) return false;
+    //if (paused) return false; //TODO: Reimplement
     if (getRemaining() <= 0) return false;
 
     return true;

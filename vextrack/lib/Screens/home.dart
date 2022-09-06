@@ -18,13 +18,18 @@ class _HomeState extends State<Home>
 
 	int _currentPage = 0;
   List<Widget> fragments = [];
+  List<dynamic> keys = [];
 
   @override
   void initState()
   {
+    keys.add(GlobalKey());
+    keys.add(GlobalKey<ContractsFragmentState>());
+    keys.add(GlobalKey<HistoryFragmentState>());
+
     fragments.add(const Center(child: Text("Home")));
-    fragments.add(ProgressionsFragment(uid: widget.uid));
-    fragments.add(HistoryFragment(uid: widget.uid));
+    fragments.add(ContractsFragment(key: keys[1], uid: widget.uid));
+    fragments.add(HistoryFragment(key: keys[2], uid: widget.uid));
 
     super.initState();
   }
@@ -70,6 +75,7 @@ class _HomeState extends State<Home>
           onPressed: () {
             Navigator.of(context).pop();
             DataService.addHistoryEntry(widget.uid, form.model);
+            if(_currentPage != 0) keys.elementAt(_currentPage).currentState!.update(); //FIXME: Temporary if statement
           },
           child: const Text("Create"),
         )

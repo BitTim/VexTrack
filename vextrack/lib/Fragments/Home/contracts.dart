@@ -8,16 +8,16 @@ import 'package:vextrack/Models/Goals/contract.dart';
 import 'package:vextrack/Models/Seasons/season.dart';
 import 'package:vextrack/Services/data.dart';
 
-class ProgressionsFragment extends StatefulWidget
+class ContractsFragment extends StatefulWidget
 {
   final String uid;
-  const ProgressionsFragment({Key? key, required this.uid}) : super(key: key);
+  const ContractsFragment({Key? key, required this.uid}) : super(key: key);
 
   @override
-  ProgressionsFragmentState createState() => ProgressionsFragmentState();
+  ContractsFragmentState createState() => ContractsFragmentState();
 }
 
-class ProgressionsFragmentState extends State<ProgressionsFragment>
+class ContractsFragmentState extends State<ContractsFragment>
 {
   List<Contract> _contractsActive = [];
   List<Contract> _contractsInactive = [];
@@ -106,6 +106,11 @@ class ProgressionsFragmentState extends State<ProgressionsFragment>
   @override
   void initState() {
     super.initState();
+    update();
+  }
+
+  void update()
+  {
     setupSeasons();
     setupContracts();
   }

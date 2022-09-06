@@ -232,7 +232,7 @@ class DataService
   }
 
   // ===============================
-  //  Goal Data
+  //  Contract Data
   // ===============================
 
   static Future<List<Contract>> getAllContracts(String uid) async
@@ -240,7 +240,7 @@ class DataService
     List<Contract> progressions = [];
 
     QuerySnapshot loadedProgressions = await usersRef.doc(uid)
-      .collection("progressions")
+      .collection("contracts")
       .get();
 
     List<Contract> userProgressions = [];
@@ -249,7 +249,7 @@ class DataService
     for (Contract p in userProgressions)
     {
       QuerySnapshot loadedGoals = await usersRef.doc(uid)
-        .collection("progressions")
+        .collection("contracts")
         .doc(p.id)
         .collection("goals")
         .orderBy("order", descending: false)
@@ -313,5 +313,7 @@ class DataService
       .collection("seasons")
       .doc(meta.id)
       .update(season.toMap());
+
+    //TODO: Update contracts
   }
 }

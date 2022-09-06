@@ -54,6 +54,27 @@ class XPCalc
     return xp;
   }
 
+  static List<int> toLevelXP(int total)
+  {
+    int activeLevel = 2;
+    int activeXP = total;
+
+    for(int i = 2; i < DataService.battlepassParams!.levels + DataService.battlepassParams!.epilogue; i++)
+    {
+      int lvlXP = getLevelTotal(i + 1);
+      activeXP -= lvlXP;
+
+      if (activeXP < 0)
+      {
+        activeLevel = i;
+        activeXP += lvlXP;
+        break;
+      }
+    }
+
+    return [activeLevel, activeXP];
+  }
+
 
 
 

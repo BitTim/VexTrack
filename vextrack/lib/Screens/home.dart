@@ -5,6 +5,7 @@ import 'package:vextrack/Components/FAB/expandable_fab.dart';
 import 'package:vextrack/Fragments/Forms/history_entry.dart';
 import 'package:vextrack/Fragments/Home/contracts.dart';
 import 'package:vextrack/Fragments/Home/history.dart';
+import 'package:vextrack/Services/data.dart';
 import 'package:vextrack/screen_manager.dart';
 import 'package:vextrack/themes.dart';
 
@@ -35,6 +36,8 @@ class _HomeState extends State<Home>
 
   Widget createHistoryDialog()
   {
+    HistoryEntryForm form = HistoryEntryForm();
+
     return AlertDialog(
       scrollable: true,
       title: const Text('Create history entry'),
@@ -49,9 +52,9 @@ class _HomeState extends State<Home>
 
           return SizedBox(
             width: width - 128, //TODO: Responsive layout (Fullscrenn diag on phones, restrained width on Desktop)
-            child: const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: HistoryEntryForm(),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: form,
             ),
           );
         },
@@ -66,7 +69,7 @@ class _HomeState extends State<Home>
         ElevatedButton(
           onPressed: () {
             Navigator.of(context).pop();
-            //TODO: Logic for creating history entries
+            DataService.addHistoryEntry(widget.uid, form.model);
           },
           child: const Text("Create"),
         )

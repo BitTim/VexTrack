@@ -3,14 +3,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:uuid/uuid.dart';
 import 'package:vextrack/Components/history_entry.dart';
-import 'package:vextrack/Constants/colors.dart';
 import 'package:vextrack/Core/formatter.dart';
 import 'package:vextrack/Models/History/history_entry.dart';
 import 'package:vextrack/Services/data.dart';
 
 class HistoryEntryForm extends StatefulWidget
 {
-  const HistoryEntryForm({
+  final HistoryEntry model = HistoryEntry(
+    const Uuid().v4(),
+    "",
+    DataService.maps.keys.first,
+    DataService.modes.keys.last,
+    0,
+    0,
+    0,
+    Timestamp.fromMillisecondsSinceEpoch(0),
+    "none",
+  );
+
+  HistoryEntryForm({
     super.key,
   });
 
@@ -30,18 +41,6 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
   TextEditingController xpController = TextEditingController();
   TextEditingController descController = TextEditingController();
   TextEditingController timeDisplayController = TextEditingController();
-
-  HistoryEntry model = HistoryEntry(
-    const Uuid().v4(),
-    "",
-    DataService.maps.keys.first,
-    DataService.modes.keys.last,
-    0,
-    0,
-    0,
-    Timestamp.fromMillisecondsSinceEpoch(0),
-    "none",
-  );
 
   void setTimeDisplayText()
   {
@@ -72,23 +71,23 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
 
     Timestamp time = Timestamp.fromDate(DateTime.tryParse(timeString) ?? DateTime.fromMillisecondsSinceEpoch(0));
     
-    if (selectedMapID != model.map) setState(() {model.map = selectedMapID;});
-    if (selectedModeID != model.mode) setState(() {model.mode = selectedModeID;});
-    if (xp != model.xp) setState(() {model.xp = xp;});
-    if (score != model.score) setState(() {model.score = score;});
-    if (enemyScore != model.enemyScore) setState(() {model.enemyScore = enemyScore;});
-    if (time != model.time) setState(() {model.time = time;});
-    if (surrender != model.surrender) setState(() {model.surrender = surrender;});
+    if (selectedMapID != widget.model.map) setState(() {widget.model.map = selectedMapID;});
+    if (selectedModeID != widget.model.mode) setState(() {widget.model.mode = selectedModeID;});
+    if (xp != widget.model.xp) setState(() {widget.model.xp = xp;});
+    if (score != widget.model.score) setState(() {widget.model.score = score;});
+    if (enemyScore != widget.model.enemyScore) setState(() {widget.model.enemyScore = enemyScore;});
+    if (time != widget.model.time) setState(() {widget.model.time = time;});
+    if (surrender != widget.model.surrender) setState(() {widget.model.surrender = surrender;});
 
     if (selectedModeID == "custom") {
-      if(descController.text != model.desc) setState(() {model.desc = descController.text;});
-      if(model.score != 0) setState(() {model.score = 0;});
-      if(model.enemyScore != 0) setState(() {model.enemyScore = 0;});
+      if(descController.text != widget.model.desc) setState(() {widget.model.desc = descController.text;});
+      if(widget.model.score != 0) setState(() {widget.model.score = 0;});
+      if(widget.model.enemyScore != 0) setState(() {widget.model.enemyScore = 0;});
     } else {
-      if (model.desc != "") setState(() {model.desc = "";});
+      if (widget.model.desc != "") setState(() {widget.model.desc = "";});
     }
 
-    if (!DataService.modes[selectedModeID]!.canSurrender && model.surrender != "none") setState(() {model.surrender = "none";});
+    if (!DataService.modes[selectedModeID]!.canSurrender && widget.model.surrender != "none") setState(() {widget.model.surrender = "none";});
   }
 
   List<DropdownMenuItem> createModeMenuItems()
@@ -172,7 +171,7 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
           ],
           decoration: InputDecoration(
             border: const OutlineInputBorder(),
-            suffixText: (scoreFormat == "placement" && int.tryParse(scoreController.text) != null) ? model.getPlacementSuffix(int.parse(scoreController.text)) : "",
+            suffixText: (scoreFormat == "placement" && int.tryParse(scoreController.text) != null) ? widget.model.getPlacementSuffix(int.parse(scoreController.text)) : "",
           ),
           keyboardType: TextInputType.number,
         ),
@@ -393,8 +392,8 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
                                     context: context,
                                     //locale: const Locale('en', 'DE'),
                                     initialDate: DateTime.now(),
-                                    firstDate: DateTime(2020),
-                                    lastDate: DateTime.now().add(const Duration(days: 365)),
+                                    firstDate: DataService.seasonMetas.values.first.startDate.toDate(),
+                                    lastDate: DataService.seasonMetas.values.first.endDate.toDate().subtract(const Duration(days: 1)),
                                   );
 
                                   if(pickedDate == null) return;
@@ -431,7 +430,7 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
             padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
             child: Text("Preview"),
           ),
-          HistoryEntryWidget(model: model),
+          HistoryEntryWidget(model: widget.model),
         ],
       ),
     );

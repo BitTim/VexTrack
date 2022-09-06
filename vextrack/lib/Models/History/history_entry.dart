@@ -39,6 +39,21 @@ class HistoryEntry {
     );
   }
 
+  Map<String, dynamic> toMap() {
+    Map<String, dynamic> entry = {};
+
+    entry['desc'] = desc;
+    entry['map'] = map;
+    entry['mode'] = mode;
+    entry['xp'] = xp;
+    entry['score'] = score;
+    entry['enemyScore'] = enemyScore;
+    entry['time'] = time;
+    entry['surrender'] = surrender;
+
+    return entry;
+  }
+
   int getXP() { return xp; }
   DateTime getDateTime() { return time.toDate().toLocal(); }
   

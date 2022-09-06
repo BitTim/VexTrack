@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:uuid/uuid.dart';
 import 'package:vextrack/Constants/references.dart';
+import 'package:vextrack/Core/xp_calc.dart';
 import 'package:vextrack/Models/Goals/goal.dart';
 import 'package:vextrack/Models/Goals/contract.dart';
+import 'package:vextrack/Models/History/history_entry.dart';
 import 'package:vextrack/Models/History/history_entry_group.dart';
 import 'package:vextrack/Models/battlepass_params.dart';
 import 'package:vextrack/Models/game_mode.dart';
@@ -155,6 +158,17 @@ class DataService
     return null;
   }
 
+  static SeasonMeta? getSeasonMetaFromTime(Timestamp time)
+  {
+    for(SeasonMeta meta in seasonMetas.values)
+    {
+      if (meta.startDate.compareTo(time) > 0) continue;
+      if (meta.endDate.compareTo(time) > 0) return meta;
+    }
+
+    return null;
+  }
+
   // ===============================
   //  Map data
   // ===============================
@@ -252,5 +266,52 @@ class DataService
   {
     DataService.userData = null;
     DataService.seasons = {};
+  }
+
+
+
+
+
+
+
+  // ================================
+  //  Create data
+  // ================================
+
+  static void addHistoryEntry(String uid, HistoryEntry he) async
+  {
+    SeasonMeta? meta = getSeasonMetaFromTime(he.time);
+    if (meta == null) return;
+
+    Season season = await getSeason(uid, meta.id);
+    Timestamp date = Timestamp.fromDate(he.getDate());
+    int day = date.toDate().difference(meta.startDate.toDate()).inDays;
+    int idx = season.history.indexWhere((element) => element.day == day);
+
+    if (idx == -1)
+    {
+      HistoryEntryGroup heg = HistoryEntryGroup(const Uuid().v4(), day, 0, date, []);
+      season.history.insert(0, heg);
+      idx = 0;
+    }
+
+    int total = XPCalc.toTotal(season.activeLevel, season.activeXP) + he.xp;
+    List<int> levelXP = XPCalc.toLevelXP(total);
+    season.activeLevel = levelXP[0];
+    season.activeXP = levelXP[1];
+
+    season.history[idx].addEntry(he);
+    seasons[meta.id] = season;
+
+    usersRef.doc(uid)
+      .collection("seasons")
+      .doc(meta.id)
+      .collection("history")
+      .doc(season.history[idx].id).set(season.history[idx].toMap(), SetOptions(merge: true));
+
+    usersRef.doc(uid)
+      .collection("seasons")
+      .doc(meta.id)
+      .update(season.toMap());
   }
 }

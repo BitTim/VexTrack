@@ -27,6 +27,17 @@ class Season
     );
   }
 
+  Map<String, dynamic> toMap()
+  {
+    Map<String, dynamic> map = {};
+
+    map['activeLevel'] = activeLevel;
+    map['activeXP'] = activeXP;
+    map['inactiveDays'] = inactiveDays;
+
+    return map;
+  }
+
   int getTotal()
   {
     return XPCalc.getSeasonTotal();

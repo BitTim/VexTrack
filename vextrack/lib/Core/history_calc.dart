@@ -4,13 +4,13 @@ import 'package:vextrack/Models/Seasons/season_meta.dart';
 class HistoryCalc
 {
   static List<int> getXPPerDay(List<HistoryEntryGroup> history, SeasonMeta meta) {
-    List<int> amounts = [0];
-    DateTime prevDate = history[0].getDate();
+    List<int> amounts = [];
+    DateTime prevDate = history.last.getDate();
 
-    for (HistoryEntryGroup heg in history)
+    for (HistoryEntryGroup heg in history.reversed)
     {
       DateTime cDate = heg.getDate();
-      for (int i = 0; cDate.difference(prevDate).inDays - 1 > i; i++) {
+      for (int i = 0; i < cDate.difference(prevDate).inDays.abs() - 1; i++) {
         amounts.add(0);
       }
 

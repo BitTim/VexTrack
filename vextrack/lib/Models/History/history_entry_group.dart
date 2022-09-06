@@ -24,13 +24,33 @@ class HistoryEntryGroup
       entries.add(HistoryEntry.fromMap(rawEntries[i], uuids[i]));
     }
 
+    entries.sort((a, b) => b.time.compareTo(a.time));
+
     return HistoryEntryGroup(
       doc.id,
       doc['day'] as int,
       doc['total'] as int,
       doc['date'] as Timestamp,
-      entries.reversed.toList(),
+      entries,
     );
+  }
+
+  Map<String, dynamic> toMap()
+  {
+    Map<String, dynamic> map = {};
+
+    Map<String, dynamic> rawEntries = {};
+    for(HistoryEntry he in entries.reversed)
+    {
+      rawEntries[he.uuid] = he.toMap();
+    }
+
+    map['day'] = day;
+    map['total'] = total;
+    map['date'] = date;
+    map['entries'] = rawEntries;
+
+    return map;
   }
 
 
@@ -51,5 +71,18 @@ class HistoryEntryGroup
 
   String getFormattedDate() {
     return Formatter.formatDate(date.toDate());
+  }
+
+
+
+
+  // --------------------------------
+  // Setters
+  // --------------------------------
+
+  void addEntry(HistoryEntry he) {
+    entries.add(he);
+    entries.sort((a, b) => b.time.compareTo(a.time));
+    total += he.xp;
   }
 }

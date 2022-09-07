@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "280952778332",
+    "project_id": "vextrack-bt",
+    "storage_bucket": "vextrack-bt.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:280952778332:android:61b6e18425387f2c634099",
+        "android_client_info": {
+          "package_name": "tech.bittim.vextrack"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "280952778332-ksj7s18o8n4jvp0hpbb2msup1vepr0ok.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGuBf1HbqZOpgWTPBcWaCd5zP4zAz-_Cc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "280952778332-ksj7s18o8n4jvp0hpbb2msup1vepr0ok.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "280952778332-vegvfvtd2nst7mhq51oeuj4d41bedh7s.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "tech.bittim.vextrack"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -11,25 +11,41 @@ class Contract
   String id;
   String name;
   bool timed;
+  bool paused;
   String startColor;
   String endColor;
   Timestamp? startTime;
   Timestamp? endTime;
   List<Goal> goals = [];
 
-  Contract(this.id, this.name, this.timed, this.startColor, this.endColor, this.startTime, this.endTime);
+  Contract(this.id, this.name, this.timed, this.paused, this.startColor, this.endColor, this.startTime, this.endTime);
 
-  static Contract fromDoc(DocumentSnapshot doc)
+  static Contract fromDoc(DocumentSnapshot doc, bool paused)
   {
     return Contract(
       doc.id,
       doc['name'] as String,
       doc['timed'] as bool,
+      paused,
       doc['startColor'] as String,
       doc['endColor'] as String,
       doc['startTime'] as Timestamp?,
       doc['endTime'] as Timestamp?,
     );
+  }
+
+  Map<String, dynamic> toMap()
+  {
+    Map<String, dynamic> map = {};
+
+    map['name'] = name;
+    map['timed'] = timed;
+    map['startColor'] = startColor;
+    map['endColor'] = endColor;
+    map['startTime'] = startTime;
+    map['endTime'] = endTime;
+
+    return map;
   }
 
   int getTotal()
@@ -112,10 +128,8 @@ class Contract
   {
     for (Goal g in goals)
     {
-      if (g.xp > 0 && g.xp < g.total)
-      {
-        return g;
-      }
+      if (g.xp >= g.total) continue;
+      return g;
     }
 
     return null;
@@ -128,12 +142,16 @@ class Contract
   // Flags
   // -------------------------------
 
-  bool isActive()
+  bool isCompleted()
   {
-    //if (paused) return false; //TODO: Reimplement
-    if (getRemaining() <= 0) return false;
+    if (getRemaining() <= 0) return true;
+    return false;
+  }
 
-    return true;
+  bool isPaused()
+  {
+    if (paused) return true;
+    return false;
   }
 
 
@@ -171,5 +189,28 @@ class Contract
   String getNextUnlockFormattedProgress()
   {
     return getNextUnlock()?.getFormattedProgress() ?? "0%";
+  }
+
+
+
+
+  // --------------------------------
+  //  Setters
+  // --------------------------------
+
+  void addXP(int xp)
+  {
+    Goal? active = getNextUnlock();
+    if (active == null) return;
+
+    if(active.getRemaining() < xp)
+    {
+      xp -= active.getRemaining();
+      active.xp += active.getRemaining();
+      addXP(xp);
+      return;
+    }
+
+    active.xp += xp;
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:vextrack/Components/FAB/action_button.dart';
 import 'package:vextrack/Components/FAB/expandable_fab.dart';
 import 'package:vextrack/Fragments/Forms/history_entry.dart';
@@ -7,9 +6,7 @@ import 'package:vextrack/Fragments/Home/contracts.dart';
 import 'package:vextrack/Fragments/Home/history.dart';
 import 'package:vextrack/Services/data.dart';
 import 'package:vextrack/screen_manager.dart';
-import 'package:vextrack/themes.dart';
 
-import '../Constants/colors.dart';
 import '../Services/auth.dart';
 
 class _HomeState extends State<Home>
@@ -72,9 +69,9 @@ class _HomeState extends State<Home>
           child: const Text("Cancel"),
         ),
         ElevatedButton(
-          onPressed: () {
+          onPressed: () async {
             Navigator.of(context).pop();
-            DataService.addHistoryEntry(widget.uid, form.model);
+            await DataService.addHistoryEntry(widget.uid, form.model);
             if(_currentPage != 0) keys.elementAt(_currentPage).currentState!.update(); //FIXME: Temporary if statement
           },
           child: const Text("Create"),
@@ -85,7 +82,6 @@ class _HomeState extends State<Home>
 
 	@override
 	Widget build(BuildContext context) {
-    ThemeData theme = Theme.of(context);
 
 		return Scaffold(
 			appBar: AppBar(

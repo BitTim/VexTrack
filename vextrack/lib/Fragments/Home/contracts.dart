@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vextrack/Components/contract.dart';
 import 'package:vextrack/Components/season.dart';
-import 'package:vextrack/Constants/colors.dart';
 import 'package:vextrack/Models/Goals/contract.dart';
 import 'package:vextrack/Models/Seasons/season.dart';
 import 'package:vextrack/Services/data.dart';
@@ -20,7 +19,8 @@ class ContractsFragment extends StatefulWidget
 class ContractsFragmentState extends State<ContractsFragment>
 {
   List<Contract> _contractsActive = [];
-  List<Contract> _contractsInactive = [];
+  List<Contract> _contractsPaused = [];
+  List<Contract> _contractsCompleted = [];
   List<Season> _seasonsActive = [];
   List<Season> _seasonsInactive = [];
   bool _loading = false;
@@ -77,10 +77,23 @@ class ContractsFragmentState extends State<ContractsFragment>
     return contractList;
   }
   
-  showInactiveContracts() {
+  showPausedContracts() {
     List<Widget> contractList = [];
 
-    for(Contract c in _contractsInactive)
+    for(Contract c in _contractsPaused)
+    {
+      contractList.add(
+        ContractWidget(model: c)
+      );
+    }
+
+    return contractList;
+  }
+
+  showCompletedContracts() {
+    List<Widget> contractList = [];
+
+    for(Contract c in _contractsCompleted)
     {
       contractList.add(
         ContractWidget(model: c)
@@ -93,11 +106,12 @@ class ContractsFragmentState extends State<ContractsFragment>
   setupContracts() async
   {
     setState(() => _loading = true);
-    List<Contract> contracts = await DataService.getAllContracts(widget.uid);
+    List<Contract> contracts = await DataService.getAllContracts(uid: widget.uid);
     if (mounted) {
       setState(() {
-        _contractsActive = contracts.where((element) => element.isActive()).toList();
-        _contractsInactive = contracts.where((element) => !element.isActive()).toList();
+        _contractsActive = contracts.where((element) => !element.isCompleted() && !element.isPaused()).toList();
+        _contractsPaused = contracts.where((element) => !element.isCompleted() && element.isPaused()).toList();
+        _contractsCompleted = contracts.where((element) => element.isCompleted()).toList();
         _loading = false;
       });
     }
@@ -206,7 +220,7 @@ class ContractsFragmentState extends State<ContractsFragment>
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
                     child: Text(
-                      "Inactive",
+                      "Paused",
                       style: GoogleFonts.titilliumWeb(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
@@ -214,9 +228,24 @@ class ContractsFragmentState extends State<ContractsFragment>
                     ),
                   ),
                   Column(
-                    children: _contractsInactive.isEmpty && _loading == false ? [
-                      const Center(child: Text("No inactive contracts"))
-                    ] : showInactiveContracts()
+                    children: _contractsPaused.isEmpty && _loading == false ? [
+                      const Center(child: Text("No paused contracts"))
+                    ] : showPausedContracts()
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                    child: Text(
+                      "Completed",
+                      style: GoogleFonts.titilliumWeb(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  Column(
+                    children: _contractsPaused.isEmpty && _loading == false ? [
+                      const Center(child: Text("No completed contracts"))
+                    ] : showCompletedContracts()
                   ),
                 ],
               ),

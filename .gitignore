@@ -17,7 +17,7 @@ obj/
 .vs/
 VexTrack Package\AppPackages
 x64/
-Android/app/google-services.json
+google-services.json
 
 # Miscellaneous
 *.class

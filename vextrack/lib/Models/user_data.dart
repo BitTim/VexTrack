@@ -7,8 +7,8 @@ class UserData
 
   int streak;
 
-  List<Map<String, dynamic>> contractIDs;
-  List<Map<String, dynamic>> seasonIDs;
+  Map<String, ContractActivityMeta> contractIDs;
+  Map<String, SeasonActivityMeta> seasonIDs;
 
   UserData(this.name, this.imgURL, this.streak, this.contractIDs, this.seasonIDs);
 
@@ -18,8 +18,21 @@ class UserData
       doc['username'] as String,
       doc['img'] as String,
       doc['streak'] as int,
-      (doc['contractIDs'] as List<dynamic>).map((e) => e as Map<String, dynamic>).toList(),
-      (doc['seasonIDs'] as List<dynamic>).map((e) => e as Map<String, dynamic>).toList(),
+      (doc['contractIDs'] as Map<String, dynamic>).map((key, value) => MapEntry(key, ContractActivityMeta(completed: value['completed'], paused: value['paused']))),
+      (doc['seasonIDs'] as Map<String, dynamic>).map((key, value) => MapEntry(key, SeasonActivityMeta(active: value['active']))),
     );
   }
+}
+
+class SeasonActivityMeta
+{
+  final bool active;
+  SeasonActivityMeta({required this.active});
+}
+
+class ContractActivityMeta
+{
+  final bool completed;
+  final bool paused;
+  ContractActivityMeta({required this.completed, required this.paused});
 }

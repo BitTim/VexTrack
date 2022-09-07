@@ -22,6 +22,7 @@ class DataService
   static Map<String, GameMap> maps = {};
   static Map<String, SeasonMeta> seasonMetas = {};
   static Map<String, Season> seasons = {};
+  static Map<String, Contract> contracts = {};
 
   static void init() async
   {
@@ -55,10 +56,9 @@ class DataService
     if(userData == null) await fetchUserData(uid);
 
     Map<int, Season> seasonOrder = {};
-    for(Map<String, dynamic> s in userData!.seasonIDs)
+    for(String id in userData!.seasonIDs.keys)
     {
-      bool active = s['active'];
-      String id = s['id'];
+      bool active = userData!.seasonIDs[id]!.active;
 
       if(activeOnly && !active) continue;
 
@@ -235,37 +235,49 @@ class DataService
   //  Contract Data
   // ===============================
 
-  static Future<List<Contract>> getAllContracts(String uid) async
-  {
-    List<Contract> progressions = [];
+  static Future<Contract> getContract(String uid, String id) async {
+    if (contracts[id] != null) return contracts[id]!;
+    if(userData == null) await fetchUserData(uid);
 
-    QuerySnapshot loadedProgressions = await usersRef.doc(uid)
+    DocumentSnapshot loadedContract = await usersRef.doc(uid)
       .collection("contracts")
+      .doc(id)
       .get();
 
-    List<Contract> userProgressions = [];
-    userProgressions = loadedProgressions.docs.map((doc) => Contract.fromDoc(doc)).toList();
-
-    for (Contract p in userProgressions)
-    {
-      QuerySnapshot loadedGoals = await usersRef.doc(uid)
-        .collection("contracts")
-        .doc(p.id)
-        .collection("goals")
-        .orderBy("order", descending: false)
-        .get();
+    Contract contract = Contract.fromDoc(loadedContract, userData!.contractIDs[id]!.paused);
+    QuerySnapshot loadedGoals = await usersRef.doc(uid)
+      .collection("contracts")
+      .doc(id)
+      .collection("goals")
+      .orderBy("order", descending: false)
+      .get();
       
-      p.goals = loadedGoals.docs.map((doc) => Goal.fromDoc(doc, p)).toList();
+    contract.goals = loadedGoals.docs.map((doc) => Goal.fromDoc(doc, contract)).toList();
+    return contract;
+  }
+
+  static Future<List<Contract>> getAllContracts({required String uid, bool incompleteOnly = false}) async {
+    if(userData == null) await fetchUserData(uid);
+
+    List<Contract> loadedContrcats = [];
+
+    for(String id in userData!.contractIDs.keys)
+    {
+      bool completed = userData!.contractIDs[id]!.completed;
+
+      if(incompleteOnly && completed) continue;
+
+      loadedContrcats.add(await getContract(uid, id));
     }
 
-    progressions.addAll(userProgressions);
-    return progressions;
+    return loadedContrcats;
   }
 
   static refresh() async
   {
     DataService.userData = null;
     DataService.seasons = {};
+    DataService.contracts = {};
   }
 
 
@@ -278,7 +290,7 @@ class DataService
   //  Create data
   // ================================
 
-  static void addHistoryEntry(String uid, HistoryEntry he) async
+  static Future<void> addHistoryEntry(String uid, HistoryEntry he) async
   {
     SeasonMeta? meta = getSeasonMetaFromTime(he.time);
     if (meta == null) return;
@@ -314,6 +326,31 @@ class DataService
       .doc(meta.id)
       .update(season.toMap());
 
-    //TODO: Update contracts
+    for(String id in userData!.contractIDs.keys)
+    {
+      Contract contract = await getContract(uid, id);
+      bool completed = userData!.contractIDs[id]!.completed;
+      bool paused = userData!.contractIDs[id]!.paused;
+
+      if (paused || completed) continue;
+
+      contract.addXP(he.xp);
+      contracts[id] = contract;
+
+      usersRef.doc(uid)
+        .collection('contracts')
+        .doc(id)
+        .update(contract.toMap());
+      
+      for(Goal goal in contract.goals)
+      {
+        usersRef.doc(uid)
+          .collection('contracts')
+          .doc(id)
+          .collection('goals')
+          .doc(goal.id)
+          .update(goal.toMap());
+      }
+    }
   }
 }

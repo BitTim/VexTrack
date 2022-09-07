@@ -6,24 +6,39 @@ import 'package:vextrack/Models/Goals/contract.dart';
 class Goal
 {
   Contract parent;
+  String id;
   String name;
   int total;
   int xp;
   int order;
   List<String> rewards;
 
-  Goal(this.parent, this.name, this.total, this.xp, this.order, this.rewards);
+  Goal(this.parent, this.id, this.name, this.total, this.xp, this.order, this.rewards);
 
   static Goal fromDoc(DocumentSnapshot doc, Contract parent)
   {
     return Goal(
       parent,
+      doc.id,
       doc['name'] as String,
       doc['total'] as int,
       doc['xp'] as int,
       doc['order'] as int,
       doc['rewards'].cast<String>(),
     );
+  }
+
+  Map<String, dynamic> toMap()
+  {
+    Map<String, dynamic> map = {};
+
+    map['name'] = name;
+    map['total'] = total;
+    map['xp'] = xp;
+    map['order'] = order;
+    map['rewards'] = rewards;
+
+    return map;
   }
 
   int getTotal()

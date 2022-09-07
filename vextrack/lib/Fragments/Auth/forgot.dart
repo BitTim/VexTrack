@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../Screens/auth.dart';
 import '../../Services/auth.dart';
-import '../../colors.dart';
 
 class ForgotFragment extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();

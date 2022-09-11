@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vextrack/Components/FAB/action_button.dart';
 import 'package:vextrack/Components/FAB/expandable_fab.dart';
-import 'package:vextrack/Fragments/Forms/history_entry.dart';
+import 'package:vextrack/Fragments/Forms/History/history_entry.dart';
 import 'package:vextrack/Fragments/Home/contracts.dart';
 import 'package:vextrack/Fragments/Home/history.dart';
 import 'package:vextrack/Services/data.dart';

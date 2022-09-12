@@ -87,6 +87,7 @@ class DataService
     List<HistoryEntryGroup> history = await getHistory(uid, id);
 
     Season season = Season.fromDoc(loadedSeason, seasonMetas[id]!, history);
+    seasons[id] = season;
     return season;
   }
 

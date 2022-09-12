@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vextrack/Components/FAB/action_button.dart';
 import 'package:vextrack/Components/FAB/expandable_fab.dart';
-import 'package:vextrack/Fragments/Forms/history_entry.dart';
+import 'package:vextrack/Fragments/Forms/History/history_entry.dart';
 import 'package:vextrack/Fragments/Home/contracts.dart';
 import 'package:vextrack/Fragments/Home/history.dart';
 import 'package:vextrack/Services/data.dart';
@@ -87,6 +87,17 @@ class _HomeState extends State<Home>
 			appBar: AppBar(
 				title: const Text('VexTrack'),
 				actions: [
+          if(_currentPage == 2) IconButton(
+            icon: const Icon(Icons.filter_list_alt),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return keys.elementAt(_currentPage).currentState!.createFilterDialog();
+                },
+              );
+            },
+          ),
 					PopupMenuButton(
 						icon: const Icon(Icons.account_circle),
             onSelected: (value) {

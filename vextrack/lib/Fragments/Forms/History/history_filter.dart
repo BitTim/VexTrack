@@ -4,11 +4,11 @@ import 'package:vextrack/Services/data.dart';
 
 class HistoryFilterForm extends StatefulWidget
 {
-  final List<String> seasonIDFilter = [];
-  final List<String> gameModeFilter = [];
-  final List<String> mapFilter= [];
+  final List<String> seasonIDFilter;
+  final List<String> gameModeFilter;
+  final List<String> mapFilter;
 
-  HistoryFilterForm({super.key});
+  const HistoryFilterForm({super.key, required this.seasonIDFilter, required this.gameModeFilter, required this.mapFilter});
 
   @override
   HistoryFilterFormState createState() => HistoryFilterFormState();

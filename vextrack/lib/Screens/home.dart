@@ -87,6 +87,17 @@ class _HomeState extends State<Home>
 			appBar: AppBar(
 				title: const Text('VexTrack'),
 				actions: [
+          if(_currentPage == 2) IconButton(
+            icon: const Icon(Icons.filter_list_alt),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return keys.elementAt(_currentPage).currentState!.createFilterDialog();
+                },
+              );
+            },
+          ),
 					PopupMenuButton(
 						icon: const Icon(Icons.account_circle),
             onSelected: (value) {

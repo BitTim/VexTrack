@@ -25,6 +25,9 @@ class ContractsFragmentState extends State<ContractsFragment>
   List<Season> _seasonsInactive = [];
   bool _loading = false;
 
+  String selectedOrder = "name";
+  bool inverted = false;
+
   showInactiveSeasons() {
     List<Widget> seasonList = [];
     
@@ -103,6 +106,60 @@ class ContractsFragmentState extends State<ContractsFragment>
     return contractList;
   }
 
+  orderContracts()
+  {
+    if(selectedOrder == "name")
+    {
+      _contractsActive.sort((a, b) {
+        if(inverted) { Contract tmp = a; a = b; b = tmp; }
+        return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+      },);
+      _contractsPaused.sort((a, b) {
+        if(inverted) { Contract tmp = a; a = b; b = tmp; }
+        return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+      },);
+      _contractsCompleted.sort((a, b) {
+        if(inverted) { Contract tmp = a; a = b; b = tmp; }
+        return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+      },);
+      return;
+    }
+
+    if(selectedOrder == "total")
+    {
+      _contractsActive.sort((a, b) {
+        if(inverted) { Contract tmp = a; a = b; b = tmp; }
+        return b.getTotal().compareTo(a.getTotal());
+      },);
+      _contractsPaused.sort((a, b) {
+        if(inverted) { Contract tmp = a; a = b; b = tmp; }
+        return b.getTotal().compareTo(a.getTotal());
+      },);
+      _contractsCompleted.sort((a, b) {
+        if(inverted) { Contract tmp = a; a = b; b = tmp; }
+        return b.getTotal().compareTo(a.getTotal());
+      },);
+      return;
+    }
+
+    if(selectedOrder == "progress")
+    {
+      _contractsActive.sort((a, b) {
+        if(inverted) { Contract tmp = a; a = b; b = tmp; }
+        return b.getProgress().compareTo(a.getProgress());
+      },);
+      _contractsPaused.sort((a, b) {
+        if(inverted) { Contract tmp = a; a = b; b = tmp; }
+        return b.getProgress().compareTo(a.getProgress());
+      },);
+      _contractsCompleted.sort((a, b) {
+        if(inverted) { Contract tmp = a; a = b; b = tmp; }
+        return b.getProgress().compareTo(a.getProgress());
+      },);
+      return;
+    }
+  }
+
   setupContracts() async
   {
     setState(() => _loading = true);
@@ -117,6 +174,26 @@ class ContractsFragmentState extends State<ContractsFragment>
     }
   }
 
+  List<DropdownMenuItem> createOrderItems()
+  {
+    List<DropdownMenuItem> items = [];
+
+    items.add(const DropdownMenuItem(
+      value: 'name',
+      child: Text("Name"),
+    ));
+    items.add(const DropdownMenuItem(
+      value: 'total',
+      child: Text("Total XP"),
+    ));
+    items.add(const DropdownMenuItem(
+      value: 'progress',
+      child: Text("Progress"),
+    ));
+
+    return items;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -127,6 +204,7 @@ class ContractsFragmentState extends State<ContractsFragment>
   {
     setupSeasons();
     setupContracts();
+    orderContracts();
   }
 
   @override
@@ -142,112 +220,158 @@ class ContractsFragmentState extends State<ContractsFragment>
         child: ListView(
           physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
           children: [
-            ExpandablePanel(
-              header: Text(
-                "Seasons",
-                style: GoogleFonts.titilliumWeb(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w700,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+              child: ExpandablePanel(
+                header: Text(
+                  "Seasons",
+                  style: GoogleFonts.titilliumWeb(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-              ),
-              collapsed: Column(
-                children: _seasonsActive.isEmpty && _loading == false ? [
-                  const Center(child: Text("No active seasons"))
-                ] : showActiveSeasons()
-              ),
-              expanded: Column(
-                children: [
-                  Text(
-                    "Active",
-                    style: GoogleFonts.titilliumWeb(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  Column(
-                    children: _seasonsActive.isEmpty && _loading == false ? [
-                      const Center(child: Text("No active seasons"))
-                    ] : showActiveSeasons()
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                    child: Text(
-                      "Inactive",
+                collapsed: Column(
+                  children: _seasonsActive.isEmpty && _loading == false ? [
+                    const Center(child: Text("No active seasons"))
+                  ] : showActiveSeasons()
+                ),
+                expanded: Column(
+                  children: [
+                    Text(
+                      "Active",
                       style: GoogleFonts.titilliumWeb(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                  ),
-                  Column(
-                    children: _seasonsInactive.isEmpty && _loading == false ? [
-                      const Center(child: Text("No inactive seasons"))
-                    ] : showInactiveSeasons()
-                  ),
-                ],
+                    Column(
+                      children: _seasonsActive.isEmpty && _loading == false ? [
+                        const Center(child: Text("No active seasons"))
+                      ] : showActiveSeasons()
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                      child: Text(
+                        "Inactive",
+                        style: GoogleFonts.titilliumWeb(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    Column(
+                      children: _seasonsInactive.isEmpty && _loading == false ? [
+                        const Center(child: Text("No inactive seasons"))
+                      ] : showInactiveSeasons()
+                    ),
+                  ],
+                ),
               ),
             ),
           
           
           
-            ExpandablePanel(
-              header: Text(
-                "Contracts",
-                style: GoogleFonts.titilliumWeb(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w700,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+              child: ExpandablePanel(
+                header: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Contracts",
+                      style: GoogleFonts.titilliumWeb(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(0, 0, 8, 0),
+                          child: Text("Order by"),
+                        ),
+                        SizedBox(
+                          width: 128,
+                          child: DropdownButtonFormField(
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                            ),
+                            onChanged: (dynamic newValue) {
+                              setState(() {
+                                selectedOrder = newValue as String;
+                                orderContracts();
+                              });
+                            },
+                            items: createOrderItems(),
+                            value: selectedOrder,
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.arrow_downward),
+                          selectedIcon: const Icon(Icons.arrow_upward),
+                          isSelected: inverted,
+                          onPressed: () {
+                            setState(() {
+                              inverted = !inverted;
+                              orderContracts();
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ),
-              collapsed: Column(
-                children: _contractsActive.isEmpty && _loading == false ? [
-                  const Center(child: Text("No active contracts"))
-                ] : showActiveContracts()
-              ),
-              expanded: Column(
-                children: [
-                  Text(
-                    "Active",
-                    style: GoogleFonts.titilliumWeb(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  Column(
-                    children: _contractsActive.isEmpty && _loading == false ? [
-                      const Center(child: Text("No active contracts"))
-                    ] : showActiveContracts()
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                    child: Text(
-                      "Paused",
+                collapsed: Column(
+                  children: _contractsActive.isEmpty && _loading == false ? [
+                    const Center(child: Text("No active contracts"))
+                  ] : showActiveContracts()
+                ),
+                expanded: Column(
+                  children: [
+                    Text(
+                      "Active",
                       style: GoogleFonts.titilliumWeb(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                  ),
-                  Column(
-                    children: _contractsPaused.isEmpty && _loading == false ? [
-                      const Center(child: Text("No paused contracts"))
-                    ] : showPausedContracts()
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                    child: Text(
-                      "Completed",
-                      style: GoogleFonts.titilliumWeb(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
+                    Column(
+                      children: _contractsActive.isEmpty && _loading == false ? [
+                        const Center(child: Text("No active contracts"))
+                      ] : showActiveContracts()
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                      child: Text(
+                        "Paused",
+                        style: GoogleFonts.titilliumWeb(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
-                  ),
-                  Column(
-                    children: _contractsPaused.isEmpty && _loading == false ? [
-                      const Center(child: Text("No completed contracts"))
-                    ] : showCompletedContracts()
-                  ),
-                ],
+                    Column(
+                      children: _contractsPaused.isEmpty && _loading == false ? [
+                        const Center(child: Text("No paused contracts"))
+                      ] : showPausedContracts()
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                      child: Text(
+                        "Completed",
+                        style: GoogleFonts.titilliumWeb(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    Column(
+                      children: _contractsPaused.isEmpty && _loading == false ? [
+                        const Center(child: Text("No completed contracts"))
+                      ] : showCompletedContracts()
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

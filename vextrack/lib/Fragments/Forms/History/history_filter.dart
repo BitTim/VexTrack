@@ -100,8 +100,8 @@ class HistoryFilterFormState extends State<HistoryFilterForm>
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.cancel),
+                TextButton(
+                  child: const Text("Clear"),
                   onPressed: () {
                     setState(() {
                       widget.seasonIDFilter.clear();
@@ -133,8 +133,8 @@ class HistoryFilterFormState extends State<HistoryFilterForm>
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.cancel),
+                TextButton(
+                  child: const Text("Clear"),
                   onPressed: () {
                     setState(() {
                       widget.gameModeFilter.clear();
@@ -166,8 +166,8 @@ class HistoryFilterFormState extends State<HistoryFilterForm>
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.cancel),
+                TextButton(
+                  child: const Text("Clear"),
                   onPressed: () {
                     setState(() {
                       widget.mapFilter.clear();

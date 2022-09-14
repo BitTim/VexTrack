@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:vextrack/Core/formatter.dart';
+import 'package:vextrack/Core/history_calc.dart';
 import 'package:vextrack/Core/xp_calc.dart';
 import 'package:vextrack/Models/History/history_entry_group.dart';
 import 'package:vextrack/Models/Seasons/season_meta.dart';
@@ -66,8 +67,10 @@ class Season
 
   int getDailyAvg()
   {
+    int nDays = HistoryCalc.getXPPerDay(history, meta).length;
+
     int xp = getXP();
-    int dailyAvg = xp ~/ meta.getDateTime(meta.endDate).difference(meta.getDateTime(meta.startDate)).inDays;
+    int dailyAvg = xp ~/ nDays;
 
     return dailyAvg;
   }

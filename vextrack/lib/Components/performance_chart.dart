@@ -12,10 +12,12 @@ import 'package:vextrack/themes.dart';
 class PerformanceChart extends StatefulWidget
 {
   final Performance model;
+  final bool showDaily;
 
   const PerformanceChart({
     Key? key,
     required this.model,
+    required this.showDaily,
   }) : super(key: key);
 
   @override
@@ -89,6 +91,19 @@ class PerformanceChartState extends State<PerformanceChart> {
             show: false,
           ),
           dashArray: [10, 5, 1, 5],
+          isStepLineChart: false,
+        ),
+
+        if(widget.showDaily) LineChartBarData( // User Ideal
+          spots: Performance.mapPointToSpot(widget.model.getUserIdeal()),
+          gradient: AppColors.epilogueGradient,
+          isCurved: false,
+          isStrokeCapRound: true,
+          barWidth: 3,
+          dotData: FlDotData(
+            show: false,
+          ),
+          dashArray: [5, 5, 5, 5],
           isStepLineChart: false,
         ),
       ],

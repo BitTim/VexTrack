@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:vextrack/Components/history_entry_group.dart';
 import 'package:vextrack/Fragments/Forms/History/history_filter.dart';
 import 'package:vextrack/Models/History/history_entry.dart';
@@ -182,6 +181,9 @@ class HistoryFragmentState extends State<HistoryFragment>
               children: _history.isEmpty && _loading == false ? [
                 const Center(child: Text("No history"))
               ] : showHistory()
+            ),
+            const SizedBox(
+              height: 88,
             ),
           ]
         ),

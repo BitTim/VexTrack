@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vextrack/Components/contract.dart';
 import 'package:vextrack/Components/season.dart';
-import 'package:vextrack/Models/Goals/contract.dart';
+import 'package:vextrack/Models/Contracts/contract.dart';
 import 'package:vextrack/Models/Seasons/season.dart';
 import 'package:vextrack/Services/data.dart';
 
@@ -221,7 +221,7 @@ class ContractsFragmentState extends State<ContractsFragment>
           physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+              padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
               child: ExpandablePanel(
                 header: Text(
                   "Seasons",
@@ -373,6 +373,9 @@ class ContractsFragmentState extends State<ContractsFragment>
                   ],
                 ),
               ),
+            ),
+            const SizedBox(
+              height: 88,
             ),
           ],
         ),

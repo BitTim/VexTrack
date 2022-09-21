@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vextrack/Components/gradient_progress.dart';
-import 'package:vextrack/Models/Goals/goal.dart';
+import 'package:vextrack/Models/Contracts/goal.dart';
 
 class GoalWidget extends StatefulWidget
 {

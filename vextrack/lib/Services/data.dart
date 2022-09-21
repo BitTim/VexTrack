@@ -3,8 +3,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
 import 'package:vextrack/Constants/references.dart';
 import 'package:vextrack/Core/xp_calc.dart';
-import 'package:vextrack/Models/Goals/goal.dart';
-import 'package:vextrack/Models/Goals/contract.dart';
+import 'package:vextrack/Models/Contracts/goal.dart';
+import 'package:vextrack/Models/Contracts/contract.dart';
 import 'package:vextrack/Models/History/history_entry.dart';
 import 'package:vextrack/Models/History/history_entry_group.dart';
 import 'package:vextrack/Models/battlepass_params.dart';
@@ -149,8 +149,9 @@ class DataService
     return seasonMetas;
   }
 
-  static SeasonMeta? getActiveSeasonMeta()
+  static Future<SeasonMeta?> getActiveSeasonMeta() async
   {
+    if(DataService.seasonMetas.isEmpty) await getSeasonMetas();
     for(SeasonMeta meta in DataService.seasonMetas.values)
     {
       if(meta.isActive()) return meta;

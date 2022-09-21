@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:vextrack/Core/formatter.dart';
-import 'package:vextrack/Models/Goals/contract.dart';
+import 'package:vextrack/Models/Contracts/contract.dart';
 
 class Goal
 {

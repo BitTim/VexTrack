@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:vextrack/Core/formatter.dart';
 import 'package:vextrack/Core/util.dart';
-import 'package:vextrack/Models/Goals/goal.dart';
+import 'package:vextrack/Models/Contracts/goal.dart';
 import 'package:vextrack/themes.dart';
 
 class Contract
@@ -121,7 +121,10 @@ class Contract
       );
     }
 
-    return LinearGradient(colors: [AppThemes.getTheme().colorScheme.secondary]);
+    return LinearGradient(colors: [
+      AppThemes.getTheme().colorScheme.primary,
+      AppThemes.getTheme().colorScheme.primary,
+    ]);
   }
 
   Goal? getNextUnlock()

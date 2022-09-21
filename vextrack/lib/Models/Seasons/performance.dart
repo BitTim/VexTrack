@@ -14,6 +14,9 @@ class Performance
   int epilogueTotal;
   int avgDailyXP;
   int activeXP;
+  int activeDay;
+  int userIdeal;
+  int userEpilogueIdeal;
   SeasonMeta meta;
   List<HistoryEntryGroup> history;
 
@@ -26,6 +29,9 @@ class Performance
     required this.epilogueTotal,
     required this.avgDailyXP,
     required this.activeXP,
+    required this.activeDay,
+    required this.userIdeal,
+    required this.userEpilogueIdeal,
     required this.meta,
     required this.history,
   });
@@ -38,6 +44,9 @@ class Performance
       epilogueTotal: season.getTotal() + season.getEpilogueTotal(),
       avgDailyXP: season.getDailyAvg(),
       activeXP: season.getXP(),
+      activeDay: season.getDaysIndexFromDate(DateTime.now()),
+      userIdeal: season.getUserIdeal(),
+      userEpilogueIdeal: season.getUserEpilogueIdeal(),
       meta: season.meta,
       history: season.history,
     );
@@ -94,11 +103,20 @@ class Performance
   List<Point> getUserAverage()
   {
     List<Point> points = [];
+    int localTotal = epilogue ? epilogueTotal : total;
     int cumulativeSum = 0;
+
+    int limit = localTotal > activeXP ? localTotal : activeXP;
+    bool firstOver = true;
 
     for (int i = 0; i < duration; i++)
     {
       cumulativeSum += avgDailyXP;
+      if(cumulativeSum > limit)
+      {
+        if (!firstOver) break;
+        firstOver = false;
+      }
       points.add(Point(i, cumulative ? cumulativeSum : avgDailyXP));
     }
 
@@ -107,9 +125,31 @@ class Performance
 
   List<Point> getUserIdeal()
   {
-    if (!meta.isActive()) return [];
-
     List<Point> points = [];
+    List<int> dailyXP = HistoryCalc.getXPPerDay(history, meta);
+    int localUserIdeal = epilogue ? userEpilogueIdeal : userIdeal;
+    int localTotal = epilogue ? epilogueTotal : total;
+    int cumulativeSum = 0;
+    bool firstOver = true;
+
+    for(int i = 0; i <= activeDay - 1; i++)
+    {
+      cumulativeSum += dailyXP[i];
+    }
+
+    points.add(Point(activeDay - 1, cumulative ? cumulativeSum : localUserIdeal));
+
+    for (int i = activeDay; i < duration; i++)
+    {
+      cumulativeSum += localUserIdeal;
+      if(cumulativeSum > localTotal)
+      {
+        if (!firstOver) break;
+        firstOver = false;
+      }
+      points.add(Point(i, cumulative ? cumulativeSum : localUserIdeal));
+    }
+
     return points;
   }
 

@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:vextrack/Core/calc.dart';
 import 'package:vextrack/Core/formatter.dart';
 import 'package:vextrack/Core/history_calc.dart';
 import 'package:vextrack/Core/xp_calc.dart';
 import 'package:vextrack/Models/History/history_entry_group.dart';
 import 'package:vextrack/Models/Seasons/season_meta.dart';
+import 'package:vextrack/Services/settings.dart';
 
 class Season
 {
@@ -87,6 +89,55 @@ class Season
     if (progress > maxProgress) progress = maxProgress;
 
     return progress;
+  }
+
+  int getDuration()
+  {
+    return meta.endDate.toDate().difference(meta.startDate.toDate()).inDays - 1;
+  }
+
+  int getRemainingDays()
+  {
+    return meta.endDate.toDate().difference(DateTime.now()).inDays;
+  }
+
+  int getXPSum()
+  {
+    List<int> xpPerDay = HistoryCalc.getXPPerDay(history, meta);
+    xpPerDay = xpPerDay.sublist(0, xpPerDay.length - 2);
+
+    int xpSum = 0;
+    for(int xp in xpPerDay)
+    {
+      xpSum += xp;
+    }
+
+    return xpSum;
+  }
+
+  int getUserIdeal({int? offset})
+  {
+    offset = offset ?? 2;
+    offset -= SettingsService.bufferDays;
+
+    int remaining = getTotal() - getXPSum();
+    if(getRemainingDays() + offset < SettingsService.bufferDays) return remaining;
+    return (remaining / (getRemainingDays() + offset)).ceil();
+  }
+
+  int getUserEpilogueIdeal({int? offset})
+  {
+    offset = offset ?? 2;
+    offset -= SettingsService.bufferDays;
+
+    int remaining = (getTotal() + getEpilogueTotal()) - getXPSum();
+    if(getRemainingDays() + offset < SettingsService.bufferDays) return remaining;
+    return (remaining / (getRemainingDays() + offset)).ceil();
+  }
+
+  int getDaysIndexFromDate(DateTime date)
+  {
+    return date.difference(meta.startDate.toDate()).inDays - 1;
   }
 
 

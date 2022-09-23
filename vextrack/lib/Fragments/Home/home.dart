@@ -57,7 +57,7 @@ class HomeFragmentState extends State<HomeFragment>
                 ],
               ),
             ),
-            if(dailyContract != null) DailyContractWidget( // FIXME: Progress displayed wrong
+            if(dailyContract != null) DailyContractWidget(
               model: dailyContract!,
             ),
             DashboardChart(uid: widget.uid),

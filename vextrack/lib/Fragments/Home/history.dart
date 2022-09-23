@@ -53,12 +53,20 @@ class HistoryFragmentState extends State<HistoryFragment>
   filterHistory()
   {
     List<HistoryEntryGroup> history = [];
-    for(String seasonID in DataService.seasonMetas.keys)
+    for(HistoryEntryGroup heg in _history)
     {
-      SeasonMeta meta = DataService.seasonMetas[seasonID]!;
-      for(HistoryEntryGroup heg in _history)
+
+      if(seasonIDFilter.isEmpty) 
       {
-        if((seasonIDFilter.contains(seasonID) && heg.date.compareTo(meta.startDate) >= 0 && heg.date.compareTo(meta.endDate) < 0) || seasonIDFilter.isEmpty)
+        history.add(HistoryEntryGroup(heg.id, heg.day, heg.total, heg.date, heg.entries));
+        continue;
+      }
+
+      for(String seasonID in DataService.seasonMetas.keys)
+      {
+        SeasonMeta meta = DataService.seasonMetas[seasonID]!;
+        
+        if(seasonIDFilter.contains(seasonID) && heg.date.compareTo(meta.startDate) >= 0 && heg.date.compareTo(meta.endDate) < 0)
         {
           history.add(HistoryEntryGroup(heg.id, heg.day, heg.total, heg.date, heg.entries));
         }

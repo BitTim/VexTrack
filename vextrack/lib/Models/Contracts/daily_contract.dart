@@ -64,6 +64,12 @@ class DailyContract extends Contract
 
 
 
+  int getBPTotal()
+  {
+    if(goals.length < 2) return 0;
+    return goals[0].getTotal();
+  }
+
   double getMaxProgress()
   {
     if(goals.length < 2) return 0;
@@ -71,6 +77,24 @@ class DailyContract extends Contract
     double total = goals[0].getTotal().toDouble();
     double totalEpilogue = goals[1].getTotal().toDouble();
     return (total + totalEpilogue) / total;
+  }
+
+  @override
+  double getProgress()
+  {
+    int total = getBPTotal();
+    int xp = getXP();
+
+    if(total == 0) return 1.0;
+    return xp.toDouble() / total.toDouble();
+  }
+
+  @override
+  int getRemaining() {
+    if(goals.length < 2) return 0;
+
+    int total = goals[0].getTotal() + goals[1].getTotal();
+    return total - getXP();
   }
 
 

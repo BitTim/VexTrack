@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vextrack/Components/goal.dart';
 import 'package:vextrack/Components/gradient_progress.dart';
-import 'package:vextrack/Components/performance_chart.dart';
 import 'package:vextrack/Models/Contracts/daily_contract.dart';
 import 'package:vextrack/Models/Contracts/goal.dart';
-import 'package:vextrack/Models/Seasons/performance.dart';
 import 'package:vextrack/themes.dart';
 
 import '../Constants/colors.dart';

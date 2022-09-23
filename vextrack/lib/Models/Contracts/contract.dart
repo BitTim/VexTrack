@@ -74,7 +74,9 @@ class Contract
 
   int getRemaining()
   {
-    return getTotal() - getXP();
+    int remaining = getTotal() - getXP();
+    if (remaining < 0) return 0;
+    return remaining;
   }
 
   double getProgress()

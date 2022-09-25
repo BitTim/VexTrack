@@ -68,10 +68,10 @@ class Season
 
   int getDailyAvg()
   {
-    int nDays = HistoryCalc.getXPPerDay(history, meta).length;
+    int nDays = HistoryCalc.getXPPerDay(history, meta).length - 1;
 
     int xp = getXP();
-    int dailyAvg = xp ~/ nDays;
+    int dailyAvg = (xp / nDays).round();
 
     return dailyAvg;
   }
@@ -116,22 +116,22 @@ class Season
 
   int getUserIdeal({int? offset})
   {
-    offset = offset ?? -1;
+    offset = offset ?? -2;
     offset += SettingsService.bufferDays;
 
     int remaining = getTotal() - getXPSum();
     if(getRemainingDays() + offset < SettingsService.bufferDays) return remaining;
-    return remaining ~/ (getRemainingDays() - offset);
+    return (remaining / (getRemainingDays() - offset)).round();
   }
 
   int getUserEpilogueIdeal({int? offset})
   {
-    offset = offset ?? -1;
+    offset = offset ?? -2;
     offset += SettingsService.bufferDays;
 
     int remaining = (getTotal() + getEpilogueTotal()) - getXPSum();
     if(getRemainingDays() + offset < SettingsService.bufferDays) return remaining;
-    return remaining ~/ (getRemainingDays() - offset);
+    return (remaining / (getRemainingDays() - offset)).round();
   }
 
   int getDaysIndexFromDate(DateTime date)

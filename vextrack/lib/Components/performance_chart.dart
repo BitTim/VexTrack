@@ -223,8 +223,8 @@ class PerformanceChartState extends State<PerformanceChart> {
           ],
         ),
 
-        AspectRatio(
-          aspectRatio: 1.5,
+        SizedBox(
+          height: 384,
           child: LineChart(
             getChartData(),
             swapAnimationCurve: Curves.easeInOutSine,

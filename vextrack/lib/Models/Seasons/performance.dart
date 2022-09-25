@@ -74,6 +74,7 @@ class Performance
     for (int i = 0; i < duration; i++)
     {
       int amount = 0;
+      if(cumulative) points.add(Point(i, cumulativeSum));
 
       if (i < effectiveDuration)
       {
@@ -82,7 +83,7 @@ class Performance
         if (cumulativeSum > localTotal) cumulativeSum = localTotal;
       }
 
-      points.add(Point(i, cumulative ? cumulativeSum : amount));
+      if(!cumulative) points.add(Point(i, amount));
     }
 
     return points;
@@ -115,13 +116,14 @@ class Performance
 
     for (int i = 0; i < duration; i++)
     {
+      points.add(Point(i, cumulative ? cumulativeSum : avgDailyXP));
+
       cumulativeSum += avgDailyXP;
       if(cumulativeSum > limit)
       {
         if (!firstOver) break;
         firstOver = false;
       }
-      points.add(Point(i, cumulative ? cumulativeSum : avgDailyXP));
     }
 
     return points;
@@ -141,17 +143,15 @@ class Performance
       cumulativeSum += dailyXP[i];
     }
 
-    points.add(Point(activeDay - 1, cumulative ? cumulativeSum : localUserIdeal));
-
-    for (int i = activeDay; i < duration; i++)
+    for (int i = activeDay - 1; i < duration; i++)
     {
+      points.add(Point(i, cumulative ? cumulativeSum : localUserIdeal));
       cumulativeSum += localUserIdeal;
-      if(cumulativeSum > localTotal)
+      if(cumulativeSum > localTotal) 
       {
-        if (!firstOver) break;
+        if(!firstOver) break;
         firstOver = false;
       }
-      points.add(Point(i, cumulative ? cumulativeSum : localUserIdeal));
     }
 
     return points;

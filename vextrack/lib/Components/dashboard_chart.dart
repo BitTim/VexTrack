@@ -67,134 +67,172 @@ class DashboardChartState extends State<DashboardChart>
       surfaceTintColor: Theme.of(context).colorScheme.surface,
       clipBehavior: Clip.antiAliasWithSaveLayer,
       elevation: 8,
-      child: SizedBox(
-        height: 512,
-        child: Align(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      meta!.name,
-                      style: GoogleFonts.titilliumWeb(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
+      child: Align(
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    meta!.name,
+                    style: GoogleFonts.titilliumWeb(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 8, 16, 8),
+              child: PerformanceChart(
+                key: chartKey,
+                model: Performance.fromSeason(season!, true, epilogue),
+                showDaily: true,
+                notifyEpilogueParent: (ep) => updateEpilogue(ep),
+              ),
+            ),
+
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 4,
+                //alignment: WrapAlignment.spaceEvenly, //TODO: Make Wrap alignment fancier
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
+                        child: Text(
+                          "Deviation (Ideal):",
+                          style: GoogleFonts.titilliumWeb(
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                       ),
+                      Text(
+                        season!.getFormattedDeviationIdeal(epilogue),
+                        style: GoogleFonts.titilliumWeb(
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
+                        child: Text(
+                          "Deviation (Daily):",
+                          style: GoogleFonts.titilliumWeb(
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        season!.getFormattedDeviationDaily(epilogue),
+                        style: GoogleFonts.titilliumWeb(
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
+                        child: Text(
+                          "Days left:",
+                          style: GoogleFonts.titilliumWeb(
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        Formatter.formatDays(season!.getRemainingDays()),
+                        style: GoogleFonts.titilliumWeb(
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
+                        child: Text(
+                          "Complete on:",
+                          style: GoogleFonts.titilliumWeb(
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        season!.getFormattedCompleteDate(epilogue),
+                        style: GoogleFonts.titilliumWeb(
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "Daily average: ",
+                          style: GoogleFonts.titilliumWeb(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        Text(
+                          season!.getFormattedDailyAvg(),
+                          style: GoogleFonts.titilliumWeb(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "Inactive days: ",
+                          style: GoogleFonts.titilliumWeb(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        Text(
+                          season!.getFormattedInactiveDays(),
+                          style: GoogleFonts.titilliumWeb(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                ],
               ),
-
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8, 8, 16, 8),
-                child: PerformanceChart(
-                  key: chartKey,
-                  model: Performance.fromSeason(season!, true, epilogue),
-                  showDaily: true,
-                  notifyEpilogueParent: (ep) => updateEpilogue(ep),
-                ),
-              ),
-
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                child: Wrap(
-                  spacing: 8,
-                  runSpacing: 4,
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
-                          child: Text(
-                            "Deviation (Ideal):",
-                            style: GoogleFonts.titilliumWeb(
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                        Text(
-                          season!.getFormattedDeviationIdeal(epilogue),
-                          style: GoogleFonts.titilliumWeb(
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
-                          child: Text(
-                            "Deviation (Daily):",
-                            style: GoogleFonts.titilliumWeb(
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                        Text(
-                          season!.getFormattedDeviationDaily(epilogue),
-                          style: GoogleFonts.titilliumWeb(
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
-                          child: Text(
-                            "Days left:",
-                            style: GoogleFonts.titilliumWeb(
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                        Text(
-                          Formatter.formatDays(season!.getRemainingDays()),
-                          style: GoogleFonts.titilliumWeb(
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
-                          child: Text(
-                            "Complete on:",
-                            style: GoogleFonts.titilliumWeb(
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                        Text(
-                          season!.getFormattedCompleteDate(epilogue),
-                          style: GoogleFonts.titilliumWeb(
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

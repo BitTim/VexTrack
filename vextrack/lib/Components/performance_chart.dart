@@ -13,11 +13,13 @@ class PerformanceChart extends StatefulWidget
 {
   final Performance model;
   final bool showDaily;
+  final ValueChanged<bool> notifyEpilogueParent;
 
   const PerformanceChart({
     Key? key,
     required this.model,
     required this.showDaily,
+    required this.notifyEpilogueParent,
   }) : super(key: key);
 
   @override
@@ -58,7 +60,7 @@ class PerformanceChartState extends State<PerformanceChart> {
     return LineChartData(
       lineBarsData: [
         LineChartBarData( // Avg Ideal
-          spots: Performance.mapPointToSpot(widget.model.getAverageIdeal()),
+          spots: Performance.mapPointToSpot(widget.model.getIdeal()),
           color: AppThemes.getTheme().colorScheme.onSurfaceVariant,
           isCurved: false,
           isStrokeCapRound: true,
@@ -178,7 +180,6 @@ class PerformanceChartState extends State<PerformanceChart> {
 
   @override
   Widget build(BuildContext context) {
-
     return Column(
       children: [
         Row(
@@ -214,6 +215,7 @@ class PerformanceChartState extends State<PerformanceChart> {
                     setState(() {
                       widget.model.epilogue = !widget.model.epilogue;
                     });
+                    widget.notifyEpilogueParent(widget.model.epilogue);
                   },
                 ),
               ],

@@ -34,9 +34,11 @@ class Performance
     required this.userEpilogueIdeal,
     required this.meta,
     required this.history,
+    required this.cumulative,
+    required this.epilogue,
   });
 
-  static Performance fromSeason(Season season)
+  static Performance fromSeason(Season season, bool cumulativeInit, bool epilogueInit)
   {
     return Performance(
       duration: season.meta.getDuration().inDays,
@@ -49,6 +51,8 @@ class Performance
       userEpilogueIdeal: season.getUserEpilogueIdeal(),
       meta: season.meta,
       history: season.history,
+      cumulative: cumulativeInit,
+      epilogue: epilogueInit,
     );
   }
 
@@ -58,7 +62,7 @@ class Performance
   // Chart data
   // --------------------------------
 
-  List<Point> getAverageIdeal()
+  List<Point> getIdeal()
   {
     int effectiveDuration = duration - SettingsService.bufferDays;
     int localTotal = epilogue ? epilogueTotal : total;
@@ -175,7 +179,7 @@ class Performance
     else
     {
       int maxXP = getUserXP().map((e) => e.y).reduce(max).toInt();
-      int maxIdeal = getAverageIdeal()[0].y.toInt();
+      int maxIdeal = getIdeal()[0].y.toInt();
       if (maxIdeal > maxXP) return maxIdeal;
       return maxXP;
     }

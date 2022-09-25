@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vextrack/Components/performance_chart.dart';
+import 'package:vextrack/Core/formatter.dart';
 import 'package:vextrack/Models/Seasons/performance.dart';
 import 'package:vextrack/Models/Seasons/season.dart';
 import 'package:vextrack/Models/Seasons/season_meta.dart';
@@ -19,6 +20,8 @@ class DashboardChartState extends State<DashboardChart>
 {
   SeasonMeta? meta;
   Season? season;
+  bool epilogue = false;
+  GlobalKey<PerformanceChartState> chartKey = GlobalKey<PerformanceChartState>();
   
   @override
   void initState()
@@ -42,6 +45,16 @@ class DashboardChartState extends State<DashboardChart>
     setState(() => season = activeSeason);
   }
   
+  void updateEpilogue(bool ep)
+  {
+    PerformanceChart perf = chartKey.currentWidget as PerformanceChart;
+
+    setState(() {
+      epilogue = ep;
+      perf.model.epilogue = ep;
+    });
+  }
+
   @override
   Widget build(BuildContext context)
   {
@@ -79,14 +92,107 @@ class DashboardChartState extends State<DashboardChart>
               ),
 
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.fromLTRB(8, 8, 16, 8),
                 child: PerformanceChart(
-                  model: Performance.fromSeason(season!),
+                  key: chartKey,
+                  model: Performance.fromSeason(season!, true, epilogue),
                   showDaily: true,
+                  notifyEpilogueParent: (ep) => updateEpilogue(ep),
                 ),
               ),
 
-              Wrap(),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 4,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
+                          child: Text(
+                            "Deviation (Ideal):",
+                            style: GoogleFonts.titilliumWeb(
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          season!.getFormattedDeviationIdeal(epilogue),
+                          style: GoogleFonts.titilliumWeb(
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
+                          child: Text(
+                            "Deviation (Daily):",
+                            style: GoogleFonts.titilliumWeb(
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          season!.getFormattedDeviationDaily(epilogue),
+                          style: GoogleFonts.titilliumWeb(
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
+                          child: Text(
+                            "Days left:",
+                            style: GoogleFonts.titilliumWeb(
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          Formatter.formatDays(season!.getRemainingDays()),
+                          style: GoogleFonts.titilliumWeb(
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
+                          child: Text(
+                            "Complete on:",
+                            style: GoogleFonts.titilliumWeb(
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          season!.getFormattedCompleteDate(epilogue),
+                          style: GoogleFonts.titilliumWeb(
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),

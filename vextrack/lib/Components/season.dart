@@ -279,8 +279,9 @@ class SeasonWidgetState extends State<SeasonWidget>
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: PerformanceChart(
-                  model: Performance.fromSeason(widget.model),
+                  model: Performance.fromSeason(widget.model, true, false),
                   showDaily: false,
+                  notifyEpilogueParent: (ep) { return; },
                 ),
               ),
             ],

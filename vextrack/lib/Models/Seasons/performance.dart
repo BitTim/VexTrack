@@ -14,6 +14,9 @@ class Performance
   int epilogueTotal;
   int avgDailyXP;
   int activeXP;
+  int activeDay;
+  int userIdeal;
+  int userEpilogueIdeal;
   SeasonMeta meta;
   List<HistoryEntryGroup> history;
 
@@ -26,11 +29,16 @@ class Performance
     required this.epilogueTotal,
     required this.avgDailyXP,
     required this.activeXP,
+    required this.activeDay,
+    required this.userIdeal,
+    required this.userEpilogueIdeal,
     required this.meta,
     required this.history,
+    required this.cumulative,
+    required this.epilogue,
   });
 
-  static Performance fromSeason(Season season)
+  static Performance fromSeason(Season season, bool cumulativeInit, bool epilogueInit)
   {
     return Performance(
       duration: season.meta.getDuration().inDays,
@@ -38,8 +46,13 @@ class Performance
       epilogueTotal: season.getTotal() + season.getEpilogueTotal(),
       avgDailyXP: season.getDailyAvg(),
       activeXP: season.getXP(),
+      activeDay: season.getDaysIndexFromDate(DateTime.now()),
+      userIdeal: season.getUserIdeal(),
+      userEpilogueIdeal: season.getUserEpilogueIdeal(),
       meta: season.meta,
       history: season.history,
+      cumulative: cumulativeInit,
+      epilogue: epilogueInit,
     );
   }
 
@@ -49,7 +62,7 @@ class Performance
   // Chart data
   // --------------------------------
 
-  List<Point> getAverageIdeal()
+  List<Point> getIdeal()
   {
     int effectiveDuration = duration - SettingsService.bufferDays;
     int localTotal = epilogue ? epilogueTotal : total;
@@ -61,6 +74,7 @@ class Performance
     for (int i = 0; i < duration; i++)
     {
       int amount = 0;
+      if(cumulative) points.add(Point(i, cumulativeSum));
 
       if (i < effectiveDuration)
       {
@@ -69,7 +83,7 @@ class Performance
         if (cumulativeSum > localTotal) cumulativeSum = localTotal;
       }
 
-      points.add(Point(i, cumulative ? cumulativeSum : amount));
+      if(!cumulative) points.add(Point(i, amount));
     }
 
     return points;
@@ -94,12 +108,22 @@ class Performance
   List<Point> getUserAverage()
   {
     List<Point> points = [];
+    int localTotal = epilogue ? epilogueTotal : total;
     int cumulativeSum = 0;
+
+    int limit = localTotal > activeXP ? localTotal : activeXP;
+    bool firstOver = true;
 
     for (int i = 0; i < duration; i++)
     {
-      cumulativeSum += avgDailyXP;
       points.add(Point(i, cumulative ? cumulativeSum : avgDailyXP));
+
+      cumulativeSum += avgDailyXP;
+      if(cumulativeSum > limit)
+      {
+        if (!firstOver) break;
+        firstOver = false;
+      }
     }
 
     return points;
@@ -107,9 +131,29 @@ class Performance
 
   List<Point> getUserIdeal()
   {
-    if (!meta.isActive()) return [];
-
     List<Point> points = [];
+    List<int> dailyXP = HistoryCalc.getXPPerDay(history, meta);
+    int localUserIdeal = epilogue ? userEpilogueIdeal : userIdeal;
+    int localTotal = epilogue ? epilogueTotal : total;
+    int cumulativeSum = 0;
+    bool firstOver = true;
+
+    for(int i = 0; i <= activeDay - 1; i++)
+    {
+      cumulativeSum += dailyXP[i];
+    }
+
+    for (int i = activeDay - 1; i < duration; i++)
+    {
+      points.add(Point(i, cumulative ? cumulativeSum : localUserIdeal));
+      cumulativeSum += localUserIdeal;
+      if((cumulativeSum / 100).round() >= (localTotal / 100).round()) 
+      {
+        if(!firstOver) break;
+        firstOver = false;
+      }
+    }
+
     return points;
   }
 
@@ -135,7 +179,7 @@ class Performance
     else
     {
       int maxXP = getUserXP().map((e) => e.y).reduce(max).toInt();
-      int maxIdeal = getAverageIdeal()[0].y.toInt();
+      int maxIdeal = getIdeal()[0].y.toInt();
       if (maxIdeal > maxXP) return maxIdeal;
       return maxXP;
     }

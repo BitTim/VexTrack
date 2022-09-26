@@ -29,7 +29,7 @@ class HistoryCalc
     }
     else // Fill entries up until current day for active season
     {
-      int missingEntries = DateTime.now().difference(prevDate).inDays - amounts.length;
+      int missingEntries = DateTime.now().difference(prevDate).inDays;
       
       for (int i = missingEntries; i > 0; i--)
       {

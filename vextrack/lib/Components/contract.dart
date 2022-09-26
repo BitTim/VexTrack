@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vextrack/Components/goal.dart';
 import 'package:vextrack/Components/gradient_progress.dart';
-import 'package:vextrack/Models/Goals/goal.dart';
-import 'package:vextrack/Models/Goals/contract.dart';
+import 'package:vextrack/Models/Contracts/goal.dart';
+import 'package:vextrack/Models/Contracts/contract.dart';
 
 class ContractWidget extends StatefulWidget
 {
@@ -97,7 +97,7 @@ class ContractWidgetState extends State<ContractWidget>
                         ],
                       )
                     ),
-                    Padding(
+                    Padding( // TODO: Edit to be consistent with Seasons
                       padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
                       child: Row(
                         mainAxisSize: MainAxisSize.max,

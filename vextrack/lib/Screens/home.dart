@@ -4,6 +4,7 @@ import 'package:vextrack/Components/FAB/expandable_fab.dart';
 import 'package:vextrack/Fragments/Forms/History/history_entry.dart';
 import 'package:vextrack/Fragments/Home/contracts.dart';
 import 'package:vextrack/Fragments/Home/history.dart';
+import 'package:vextrack/Fragments/Home/home.dart';
 import 'package:vextrack/Services/data.dart';
 import 'package:vextrack/screen_manager.dart';
 
@@ -20,11 +21,11 @@ class _HomeState extends State<Home>
   @override
   void initState()
   {
-    keys.add(GlobalKey());
+    keys.add(GlobalKey<HomeFragmentState>());
     keys.add(GlobalKey<ContractsFragmentState>());
     keys.add(GlobalKey<HistoryFragmentState>());
 
-    fragments.add(const Center(child: Text("Home")));
+    fragments.add(HomeFragment(key: keys[0], uid: widget.uid));
     fragments.add(ContractsFragment(key: keys[1], uid: widget.uid));
     fragments.add(HistoryFragment(key: keys[2], uid: widget.uid));
 
@@ -72,7 +73,7 @@ class _HomeState extends State<Home>
           onPressed: () async {
             Navigator.of(context).pop();
             await DataService.addHistoryEntry(widget.uid, form.model);
-            if(_currentPage != 0) keys.elementAt(_currentPage).currentState!.update(); //FIXME: Temporary if statement
+            keys.elementAt(_currentPage).currentState!.update();
           },
           child: const Text("Create"),
         )

@@ -12,10 +12,16 @@ import 'package:vextrack/themes.dart';
 class PerformanceChart extends StatefulWidget
 {
   final Performance model;
+  final bool showDaily;
+  final ValueChanged<bool> notifyEpilogueParent;
+  final ValueChanged<bool> notifyCumulativeParent;
 
   const PerformanceChart({
     Key? key,
     required this.model,
+    required this.showDaily,
+    required this.notifyEpilogueParent,
+    required this.notifyCumulativeParent
   }) : super(key: key);
 
   @override
@@ -56,7 +62,7 @@ class PerformanceChartState extends State<PerformanceChart> {
     return LineChartData(
       lineBarsData: [
         LineChartBarData( // Avg Ideal
-          spots: Performance.mapPointToSpot(widget.model.getAverageIdeal()),
+          spots: Performance.mapPointToSpot(widget.model.getIdeal()),
           color: AppThemes.getTheme().colorScheme.onSurfaceVariant,
           isCurved: false,
           isStrokeCapRound: true,
@@ -89,6 +95,19 @@ class PerformanceChartState extends State<PerformanceChart> {
             show: false,
           ),
           dashArray: [10, 5, 1, 5],
+          isStepLineChart: false,
+        ),
+
+        if(widget.showDaily) LineChartBarData( // User Ideal
+          spots: Performance.mapPointToSpot(widget.model.getUserIdeal()),
+          gradient: AppColors.epilogueGradient,
+          isCurved: false,
+          isStrokeCapRound: true,
+          barWidth: 3,
+          dotData: FlDotData(
+            show: false,
+          ),
+          dashArray: [5, 5, 5, 5],
           isStepLineChart: false,
         ),
       ],
@@ -163,7 +182,6 @@ class PerformanceChartState extends State<PerformanceChart> {
 
   @override
   Widget build(BuildContext context) {
-
     return Column(
       children: [
         Row(
@@ -189,6 +207,7 @@ class PerformanceChartState extends State<PerformanceChart> {
                     setState(() {
                       widget.model.cumulative = !widget.model.cumulative;
                     });
+                    widget.notifyCumulativeParent(widget.model.cumulative);
                   },
                 ),
                 IconButton(
@@ -199,6 +218,7 @@ class PerformanceChartState extends State<PerformanceChart> {
                     setState(() {
                       widget.model.epilogue = !widget.model.epilogue;
                     });
+                    widget.notifyEpilogueParent(widget.model.epilogue);
                   },
                 ),
               ],
@@ -206,8 +226,8 @@ class PerformanceChartState extends State<PerformanceChart> {
           ],
         ),
 
-        AspectRatio(
-          aspectRatio: 1.5,
+        SizedBox(
+          height: 384,
           child: LineChart(
             getChartData(),
             swapAnimationCurve: Curves.easeInOutSine,

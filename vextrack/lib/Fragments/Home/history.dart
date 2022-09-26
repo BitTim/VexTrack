@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:vextrack/Components/history_entry_group.dart';
 import 'package:vextrack/Fragments/Forms/History/history_filter.dart';
 import 'package:vextrack/Models/History/history_entry.dart';
@@ -41,7 +40,7 @@ class HistoryFragmentState extends State<HistoryFragment>
   setupHistory() async
   {
     setState(() => _loading = true);
-    List<HistoryEntryGroup> history = await DataService.getFullHistory(widget.uid);
+    List<HistoryEntryGroup> history = await DataService.pullFullHistory(widget.uid);
 
     if (mounted) {
       setState(() {
@@ -54,12 +53,20 @@ class HistoryFragmentState extends State<HistoryFragment>
   filterHistory()
   {
     List<HistoryEntryGroup> history = [];
-    for(String seasonID in DataService.seasonMetas.keys)
+    for(HistoryEntryGroup heg in _history)
     {
-      SeasonMeta meta = DataService.seasonMetas[seasonID]!;
-      for(HistoryEntryGroup heg in _history)
+
+      if(seasonIDFilter.isEmpty) 
       {
-        if((seasonIDFilter.contains(seasonID) && heg.date.compareTo(meta.startDate) >= 0 && heg.date.compareTo(meta.endDate) < 0) || seasonIDFilter.isEmpty)
+        history.add(HistoryEntryGroup(heg.id, heg.day, heg.total, heg.date, heg.entries));
+        continue;
+      }
+
+      for(String seasonID in DataService.seasonMetas.keys)
+      {
+        SeasonMeta meta = DataService.seasonMetas[seasonID]!;
+        
+        if(seasonIDFilter.contains(seasonID) && heg.date.compareTo(meta.startDate) >= 0 && heg.date.compareTo(meta.endDate) < 0)
         {
           history.add(HistoryEntryGroup(heg.id, heg.day, heg.total, heg.date, heg.entries));
         }
@@ -182,6 +189,9 @@ class HistoryFragmentState extends State<HistoryFragment>
               children: _history.isEmpty && _loading == false ? [
                 const Center(child: Text("No history"))
               ] : showHistory()
+            ),
+            const SizedBox(
+              height: 88,
             ),
           ]
         ),

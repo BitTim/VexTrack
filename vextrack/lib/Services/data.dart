@@ -2,9 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
 import 'package:vextrack/Constants/references.dart';
+import 'package:vextrack/Core/util.dart';
 import 'package:vextrack/Core/xp_calc.dart';
-import 'package:vextrack/Models/Goals/goal.dart';
-import 'package:vextrack/Models/Goals/contract.dart';
+import 'package:vextrack/Models/Contracts/goal.dart';
+import 'package:vextrack/Models/Contracts/contract.dart';
 import 'package:vextrack/Models/History/history_entry.dart';
 import 'package:vextrack/Models/History/history_entry_group.dart';
 import 'package:vextrack/Models/battlepass_params.dart';
@@ -23,13 +24,14 @@ class DataService
   static Map<String, SeasonMeta> seasonMetas = {};
   static Map<String, Season> seasons = {};
   static Map<String, Contract> contracts = {};
+  static bool _loading = false;
 
   static void init() async
   {
     DataService.battlepassParams = await getBattlepassParams();
     DataService.modes = await getModes();
     DataService.maps = await getMaps();
-    DataService.seasonMetas = await getSeasonMetas();
+    DataService.seasonMetas = await pullAllSeasonMetas();
   }
 
   // ===============================
@@ -38,7 +40,10 @@ class DataService
 
   static Future<BattlepassParams> getBattlepassParams() async
   {
+    _loading = true;
     DocumentSnapshot doc = await parametersRef.doc('battlepass').get();
+    _loading = false;
+
     return BattlepassParams.fromDoc(doc);
   }
 
@@ -48,13 +53,16 @@ class DataService
 
   static Future<void> fetchUserData(String uid) async
   {
+    _loading = true;
     DocumentSnapshot doc = await usersRef.doc(uid).get();
     userData = UserData.fromDoc(doc);
+    _loading = false;
   }
 
   static Future<List<Season>> getAllSeasons({required String uid, bool activeOnly = false}) async {
     if(userData == null) await fetchUserData(uid);
 
+    _loading = true;
     Map<int, Season> seasonOrder = {};
     for(String id in userData!.seasonIDs.keys)
     {
@@ -72,6 +80,7 @@ class DataService
     List<Season> seasons = [
       for (int i in indecies) seasonOrder[i]!
     ];
+    _loading = false;
 
     return seasons;
   }
@@ -79,6 +88,7 @@ class DataService
   static Future<Season> getSeason(String uid, String id) async {
     if (seasons[id] != null) return seasons[id]!;
 
+    _loading = true;
     DocumentSnapshot loadedSeason = await usersRef.doc(uid)
       .collection("seasons")
       .doc(id)
@@ -88,6 +98,7 @@ class DataService
 
     Season season = Season.fromDoc(loadedSeason, seasonMetas[id]!, history);
     seasons[id] = season;
+    _loading = false;
     return season;
   }
 
@@ -96,6 +107,7 @@ class DataService
   static Future<List<HistoryEntryGroup>> getHistory(String uid, String seasonID) async {
     if(seasons[seasonID] != null) return seasons[seasonID]!.history;
 
+    _loading = true;
     QuerySnapshot loadedHistory = await usersRef.doc(uid)
       .collection("seasons")
       .doc(seasonID)
@@ -104,10 +116,12 @@ class DataService
       .get();
 
     List<HistoryEntryGroup> history = loadedHistory.docs.map((doc) => HistoryEntryGroup.fromDoc(doc)).toList();
+    _loading = false;
     return history;
   }
 
-  static Future<List<HistoryEntryGroup>> getFullHistory(String uid) async {
+  static Future<List<HistoryEntryGroup>> pullFullHistory(String uid) async {
+    _loading = true;
     List<HistoryEntryGroup> history = [];
     
     List<Season> seasons = await getAllSeasons(uid: uid);
@@ -116,6 +130,7 @@ class DataService
       history.addAll(seasonHistory);
     }
 
+    _loading = false;
     return history;
   }
 
@@ -123,8 +138,9 @@ class DataService
   //  Season meta data
   // ===============================
 
-  static Future<Map<String, SeasonMeta>> getSeasonMetas() async
+  static Future<Map<String, SeasonMeta>> pullAllSeasonMetas() async
   {
+    _loading = true;
     QuerySnapshot loadedSeasonMetas = await seasonsRef.orderBy("start", descending: true).get();
     Map<String, SeasonMeta> seasonMetas = {};
 
@@ -145,16 +161,26 @@ class DataService
       SeasonMeta seasonMeta = SeasonMeta.fromDoc(doc, doc.id, battlepass, epilogue);
       seasonMetas[doc.id] = seasonMeta;
     }
+    _loading = false;
 
     return seasonMetas;
   }
 
-  static SeasonMeta? getActiveSeasonMeta()
+  static Future<SeasonMeta?> getActiveSeasonMeta() async
   {
+    if(DataService.seasonMetas.isEmpty && !_loading) await pullAllSeasonMetas();
+    await Util.waitWhile(() => _loading);
+
+    _loading = true;
     for(SeasonMeta meta in DataService.seasonMetas.values)
     {
-      if(meta.isActive()) return meta;
+      if(meta.isActive())
+      {
+        _loading = false;
+        return meta;
+      }
     }
+    _loading = false;
 
     return null;
   }
@@ -176,6 +202,7 @@ class DataService
 
   static Future<Map<String, GameMap>> getMaps() async
   {
+    _loading = true;
     QuerySnapshot loadedMaps = await mapsRef.get();
     Map<String, GameMap> maps = {};
 
@@ -184,6 +211,7 @@ class DataService
       GameMap map = GameMap.fromDoc(doc);
       maps[doc.id] = map;
     }
+    _loading = false;
 
     return maps;
   }
@@ -196,9 +224,11 @@ class DataService
 
   static Future<String> getMapImgUrl(String id) async
   {
+    _loading = true;
     if(DataService.maps[id] == null) id = "none";
     String storageURL = DataService.maps[id]!.imgURL;
     String imgURL = await FirebaseStorage.instance.refFromURL(storageURL).getDownloadURL();
+    _loading = false;
     return imgURL;
   }
 
@@ -208,6 +238,7 @@ class DataService
 
   static Future<Map<String, GameMode>> getModes() async
   {
+    _loading = true;
     QuerySnapshot loadedModes = await modesRef.get();
     Map<String, GameMode> modes = {};
 
@@ -216,6 +247,7 @@ class DataService
       GameMode mode = GameMode.fromDoc(doc);
       modes[doc.id] = mode;
     }
+    _loading = false;
 
     return modes;
   }
@@ -238,8 +270,10 @@ class DataService
 
   static Future<Contract> getContract(String uid, String id) async {
     if (contracts[id] != null) return contracts[id]!;
-    if(userData == null) await fetchUserData(uid);
+    if(userData == null && !_loading) await fetchUserData(uid);
+    await Util.waitWhile(() => _loading);
 
+    _loading = true;
     DocumentSnapshot loadedContract = await usersRef.doc(uid)
       .collection("contracts")
       .doc(id)
@@ -254,12 +288,15 @@ class DataService
       .get();
       
     contract.goals = loadedGoals.docs.map((doc) => Goal.fromDoc(doc, contract)).toList();
+    _loading = false;
     return contract;
   }
 
   static Future<List<Contract>> getAllContracts({required String uid, bool incompleteOnly = false}) async {
-    if(userData == null) await fetchUserData(uid);
+    if(userData == null && !_loading) await fetchUserData(uid);
+    await Util.waitWhile(() => _loading);
 
+    _loading = true;
     List<Contract> loadedContrcats = [];
 
     for(String id in userData!.contractIDs.keys)
@@ -270,11 +307,12 @@ class DataService
 
       loadedContrcats.add(await getContract(uid, id));
     }
+    _loading = false;
 
     return loadedContrcats;
   }
 
-  static refresh() async
+  static refresh()
   {
     DataService.userData = null;
     DataService.seasons = {};
@@ -291,7 +329,7 @@ class DataService
   //  Create data
   // ================================
 
-  static Future<void> addHistoryEntry(String uid, HistoryEntry he) async
+  static Future<void> addHistoryEntry(String uid, HistoryEntry he) async // TODO: Extract some functions to make it more reusable
   {
     SeasonMeta? meta = getSeasonMetaFromTime(he.time);
     if (meta == null) return;
@@ -337,6 +375,13 @@ class DataService
 
       contract.addXP(he.xp);
       contracts[id] = contract;
+      
+      if(completed != contract.isCompleted())
+      {
+        userData!.contractIDs[id] = ContractActivityMeta(completed: contract.isCompleted(), paused: paused);
+
+        usersRef.doc(uid).update(userData!.toMap());
+      }
 
       usersRef.doc(uid)
         .collection('contracts')

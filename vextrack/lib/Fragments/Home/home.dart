@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:vextrack/Components/daily_contract.dart';
 import 'package:vextrack/Components/dashboard_chart.dart';
 import 'package:vextrack/Models/Contracts/daily_contract.dart';
-import 'package:vextrack/Models/Seasons/season_meta.dart';
 import 'package:vextrack/Services/data.dart';
 
 class HomeFragment extends StatefulWidget

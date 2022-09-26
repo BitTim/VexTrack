@@ -282,6 +282,7 @@ class SeasonWidgetState extends State<SeasonWidget>
                   model: Performance.fromSeason(widget.model, true, false),
                   showDaily: false,
                   notifyEpilogueParent: (ep) { return; },
+                  notifyCumulativeParent: (cumulative) { return; },
                 ),
               ),
             ],

@@ -14,12 +14,14 @@ class PerformanceChart extends StatefulWidget
   final Performance model;
   final bool showDaily;
   final ValueChanged<bool> notifyEpilogueParent;
+  final ValueChanged<bool> notifyCumulativeParent;
 
   const PerformanceChart({
     Key? key,
     required this.model,
     required this.showDaily,
     required this.notifyEpilogueParent,
+    required this.notifyCumulativeParent
   }) : super(key: key);
 
   @override
@@ -205,6 +207,7 @@ class PerformanceChartState extends State<PerformanceChart> {
                     setState(() {
                       widget.model.cumulative = !widget.model.cumulative;
                     });
+                    widget.notifyCumulativeParent(widget.model.cumulative);
                   },
                 ),
                 IconButton(

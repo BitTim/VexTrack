@@ -21,6 +21,7 @@ class DashboardChartState extends State<DashboardChart>
   SeasonMeta? meta;
   Season? season;
   bool epilogue = false;
+  bool cumulative = true;
   GlobalKey<PerformanceChartState> chartKey = GlobalKey<PerformanceChartState>();
   
   @override
@@ -52,6 +53,16 @@ class DashboardChartState extends State<DashboardChart>
     setState(() {
       epilogue = ep;
       perf.model.epilogue = ep;
+    });
+  }
+  
+  void updateCumulative(bool localCumulative)
+  {
+    PerformanceChart perf = chartKey.currentWidget as PerformanceChart;
+
+    setState(() {
+      cumulative = localCumulative;
+      perf.model.cumulative = localCumulative;
     });
   }
 
@@ -93,9 +104,10 @@ class DashboardChartState extends State<DashboardChart>
               padding: const EdgeInsets.fromLTRB(8, 8, 16, 8),
               child: PerformanceChart(
                 key: chartKey,
-                model: Performance.fromSeason(season!, true, epilogue),
+                model: Performance.fromSeason(season!, cumulative, epilogue),
                 showDaily: true,
                 notifyEpilogueParent: (ep) => updateEpilogue(ep),
+                notifyCumulativeParent: (localCumulative) => updateCumulative(localCumulative),
               ),
             ),
 

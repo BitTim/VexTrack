@@ -40,7 +40,7 @@ class HistoryFragmentState extends State<HistoryFragment>
   setupHistory() async
   {
     setState(() => _loading = true);
-    List<HistoryEntryGroup> history = await DataService.getFullHistory(widget.uid);
+    List<HistoryEntryGroup> history = await DataService.pullFullHistory(widget.uid);
 
     if (mounted) {
       setState(() {

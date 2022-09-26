@@ -147,7 +147,7 @@ class Performance
     {
       points.add(Point(i, cumulative ? cumulativeSum : localUserIdeal));
       cumulativeSum += localUserIdeal;
-      if(cumulativeSum > localTotal) 
+      if((cumulativeSum / 100).round() >= (localTotal / 100).round()) 
       {
         if(!firstOver) break;
         firstOver = false;

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 extension ColorExtension on String {
@@ -9,5 +11,21 @@ extension ColorExtension on String {
     if (hexColor.length == 8) {
       return Color(int.parse("0x$hexColor"));
     }
+  }
+}
+
+class Util
+{
+  static Future waitWhile(bool Function() test, [Duration pollInterval = Duration.zero]) {
+    var completer = Completer();
+    check() {
+      if (!test()) {
+        completer.complete();
+      } else {
+        Timer(pollInterval, check);
+      }
+    }
+    check();
+    return completer.future;
   }
 }

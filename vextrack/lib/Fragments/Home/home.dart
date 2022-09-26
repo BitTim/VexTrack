@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:vextrack/Components/daily_contract.dart';
 import 'package:vextrack/Components/dashboard_chart.dart';
 import 'package:vextrack/Models/Contracts/daily_contract.dart';
+import 'package:vextrack/Models/Seasons/season_meta.dart';
 import 'package:vextrack/Services/data.dart';
 
 class HomeFragment extends StatefulWidget
@@ -18,15 +19,17 @@ class HomeFragmentState extends State<HomeFragment>
 {
   DailyContract? dailyContract;
   String name = "";
+  late Future<bool> updateFuture;
 
   @override
   void initState() {
     super.initState();
-    update();
+    updateFuture = update();
   }
 
-  void update() async
+  Future<bool> update() async
   {
+    await DataService.getActiveSeasonMeta();
     if(DataService.userData == null) await DataService.fetchUserData(widget.uid);
     DailyContract dc = await DailyContract.init(widget.uid);
 
@@ -34,39 +37,51 @@ class HomeFragmentState extends State<HomeFragment>
       name = DataService.userData!.name;
       dailyContract = dc;
     });
+
+    return true;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-              child: Row(
+    return FutureBuilder(
+      future: updateFuture,
+      builder: (context, AsyncSnapshot<void> snapshot) {
+        if(snapshot.hasData)
+        {
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+            child: SingleChildScrollView(
+              child: Column(
                 children: [
-                  Text(
-                    "Welcome back $name",
-                    style: GoogleFonts.titilliumWeb(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w700,
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                    child: Row(
+                      children: [
+                        Text(
+                          "Welcome back $name",
+                          style: GoogleFonts.titilliumWeb(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
                     ),
+                  ),
+                  if(dailyContract != null) DailyContractWidget(
+                    model: dailyContract!,
+                  ),
+                  DashboardChart(uid: widget.uid),
+                  const SizedBox(
+                    height: 88,
                   ),
                 ],
               ),
             ),
-            if(dailyContract != null) DailyContractWidget(
-              model: dailyContract!,
-            ),
-            DashboardChart(uid: widget.uid),
-            const SizedBox(
-              height: 88,
-            ),
-          ],
-        ),
-      ),
+          );
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      }
     );
   }
 }

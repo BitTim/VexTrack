@@ -15,9 +15,11 @@ class SeasonWidget extends StatefulWidget {
   const SeasonWidget({
     Key? key,
     required this.model,
+    required this.controller,
   }) : super(key: key);
 
   final Season model;
+  final ExpandableController controller;
 
   @override
   SeasonWidgetState createState() => SeasonWidgetState();
@@ -67,6 +69,7 @@ class SeasonWidgetState extends State<SeasonWidget>
       clipBehavior: Clip.antiAliasWithSaveLayer,
       elevation: 8,
       child: ExpandableNotifier(
+        controller: widget.controller,
         child: ExpandablePanel(
           header: SizedBox(
             height: 128,
@@ -286,6 +289,14 @@ class SeasonWidgetState extends State<SeasonWidget>
                 ),
               ),
             ],
+          ),
+
+          theme: ExpandableThemeData.combine(
+            ExpandableThemeData(
+              iconColor: Theme.of(context).colorScheme.onSurface,
+              iconPadding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+            ),
+            ExpandableThemeData.defaults,
           ),
         ),
       ),

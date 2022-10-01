@@ -169,7 +169,7 @@ class DataService
   static Future<SeasonMeta?> getActiveSeasonMeta() async
   {
     if(DataService.seasonMetas.isEmpty && !_loading) await pullAllSeasonMetas();
-    await Util.waitWhile(() => _loading);
+    //await Util.waitWhile(() => _loading);
 
     _loading = true;
     for(SeasonMeta meta in DataService.seasonMetas.values)
@@ -294,20 +294,15 @@ class DataService
 
   static Future<List<Contract>> getAllContracts({required String uid, bool incompleteOnly = false}) async {
     if(userData == null && !_loading) await fetchUserData(uid);
-    await Util.waitWhile(() => _loading);
-
-    _loading = true;
     List<Contract> loadedContrcats = [];
 
     for(String id in userData!.contractIDs.keys)
     {
       bool completed = userData!.contractIDs[id]!.completed;
-
       if(incompleteOnly && completed) continue;
 
       loadedContrcats.add(await getContract(uid, id));
     }
-    _loading = false;
 
     return loadedContrcats;
   }
@@ -329,7 +324,56 @@ class DataService
   //  Create data
   // ================================
 
-  static Future<void> addHistoryEntry(String uid, HistoryEntry he) async // TODO: Extract some functions to make it more reusable
+  static Future<void> updateHistoryEntry(String uid, int idx, Season season, SeasonMeta meta) async
+  {
+    usersRef.doc(uid)
+      .collection("seasons")
+      .doc(meta.id)
+      .collection("history")
+      .doc(season.history[idx].id).set(season.history[idx].toMap(), SetOptions(merge: true));
+
+    usersRef.doc(uid)
+      .collection("seasons")
+      .doc(meta.id)
+      .update(season.toMap());
+  }
+
+  static Future<void> updateContract(String uid, Contract contract) async
+  {
+    Contract c = await getContract(uid, contract.id);
+
+    updateContractMeta(uid: uid, id: c.id, paused: contract.isPaused(), completed: contract.isCompleted());
+
+    usersRef.doc(uid)
+      .collection('contracts')
+      .doc(contract.id)
+      .update(contract.toMap());
+    
+    for(Goal goal in contract.goals)
+    {
+      usersRef.doc(uid)
+        .collection('contracts')
+        .doc(contract.id)
+        .collection('goals')
+        .doc(goal.id)
+        .update(goal.toMap());
+    }
+  }
+
+  static Future<void> updateContractMeta({required String uid, required String id, bool? paused, bool? completed}) async
+  {
+    Contract c = await getContract(uid, id);
+    paused ??= c.isPaused();
+    completed ??= c.isCompleted();
+
+    if(c.isPaused() == paused && c.isCompleted() == completed) return;
+
+    if(userData == null && !_loading) await fetchUserData(uid); 
+    userData!.contractIDs[id] = ContractActivityMeta(completed: completed, paused: paused);
+    usersRef.doc(uid).update(userData!.toMap());
+  }
+
+  static Future<void> addHistoryEntry(String uid, HistoryEntry he) async
   {
     SeasonMeta? meta = getSeasonMetaFromTime(he.time);
     if (meta == null) return;
@@ -354,16 +398,7 @@ class DataService
     season.history[idx].addEntry(he);
     seasons[meta.id] = season;
 
-    usersRef.doc(uid)
-      .collection("seasons")
-      .doc(meta.id)
-      .collection("history")
-      .doc(season.history[idx].id).set(season.history[idx].toMap(), SetOptions(merge: true));
-
-    usersRef.doc(uid)
-      .collection("seasons")
-      .doc(meta.id)
-      .update(season.toMap());
+    updateHistoryEntry(uid, idx, season, meta);
 
     for(String id in userData!.contractIDs.keys)
     {
@@ -376,27 +411,7 @@ class DataService
       contract.addXP(he.xp);
       contracts[id] = contract;
       
-      if(completed != contract.isCompleted())
-      {
-        userData!.contractIDs[id] = ContractActivityMeta(completed: contract.isCompleted(), paused: paused);
-
-        usersRef.doc(uid).update(userData!.toMap());
-      }
-
-      usersRef.doc(uid)
-        .collection('contracts')
-        .doc(id)
-        .update(contract.toMap());
-      
-      for(Goal goal in contract.goals)
-      {
-        usersRef.doc(uid)
-          .collection('contracts')
-          .doc(id)
-          .collection('goals')
-          .doc(goal.id)
-          .update(goal.toMap());
-      }
+      updateContract(uid, contract);
     }
   }
 }

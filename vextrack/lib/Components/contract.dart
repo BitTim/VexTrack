@@ -9,7 +9,10 @@ import 'package:vextrack/Models/Contracts/contract.dart';
 class ContractWidget extends StatefulWidget
 {
   final Contract model;
-  const ContractWidget({Key? key, required this.model}) : super(key: key);
+  final bool showPause;
+  final ExpandableController controller;
+  final Function(Contract)? notifyPaused;
+  const ContractWidget({Key? key, required this.model, required this.showPause, required this.controller, this.notifyPaused}) : super(key: key);
 
   @override
   ContractWidgetState createState() => ContractWidgetState();
@@ -42,9 +45,10 @@ class ContractWidgetState extends State<ContractWidget>
         clipBehavior: Clip.antiAliasWithSaveLayer,
         elevation: 8,
         child: ExpandableNotifier(
+          controller: widget.controller,
           child: ExpandablePanel(
             header: SizedBox(
-              height: 140,
+              height: 128,
               child: Align(
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
@@ -62,6 +66,15 @@ class ContractWidgetState extends State<ContractWidget>
                               fontSize: 24,
                               fontWeight: FontWeight.w700,
                             ),
+                          ),  
+
+                          if(widget.showPause) IconButton(
+                            onPressed: () => setState((() {
+                              widget.model.paused = !widget.model.paused;
+                              if(widget.notifyPaused != null) widget.notifyPaused!(widget.model);
+                            })),
+                            isSelected: widget.model.paused,
+                            icon: const Icon(Icons.pause),
                           ),
                         ]
                       ),
@@ -97,65 +110,53 @@ class ContractWidgetState extends State<ContractWidget>
                         ],
                       )
                     ),
-                    Padding( // TODO: Edit to be consistent with Seasons
-                      padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+                          child: Text(
                             "${widget.model.getFormattedXP()} / ${widget.model.getFormattedTotal()}",
                             style: GoogleFonts.titilliumWeb(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                          Text(
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+                          child: Text(
                             "Remaining: ${widget.model.getFormattedRemaining()}",
                             style: GoogleFonts.titilliumWeb(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Next Unlock: ",
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+                          child: Text(
+                            "Next Unlock: ${widget.model.getFormattedNextUnlockName()}",
                             style: GoogleFonts.titilliumWeb(
                               fontSize: 14,
-                              fontWeight: FontWeight.w700,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  "${widget.model.getNextUnlockName()} (${widget.model.getNextUnlockFormattedProgress()})",
-                                  style: GoogleFonts.titilliumWeb(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                Text(
-                                  "Remaining: ${widget.model.getNextUnlock()?.getFormattedRemaining()}",
-                                  style: GoogleFonts.titilliumWeb(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+                          child: Text(
+                            "Progress: ${widget.model.getFormattedNextUnlockProgress()} (${widget.model.getFormattedNextUnlockRemaining()} remaining)",
+                            style: GoogleFonts.titilliumWeb(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
                             ),
-                          )
-                        ],
-                      ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 )
@@ -164,6 +165,14 @@ class ContractWidgetState extends State<ContractWidget>
             collapsed: const SizedBox.shrink(),
             expanded: Column(
               children: showGoals(),
+            ),
+
+            theme: ExpandableThemeData.combine(
+              ExpandableThemeData(
+                iconColor: Theme.of(context).colorScheme.onSurface,
+                iconPadding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+              ),
+              ExpandableThemeData.defaults,
             ),
           ),
         ),

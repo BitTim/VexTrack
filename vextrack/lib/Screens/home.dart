@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:vextrack/Components/FAB/action_button.dart';
-import 'package:vextrack/Components/FAB/expandable_fab.dart';
 import 'package:vextrack/Fragments/Forms/History/history_entry.dart';
 import 'package:vextrack/Fragments/Home/contracts.dart';
 import 'package:vextrack/Fragments/Home/history.dart';
@@ -83,7 +81,6 @@ class _HomeState extends State<Home>
 
 	@override
 	Widget build(BuildContext context) {
-
 		return Scaffold(
 			appBar: AppBar(
 				title: const Text('VexTrack'),
@@ -125,7 +122,7 @@ class _HomeState extends State<Home>
 				],
 			),
 
-      body: fragments.elementAt(_currentPage),
+      body: fragments[_currentPage],
 
       bottomNavigationBar: NavigationBar(
         labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
@@ -147,25 +144,16 @@ class _HomeState extends State<Home>
         ],
       ),
 
-      floatingActionButton: ExpandableFab(
-        distance: 64.0,
-        children: [
-          ActionButton(
-            icon: const Icon(Icons.history_rounded),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return createHistoryDialog();
-                },
-              );
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return createHistoryDialog();
             },
-          ),
-          ActionButton(
-            onPressed: () => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Row(children: const [Icon(Icons.flag_rounded), Text("Create Contract")],))),
-            icon: const Icon(Icons.flag_rounded),
-          ),
-        ],
+          );
+        },
+        child: const Icon(Icons.add),
       ),
     );
 	}

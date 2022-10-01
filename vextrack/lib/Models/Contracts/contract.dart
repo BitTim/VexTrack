@@ -186,14 +186,29 @@ class Contract
     return Formatter.formatPercentage(getProgress());
   }
 
-  String getNextUnlockName()
+  String getFormattedNextUnlockName()
   {
     return getNextUnlock()?.name ?? "None";
   }
 
-  String getNextUnlockFormattedProgress()
+  String getFormattedNextUnlockXP()
   {
-    return getNextUnlock()?.getFormattedProgress() ?? "0%";
+    return Formatter.formatXP(getNextUnlock()?.xp ?? 0);
+  }
+
+  String getFormattedNextUnlockTotal()
+  {
+    return Formatter.formatXP(getNextUnlock()?.total ?? 0);
+  }
+
+  String getFormattedNextUnlockRemaining()
+  {
+    return Formatter.formatXP(getNextUnlock()?.getRemaining() ?? 0);
+  }
+
+  String getFormattedNextUnlockProgress()
+  {
+    return getNextUnlock()?.getFormattedProgress() ?? "100%";
   }
 
 

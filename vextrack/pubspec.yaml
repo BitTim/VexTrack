@@ -51,6 +51,7 @@ dependencies:
   uuid: ^3.0.6
   google_nav_bar: ^5.0.6
   dynamic_color: ^1.4.0
+  firebase_performance: ^0.8.3+2
 
 dev_dependencies:
   flutter_test:

@@ -149,7 +149,9 @@ class PerformanceChartState extends State<PerformanceChart> {
             showTitles: true,
             reservedSize: 48,
             interval: widget.model.getMaxChartXP() / 15,
+
             getTitlesWidget: (value, meta) {
+              if(value == meta.max) return const SizedBox.shrink();
               String text = Formatter.formatLargeNumber(value.toInt());
 
               return Text(

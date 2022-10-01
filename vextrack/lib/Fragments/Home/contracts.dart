@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -25,8 +27,8 @@ class ContractsFragmentState extends State<ContractsFragment>
   List<Season> _seasonsInactive = [];
   bool _loading = false;
 
-  String selectedOrder = "name";
-  bool inverted = false;
+  final List<bool> selectedSeasonType = <bool>[true, false]; 
+  final List<bool> selectedContractType = <bool>[true, false, false]; 
 
   showInactiveSeasons() {
     List<Widget> seasonList = [];
@@ -34,7 +36,10 @@ class ContractsFragmentState extends State<ContractsFragment>
     for(Season s in _seasonsInactive)
     {
       seasonList.add(
-        SeasonWidget(model: s)
+        SeasonWidget(
+          model: s,
+          controller: ExpandableController(),
+        )
       );
     }
 
@@ -47,7 +52,10 @@ class ContractsFragmentState extends State<ContractsFragment>
     for(Season s in _seasonsActive)
     {
       seasonList.add(
-        SeasonWidget(model: s)
+        SeasonWidget(
+          model: s,
+          controller: ExpandableController(),
+        )
       );
     }
 
@@ -67,13 +75,52 @@ class ContractsFragmentState extends State<ContractsFragment>
     }
   }
 
+  sortContracts()
+  {
+    setState(() {
+      _contractsActive.sort((a, b) {
+        return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+      },);
+      _contractsPaused.sort((a, b) {
+        return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+      },);
+      _contractsCompleted.sort((a, b) {
+        return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+      },);
+    });
+  }
+
+  onContractPaused(Contract contract)
+  {
+    setState(() {
+      if(contract.paused)
+      {
+        _contractsActive.remove(contract);
+        _contractsPaused.add(contract);
+      }
+      else
+      {
+        _contractsActive.add(contract);
+        _contractsPaused.remove(contract);
+      }
+      
+      sortContracts();
+      DataService.updateContract(widget.uid, contract);
+    });
+  }
+
   showActiveContracts() {
     List<Widget> contractList = [];
 
     for(Contract c in _contractsActive)
     {
       contractList.add(
-        ContractWidget(model: c)
+        ContractWidget(
+          model: c,
+          showPause: true,
+          controller: ExpandableController(initialExpanded: false),
+          notifyPaused: onContractPaused,
+        )
       );
     }
 
@@ -86,7 +133,12 @@ class ContractsFragmentState extends State<ContractsFragment>
     for(Contract c in _contractsPaused)
     {
       contractList.add(
-        ContractWidget(model: c)
+        ContractWidget(
+          model: c,
+          showPause: true,
+          controller: ExpandableController(initialExpanded: false),
+          notifyPaused: onContractPaused,
+        )
       );
     }
 
@@ -99,65 +151,16 @@ class ContractsFragmentState extends State<ContractsFragment>
     for(Contract c in _contractsCompleted)
     {
       contractList.add(
-        ContractWidget(model: c)
+        ContractWidget(
+          model: c,
+          showPause: false,
+          controller: ExpandableController(initialExpanded: false),
+          notifyPaused: onContractPaused,
+        )
       );
     }
 
     return contractList;
-  }
-
-  orderContracts()
-  {
-    if(selectedOrder == "name")
-    {
-      _contractsActive.sort((a, b) {
-        if(inverted) { Contract tmp = a; a = b; b = tmp; }
-        return a.name.toLowerCase().compareTo(b.name.toLowerCase());
-      },);
-      _contractsPaused.sort((a, b) {
-        if(inverted) { Contract tmp = a; a = b; b = tmp; }
-        return a.name.toLowerCase().compareTo(b.name.toLowerCase());
-      },);
-      _contractsCompleted.sort((a, b) {
-        if(inverted) { Contract tmp = a; a = b; b = tmp; }
-        return a.name.toLowerCase().compareTo(b.name.toLowerCase());
-      },);
-      return;
-    }
-
-    if(selectedOrder == "total")
-    {
-      _contractsActive.sort((a, b) {
-        if(inverted) { Contract tmp = a; a = b; b = tmp; }
-        return b.getTotal().compareTo(a.getTotal());
-      },);
-      _contractsPaused.sort((a, b) {
-        if(inverted) { Contract tmp = a; a = b; b = tmp; }
-        return b.getTotal().compareTo(a.getTotal());
-      },);
-      _contractsCompleted.sort((a, b) {
-        if(inverted) { Contract tmp = a; a = b; b = tmp; }
-        return b.getTotal().compareTo(a.getTotal());
-      },);
-      return;
-    }
-
-    if(selectedOrder == "progress")
-    {
-      _contractsActive.sort((a, b) {
-        if(inverted) { Contract tmp = a; a = b; b = tmp; }
-        return b.getProgress().compareTo(a.getProgress());
-      },);
-      _contractsPaused.sort((a, b) {
-        if(inverted) { Contract tmp = a; a = b; b = tmp; }
-        return b.getProgress().compareTo(a.getProgress());
-      },);
-      _contractsCompleted.sort((a, b) {
-        if(inverted) { Contract tmp = a; a = b; b = tmp; }
-        return b.getProgress().compareTo(a.getProgress());
-      },);
-      return;
-    }
   }
 
   setupContracts() async
@@ -166,32 +169,12 @@ class ContractsFragmentState extends State<ContractsFragment>
     List<Contract> contracts = await DataService.getAllContracts(uid: widget.uid);
     if (mounted) {
       setState(() {
-        _contractsActive = contracts.where((element) => !element.isCompleted() && !element.isPaused()).toList();
-        _contractsPaused = contracts.where((element) => !element.isCompleted() && element.isPaused()).toList();
         _contractsCompleted = contracts.where((element) => element.isCompleted()).toList();
+        _contractsPaused = contracts.where((element) => element.isPaused()).toList();
+        _contractsActive = contracts.where((element) => !element.isCompleted() && !element.isPaused()).toList();
         _loading = false;
       });
     }
-  }
-
-  List<DropdownMenuItem> createOrderItems()
-  {
-    List<DropdownMenuItem> items = [];
-
-    items.add(const DropdownMenuItem(
-      value: 'name',
-      child: Text("Name"),
-    ));
-    items.add(const DropdownMenuItem(
-      value: 'total',
-      child: Text("Total XP"),
-    ));
-    items.add(const DropdownMenuItem(
-      value: 'progress',
-      child: Text("Progress"),
-    ));
-
-    return items;
   }
 
   @override
@@ -200,15 +183,17 @@ class ContractsFragmentState extends State<ContractsFragment>
     update();
   }
 
-  void update()
+  void update() async
   {
     setupSeasons();
-    setupContracts();
-    orderContracts();
+    await setupContracts();
+    sortContracts();
   }
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = Theme.of(context);
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
       child: RefreshIndicator(
@@ -222,50 +207,63 @@ class ContractsFragmentState extends State<ContractsFragment>
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-              child: ExpandablePanel(
-                header: Text(
-                  "Seasons",
-                  style: GoogleFonts.titilliumWeb(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                collapsed: Column(
-                  children: _seasonsActive.isEmpty && _loading == false ? [
-                    const Center(child: Text("No active seasons"))
-                  ] : showActiveSeasons()
-                ),
-                expanded: Column(
-                  children: [
-                    Text(
-                      "Active",
-                      style: GoogleFonts.titilliumWeb(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    Column(
-                      children: _seasonsActive.isEmpty && _loading == false ? [
-                        const Center(child: Text("No active seasons"))
-                      ] : showActiveSeasons()
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                      child: Text(
-                        "Inactive",
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Seasons",
                         style: GoogleFonts.titilliumWeb(
-                          fontSize: 18,
+                          fontSize: 24,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
-                    ),
-                    Column(
-                      children: _seasonsInactive.isEmpty && _loading == false ? [
-                        const Center(child: Text("No inactive seasons"))
-                      ] : showInactiveSeasons()
-                    ),
-                  ],
-                ),
+
+                      ToggleButtons(
+                        onPressed: (int index) {
+                          setState(() {
+                            for (int i = 0; i < selectedSeasonType.length; i++) {
+                              selectedSeasonType[i] = i == index;
+                            }
+                          });
+                        },
+                        borderRadius: const BorderRadius.all(Radius.circular(8)),
+                        selectedBorderColor: theme.colorScheme.outline,
+                        selectedColor: theme.colorScheme.onPrimaryContainer,
+                        fillColor: theme.colorScheme.primaryContainer,
+                        color: theme.colorScheme.onSurface,
+                        constraints: const BoxConstraints(
+                          minHeight: 40.0,
+                          minWidth: 80.0,
+                        ),
+                        isSelected: selectedSeasonType,
+                        children: const [
+                          Text("Active"),
+                          Text("Inactive"),
+                        ],
+                      ),
+                    ],
+                  ),
+
+                  if(selectedSeasonType[0]) Column(
+                    children: _seasonsActive.isEmpty && _loading == false ? [
+                      const Center(child: Padding(
+                        padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
+                        child: Text("No active seasons"),
+                      )),
+                    ] : showActiveSeasons()
+                  ),
+
+                  if(selectedSeasonType[1]) Column(
+                    children: _seasonsInactive.isEmpty && _loading == false ? [
+                      const Center(child: Padding(
+                        padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
+                        child: Text("No inactive seasons"),
+                      )),
+                    ] : showInactiveSeasons()
+                  ),
+                ],
               ),
             ),
           
@@ -273,105 +271,78 @@ class ContractsFragmentState extends State<ContractsFragment>
           
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-              child: ExpandablePanel(
-                header: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Contracts",
-                      style: GoogleFonts.titilliumWeb(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.fromLTRB(0, 0, 8, 0),
-                          child: Text("Order by"),
-                        ),
-                        SizedBox(
-                          width: 128,
-                          child: DropdownButtonFormField(
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
+              child: Column(
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Contracts",
+                            style: GoogleFonts.titilliumWeb(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w700,
                             ),
-                            onChanged: (dynamic newValue) {
+                          ),
+
+                          ToggleButtons(
+                            onPressed: (int index) {
                               setState(() {
-                                selectedOrder = newValue as String;
-                                orderContracts();
+                                for (int i = 0; i < selectedContractType.length; i++) {
+                                  selectedContractType[i] = i == index;
+                                }
                               });
                             },
-                            items: createOrderItems(),
-                            value: selectedOrder,
+                            borderRadius: const BorderRadius.all(Radius.circular(8)),
+                            selectedBorderColor: theme.colorScheme.outline,
+                            selectedColor: theme.colorScheme.onPrimaryContainer,
+                            fillColor: theme.colorScheme.primaryContainer,
+                            color: theme.colorScheme.onSurface,
+                            constraints: const BoxConstraints(
+                              minHeight: 40.0,
+                              minWidth: 80.0,
+                            ),
+                            isSelected: selectedContractType,
+                            children: const [
+                              Text("Active"),
+                              Text("Paused"),
+                              Text("Completed"),
+                            ],
                           ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.arrow_downward),
-                          selectedIcon: const Icon(Icons.arrow_upward),
-                          isSelected: inverted,
-                          onPressed: () {
-                            setState(() {
-                              inverted = !inverted;
-                              orderContracts();
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                collapsed: Column(
-                  children: _contractsActive.isEmpty && _loading == false ? [
-                    const Center(child: Text("No active contracts"))
-                  ] : showActiveContracts()
-                ),
-                expanded: Column(
-                  children: [
-                    Text(
-                      "Active",
-                      style: GoogleFonts.titilliumWeb(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
+                        ],
                       ),
-                    ),
-                    Column(
-                      children: _contractsActive.isEmpty && _loading == false ? [
-                        const Center(child: Text("No active contracts"))
-                      ] : showActiveContracts()
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                      child: Text(
-                        "Paused",
-                        style: GoogleFonts.titilliumWeb(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                    Column(
-                      children: _contractsPaused.isEmpty && _loading == false ? [
-                        const Center(child: Text("No paused contracts"))
-                      ] : showPausedContracts()
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                      child: Text(
-                        "Completed",
-                        style: GoogleFonts.titilliumWeb(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                    Column(
-                      children: _contractsPaused.isEmpty && _loading == false ? [
-                        const Center(child: Text("No completed contracts"))
-                      ] : showCompletedContracts()
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+
+                  if(selectedContractType[0]) Column(
+                    children: _contractsActive.isEmpty && _loading == false ? [
+                      const Center(child: Padding(
+                        padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
+                        child: Text("No active contracts"),
+                      )),
+                    ] : showActiveContracts()
+                  ),
+
+                  if(selectedContractType[1]) Column(
+                    children: _contractsPaused.isEmpty && _loading == false ? [
+                      const Center(child: Padding(
+                        padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
+                        child: Text("No paused contracts"),
+                      )),
+                    ] : showPausedContracts()
+                  ),
+
+                  if(selectedContractType[2]) Column(
+                    children: _contractsCompleted.isEmpty && _loading == false ? [
+                      const Center(child: Padding(
+                        padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
+                        child: Text("No completed contracts"),
+                      )),
+                    ] : showCompletedContracts()
+                  ),
+                ],
               ),
             ),
             const SizedBox(

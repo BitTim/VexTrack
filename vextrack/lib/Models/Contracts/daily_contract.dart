@@ -8,11 +8,12 @@ import 'package:vextrack/Services/data.dart';
 
 class DailyContract extends Contract
 {
-  DailyContract(super.id, super.name, super.timed, super.paused, super.startColor, super.endColor, super.startTime, super.endTime);
+  DailyContract(super.uid, super.id, super.name, super.timed, super.paused, super.startColor, super.endColor, super.startTime, super.endTime);
   
   static DailyContract empty()
   {
     return DailyContract(
+      "",
       const Uuid().v4(),
       "Daily Contract",
       false,
@@ -28,7 +29,7 @@ class DailyContract extends Contract
   {
     DailyContract dc = DailyContract.empty();
 
-    SeasonMeta? meta = await DataService.getActiveSeasonMeta();
+    SeasonMeta? meta = await DataService.getActiveSeasonMeta(uid);
     if (meta == null) return dc;
 
     Season season = await DataService.getSeason(uid, meta.id);

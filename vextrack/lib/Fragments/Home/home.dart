@@ -28,7 +28,7 @@ class HomeFragmentState extends State<HomeFragment>
 
   Future<bool> update() async
   {
-    await DataService.getActiveSeasonMeta();
+    await DataService.getActiveSeasonMeta(widget.uid);
     if(DataService.userData == null) await DataService.fetchUserData(widget.uid);
     DailyContract dc = await DailyContract.init(widget.uid);
 

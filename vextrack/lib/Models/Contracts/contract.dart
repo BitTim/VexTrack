@@ -4,10 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:vextrack/Core/formatter.dart';
 import 'package:vextrack/Core/util.dart';
 import 'package:vextrack/Models/Contracts/goal.dart';
+import 'package:vextrack/Models/Seasons/season.dart';
+import 'package:vextrack/Models/Seasons/season_meta.dart';
+import 'package:vextrack/Services/data.dart';
 import 'package:vextrack/themes.dart';
 
 class Contract
 {
+  String uid;
   String id;
   String name;
   bool timed;
@@ -18,11 +22,12 @@ class Contract
   Timestamp? endTime;
   List<Goal> goals = [];
 
-  Contract(this.id, this.name, this.timed, this.paused, this.startColor, this.endColor, this.startTime, this.endTime);
+  Contract(this.uid, this.id, this.name, this.timed, this.paused, this.startColor, this.endColor, this.startTime, this.endTime);
 
-  static Contract fromDoc(DocumentSnapshot doc, bool paused)
+  static Contract fromDoc(DocumentSnapshot doc, String uid, bool paused)
   {
     return Contract(
+      uid,
       doc.id,
       doc['name'] as String,
       doc['timed'] as bool,
@@ -140,6 +145,27 @@ class Contract
     return null;
   }
 
+  Future<int> getCompleteDateDays() async
+  {
+    SeasonMeta? activeMeta = await DataService.getActiveSeasonMeta(uid);
+    if(activeMeta == null) return 0;
+    
+    Season season = await DataService.getSeason(uid, activeMeta.id);
+    int avg = season.getDailyAvg();
+    int remaining = getRemaining();
+
+    int days = (remaining / avg).ceil();
+    return days;
+  }
+
+  Future<DateTime?> getCompleteDate() async
+  {
+    int days = await getCompleteDateDays();
+    if(days == 0) return null;
+
+    return DateTime.now().add(Duration(days: days));
+  }
+
 
 
 
@@ -209,6 +235,15 @@ class Contract
   String getFormattedNextUnlockProgress()
   {
     return getNextUnlock()?.getFormattedProgress() ?? "100%";
+  }
+
+  Future<String> getFormattedCompleteDate() async
+  {
+    DateTime? dt = await getCompleteDate();
+    int days = await getCompleteDateDays();
+    if(dt == null || days == 0) return "";
+
+    return "${Formatter.formatDate(dt)} (${Formatter.formatDays(days)})";
   }
 
 

@@ -33,7 +33,7 @@ class DashboardChartState extends State<DashboardChart>
 
   void update() async
   {
-    SeasonMeta? activeMeta = await DataService.getActiveSeasonMeta();
+    SeasonMeta? activeMeta = await DataService.getActiveSeasonMeta(widget.uid);
     setState(() => meta = activeMeta);
 
     if(activeMeta == null)

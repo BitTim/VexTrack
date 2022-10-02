@@ -138,6 +138,30 @@ class DataService
   //  Season meta data
   // ===============================
 
+  static Future<SeasonMeta> getSeasonMeta(String id) async
+  {
+    if(seasonMetas[id] != null) return seasonMetas[id]!;
+
+    _loading = true;
+    DocumentSnapshot loadedSeasonMeta = await seasonsRef.doc(id).get();
+    QuerySnapshot loadedBattlepass = await seasonsRef.doc(id)
+      .collection("battlepass")
+      .orderBy("level", descending: false)
+      .get();
+    List<List<String>> battlepass = loadedBattlepass.docs.map((doc) => doc.get("rewards").cast<String>() as List<String>).toList();
+
+    QuerySnapshot loadedEpilogue = await seasonsRef.doc(id)
+      .collection("epilogue")
+      .orderBy("level", descending: false)
+      .get();
+    List<List<String>> epilogue = loadedEpilogue.docs.map((doc) => doc.get("rewards").cast<String>() as List<String>).toList();
+
+    SeasonMeta seasonMeta = SeasonMeta.fromDoc(loadedSeasonMeta, id, battlepass, epilogue);
+    _loading = false;
+
+    return seasonMeta;
+  }
+
   static Future<Map<String, SeasonMeta>> pullAllSeasonMetas() async
   {
     _loading = true;
@@ -146,19 +170,7 @@ class DataService
 
     for(QueryDocumentSnapshot doc in loadedSeasonMetas.docs)
     {
-      QuerySnapshot loadedBattlepass = await seasonsRef.doc(doc.id)
-        .collection("battlepass")
-        .orderBy("level", descending: false)
-        .get();
-      List<List<String>> battlepass = loadedBattlepass.docs.map((doc) => doc.get("rewards").cast<String>() as List<String>).toList();
-
-      QuerySnapshot loadedEpilogue = await seasonsRef.doc(doc.id)
-        .collection("epilogue")
-        .orderBy("level", descending: false)
-        .get();
-      List<List<String>> epilogue = loadedEpilogue.docs.map((doc) => doc.get("rewards").cast<String>() as List<String>).toList();
-
-      SeasonMeta seasonMeta = SeasonMeta.fromDoc(doc, doc.id, battlepass, epilogue);
+      SeasonMeta seasonMeta = await getSeasonMeta(doc.id);
       seasonMetas[doc.id] = seasonMeta;
     }
     _loading = false;
@@ -166,21 +178,14 @@ class DataService
     return seasonMetas;
   }
 
-  static Future<SeasonMeta?> getActiveSeasonMeta() async
+  static Future<SeasonMeta?> getActiveSeasonMeta(String uid) async
   {
-    if(DataService.seasonMetas.isEmpty && !_loading) await pullAllSeasonMetas();
-    //await Util.waitWhile(() => _loading);
-
-    _loading = true;
-    for(SeasonMeta meta in DataService.seasonMetas.values)
+    if(userData == null && !_loading) await fetchUserData(uid);
+    for(String id in userData!.seasonIDs.keys)
     {
-      if(meta.isActive())
-      {
-        _loading = false;
-        return meta;
-      }
+      if(userData!.seasonIDs[id]!.active == false) continue;
+      return seasonMetas[id];
     }
-    _loading = false;
 
     return null;
   }
@@ -279,7 +284,7 @@ class DataService
       .doc(id)
       .get();
 
-    Contract contract = Contract.fromDoc(loadedContract, userData!.contractIDs[id]!.paused);
+    Contract contract = Contract.fromDoc(loadedContract, uid, userData!.contractIDs[id]!.paused);
     QuerySnapshot loadedGoals = await usersRef.doc(uid)
       .collection("contracts")
       .doc(id)

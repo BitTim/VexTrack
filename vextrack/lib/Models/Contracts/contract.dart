@@ -253,19 +253,22 @@ class Contract
   //  Setters
   // --------------------------------
 
-  void addXP(int xp)
+  List<String> addXP(int xp, List<String> unlocks)
   {
     Goal? active = getNextUnlock();
-    if (active == null) return;
+    if (active == null) return unlocks;
 
-    if(active.getRemaining() < xp)
+    if(active.getRemaining() <= xp)
     {
       xp -= active.getRemaining();
       active.xp += active.getRemaining();
-      addXP(xp);
-      return;
+      unlocks.addAll(active.rewards);
+
+      addXP(xp, unlocks);
+      return unlocks;
     }
 
     active.xp += xp;
+    return unlocks;
   }
 }

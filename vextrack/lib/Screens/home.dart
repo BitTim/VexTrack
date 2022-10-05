@@ -35,6 +35,55 @@ class _HomeState extends State<Home>
     _notifyParent = notifyParent;
   }
 
+  Widget? createUnlockedDialog(List<String> unlocks)
+  {
+    if(unlocks.isEmpty) return null;
+
+    return AlertDialog(
+      scrollable: true,
+      title: const Text("Unlocks"),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(16),
+        ),
+      ),
+      content: Builder(
+        builder: (context) {
+          var width = MediaQuery.of(context).size.width;
+
+          List<Widget> unlocksWidgets = [];
+          for(String s in unlocks)
+          {
+            unlocksWidgets.add(Text("- $s"));
+          }
+
+          return SizedBox(
+            width: width - 128, //TODO: Responsive layout (Fullscrenn diag on phones, restrained width on Desktop)
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Column(
+                    children: unlocksWidgets,
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text("OK"),
+        ),
+      ],
+    );
+  }
+
   Widget createHistoryDialog()
   {
     HistoryEntryForm form = HistoryEntryForm();
@@ -70,8 +119,19 @@ class _HomeState extends State<Home>
         ElevatedButton(
           onPressed: () async {
             Navigator.of(context).pop();
-            await DataService.addHistoryEntry(widget.uid, form.model);
+            List<String> unlocks = await DataService.addHistoryEntry(widget.uid, form.model);
             keys.elementAt(_currentPage).currentState!.update();
+
+            Widget? unlockedDialog = createUnlockedDialog(unlocks);
+            if(unlockedDialog != null)
+            {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return unlockedDialog;
+                },
+              );
+            }
           },
           child: const Text("Create"),
         )

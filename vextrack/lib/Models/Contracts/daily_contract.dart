@@ -59,7 +59,7 @@ class DailyContract extends Contract
       []
     ));
     
-    dc.addXP(dailyXP);
+    dc.addXP(dailyXP, []);
     return dc;
   }
 

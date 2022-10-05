@@ -378,10 +378,10 @@ class DataService
     usersRef.doc(uid).update(userData!.toMap());
   }
 
-  static Future<void> addHistoryEntry(String uid, HistoryEntry he) async
+  static Future<List<String>> addHistoryEntry(String uid, HistoryEntry he) async
   {
     SeasonMeta? meta = getSeasonMetaFromTime(he.time);
-    if (meta == null) return;
+    if (meta == null) return [];
 
     Season season = await getSeason(uid, meta.id);
     Timestamp date = Timestamp.fromDate(he.getDate());
@@ -404,6 +404,7 @@ class DataService
     seasons[meta.id] = season;
 
     updateHistoryEntry(uid, idx, season, meta);
+    List<String> unlocks = [];
 
     for(String id in userData!.contractIDs.keys)
     {
@@ -413,10 +414,12 @@ class DataService
 
       if (paused || completed) continue;
 
-      contract.addXP(he.xp);
+      unlocks.addAll(contract.addXP(he.xp, []));
       contracts[id] = contract;
       
       updateContract(uid, contract);
     }
+
+    return unlocks;
   }
 }

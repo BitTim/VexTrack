@@ -157,6 +157,41 @@ class HistoryEntryWidgetState extends State<HistoryEntryWidget>
                             ],
                           ),
                         ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                            child: PopupMenuButton(
+                              icon: const Icon(
+                                Icons.more_vert,
+                                color: Colors.white,
+                              ),
+                              onSelected: (value) {
+                                if(value == 'edit') {
+                                  //TODO: Add functionality
+                                }
+                                else if(value == 'delete') {
+                                  //TODO: Add functionality
+                                }
+                              },
+                              itemBuilder: (BuildContext context) => [
+                                const PopupMenuItem(
+                                  value: 'edit',
+                                  child: Text('Edit'),
+                                  ),
+                                PopupMenuItem(
+                                  value: 'delete',
+                                  child: Text(
+                                    'Delete',
+                                    style: GoogleFonts.titilliumWeb(
+                                      color: AppColors.loss[0],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
                       ]
                     ),
                   ),

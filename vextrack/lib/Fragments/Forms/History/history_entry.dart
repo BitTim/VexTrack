@@ -458,7 +458,7 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
             padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
             child: Text("Preview"),
           ),
-          HistoryEntryWidget(model: widget.model),
+          HistoryEntryWidget(model: widget.model, showOptions: false),
         ],
       ),
     );

@@ -10,9 +10,15 @@ class HistoryEntryWidget extends StatefulWidget
   const HistoryEntryWidget({
     Key? key,
     required this.model,
+    this.showOptions = true,
+    this.editHistoryEntry,
+    this.deleteHistoryEntry,
   }) : super(key: key);
 
   final HistoryEntry model;
+  final bool showOptions;
+  final Function(HistoryEntry)? editHistoryEntry;
+  final Function(HistoryEntry)? deleteHistoryEntry;
 
   @override
   HistoryEntryWidgetState createState() => HistoryEntryWidgetState();
@@ -168,10 +174,10 @@ class HistoryEntryWidgetState extends State<HistoryEntryWidget>
                               ),
                               onSelected: (value) {
                                 if(value == 'edit') {
-                                  //TODO: Add functionality
+                                  if(widget.editHistoryEntry != null) widget.editHistoryEntry!(widget.model);
                                 }
                                 else if(value == 'delete') {
-                                  //TODO: Add functionality
+                                  if(widget.deleteHistoryEntry != null) widget.deleteHistoryEntry!(widget.model);
                                 }
                               },
                               itemBuilder: (BuildContext context) => [

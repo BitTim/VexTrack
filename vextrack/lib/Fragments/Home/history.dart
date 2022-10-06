@@ -24,13 +24,50 @@ class HistoryFragmentState extends State<HistoryFragment>
   List<String> gameModeFilter = [];
   List<String> mapFilter = [];
 
+  void editHistoryEntry(HistoryEntry he)
+  {
+
+  }
+
+  void deleteHistoryEntry(HistoryEntry he)
+  {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          icon: const Icon(Icons.delete),
+          title: const Text("Delete history entry"),
+          content: const Text("This action will permanently delete the selected entry"),
+          actions: [
+            TextButton(
+              child: const Text("Cancel"),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            ElevatedButton(
+              child: const Text("Delete"),
+              onPressed: () {
+                //TODO: Insert deletion logic here:
+                // Most likely a call to DataService
+
+                Navigator.of(context).pop();
+
+                SnackBar sb = SnackBar(content: Text("Placeholder: Deleted HE ${he.uuid}"));
+                ScaffoldMessenger.of(context).showSnackBar(sb);
+              },
+            ),
+          ],
+        );
+      }
+    );
+  }
+
   showHistory() {
     List<Widget> historyEntryGroupList = [];
     
     for(HistoryEntryGroup heg in _filteredHistory)
     {
       historyEntryGroupList.add(
-        HistoryEntryGroupWidget(model: heg)
+        HistoryEntryGroupWidget(model: heg, editHistoryEntry: editHistoryEntry, deleteHistoryEntry: deleteHistoryEntry,)
       );
     }
 

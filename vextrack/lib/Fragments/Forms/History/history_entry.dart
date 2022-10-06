@@ -9,6 +9,7 @@ import 'package:vextrack/Services/data.dart';
 
 class HistoryEntryForm extends StatefulWidget
 {
+  final GlobalKey<FormState> formKey;
   final HistoryEntry model = HistoryEntry(
     const Uuid().v4(),
     "",
@@ -23,6 +24,7 @@ class HistoryEntryForm extends StatefulWidget
 
   HistoryEntryForm({
     super.key,
+    required this.formKey
   });
 
   @override
@@ -158,6 +160,7 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
   {
     List<Widget> children = [];
     String scoreFormat = DataService.modes[selectedModeID]!.scoreFormat;
+    int scoreLimit = DataService.modes[selectedModeID]!.scoreLimit;
 
     if (scoreFormat == "none" || scoreFormat == "") return const SizedBox.shrink();
     if (scoreFormat == "placement" || scoreFormat == "default")
@@ -167,10 +170,17 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
           controller: scoreController,
           inputFormatters: [
             FilteringTextInputFormatter.digitsOnly,
-            LengthLimitingTextInputFormatter(3),
+            LengthLimitingTextInputFormatter(2),
           ],
+          validator: (value) {
+            if(value == null || value.isEmpty || int.tryParse(value) == null) return "";
+            if(scoreLimit == -1) return null;
+            if(int.parse(value) > scoreLimit) return "";
+            return null;
+          },
           decoration: InputDecoration(
             border: const OutlineInputBorder(),
+            errorStyle: const TextStyle(height: 0.01),
             suffixText: (scoreFormat == "placement" && int.tryParse(scoreController.text) != null) ? widget.model.getPlacementSuffix(int.parse(scoreController.text)) : "",
           ),
           keyboardType: TextInputType.number,
@@ -188,10 +198,17 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
           controller: enemyScoreController,
           inputFormatters: [
             FilteringTextInputFormatter.digitsOnly,
-            LengthLimitingTextInputFormatter(3),
+            LengthLimitingTextInputFormatter(2),
           ],
+          validator: (value) {
+            if(value == null || value.isEmpty || int.tryParse(value) == null) return "";
+            if(scoreLimit == -1) return null;
+            if(int.parse(value) > scoreLimit) return "";
+            return null;
+          },
           decoration: const InputDecoration(
             border: OutlineInputBorder(),
+            errorStyle: const TextStyle(height: 0.01),
           ),
           keyboardType: TextInputType.number,
         ),
@@ -251,8 +268,13 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
         inputFormatters: [
           LengthLimitingTextInputFormatter(22),
         ],
+        validator: (value) {
+          if(value == null || value.isEmpty) return "";
+          return null;
+        },
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
+          errorStyle: TextStyle(height: 0.01),
         ),
         keyboardType: TextInputType.text,
       ));
@@ -264,6 +286,7 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
   @override
   Widget build(BuildContext context) {
     return Form(
+      key: widget.formKey,
       child: Column(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -343,8 +366,13 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
                           FilteringTextInputFormatter.digitsOnly,
                           LengthLimitingTextInputFormatter(9),
                         ],
+                        validator: (value) {
+                          if(value == null || value.isEmpty || int.tryParse(value) == null) return "";
+                          return null;
+                        },
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
+                          errorStyle: TextStyle(height: 0.01),
                           suffixText: "XP",
                         ),
                         keyboardType: TextInputType.number,

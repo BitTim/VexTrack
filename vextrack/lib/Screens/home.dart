@@ -16,6 +16,8 @@ class _HomeState extends State<Home>
   List<Widget> fragments = [];
   List<dynamic> keys = [];
 
+  GlobalKey<FormState> historyFormKey = GlobalKey<FormState>();
+
   @override
   void initState()
   {
@@ -86,7 +88,7 @@ class _HomeState extends State<Home>
 
   Widget createHistoryDialog()
   {
-    HistoryEntryForm form = HistoryEntryForm();
+    HistoryEntryForm form = HistoryEntryForm(formKey: historyFormKey);
 
     return AlertDialog(
       scrollable: true,
@@ -118,6 +120,8 @@ class _HomeState extends State<Home>
         ),
         ElevatedButton(
           onPressed: () async {
+            if(!historyFormKey.currentState!.validate()) return;
+
             Navigator.of(context).pop();
             List<String> unlocks = await DataService.addHistoryEntry(widget.uid, form.model);
             keys.elementAt(_currentPage).currentState!.update();

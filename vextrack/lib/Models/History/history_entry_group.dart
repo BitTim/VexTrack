@@ -85,4 +85,10 @@ class HistoryEntryGroup
     entries.sort((a, b) => b.time.compareTo(a.time));
     total += he.xp;
   }
+
+  void deleteEntry(HistoryEntry he) {
+    if(!entries.contains(he)) return;
+    entries.remove(he);
+    total -= he.xp;
+  }
 }

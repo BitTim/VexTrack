@@ -331,11 +331,23 @@ class DataService
 
   static Future<void> updateHistoryEntry(String uid, int idx, Season season, SeasonMeta meta) async
   {
-    usersRef.doc(uid)
-      .collection("seasons")
-      .doc(meta.id)
-      .collection("history")
-      .doc(season.history[idx].id).set(season.history[idx].toMap(), SetOptions(merge: true));
+    if(season.history[idx].entries.isEmpty)
+    {
+      usersRef.doc(uid)
+        .collection("seasons")
+        .doc(meta.id)
+        .collection("history")
+        .doc(season.history[idx].id)
+        .delete();
+    }
+    else
+    {
+      usersRef.doc(uid)
+        .collection("seasons")
+        .doc(meta.id)
+        .collection("history")
+        .doc(season.history[idx].id).set(season.history[idx].toMap());
+    }
 
     usersRef.doc(uid)
       .collection("seasons")
@@ -421,5 +433,43 @@ class DataService
     }
 
     return unlocks;
+  }
+
+  static deleteHistoryEntry(String uid, HistoryEntry he) async
+  {
+    DateTime dt = he.getDate();
+
+    SeasonMeta? meta = getSeasonMetaFromTime(Timestamp.fromDate(dt));
+    if(meta == null) return;
+
+    Season season = await getSeason(uid, meta.id);
+    int dayIdx = season.getDaysIndexFromDate(dt);
+    int i = season.history.indexWhere((element) => element.day == dayIdx + 1);
+
+    HistoryEntryGroup heg = season.history[i];
+    heg.deleteEntry(he);
+
+    season.history[i] = heg;
+
+    int total = season.getTotal() - he.xp;
+    List<int> levelXP = XPCalc.toLevelXP(total);
+    season.activeLevel = levelXP[0];
+    season.activeXP = levelXP[1];
+
+    await updateHistoryEntry(uid, i, season, meta);
+    if(season.history[i].entries.isEmpty) season.history.removeAt(i);
+
+    for(String id in userData!.contractIDs.keys)
+    {
+      Contract contract = await getContract(uid, id);
+      bool completed = userData!.contractIDs[id]!.completed;
+      bool paused = userData!.contractIDs[id]!.paused;
+
+      if (paused || completed) continue;
+      contract.removeXP(he.xp);
+      contracts[id] = contract;
+      
+      updateContract(uid, contract);
+    }
   }
 }

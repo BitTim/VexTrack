@@ -45,14 +45,14 @@ class HistoryFragmentState extends State<HistoryFragment>
             ),
             ElevatedButton(
               child: const Text("Delete"),
-              onPressed: () {
-                //TODO: Insert deletion logic here:
-                // Most likely a call to DataService
-
+              onPressed: () async {
                 Navigator.of(context).pop();
 
-                SnackBar sb = SnackBar(content: Text("Placeholder: Deleted HE ${he.uuid}"));
+                SnackBar sb = SnackBar(content: Text("Deleted Entry ${he.getFormattedDesc()}"));
                 ScaffoldMessenger.of(context).showSnackBar(sb);
+
+                await DataService.deleteHistoryEntry(widget.uid, he);
+                update();
               },
             ),
           ],

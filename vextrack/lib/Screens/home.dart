@@ -27,7 +27,7 @@ class _HomeState extends State<Home>
 
     fragments.add(HomeFragment(key: keys[0], uid: widget.uid));
     fragments.add(ContractsFragment(key: keys[1], uid: widget.uid));
-    fragments.add(HistoryFragment(key: keys[2], uid: widget.uid));
+    fragments.add(HistoryFragment(key: keys[2], uid: widget.uid, createUnlockedDialog: createUnlockedDialog));
 
     super.initState();
   }
@@ -37,13 +37,14 @@ class _HomeState extends State<Home>
     _notifyParent = notifyParent;
   }
 
-  Widget? createUnlockedDialog(List<String> unlocks)
+  Widget? createUnlockedDialog({required List<String> unlocks, bool inverted = false})
   {
     if(unlocks.isEmpty) return null;
 
     return AlertDialog(
       scrollable: true,
       title: const Text("Unlocks"),
+      
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
           Radius.circular(16),
@@ -67,7 +68,11 @@ class _HomeState extends State<Home>
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Column(
-                    children: unlocksWidgets,
+                    children: [
+                      if(!inverted) const Text("You have unlocked:"),
+                      if(inverted) const Text("You no longer have unlocked:"),
+                      ...unlocksWidgets,
+                    ]
                   ),
                 ],
               ),
@@ -126,7 +131,7 @@ class _HomeState extends State<Home>
             List<String> unlocks = await DataService.addHistoryEntry(widget.uid, form.model);
             keys.elementAt(_currentPage).currentState!.update();
 
-            Widget? unlockedDialog = createUnlockedDialog(unlocks);
+            Widget? unlockedDialog = createUnlockedDialog(unlocks: unlocks);
             if(unlockedDialog != null)
             {
               showDialog(

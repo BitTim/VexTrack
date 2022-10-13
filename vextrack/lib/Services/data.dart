@@ -407,7 +407,7 @@ class DataService
       idx = 0;
     }
 
-    int total = XPCalc.toTotal(season.activeLevel, season.activeXP) + he.xp;
+    int total = season.getTotal() + he.xp;
     List<int> levelXP = XPCalc.toLevelXP(total);
     season.activeLevel = levelXP[0];
     season.activeXP = levelXP[1];
@@ -435,16 +435,62 @@ class DataService
     return unlocks;
   }
 
-  static deleteHistoryEntry(String uid, HistoryEntry he) async
+  static Future<List<dynamic>> editHistoryEntry(String uid, HistoryEntry he) async
   {
-    DateTime dt = he.getDate();
-
-    SeasonMeta? meta = getSeasonMetaFromTime(Timestamp.fromDate(dt));
-    if(meta == null) return;
+    SeasonMeta? meta = getSeasonMetaFromTime(he.time);
+    if(meta == null) return [];
 
     Season season = await getSeason(uid, meta.id);
-    int dayIdx = season.getDaysIndexFromDate(dt);
-    int i = season.history.indexWhere((element) => element.day == dayIdx + 1);
+    Timestamp date = Timestamp.fromDate(he.getDate());
+    int day = date.toDate().difference(meta.startDate.toDate()).inDays;
+    int i = season.history.indexWhere((element) => element.day == day);
+
+    HistoryEntryGroup heg = season.history[i];
+    int idx = heg.entries.indexWhere((element) => he.uuid == element.uuid);
+    if(idx == -1) return [];
+
+    HistoryEntry prevHE = heg.entries[idx];
+
+    heg.entries[idx] = he;
+    season.history[i] = heg;
+
+    int diff = he.xp - prevHE.xp;
+
+    int total = season.getTotal() + diff;
+    List<int> levelXP = XPCalc.toLevelXP(total);
+    season.activeLevel = levelXP[0];
+    season.activeXP = levelXP[1];
+    seasons[meta.id] = season;
+
+    await updateHistoryEntry(uid, i, season, meta);
+    List<String> unlocks = [];
+
+    for(String id in userData!.contractIDs.keys)
+    {
+      Contract contract = await getContract(uid, id);
+      bool completed = userData!.contractIDs[id]!.completed;
+      bool paused = userData!.contractIDs[id]!.paused;
+
+      if (paused || completed) continue;
+      if(diff < 0) { unlocks.addAll(contract.removeXP(-diff, [])); }
+      else { unlocks.addAll(contract.addXP(diff, [])); }
+      contracts[id] = contract;
+      
+      updateContract(uid, contract);
+    }
+
+    return [diff < 0 ? true : false, unlocks];
+  }
+
+  static Future<List<String>> deleteHistoryEntry(String uid, HistoryEntry he) async
+  {
+    SeasonMeta? meta = getSeasonMetaFromTime(he.time);
+    if(meta == null) return [];
+
+    Season season = await getSeason(uid, meta.id);
+    Timestamp date = Timestamp.fromDate(he.getDate());
+    int day = date.toDate().difference(meta.startDate.toDate()).inDays;
+    int i = season.history.indexWhere((element) => element.day == day);
 
     HistoryEntryGroup heg = season.history[i];
     heg.deleteEntry(he);
@@ -456,8 +502,11 @@ class DataService
     season.activeLevel = levelXP[0];
     season.activeXP = levelXP[1];
 
+    seasons[meta.id] = season;
+
     await updateHistoryEntry(uid, i, season, meta);
     if(season.history[i].entries.isEmpty) season.history.removeAt(i);
+    List<String> unlocks = [];
 
     for(String id in userData!.contractIDs.keys)
     {
@@ -466,10 +515,12 @@ class DataService
       bool paused = userData!.contractIDs[id]!.paused;
 
       if (paused || completed) continue;
-      contract.removeXP(he.xp);
+      unlocks.addAll(contract.removeXP(he.xp, []));
       contracts[id] = contract;
       
       updateContract(uid, contract);
     }
+
+    return unlocks;
   }
 }

@@ -290,15 +290,15 @@ class Contract
     return unlocks;
   }
 
-  void removeXP(int xp)
+  List<String> removeXP(int xp, List<String> unlocks)
   {
     Goal? active = getNextUnlock();
-    if(active == null) return;
+    if(active == null) return unlocks;
 
     if(active.getXP() == 0)
     {
       Goal? lastCompleted = getLastCompletedUnlock();
-      if(lastCompleted == null) return;
+      if(lastCompleted == null) return unlocks;
       active = lastCompleted;
     }
 
@@ -306,9 +306,13 @@ class Contract
     {
       xp -= active.getXP();
       active.xp = 0;
+      unlocks.addAll(active.rewards);
 
-      removeXP(xp);
-      return;
+      removeXP(xp, unlocks);
+      return unlocks;
     }
+
+    active.xp -= xp;
+    return unlocks;
   }
 }

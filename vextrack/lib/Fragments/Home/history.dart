@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vextrack/Components/history_entry_group.dart';
+import 'package:vextrack/Fragments/Forms/History/history_entry.dart';
 import 'package:vextrack/Fragments/Forms/History/history_filter.dart';
 import 'package:vextrack/Models/History/history_entry.dart';
 import 'package:vextrack/Models/History/history_entry_group.dart';
@@ -8,7 +9,8 @@ import 'package:vextrack/Services/data.dart';
 
 class HistoryFragment extends StatefulWidget {
   final String uid;
-  const HistoryFragment({Key? key, required this.uid}) : super(key: key);
+  final Widget? Function({required List<String> unlocks, bool inverted}) createUnlockedDialog;
+  const HistoryFragment({Key? key, required this.uid, required this.createUnlockedDialog}) : super(key: key);
 
   @override
   HistoryFragmentState createState() => HistoryFragmentState();
@@ -26,7 +28,66 @@ class HistoryFragmentState extends State<HistoryFragment>
 
   void editHistoryEntry(HistoryEntry he)
   {
+    GlobalKey<FormState> formKey = GlobalKey<FormState>();
+    HistoryEntryForm form = HistoryEntryForm(formKey: formKey, initEntry: he);
 
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          scrollable: true,
+          title: const Text('Edit history entry'),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(16),
+            ),
+          ),
+          content: Builder(
+            builder: (context) {
+              var width = MediaQuery.of(context).size.width;
+
+              return SizedBox(
+                width: width - 128, //TODO: Responsive layout (Fullscrenn diag on phones, restrained width on Desktop)
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: form,
+                ),
+              );
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                if(!formKey.currentState!.validate()) return;
+
+                Navigator.of(context).pop();
+                List<dynamic> ret = await DataService.editHistoryEntry(widget.uid, form.model);
+                List<String> unlocks = ret.isNotEmpty ? ret[1] : [];
+                update();
+
+                Widget? unlockedDialog = widget.createUnlockedDialog(unlocks: unlocks, inverted: ret.isNotEmpty ? ret[0] : false);
+                if(unlockedDialog != null)
+                {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return unlockedDialog;
+                    },
+                  );
+                }
+              },
+              child: const Text("Save"),
+            )
+          ],
+        );
+      }
+    );
   }
 
   void deleteHistoryEntry(HistoryEntry he)
@@ -51,8 +112,19 @@ class HistoryFragmentState extends State<HistoryFragment>
                 SnackBar sb = SnackBar(content: Text("Deleted Entry ${he.getFormattedDesc()}"));
                 ScaffoldMessenger.of(context).showSnackBar(sb);
 
-                await DataService.deleteHistoryEntry(widget.uid, he);
+                List<String> unlocks = await DataService.deleteHistoryEntry(widget.uid, he);
                 update();
+
+                Widget? unlockedDialog = widget.createUnlockedDialog(unlocks: unlocks, inverted: true);
+                if(unlockedDialog != null)
+                {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return unlockedDialog;
+                    },
+                  );
+                }
               },
             ),
           ],

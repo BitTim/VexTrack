@@ -10,6 +10,8 @@ import 'package:vextrack/Services/data.dart';
 class HistoryEntryForm extends StatefulWidget
 {
   final GlobalKey<FormState> formKey;
+  final HistoryEntry? initEntry;
+
   final HistoryEntry model = HistoryEntry(
     const Uuid().v4(),
     "",
@@ -24,15 +26,17 @@ class HistoryEntryForm extends StatefulWidget
 
   HistoryEntryForm({
     super.key,
-    required this.formKey
+    required this.formKey,
+    this.initEntry,
   });
 
   @override
-  State<HistoryEntryForm> createState() => _HistoryEntryFormState();
+  State<HistoryEntryForm> createState() => HistoryEntryFormState();
 }
 
-class _HistoryEntryFormState extends State<HistoryEntryForm>
+class HistoryEntryFormState extends State<HistoryEntryForm>
 {
+  String modelUUID = const Uuid().v4();
   String selectedModeID = DataService.modes.keys.last;
   String selectedMapID = DataService.maps.keys.first;
   String surrender = "none";
@@ -55,6 +59,21 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
   void initState()
   {
     super.initState();
+
+    if(widget.initEntry != null)
+    {
+      initValues(
+        widget.initEntry!.uuid,
+        widget.initEntry!.mode,
+        widget.initEntry!.desc,
+        widget.initEntry!.score,
+        widget.initEntry!.enemyScore,
+        widget.initEntry!.map,
+        widget.initEntry!.xp,
+        widget.initEntry!.getDateTime().toString(),
+      );
+    }
+
     updateModel();
 
     scoreController.addListener(updateModel);
@@ -63,6 +82,20 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
     descController.addListener(updateModel);
 
     setTimeDisplayText();
+  }
+  
+  void initValues(String uuid, String modeID, String desc, int score, int enemyScore, String mapID, int xp, String time)
+  {
+    setState(() {
+      modelUUID = uuid;
+      selectedModeID = modeID;
+      descController.text = desc;
+      scoreController.text = score.toString();
+      enemyScoreController.text = enemyScore.toString();
+      selectedMapID = mapID;
+      xpController.text = xp.toString();
+      timeString = time;
+    });
   }
 
   void updateModel()
@@ -73,6 +106,7 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
 
     Timestamp time = Timestamp.fromDate(DateTime.tryParse(timeString) ?? DateTime.fromMillisecondsSinceEpoch(0));
     
+    if (modelUUID != widget.model.uuid) setState(() {widget.model.uuid = modelUUID;});
     if (selectedMapID != widget.model.map) setState(() {widget.model.map = selectedMapID;});
     if (selectedModeID != widget.model.mode) setState(() {widget.model.mode = selectedModeID;});
     if (xp != widget.model.xp) setState(() {widget.model.xp = xp;});
@@ -458,7 +492,7 @@ class _HistoryEntryFormState extends State<HistoryEntryForm>
             padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
             child: Text("Preview"),
           ),
-          HistoryEntryWidget(model: widget.model),
+          HistoryEntryWidget(model: widget.model, showOptions: false),
         ],
       ),
     );

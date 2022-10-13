@@ -120,7 +120,7 @@ class Season
     offset += SettingsService.bufferDays;
 
     int remaining = getTotal() - getXPSum();
-    if(getRemainingDays() + offset < SettingsService.bufferDays) return remaining;
+    if(getRemainingDays() - offset < SettingsService.bufferDays) return remaining;
     return (remaining / (getRemainingDays() - offset)).round();
   }
 
@@ -130,7 +130,7 @@ class Season
     offset += SettingsService.bufferDays;
 
     int remaining = (getTotal() + getEpilogueTotal()) - getXPSum();
-    if(getRemainingDays() + offset < SettingsService.bufferDays) return remaining;
+    if(getRemainingDays() - offset < SettingsService.bufferDays) return remaining;
     return (remaining / (getRemainingDays() - offset)).round();
   }
 

@@ -10,9 +10,15 @@ class HistoryEntryWidget extends StatefulWidget
   const HistoryEntryWidget({
     Key? key,
     required this.model,
+    this.showOptions = true,
+    this.editHistoryEntry,
+    this.deleteHistoryEntry,
   }) : super(key: key);
 
   final HistoryEntry model;
+  final bool showOptions;
+  final Function(HistoryEntry)? editHistoryEntry;
+  final Function(HistoryEntry)? deleteHistoryEntry;
 
   @override
   HistoryEntryWidgetState createState() => HistoryEntryWidgetState();
@@ -157,6 +163,41 @@ class HistoryEntryWidgetState extends State<HistoryEntryWidget>
                             ],
                           ),
                         ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                            child: PopupMenuButton(
+                              icon: const Icon(
+                                Icons.more_vert,
+                                color: Colors.white,
+                              ),
+                              onSelected: (value) {
+                                if(value == 'edit') {
+                                  if(widget.editHistoryEntry != null) widget.editHistoryEntry!(widget.model);
+                                }
+                                else if(value == 'delete') {
+                                  if(widget.deleteHistoryEntry != null) widget.deleteHistoryEntry!(widget.model);
+                                }
+                              },
+                              itemBuilder: (BuildContext context) => [
+                                const PopupMenuItem(
+                                  value: 'edit',
+                                  child: Text('Edit'),
+                                  ),
+                                PopupMenuItem(
+                                  value: 'delete',
+                                  child: Text(
+                                    'Delete',
+                                    style: GoogleFonts.titilliumWeb(
+                                      color: AppColors.loss[0],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
                       ]
                     ),
                   ),

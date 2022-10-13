@@ -145,6 +145,24 @@ class Contract
     return null;
   }
 
+  Goal? getLastCompletedUnlock()
+  {
+    Goal? lastCompleted;
+
+    for(Goal g in goals)
+    {
+      if(g.xp >= g.total)
+      {
+        lastCompleted = g;
+        continue;
+      }
+
+      return lastCompleted;
+    }
+
+    return null;
+  }
+
   Future<int> getCompleteDateDays() async
   {
     SeasonMeta? activeMeta = await DataService.getActiveSeasonMeta(uid);
@@ -269,6 +287,32 @@ class Contract
     }
 
     active.xp += xp;
+    return unlocks;
+  }
+
+  List<String> removeXP(int xp, List<String> unlocks)
+  {
+    Goal? active = getNextUnlock();
+    if(active == null) return unlocks;
+
+    if(active.getXP() == 0)
+    {
+      Goal? lastCompleted = getLastCompletedUnlock();
+      if(lastCompleted == null) return unlocks;
+      active = lastCompleted;
+    }
+
+    if(active.getXP() <= xp)
+    {
+      xp -= active.getXP();
+      active.xp = 0;
+      unlocks.addAll(active.rewards);
+
+      removeXP(xp, unlocks);
+      return unlocks;
+    }
+
+    active.xp -= xp;
     return unlocks;
   }
 }

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:vextrack/Fragments/Forms/History/history_entry.dart';
 import 'package:vextrack/Fragments/Home/contracts.dart';
@@ -25,9 +26,9 @@ class _HomeState extends State<Home>
     keys.add(GlobalKey<ContractsFragmentState>());
     keys.add(GlobalKey<HistoryFragmentState>());
 
-    fragments.add(HomeFragment(key: keys[0], uid: widget.uid));
-    fragments.add(ContractsFragment(key: keys[1], uid: widget.uid));
-    fragments.add(HistoryFragment(key: keys[2], uid: widget.uid, createUnlockedDialog: createUnlockedDialog));
+    fragments.add(HomeFragment(key: keys[0], uid: widget.user.uid));
+    fragments.add(ContractsFragment(key: keys[1], uid: widget.user.uid));
+    fragments.add(HistoryFragment(key: keys[2], uid: widget.user.uid, createUnlockedDialog: createUnlockedDialog));
 
     super.initState();
   }
@@ -128,7 +129,7 @@ class _HomeState extends State<Home>
             if(!historyFormKey.currentState!.validate()) return;
 
             Navigator.of(context).pop();
-            List<String> unlocks = await DataService.addHistoryEntry(widget.uid, form.model);
+            List<String> unlocks = await DataService.addHistoryEntry(widget.user.uid, form.model);
             keys.elementAt(_currentPage).currentState!.update();
 
             Widget? unlockedDialog = createUnlockedDialog(unlocks: unlocks);
@@ -236,10 +237,10 @@ class _HomeState extends State<Home>
 
 class Home extends StatefulWidget
 {
-  final String uid;
+  final User user;
   final Function(int) notifyParent;
 
-	const Home({Key? key, required this.uid, required this.notifyParent}) : super(key: key);
+	const Home({Key? key, required this.user, required this.notifyParent}) : super(key: key);
 
 	@override
 	State createState()

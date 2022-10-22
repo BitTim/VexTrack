@@ -59,6 +59,12 @@ class DataService
     _loading = false;
   }
 
+  static Future<UserData> getUserData(String uid) async
+  {
+    if(userData == null && !_loading) await fetchUserData(uid);
+    return DataService.userData!;
+  }
+
   static Future<List<Season>> getAllSeasons({required String uid, bool activeOnly = false}) async {
     if(userData == null) await fetchUserData(uid);
 
@@ -180,8 +186,7 @@ class DataService
 
   static Future<SeasonMeta?> getActiveSeasonMeta(String uid) async
   {
-    if(userData == null && !_loading) await fetchUserData(uid);
-    for(String id in userData!.seasonIDs.keys)
+    for(String id in (await getUserData(uid)).seasonIDs.keys)
     {
       if(userData!.seasonIDs[id]!.active == false) continue;
       return seasonMetas[id];
@@ -275,7 +280,6 @@ class DataService
 
   static Future<Contract> getContract(String uid, String id) async {
     if (contracts[id] != null) return contracts[id]!;
-    if(userData == null && !_loading) await fetchUserData(uid);
     await Util.waitWhile(() => _loading);
 
     _loading = true;
@@ -284,7 +288,7 @@ class DataService
       .doc(id)
       .get();
 
-    Contract contract = Contract.fromDoc(loadedContract, uid, userData!.contractIDs[id]!.paused);
+    Contract contract = Contract.fromDoc(loadedContract, uid, (await getUserData(uid)).contractIDs[id]!.paused);
     QuerySnapshot loadedGoals = await usersRef.doc(uid)
       .collection("contracts")
       .doc(id)
@@ -298,12 +302,12 @@ class DataService
   }
 
   static Future<List<Contract>> getAllContracts({required String uid, bool incompleteOnly = false}) async {
-    if(userData == null && !_loading) await fetchUserData(uid);
+    UserData ud = await getUserData(uid);
     List<Contract> loadedContrcats = [];
 
-    for(String id in userData!.contractIDs.keys)
+    for(String id in ud.contractIDs.keys)
     {
-      bool completed = userData!.contractIDs[id]!.completed;
+      bool completed = ud.contractIDs[id]!.completed;
       if(incompleteOnly && completed) continue;
 
       loadedContrcats.add(await getContract(uid, id));
@@ -385,9 +389,10 @@ class DataService
 
     if(c.isPaused() == paused && c.isCompleted() == completed) return;
 
-    if(userData == null && !_loading) await fetchUserData(uid); 
-    userData!.contractIDs[id] = ContractActivityMeta(completed: completed, paused: paused);
-    usersRef.doc(uid).update(userData!.toMap());
+    UserData ud = await getUserData(uid);
+    ud.contractIDs[id] = ContractActivityMeta(completed: completed, paused: paused);
+    usersRef.doc(uid).update(ud.toMap());
+    userData = ud;
   }
 
   static Future<List<String>> addHistoryEntry(String uid, HistoryEntry he) async

@@ -43,8 +43,8 @@ class _ScreenManagerState extends State<ScreenManager>
         if (snapshot.hasData) {
           if(_currentScreen == Screens.auth.index) _currentScreen = Screens.home.index; // Set current screen to home when user is logged in
 
-          if(_currentScreen == Screens.settings.index) return Settings(uid: snapshot.data!.uid, notifyParent: changeScreen);
-          return Home(uid: snapshot.data!.uid, notifyParent: changeScreen); 
+          if(_currentScreen == Screens.settings.index) return Settings(user: snapshot.data!, notifyParent: changeScreen);
+          return Home(user: snapshot.data!, notifyParent: changeScreen); 
         }
         else
         {

@@ -7,8 +7,7 @@ import 'package:vextrack/Models/Seasons/season.dart';
 import 'package:vextrack/Models/Seasons/season_meta.dart';
 import 'package:vextrack/Services/settings.dart';
 
-class Performance
-{
+class Performance {
   int duration;
   int total;
   int epilogueTotal;
@@ -38,8 +37,8 @@ class Performance
     required this.epilogue,
   });
 
-  static Performance fromSeason(Season season, bool cumulativeInit, bool epilogueInit)
-  {
+  static Performance fromSeason(
+      Season season, bool cumulativeInit, bool epilogueInit) {
     return Performance(
       duration: season.meta.getDuration().inDays,
       total: season.getTotal(),
@@ -56,47 +55,41 @@ class Performance
     );
   }
 
-
-
   // --------------------------------
   // Chart data
   // --------------------------------
 
-  List<Point> getIdeal()
-  {
-    int effectiveDuration = duration - SettingsService.bufferDays;
+  List<Point> getIdeal() {
+    int effectiveDuration =
+        duration - SettingsService.getSettingsData().bufferDays.toInt();
     int localTotal = epilogue ? epilogueTotal : total;
     double dailyXP = localTotal / effectiveDuration;
 
     List<Point> points = [];
     int cumulativeSum = 0;
 
-    for (int i = 0; i < duration; i++)
-    {
+    for (int i = 0; i < duration; i++) {
       int amount = 0;
-      if(cumulative) points.add(Point(i, cumulativeSum));
+      if (cumulative) points.add(Point(i, cumulativeSum));
 
-      if (i < effectiveDuration)
-      {
+      if (i < effectiveDuration) {
         amount = dailyXP.ceil();
         cumulativeSum += amount;
         if (cumulativeSum > localTotal) cumulativeSum = localTotal;
       }
 
-      if(!cumulative) points.add(Point(i, amount));
+      if (!cumulative) points.add(Point(i, amount));
     }
 
     return points;
   }
 
-  List<Point> getUserXP()
-  {
+  List<Point> getUserXP() {
     List<Point> points = [];
     List<int> dailyXP = HistoryCalc.getXPPerDay(history, meta);
     double cumulativeSum = 0;
 
-    for (int i = 0; i < dailyXP.length; i++)
-    {
+    for (int i = 0; i < dailyXP.length; i++) {
       double amount = dailyXP[i].toDouble();
       cumulativeSum += amount;
       points.add(Point(i, cumulative ? cumulativeSum : amount));
@@ -105,8 +98,7 @@ class Performance
     return points;
   }
 
-  List<Point> getUserAverage()
-  {
+  List<Point> getUserAverage() {
     List<Point> points = [];
     int localTotal = epilogue ? epilogueTotal : total;
     int cumulativeSum = 0;
@@ -114,13 +106,11 @@ class Performance
     int limit = localTotal > activeXP ? localTotal : activeXP;
     bool firstOver = true;
 
-    for (int i = 0; i < duration; i++)
-    {
+    for (int i = 0; i < duration; i++) {
       points.add(Point(i, cumulative ? cumulativeSum : avgDailyXP));
 
       cumulativeSum += avgDailyXP;
-      if(cumulativeSum > limit)
-      {
+      if (cumulativeSum > limit) {
         if (!firstOver) break;
         firstOver = false;
       }
@@ -129,8 +119,7 @@ class Performance
     return points;
   }
 
-  List<Point> getUserIdeal()
-  {
+  List<Point> getUserIdeal() {
     List<Point> points = [];
     List<int> dailyXP = HistoryCalc.getXPPerDay(history, meta);
     int localUserIdeal = epilogue ? userEpilogueIdeal : userIdeal;
@@ -138,18 +127,15 @@ class Performance
     int cumulativeSum = 0;
     bool firstOver = true;
 
-    for(int i = 0; i <= activeDay - 1; i++)
-    {
+    for (int i = 0; i <= activeDay - 1; i++) {
       cumulativeSum += dailyXP[i];
     }
 
-    for (int i = activeDay - 1; i < duration; i++)
-    {
+    for (int i = activeDay - 1; i < duration; i++) {
       points.add(Point(i, cumulative ? cumulativeSum : localUserIdeal));
       cumulativeSum += localUserIdeal;
-      if((cumulativeSum / 100).round() >= (localTotal / 100).round()) 
-      {
-        if(!firstOver) break;
+      if ((cumulativeSum / 100).round() >= (localTotal / 100).round()) {
+        if (!firstOver) break;
         firstOver = false;
       }
     }
@@ -157,27 +143,19 @@ class Performance
     return points;
   }
 
-
-
-
   // --------------------------------
   // Util
   // --------------------------------
 
-  static List<FlSpot> mapPointToSpot(List<Point> points)
-  {
+  static List<FlSpot> mapPointToSpot(List<Point> points) {
     return points.map((e) => FlSpot(e.x.toDouble(), e.y.toDouble())).toList();
   }
 
-  int getMaxChartXP()
-  {
-    if (cumulative)
-    {
+  int getMaxChartXP() {
+    if (cumulative) {
       if (total > activeXP) return total;
       return activeXP;
-    }
-    else
-    {
+    } else {
       int maxXP = getUserXP().map((e) => e.y).reduce(max).toInt();
       int maxIdeal = getIdeal()[0].y.toInt();
       if (maxIdeal > maxXP) return maxIdeal;

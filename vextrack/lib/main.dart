@@ -10,28 +10,26 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-	runApp(const MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-	const MyApp({Key? key}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
-	// This widget is the root of your application.
-	@override
-	Widget build(BuildContext context) {
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
     return DynamicColorBuilder(
-      builder: (ColorScheme? lightColorScheme, ColorScheme? darkColorScheme)
-      {
-        AppThemes.setThemes(lightColorScheme, darkColorScheme);
+        builder: (ColorScheme? lightColorScheme, ColorScheme? darkColorScheme) {
+      AppThemes.setThemes(lightColorScheme, darkColorScheme);
 
-        return MaterialApp(
-          title: 'VexTrack',
-          debugShowCheckedModeBanner: false,
-          theme: AppThemes.getTheme(forceLightMode: true),
-          darkTheme: AppThemes.getTheme(forceDarkMode: true),
-          home: const ScreenManager(),
-        );
-      }
-    );
-	}
+      return MaterialApp(
+        title: 'VexTrack',
+        debugShowCheckedModeBanner: false,
+        theme: AppThemes.getTheme(forceLightMode: true),
+        darkTheme: AppThemes.getTheme(forceDarkMode: true),
+        home: const ScreenManager(),
+      );
+    });
+  }
 }

@@ -5,6 +5,7 @@ import 'package:vextrack/Models/settings_data.dart';
 import 'package:vextrack/Models/user_data.dart';
 import 'package:vextrack/Services/data.dart';
 import 'package:vextrack/Services/settings.dart';
+import 'package:vextrack/Constants/colors.dart';
 import 'package:vextrack/screen_manager.dart';
 
 class _SettingsState extends State<Settings> {
@@ -12,271 +13,303 @@ class _SettingsState extends State<Settings> {
   late SettingsData sd;
   late List<bool> selectedTheme;
 
-  _SettingsState(Function(int) notifyParent)
-  {
+  _SettingsState(Function(int) notifyParent) {
     _notifyParent = notifyParent;
   }
 
   @override
-  void initState()
-  {
-    sd = SettingsService.getSettingsData(widget.user.uid);
-    selectedTheme = [ sd.theme == "auto", sd.theme == "light", sd.theme == "dark" ];
+  void initState() {
+    init();
+    sd = SettingsService.getSettingsData();
+    selectedTheme = [
+      sd.theme == "auto",
+      sd.theme == "light",
+      sd.theme == "dark"
+    ];
 
     super.initState();
+  }
+
+  void init() async {
+    await SettingsService.fetchSettingsData();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            _notifyParent(Screens.home.index);
+            SettingsService.syncSettingsData();
+          },
+        ),
         title: const Text('Settings'),
         actions: [
           IconButton(
-            onPressed: () {
-              _notifyParent(Screens.home.index);
-            },
-            icon: const Icon(Icons.check)
-          ),
+              onPressed: () {
+                // TODO: Add about popup
+              },
+              icon: const Icon(Icons.info_outline)),
         ],
       ),
-
       body: Padding(
         padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
         child: SingleChildScrollView(
           child: FutureBuilder(
-            future: DataService.getUserData(widget.user.uid),
-            builder: (context, snapshot) {
-              if(snapshot.hasData == false) return const SizedBox.shrink();
-              UserData ud = snapshot.data as UserData;
+              future: DataService.getUserData(widget.user.uid),
+              builder: (context, snapshot) {
+                if (snapshot.hasData == false) return const SizedBox.shrink();
+                UserData ud = snapshot.data as UserData;
 
-              return Column(
-                children: [
-                  // PROFILE_START
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 32),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              "Profile",
-                              style: GoogleFonts.titilliumWeb(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w700,
-                              ),
+                return Column(
+                  children: [
+                    // PROFILE_START
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 32),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                            child: Row(
+                              children: [
+                                Text(
+                                  "Profile",
+                                  style: GoogleFonts.titilliumWeb(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
-                          child: AspectRatio(
+                          ),
+                          AspectRatio(
                             aspectRatio: 4 / 1,
                             child: Row(
                               children: [
                                 Flexible(
-                                  flex: 1,
-                                  child: AspectRatio(
-                                    aspectRatio: 1 / 1,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        color: Colors.red, // TODO: Replace with image
-                                      ),
-                                    ),
-                                  )
-                                ),
-                                Flexible(
-                                  flex: 3,
-                                  child: Padding(
-                                    padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.max,
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Column(
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  ud.name,
-                                                  style: GoogleFonts.titilliumWeb(
-                                                    fontSize: 32,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  widget.user.email ?? "",
-                                                  style: GoogleFonts.titilliumWeb(
-                                                    color: Theme.of(context).colorScheme.outline,
-                                                  )
-                                                ),
-                                              ],
-                                            ),
-                                          ],
+                                    flex: 1,
+                                    child: AspectRatio(
+                                      aspectRatio: 1 / 1,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          color: Colors
+                                              .red, // TODO: Replace with image
                                         ),
-                                        Row(
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
-                                              child: ElevatedButton(
-                                                onPressed: () {},
-                                                child: const Text("Edit"),
+                                      ),
+                                    )),
+                                Flexible(
+                                    flex: 3,
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          16, 0, 0, 0),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.max,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Column(
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    ud.name,
+                                                    style: GoogleFonts
+                                                        .titilliumWeb(
+                                                      fontSize: 32,
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
-                                              child: ElevatedButton(
-                                                onPressed: () {},
-                                                child: const Text("Change Password"),
+                                              Row(
+                                                children: [
+                                                  Text(widget.user.email ?? "",
+                                                      style: GoogleFonts
+                                                          .titilliumWeb(
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .outline,
+                                                      )),
+                                                ],
                                               ),
-                                            ),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  )
-                                )
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        0, 0, 4, 0),
+                                                child: ElevatedButton(
+                                                  onPressed: () {
+                                                    //TODO: Implement edit function for profile
+                                                  },
+                                                  child: const Text("Edit"),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        4, 0, 0, 0),
+                                                child: ElevatedButton(
+                                                  onPressed: () {
+                                                    //TODO: Implement password change
+                                                  },
+                                                  child: const Text(
+                                                      "Change Password"),
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ))
                               ],
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
 
-                  // PROFILE_END
-                  // GENERAL_START
+                    // PROFILE_END
+                    // GENERAL_START
 
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 32),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              "General",
-                              style: GoogleFonts.titilliumWeb(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w700,
-                              ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 32),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                            child: Row(
+                              children: [
+                                Text(
+                                  "General",
+                                  style: GoogleFonts.titilliumWeb(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
-                          child: Column(
+                          ),
+                          Column(
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Text("Buffer Days"),
-                                  Text("${sd.bufferDays}"),
+                                  Expanded(
+                                    child: Slider(
+                                      label: "${sd.bufferDays}",
+                                      value: sd.bufferDays,
+                                      max: 14,
+                                      divisions: 14,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          sd.bufferDays = value;
+                                          SettingsService.updateSettingsData(
+                                              sd);
+                                        });
+                                      },
+                                    ),
+                                  ),
                                 ],
                               ),
-                              Slider(
-                                value: sd.bufferDays,
-                                max: 14,
-                                divisions: 14,
-                                onChanged: (value) {
-                                  setState(() {
-                                    sd.bufferDays = value;
-                                  });
-                                },
-                              )
                             ],
                           ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text("Ignore inactive days"),
-                            Switch(
-                              value: sd.ignoreInactiveDays,
-                              onChanged: (value) {
-                                setState(() {
-                                  sd.ignoreInactiveDays = value;
-                                });
-                              }
-                            )
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text("Ignore init"),
-                            Switch(
-                              value: sd.ingoreInit,
-                              onChanged: (value) {
-                                setState(() {
-                                  sd.ingoreInit = value;
-                                });
-                              }
-                            )
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text("Single season history"),
-                            Switch(
-                              value: sd.singleSeasonHistory,
-                              onChanged: (value) {
-                                setState(() {
-                                  sd.singleSeasonHistory = value;
-                                });
-                              }
-                            )
-                          ],
-                        ),
-                      ],
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text("Ignore inactive days"),
+                              Switch(
+                                  value: sd.ignoreInactiveDays,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      sd.ignoreInactiveDays = value;
+                                      SettingsService.updateSettingsData(sd);
+                                    });
+                                  })
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text("Ignore init"),
+                              Switch(
+                                  value: sd.ignoreInit,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      sd.ignoreInit = value;
+                                      SettingsService.updateSettingsData(sd);
+                                    });
+                                  })
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text("Single season history"),
+                              Switch(
+                                  value: sd.singleSeasonHistory,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      sd.singleSeasonHistory = value;
+                                      SettingsService.updateSettingsData(sd);
+                                    });
+                                  })
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
 
-                  // GENERAL_END
-                  // APPEARANCE_START
+                    // GENERAL_END
+                    // APPEARANCE_START
 
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 32),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              "Appearance",
-                              style: GoogleFonts.titilliumWeb(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w700,
-                              ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 32),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                            child: Row(
+                              children: [
+                                Text(
+                                  "Appearance",
+                                  style: GoogleFonts.titilliumWeb(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
-                          child: Row(
+                          ),
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               const Text("Theme"),
                               ToggleButtons(
                                 onPressed: (int index) {
                                   setState(() {
-                                    for (int i = 0; i < selectedTheme.length; i++) {
+                                    for (int i = 0;
+                                        i < selectedTheme.length;
+                                        i++) {
                                       selectedTheme[i] = i == index;
                                     }
 
-                                    if(index == 0) sd.theme = "auto";
-                                    if(index == 1) sd.theme = "light";
-                                    if(index == 2) sd.theme = "dark";
+                                    if (index == 0) sd.theme = "auto";
+                                    if (index == 1) sd.theme = "light";
+                                    if (index == 2) sd.theme = "dark";
+
+                                    SettingsService.updateSettingsData(sd);
                                   });
                                 },
-                                borderRadius: const BorderRadius.all(Radius.circular(8)),
-                                // selectedBorderColor: theme.colorScheme.outline,
-                                // selectedColor: theme.colorScheme.onPrimaryContainer,
-                                // fillColor: theme.colorScheme.primaryContainer,
-                                // color: theme.colorScheme.onSurface,
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(8)),
                                 constraints: const BoxConstraints(
                                   minHeight: 40.0,
                                   minWidth: 40.0,
@@ -290,60 +323,228 @@ class _SettingsState extends State<Settings> {
                               ),
                             ],
                           ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text("Ignore init"),
-                            Switch(
-                              value: sd.ingoreInit,
-                              onChanged: (value) {
-                                setState(() {
-                                  sd.ingoreInit = value;
-                                });
-                              }
-                            )
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text("Single season history"),
-                            Switch(
-                              value: sd.singleSeasonHistory,
-                              onChanged: (value) {
-                                setState(() {
-                                  sd.singleSeasonHistory = value;
-                                });
-                              }
-                            )
-                          ],
-                        ),
-                      ],
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text("Override system color"),
+                              Switch(
+                                  value: sd.overrideSysColor,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      sd.overrideSysColor = value;
+                                      SettingsService.updateSettingsData(sd);
+                                    });
+                                  })
+                            ],
+                          ),
+                          Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text("Accent color"),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Radio(
+                                        value: AppColors.defaultAccent,
+                                        groupValue: sd.accentColor,
+                                        fillColor:
+                                            MaterialStateColor.resolveWith(
+                                                (states) =>
+                                                    AppColors.defaultAccent),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            sd.accentColor =
+                                                AppColors.defaultAccent;
+                                            SettingsService.updateSettingsData(
+                                                sd);
+                                          });
+                                        },
+                                      ),
+                                      Radio(
+                                        value: AppColors.accent1,
+                                        groupValue: sd.accentColor,
+                                        fillColor:
+                                            MaterialStateColor.resolveWith(
+                                                (states) => AppColors.accent1),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            sd.accentColor = AppColors.accent1;
+                                            SettingsService.updateSettingsData(
+                                                sd);
+                                          });
+                                        },
+                                      ),
+                                      Radio(
+                                        value: AppColors.accent2,
+                                        groupValue: sd.accentColor,
+                                        fillColor:
+                                            MaterialStateColor.resolveWith(
+                                                (states) => AppColors.accent2),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            sd.accentColor = AppColors.accent2;
+                                            SettingsService.updateSettingsData(
+                                                sd);
+                                          });
+                                        },
+                                      ),
+                                      Radio(
+                                        value: AppColors.accent3,
+                                        groupValue: sd.accentColor,
+                                        fillColor:
+                                            MaterialStateColor.resolveWith(
+                                                (states) => AppColors.accent3),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            sd.accentColor = AppColors.accent3;
+                                            SettingsService.updateSettingsData(
+                                                sd);
+                                          });
+                                        },
+                                      ),
+                                      Radio(
+                                        value: AppColors.accent4,
+                                        groupValue: sd.accentColor,
+                                        fillColor:
+                                            MaterialStateColor.resolveWith(
+                                                (states) => AppColors.accent4),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            sd.accentColor = AppColors.accent4;
+                                            SettingsService.updateSettingsData(
+                                                sd);
+                                          });
+                                        },
+                                      ),
+                                      Radio(
+                                        value: AppColors.accent5,
+                                        groupValue: sd.accentColor,
+                                        fillColor:
+                                            MaterialStateColor.resolveWith(
+                                                (states) => AppColors.accent5),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            sd.accentColor = AppColors.accent5;
+                                            SettingsService.updateSettingsData(
+                                                sd);
+                                          });
+                                        },
+                                      ),
+                                      Radio(
+                                        value: AppColors.accent6,
+                                        groupValue: sd.accentColor,
+                                        fillColor:
+                                            MaterialStateColor.resolveWith(
+                                                (states) => AppColors.accent6),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            sd.accentColor = AppColors.accent6;
+                                            SettingsService.updateSettingsData(
+                                                sd);
+                                          });
+                                        },
+                                      ),
+                                      Radio(
+                                        value: AppColors.accent7,
+                                        groupValue: sd.accentColor,
+                                        fillColor:
+                                            MaterialStateColor.resolveWith(
+                                                (states) => AppColors.accent7),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            sd.accentColor = AppColors.accent7;
+                                            SettingsService.updateSettingsData(
+                                                sd);
+                                          });
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
 
-                  // APPEARANCE_END
-                ],
-              );
-            }
-          ),
+                    // APPEARANCE_END
+                    // DANGERZONE_START
+
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 32),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                            child: Row(
+                              children: [
+                                Text(
+                                  "Danger Zone",
+                                  style: GoogleFonts.titilliumWeb(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 0, 4, 0),
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      //TODO: Implement account deletion
+                                    },
+                                    child: const Text("Delete Account"),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(4, 0, 0, 0),
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      // TODO: Implement data reset
+                                    },
+                                    child: const Text("Reset Data"),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // GENERAL_END
+                  ],
+                );
+              }),
         ),
       ),
     );
   }
 }
 
-class Settings extends StatefulWidget
-{
+class Settings extends StatefulWidget {
   final User user;
   final Function(int) notifyParent;
 
-  const Settings({Key? key, required this.user, required this.notifyParent}) : super(key: key);
+  const Settings({Key? key, required this.user, required this.notifyParent})
+      : super(key: key);
 
   @override
-  State createState()
-  {
+  State createState() {
     // ignore: no_logic_in_create_state
     return _SettingsState(notifyParent);
   }

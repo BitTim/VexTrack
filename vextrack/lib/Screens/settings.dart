@@ -31,7 +31,15 @@ class _SettingsState extends State<Settings> {
   }
 
   void init() async {
-    await SettingsService.fetchSettingsData();
+    await SettingsService.fetchSettingsData(null);
+  }
+
+  void updateTheme(Color accent) {
+    setState(() {
+      sd.accentColor = accent;
+      SettingsService.updateSettingsData(sd);
+      widget.onThemeChanged();
+    });
   }
 
   @override
@@ -306,6 +314,7 @@ class _SettingsState extends State<Settings> {
                                     if (index == 2) sd.theme = "dark";
 
                                     SettingsService.updateSettingsData(sd);
+                                    widget.onThemeChanged();
                                   });
                                 },
                                 borderRadius:
@@ -356,12 +365,7 @@ class _SettingsState extends State<Settings> {
                                                 (states) =>
                                                     AppColors.defaultAccent),
                                         onChanged: (value) {
-                                          setState(() {
-                                            sd.accentColor =
-                                                AppColors.defaultAccent;
-                                            SettingsService.updateSettingsData(
-                                                sd);
-                                          });
+                                          updateTheme(AppColors.defaultAccent);
                                         },
                                       ),
                                       Radio(
@@ -371,11 +375,7 @@ class _SettingsState extends State<Settings> {
                                             MaterialStateColor.resolveWith(
                                                 (states) => AppColors.accent1),
                                         onChanged: (value) {
-                                          setState(() {
-                                            sd.accentColor = AppColors.accent1;
-                                            SettingsService.updateSettingsData(
-                                                sd);
-                                          });
+                                          updateTheme(AppColors.accent1);
                                         },
                                       ),
                                       Radio(
@@ -385,11 +385,7 @@ class _SettingsState extends State<Settings> {
                                             MaterialStateColor.resolveWith(
                                                 (states) => AppColors.accent2),
                                         onChanged: (value) {
-                                          setState(() {
-                                            sd.accentColor = AppColors.accent2;
-                                            SettingsService.updateSettingsData(
-                                                sd);
-                                          });
+                                          updateTheme(AppColors.accent2);
                                         },
                                       ),
                                       Radio(
@@ -399,11 +395,7 @@ class _SettingsState extends State<Settings> {
                                             MaterialStateColor.resolveWith(
                                                 (states) => AppColors.accent3),
                                         onChanged: (value) {
-                                          setState(() {
-                                            sd.accentColor = AppColors.accent3;
-                                            SettingsService.updateSettingsData(
-                                                sd);
-                                          });
+                                          updateTheme(AppColors.accent3);
                                         },
                                       ),
                                       Radio(
@@ -413,11 +405,7 @@ class _SettingsState extends State<Settings> {
                                             MaterialStateColor.resolveWith(
                                                 (states) => AppColors.accent4),
                                         onChanged: (value) {
-                                          setState(() {
-                                            sd.accentColor = AppColors.accent4;
-                                            SettingsService.updateSettingsData(
-                                                sd);
-                                          });
+                                          updateTheme(AppColors.accent4);
                                         },
                                       ),
                                       Radio(
@@ -427,11 +415,7 @@ class _SettingsState extends State<Settings> {
                                             MaterialStateColor.resolveWith(
                                                 (states) => AppColors.accent5),
                                         onChanged: (value) {
-                                          setState(() {
-                                            sd.accentColor = AppColors.accent5;
-                                            SettingsService.updateSettingsData(
-                                                sd);
-                                          });
+                                          updateTheme(AppColors.accent5);
                                         },
                                       ),
                                       Radio(
@@ -441,11 +425,7 @@ class _SettingsState extends State<Settings> {
                                             MaterialStateColor.resolveWith(
                                                 (states) => AppColors.accent6),
                                         onChanged: (value) {
-                                          setState(() {
-                                            sd.accentColor = AppColors.accent6;
-                                            SettingsService.updateSettingsData(
-                                                sd);
-                                          });
+                                          updateTheme(AppColors.accent6);
                                         },
                                       ),
                                       Radio(
@@ -455,11 +435,7 @@ class _SettingsState extends State<Settings> {
                                             MaterialStateColor.resolveWith(
                                                 (states) => AppColors.accent7),
                                         onChanged: (value) {
-                                          setState(() {
-                                            sd.accentColor = AppColors.accent7;
-                                            SettingsService.updateSettingsData(
-                                                sd);
-                                          });
+                                          updateTheme(AppColors.accent7);
                                         },
                                       ),
                                     ],
@@ -539,8 +515,13 @@ class _SettingsState extends State<Settings> {
 class Settings extends StatefulWidget {
   final User user;
   final Function(int) notifyParent;
+  final Function() onThemeChanged;
 
-  const Settings({Key? key, required this.user, required this.notifyParent})
+  const Settings(
+      {Key? key,
+      required this.user,
+      required this.notifyParent,
+      required this.onThemeChanged})
       : super(key: key);
 
   @override

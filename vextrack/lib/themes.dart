@@ -11,6 +11,11 @@ class AppThemes {
     Brightness brightness = SchedulerBinding.instance.window.platformBrightness;
     bool darkMode = brightness == Brightness.dark;
 
+    if (SettingsService.getSettingsData().theme == "light") {
+      forceLightMode = true;
+    }
+    if (SettingsService.getSettingsData().theme == "dark") forceDarkMode = true;
+
     if (forceDarkMode) darkMode = true;
     if (forceLightMode) darkMode = false;
 

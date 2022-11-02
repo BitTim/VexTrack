@@ -5,47 +5,54 @@ import 'package:vextrack/Fragments/Home/contracts.dart';
 import 'package:vextrack/Fragments/Home/history.dart';
 import 'package:vextrack/Fragments/Home/home.dart';
 import 'package:vextrack/Services/data.dart';
+import 'package:vextrack/Services/settings.dart';
 import 'package:vextrack/screen_manager.dart';
 
 import '../Services/auth.dart';
 
-class _HomeState extends State<Home>
-{
+class _HomeState extends State<Home> {
   late Function(int) _notifyParent;
 
-	int _currentPage = 0;
+  int _currentPage = 0;
   List<Widget> fragments = [];
   List<dynamic> keys = [];
 
   GlobalKey<FormState> historyFormKey = GlobalKey<FormState>();
 
   @override
-  void initState()
-  {
+  void initState() {
+    init();
+
     keys.add(GlobalKey<HomeFragmentState>());
     keys.add(GlobalKey<ContractsFragmentState>());
     keys.add(GlobalKey<HistoryFragmentState>());
 
     fragments.add(HomeFragment(key: keys[0], uid: widget.user.uid));
     fragments.add(ContractsFragment(key: keys[1], uid: widget.user.uid));
-    fragments.add(HistoryFragment(key: keys[2], uid: widget.user.uid, createUnlockedDialog: createUnlockedDialog));
+    fragments.add(HistoryFragment(
+        key: keys[2],
+        uid: widget.user.uid,
+        createUnlockedDialog: createUnlockedDialog));
 
     super.initState();
   }
 
-  _HomeState(Function(int) notifyParent)
-  {
+  void init() async {
+    await SettingsService.fetchSettingsData(null);
+    widget.onThemeChange();
+  }
+
+  _HomeState(Function(int) notifyParent) {
     _notifyParent = notifyParent;
   }
 
-  Widget? createUnlockedDialog({required List<String> unlocks, bool inverted = false})
-  {
-    if(unlocks.isEmpty) return null;
+  Widget? createUnlockedDialog(
+      {required List<String> unlocks, bool inverted = false}) {
+    if (unlocks.isEmpty) return null;
 
     return AlertDialog(
       scrollable: true,
       title: const Text("Unlocks"),
-      
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
           Radius.circular(16),
@@ -56,25 +63,23 @@ class _HomeState extends State<Home>
           var width = MediaQuery.of(context).size.width;
 
           List<Widget> unlocksWidgets = [];
-          for(String s in unlocks)
-          {
+          for (String s in unlocks) {
             unlocksWidgets.add(Text("- $s"));
           }
 
           return SizedBox(
-            width: width - 128, //TODO: Responsive layout (Fullscrenn diag on phones, restrained width on Desktop)
+            width: width -
+                128, //TODO: Responsive layout (Fullscrenn diag on phones, restrained width on Desktop)
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  Column(
-                    children: [
-                      if(!inverted) const Text("You have unlocked:"),
-                      if(inverted) const Text("You no longer have unlocked:"),
-                      ...unlocksWidgets,
-                    ]
-                  ),
+                  Column(children: [
+                    if (!inverted) const Text("You have unlocked:"),
+                    if (inverted) const Text("You no longer have unlocked:"),
+                    ...unlocksWidgets,
+                  ]),
                 ],
               ),
             ),
@@ -92,8 +97,7 @@ class _HomeState extends State<Home>
     );
   }
 
-  Widget createHistoryDialog()
-  {
+  Widget createHistoryDialog() {
     HistoryEntryForm form = HistoryEntryForm(formKey: historyFormKey);
 
     return AlertDialog(
@@ -109,7 +113,8 @@ class _HomeState extends State<Home>
           var width = MediaQuery.of(context).size.width;
 
           return SizedBox(
-            width: width - 128, //TODO: Responsive layout (Fullscrenn diag on phones, restrained width on Desktop)
+            width: width -
+                128, //TODO: Responsive layout (Fullscrenn diag on phones, restrained width on Desktop)
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: form,
@@ -126,15 +131,15 @@ class _HomeState extends State<Home>
         ),
         ElevatedButton(
           onPressed: () async {
-            if(!historyFormKey.currentState!.validate()) return;
+            if (!historyFormKey.currentState!.validate()) return;
 
             Navigator.of(context).pop();
-            List<String> unlocks = await DataService.addHistoryEntry(widget.user.uid, form.model);
+            List<String> unlocks =
+                await DataService.addHistoryEntry(widget.user.uid, form.model);
             keys.elementAt(_currentPage).currentState!.update();
 
             Widget? unlockedDialog = createUnlockedDialog(unlocks: unlocks);
-            if(unlockedDialog != null)
-            {
+            if (unlockedDialog != null) {
               showDialog(
                 context: context,
                 builder: (context) {
@@ -149,32 +154,33 @@ class _HomeState extends State<Home>
     );
   }
 
-	@override
-	Widget build(BuildContext context) {
-		return Scaffold(
-			appBar: AppBar(
-				title: const Text('VexTrack'),
-				actions: [
-          if(_currentPage == 2) IconButton(
-            icon: const Icon(Icons.filter_list_alt),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return keys.elementAt(_currentPage).currentState!.createFilterDialog();
-                },
-              );
-            },
-          ),
-					PopupMenuButton(
-						icon: const Icon(Icons.account_circle),
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('VexTrack'),
+        actions: [
+          if (_currentPage == 2)
+            IconButton(
+              icon: const Icon(Icons.filter_list_alt),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return keys
+                        .elementAt(_currentPage)
+                        .currentState!
+                        .createFilterDialog();
+                  },
+                );
+              },
+            ),
+          PopupMenuButton(
+            icon: const Icon(Icons.account_circle),
             onSelected: (value) {
-              if(value == 'logout')
-              {
+              if (value == 'logout') {
                 AuthService.signOut();
-              }
-              else if(value == 'settings')
-              {
+              } else if (value == 'settings') {
                 _notifyParent(Screens.settings.index);
               }
             },
@@ -182,18 +188,16 @@ class _HomeState extends State<Home>
               const PopupMenuItem(
                 value: 'settings',
                 child: Text('Settings'),
-                ),
+              ),
               const PopupMenuItem(
                 value: 'logout',
                 child: Text('Logout'),
               ),
             ],
-					),
-				],
-			),
-
+          ),
+        ],
+      ),
       body: fragments[_currentPage],
-
       bottomNavigationBar: NavigationBar(
         labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         onDestinationSelected: onTabTapped,
@@ -213,7 +217,6 @@ class _HomeState extends State<Home>
           )
         ],
       ),
-
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showDialog(
@@ -226,26 +229,30 @@ class _HomeState extends State<Home>
         child: const Icon(Icons.add),
       ),
     );
-	}
+  }
 
-	void onTabTapped(int index) {
-   setState(() {
-     _currentPage = index;
-   });
- }
+  void onTabTapped(int index) {
+    setState(() {
+      _currentPage = index;
+    });
+  }
 }
 
-class Home extends StatefulWidget
-{
+class Home extends StatefulWidget {
   final User user;
   final Function(int) notifyParent;
+  final Function() onThemeChange;
 
-	const Home({Key? key, required this.user, required this.notifyParent}) : super(key: key);
+  const Home(
+      {Key? key,
+      required this.user,
+      required this.notifyParent,
+      required this.onThemeChange})
+      : super(key: key);
 
-	@override
-	State createState()
-	{
-		// ignore: no_logic_in_create_state
-		return _HomeState(notifyParent);
-	}
+  @override
+  State createState() {
+    // ignore: no_logic_in_create_state
+    return _HomeState(notifyParent);
+  }
 }

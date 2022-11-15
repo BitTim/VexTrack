@@ -7,8 +7,7 @@ import 'package:vextrack/Core/formatter.dart';
 import 'package:vextrack/Models/History/history_entry.dart';
 import 'package:vextrack/Services/data.dart';
 
-class HistoryEntryForm extends StatefulWidget
-{
+class HistoryEntryForm extends StatefulWidget {
   final GlobalKey<FormState> formKey;
   final HistoryEntry? initEntry;
 
@@ -34,8 +33,7 @@ class HistoryEntryForm extends StatefulWidget
   State<HistoryEntryForm> createState() => HistoryEntryFormState();
 }
 
-class HistoryEntryFormState extends State<HistoryEntryForm>
-{
+class HistoryEntryFormState extends State<HistoryEntryForm> {
   String modelUUID = const Uuid().v4();
   String selectedModeID = DataService.modes.keys.last;
   String selectedMapID = DataService.maps.keys.first;
@@ -48,20 +46,18 @@ class HistoryEntryFormState extends State<HistoryEntryForm>
   TextEditingController descController = TextEditingController();
   TextEditingController timeDisplayController = TextEditingController();
 
-  void setTimeDisplayText()
-  {
+  void setTimeDisplayText() {
     setState(() {
-      timeDisplayController.text = Formatter.formatDateTime(DateTime.parse(timeString));
+      timeDisplayController.text =
+          Formatter.formatDateTime(DateTime.parse(timeString));
     });
   }
 
   @override
-  void initState()
-  {
+  void initState() {
     super.initState();
 
-    if(widget.initEntry != null)
-    {
+    if (widget.initEntry != null) {
       initValues(
         widget.initEntry!.uuid,
         widget.initEntry!.mode,
@@ -83,9 +79,9 @@ class HistoryEntryFormState extends State<HistoryEntryForm>
 
     setTimeDisplayText();
   }
-  
-  void initValues(String uuid, String modeID, String desc, int score, int enemyScore, String mapID, int xp, String time)
-  {
+
+  void initValues(String uuid, String modeID, String desc, int score,
+      int enemyScore, String mapID, int xp, String time) {
     setState(() {
       modelUUID = uuid;
       selectedModeID = modeID;
@@ -98,39 +94,77 @@ class HistoryEntryFormState extends State<HistoryEntryForm>
     });
   }
 
-  void updateModel()
-  {
+  void updateModel() {
     int xp = int.tryParse(xpController.text) ?? 0;
     int score = int.tryParse(scoreController.text) ?? 0;
     int enemyScore = int.tryParse(enemyScoreController.text) ?? 0;
 
-    Timestamp time = Timestamp.fromDate(DateTime.tryParse(timeString) ?? DateTime.fromMillisecondsSinceEpoch(0));
-    
-    if (modelUUID != widget.model.uuid) setState(() {widget.model.uuid = modelUUID;});
-    if (selectedMapID != widget.model.map) setState(() {widget.model.map = selectedMapID;});
-    if (selectedModeID != widget.model.mode) setState(() {widget.model.mode = selectedModeID;});
-    if (xp != widget.model.xp) setState(() {widget.model.xp = xp;});
-    if (score != widget.model.score) setState(() {widget.model.score = score;});
-    if (enemyScore != widget.model.enemyScore) setState(() {widget.model.enemyScore = enemyScore;});
-    if (time != widget.model.time) setState(() {widget.model.time = time;});
-    if (surrender != widget.model.surrender) setState(() {widget.model.surrender = surrender;});
+    Timestamp time = Timestamp.fromDate(DateTime.tryParse(timeString) ??
+        DateTime.fromMillisecondsSinceEpoch(0));
+
+    if (modelUUID != widget.model.uuid)
+      setState(() {
+        widget.model.uuid = modelUUID;
+      });
+    if (selectedMapID != widget.model.map)
+      setState(() {
+        widget.model.map = selectedMapID;
+      });
+    if (selectedModeID != widget.model.mode)
+      setState(() {
+        widget.model.mode = selectedModeID;
+      });
+    if (xp != widget.model.xp)
+      setState(() {
+        widget.model.xp = xp;
+      });
+    if (score != widget.model.score)
+      setState(() {
+        widget.model.score = score;
+      });
+    if (enemyScore != widget.model.enemyScore)
+      setState(() {
+        widget.model.enemyScore = enemyScore;
+      });
+    if (time != widget.model.time)
+      setState(() {
+        widget.model.time = time;
+      });
+    if (surrender != widget.model.surrender)
+      setState(() {
+        widget.model.surrender = surrender;
+      });
 
     if (selectedModeID == "custom") {
-      if(descController.text != widget.model.desc) setState(() {widget.model.desc = descController.text;});
-      if(widget.model.score != 0) setState(() {widget.model.score = 0;});
-      if(widget.model.enemyScore != 0) setState(() {widget.model.enemyScore = 0;});
+      if (descController.text != widget.model.desc)
+        setState(() {
+          widget.model.desc = descController.text;
+        });
+      if (widget.model.score != 0)
+        setState(() {
+          widget.model.score = 0;
+        });
+      if (widget.model.enemyScore != 0)
+        setState(() {
+          widget.model.enemyScore = 0;
+        });
     } else {
-      if (widget.model.desc != "") setState(() {widget.model.desc = "";});
+      if (widget.model.desc != "")
+        setState(() {
+          widget.model.desc = "";
+        });
     }
 
-    if (!DataService.modes[selectedModeID]!.canSurrender && widget.model.surrender != "none") setState(() {widget.model.surrender = "none";});
+    if (!DataService.modes[selectedModeID]!.canSurrender &&
+        widget.model.surrender != "none")
+      setState(() {
+        widget.model.surrender = "none";
+      });
   }
 
-  List<DropdownMenuItem> createModeMenuItems()
-  {
+  List<DropdownMenuItem> createModeMenuItems() {
     List<DropdownMenuItem> items = [];
-    for(String modeID in DataService.modes.keys)
-    {
+    for (String modeID in DataService.modes.keys) {
       items.add(DropdownMenuItem(
         value: modeID,
         child: Text(DataService.modes[modeID]!.name),
@@ -139,11 +173,9 @@ class HistoryEntryFormState extends State<HistoryEntryForm>
     return items;
   }
 
-  List<DropdownMenuItem> createMapMenuItems()
-  {
+  List<DropdownMenuItem> createMapMenuItems() {
     List<DropdownMenuItem> items = [];
-    for(String mapID in DataService.maps.keys)
-    {
+    for (String mapID in DataService.maps.keys) {
       items.add(DropdownMenuItem(
         value: mapID,
         child: Text(DataService.maps[mapID]!.name),
@@ -152,12 +184,12 @@ class HistoryEntryFormState extends State<HistoryEntryForm>
     return items;
   }
 
-  Widget createSurrenderItems()
-  {
+  Widget createSurrenderItems() {
     return Wrap(
       spacing: 8,
       children: [
-        ChoiceChip(label: const Text("None"),
+        ChoiceChip(
+          label: const Text("None"),
           selected: surrender == "none" ? true : false,
           onSelected: (bool selected) {
             setState(() {
@@ -190,54 +222,60 @@ class HistoryEntryFormState extends State<HistoryEntryForm>
     );
   }
 
-  Widget showScoreWithCondition()
-  {
+  Widget showScoreWithCondition() {
     List<Widget> children = [];
     String scoreFormat = DataService.modes[selectedModeID]!.scoreFormat;
     int scoreLimit = DataService.modes[selectedModeID]!.scoreLimit;
 
-    if (scoreFormat == "none" || scoreFormat == "") return const SizedBox.shrink();
-    if (scoreFormat == "placement" || scoreFormat == "default")
-    {
+    if (scoreFormat == "none" || scoreFormat == "")
+      return const SizedBox.shrink();
+    if (scoreFormat == "placement" || scoreFormat == "default") {
       children.add(Expanded(
-        child: TextFormField( // Score
+        child: TextFormField(
+          // Score
           controller: scoreController,
           inputFormatters: [
             FilteringTextInputFormatter.digitsOnly,
             LengthLimitingTextInputFormatter(2),
           ],
           validator: (value) {
-            if(value == null || value.isEmpty || int.tryParse(value) == null) return "";
-            if(scoreLimit == -1) return null;
-            if(int.parse(value) > scoreLimit) return "";
+            if (value == null || value.isEmpty || int.tryParse(value) == null)
+              return "";
+            if (scoreLimit == -1) return null;
+            if (int.parse(value) > scoreLimit) return "";
             return null;
           },
           decoration: InputDecoration(
             border: const OutlineInputBorder(),
             errorStyle: const TextStyle(height: 0.01),
-            suffixText: (scoreFormat == "placement" && int.tryParse(scoreController.text) != null) ? widget.model.getPlacementSuffix(int.parse(scoreController.text)) : "",
+            suffixText: (scoreFormat == "placement" &&
+                    int.tryParse(scoreController.text) != null)
+                ? widget.model
+                    .getPlacementSuffix(int.parse(scoreController.text))
+                : "",
           ),
           keyboardType: TextInputType.number,
         ),
-      )); 
+      ));
     }
-    if (scoreFormat == "default")
-    {
+    if (scoreFormat == "default") {
       children.add(const Padding(
         padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
         child: Text("-"),
       ));
       children.add(Expanded(
-        child: TextFormField( // EnemyScore
+        child: TextFormField(
+          // EnemyScore
           controller: enemyScoreController,
           inputFormatters: [
             FilteringTextInputFormatter.digitsOnly,
             LengthLimitingTextInputFormatter(2),
           ],
           validator: (value) {
-            if(value == null || value.isEmpty || int.tryParse(value) == null) return "";
-            if(scoreLimit == -1) return null;
-            if(int.parse(value) > scoreLimit) return "";
+            if (value == null || value.isEmpty || int.tryParse(value) == null)
+              return "";
+            if (scoreLimit == -1) return null;
+            if (int.parse(value) > scoreLimit) return "";
             return null;
           },
           decoration: const InputDecoration(
@@ -271,12 +309,10 @@ class HistoryEntryFormState extends State<HistoryEntryForm>
     );
   }
 
-  List<Widget> showSurrenderWithCondition()
-  {
+  List<Widget> showSurrenderWithCondition() {
     List<Widget> widgets = [];
 
-    if(DataService.modes[selectedModeID]!.canSurrender)
-    {
+    if (DataService.modes[selectedModeID]!.canSurrender) {
       widgets.add(const Padding(
         padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
         child: Text("Surrender"),
@@ -287,12 +323,10 @@ class HistoryEntryFormState extends State<HistoryEntryForm>
     return widgets;
   }
 
-  List<Widget> showDescriptionWithCondition()
-  {
+  List<Widget> showDescriptionWithCondition() {
     List<Widget> widgets = [];
 
-    if(selectedModeID == "custom")
-    {
+    if (selectedModeID == "custom") {
       widgets.add(const Padding(
         padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
         child: Text("Description"),
@@ -303,7 +337,7 @@ class HistoryEntryFormState extends State<HistoryEntryForm>
           LengthLimitingTextInputFormatter(22),
         ],
         validator: (value) {
-          if(value == null || value.isEmpty) return "";
+          if (value == null || value.isEmpty) return "";
           return null;
         },
         decoration: const InputDecoration(
@@ -313,13 +347,14 @@ class HistoryEntryFormState extends State<HistoryEntryForm>
         keyboardType: TextInputType.text,
       ));
     }
-    
+
     return widgets;
   }
 
   @override
   Widget build(BuildContext context) {
     return Form(
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       key: widget.formKey,
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -351,14 +386,11 @@ class HistoryEntryFormState extends State<HistoryEntryForm>
                   ],
                 ),
               ),
-          
               showScoreWithCondition(),
             ],
           ),
-
           ...showSurrenderWithCondition(),
           ...showDescriptionWithCondition(),
-
           Row(
             children: [
               Expanded(
@@ -394,14 +426,17 @@ class HistoryEntryFormState extends State<HistoryEntryForm>
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       const Text("Amount"),
-                      TextFormField( // XP
+                      TextFormField(
+                        // XP
                         controller: xpController,
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly,
                           LengthLimitingTextInputFormatter(9),
                         ],
                         validator: (value) {
-                          if(value == null || value.isEmpty || int.tryParse(value) == null) return "";
+                          if (value == null ||
+                              value.isEmpty ||
+                              int.tryParse(value) == null) return "";
                           return null;
                         },
                         decoration: const InputDecoration(
@@ -417,7 +452,6 @@ class HistoryEntryFormState extends State<HistoryEntryForm>
               ),
             ],
           ),
-
           Row(
             mainAxisSize: MainAxisSize.max,
             children: [
@@ -441,7 +475,6 @@ class HistoryEntryFormState extends State<HistoryEntryForm>
                               ),
                             ),
                           ),
-                          
                           Expanded(
                             flex: 1,
                             child: Padding(
@@ -454,22 +487,31 @@ class HistoryEntryFormState extends State<HistoryEntryForm>
                                     context: context,
                                     //locale: const Locale('en', 'DE'),
                                     initialDate: DateTime.now(),
-                                    firstDate: DataService.seasonMetas.values.first.startDate.toDate(),
-                                    lastDate: DataService.seasonMetas.values.first.endDate.toDate().subtract(const Duration(days: 1)),
+                                    firstDate: DataService
+                                        .seasonMetas.values.first.startDate
+                                        .toDate(),
+                                    lastDate: DataService
+                                        .seasonMetas.values.first.endDate
+                                        .toDate()
+                                        .subtract(const Duration(days: 1)),
                                   );
 
-                                  if(pickedDate == null) return;
-                          
+                                  if (pickedDate == null) return;
+
                                   TimeOfDay? pickedTime = await showTimePicker(
-                                    context: context,
-                                    //locale: const Locale('en', 'DE'),
-                                    initialTime: TimeOfDay.now()
-                                  );
-                          
+                                      context: context,
+                                      //locale: const Locale('en', 'DE'),
+                                      initialTime: TimeOfDay.now());
+
                                   if (pickedTime == null) return;
 
-                                  DateTime picked = DateTime(pickedDate.year, pickedDate.month, pickedDate.day, pickedTime.hour, pickedTime.minute);
-                          
+                                  DateTime picked = DateTime(
+                                      pickedDate.year,
+                                      pickedDate.month,
+                                      pickedDate.day,
+                                      pickedTime.hour,
+                                      pickedTime.minute);
+
                                   setState(() {
                                     timeString = picked.toString();
                                     setTimeDisplayText();
@@ -487,7 +529,6 @@ class HistoryEntryFormState extends State<HistoryEntryForm>
               ),
             ],
           ),
-
           const Padding(
             padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
             child: Text("Preview"),

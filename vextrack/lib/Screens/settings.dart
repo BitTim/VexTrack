@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vextrack/Fragments/Forms/Settings/password_change.dart';
+import 'package:vextrack/Fragments/Forms/Settings/profile_edit.dart';
 import 'package:vextrack/Models/settings_data.dart';
 import 'package:vextrack/Models/user_data.dart';
 import 'package:vextrack/Services/data.dart';
@@ -12,6 +14,7 @@ class _SettingsState extends State<Settings> {
   late Function(int) _notifyParent;
   late SettingsData sd;
   late List<bool> selectedTheme;
+  bool profileImageHovered = false;
 
   _SettingsState(Function(int) notifyParent) {
     _notifyParent = notifyParent;
@@ -98,14 +101,47 @@ class _SettingsState extends State<Settings> {
                               children: [
                                 Flexible(
                                     flex: 1,
-                                    child: AspectRatio(
-                                      aspectRatio: 1 / 1,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          color: Colors
-                                              .red, // TODO: Replace with image
+                                    child: MouseRegion(
+                                      onEnter: (event) {
+                                        setState(
+                                            () => profileImageHovered = true);
+                                      },
+                                      onExit: (event) {
+                                        setState(
+                                            () => profileImageHovered = false);
+                                      },
+                                      child: IconButton(
+                                        onPressed: () {},
+                                        icon: AspectRatio(
+                                          aspectRatio: 1 / 1,
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              color: Colors
+                                                  .red, // TODO: Replace with image
+                                            ),
+                                            child: Visibility(
+                                              visible: profileImageHovered,
+                                              child: const Align(
+                                                alignment:
+                                                    Alignment.bottomRight,
+                                                child: Padding(
+                                                  padding: EdgeInsets.all(8.0),
+                                                  child: Icon(
+                                                    Icons.camera_alt,
+                                                    color: Colors.white,
+                                                    shadows: [
+                                                      Shadow(
+                                                          color:
+                                                              Color(0xcc000000),
+                                                          blurRadius: 8)
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     )),
@@ -153,7 +189,8 @@ class _SettingsState extends State<Settings> {
                                                         0, 0, 4, 0),
                                                 child: ElevatedButton(
                                                   onPressed: () {
-                                                    //TODO: Implement edit function for profile
+                                                    showEditProfileDialog(
+                                                        context);
                                                   },
                                                   child: const Text("Edit"),
                                                 ),
@@ -164,7 +201,8 @@ class _SettingsState extends State<Settings> {
                                                         4, 0, 0, 0),
                                                 child: ElevatedButton(
                                                   onPressed: () {
-                                                    //TODO: Implement password change
+                                                    showChangePasswordDialog(
+                                                        context);
                                                   },
                                                   child: const Text(
                                                       "Change Password"),
@@ -509,6 +547,94 @@ class _SettingsState extends State<Settings> {
         ),
       ),
     );
+  }
+
+  void showEditProfileDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            scrollable: false,
+            title: const Text('Edit profile'),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(16),
+              ),
+            ),
+            content: Builder(
+              builder: (context) {
+                var width = MediaQuery.of(context).size.width;
+
+                return SizedBox(
+                  width: width -
+                      128, //TODO: Responsive layout (Fullscrenn diag on phones, restrained width on Desktop)
+                  child: const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: ProfileEditForm(),
+                  ),
+                );
+              },
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text("Cancel"),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text("Apply"),
+              )
+            ],
+          );
+        });
+  }
+
+  void showChangePasswordDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            scrollable: false,
+            title: const Text('Change Password'),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(16),
+              ),
+            ),
+            content: Builder(
+              builder: (context) {
+                var width = MediaQuery.of(context).size.width;
+
+                return SizedBox(
+                  width: width -
+                      128, //TODO: Responsive layout (Fullscrenn diag on phones, restrained width on Desktop)
+                  child: const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: PasswordChangeForm(),
+                  ),
+                );
+              },
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text("Cancel"),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text("Change"),
+              )
+            ],
+          );
+        });
   }
 }
 

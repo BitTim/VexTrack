@@ -284,12 +284,12 @@ class _SettingsState extends State<Settings> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text("Ignore init"),
+                              const Text("Hide init"),
                               Switch(
-                                  value: sd.ignoreInit,
+                                  value: sd.hideInit,
                                   onChanged: (value) {
                                     setState(() {
-                                      sd.ignoreInit = value;
+                                      sd.hideInit = value;
                                       SettingsService.updateSettingsData(sd);
                                     });
                                   })

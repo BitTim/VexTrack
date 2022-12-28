@@ -3,28 +3,25 @@ import 'package:vextrack/Components/history_entry.dart';
 import 'package:vextrack/Models/History/history_entry.dart';
 import 'package:vextrack/Models/History/history_entry_group.dart';
 
-class HistoryEntryGroupWidget extends StatefulWidget
-{
+class HistoryEntryGroupWidget extends StatefulWidget {
   final HistoryEntryGroup model;
   final Function(HistoryEntry)? editHistoryEntry;
   final Function(HistoryEntry)? deleteHistoryEntry;
-  
+
   const HistoryEntryGroupWidget({
     Key? key,
     required this.model,
     required this.editHistoryEntry,
     required this.deleteHistoryEntry,
   }) : super(key: key);
-  
+
   @override
   HistoryEntryGroupWidgetState createState() => HistoryEntryGroupWidgetState();
 }
 
-class HistoryEntryGroupWidgetState extends State<HistoryEntryGroupWidget>
-{
+class HistoryEntryGroupWidgetState extends State<HistoryEntryGroupWidget> {
   @override
-  Widget build(BuildContext context)
-  {
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
       child: Column(
@@ -40,12 +37,11 @@ class HistoryEntryGroupWidgetState extends State<HistoryEntryGroupWidget>
               ),
             ),
           ),
-
           ...widget.model.entries.map((entry) => HistoryEntryWidget(
-            model: entry,
-            editHistoryEntry: widget.editHistoryEntry,
-            deleteHistoryEntry: widget.deleteHistoryEntry,
-          )),
+                model: entry,
+                editHistoryEntry: widget.editHistoryEntry,
+                deleteHistoryEntry: widget.deleteHistoryEntry,
+              )),
         ],
       ),
     );

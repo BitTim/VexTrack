@@ -1,4 +1,3 @@
-
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,6 +9,7 @@ import 'package:vextrack/Core/history_calc.dart';
 import 'package:vextrack/Core/xp_calc.dart';
 import 'package:vextrack/Models/Seasons/performance.dart';
 import 'package:vextrack/Models/Seasons/season.dart';
+import 'package:vextrack/Services/settings.dart';
 
 class SeasonWidget extends StatefulWidget {
   const SeasonWidget({
@@ -25,41 +25,35 @@ class SeasonWidget extends StatefulWidget {
   SeasonWidgetState createState() => SeasonWidgetState();
 }
 
-class SeasonWidgetState extends State<SeasonWidget>
-{
-  Gradient getGradient()
-  {
+class SeasonWidgetState extends State<SeasonWidget> {
+  Gradient getGradient() {
     if (widget.model.hasEpilogue()) return AppColors.epilogueGradient;
     if (widget.model.hasCompleted()) return AppColors.winGradient;
     if (widget.model.isActive()) return AppColors.warnGradient;
-    
+
     return AppColors.lossGradient;
   }
 
-  IconData getIcon()
-  {
+  IconData getIcon() {
     if (widget.model.hasEpilogue()) return Icons.verified_rounded;
     if (widget.model.hasCompleted()) return Icons.check_rounded;
     if (widget.model.isActive()) return Icons.warning_amber_rounded;
-    
+
     return Icons.close_rounded;
   }
 
-  Color getColor()
-  {
+  Color getColor() {
     if (widget.model.hasEpilogue()) return AppColors.epilogue[0];
     if (widget.model.hasCompleted()) return AppColors.win[0];
     if (widget.model.isActive()) return AppColors.warn[0];
-    
+
     return AppColors.loss[0];
   }
 
-
-
-
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> extremeDays = HistoryCalc.getExtremeDays(widget.model.history);
+    Map<String, dynamic> extremeDays = HistoryCalc.getExtremeDays(
+        widget.model.history, SettingsService.data!.ignoreInactiveDays);
 
     return Card(
       shape: RoundedRectangleBorder(
@@ -161,7 +155,9 @@ class SeasonWidgetState extends State<SeasonWidget>
                   Padding(
                     padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
                     child: Text(
-                      "${Formatter.formatDate(widget.model.meta.getStartDate())} - ${Formatter.formatDate(widget.model.meta.getEndDate())} (${Formatter.formatDurationDays(widget.model.meta.getDuration())})",
+                      widget.model.isActive()
+                          ? "${Formatter.formatDate(widget.model.meta.getStartDate())} - ${Formatter.formatDate(widget.model.meta.getEndDate())} (${Formatter.formatDays(widget.model.getRemainingDays())} remaining)"
+                          : "${Formatter.formatDate(widget.model.meta.getStartDate())} - ${Formatter.formatDate(widget.model.meta.getEndDate())} (${Formatter.formatDurationDays(widget.model.meta.getDuration())})",
                       style: GoogleFonts.titilliumWeb(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
@@ -172,9 +168,7 @@ class SeasonWidgetState extends State<SeasonWidget>
               ),
             ),
           ),
-
           collapsed: const SizedBox.shrink(),
-
           expanded: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -204,7 +198,6 @@ class SeasonWidgetState extends State<SeasonWidget>
                         ),
                       ],
                     ),
-                
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -224,7 +217,6 @@ class SeasonWidgetState extends State<SeasonWidget>
                         ),
                       ],
                     ),
-                
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -250,7 +242,6 @@ class SeasonWidgetState extends State<SeasonWidget>
                             ],
                           ),
                         ),
-                
                         Padding(
                           padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
                           child: Row(
@@ -278,19 +269,21 @@ class SeasonWidgetState extends State<SeasonWidget>
                   ],
                 ),
               ),
-
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: PerformanceChart(
                   model: Performance.fromSeason(widget.model, true, false),
                   showDaily: false,
-                  notifyEpilogueParent: (ep) { return; },
-                  notifyCumulativeParent: (cumulative) { return; },
+                  notifyEpilogueParent: (ep) {
+                    return;
+                  },
+                  notifyCumulativeParent: (cumulative) {
+                    return;
+                  },
                 ),
               ),
             ],
           ),
-
           theme: ExpandableThemeData.combine(
             ExpandableThemeData(
               iconColor: Theme.of(context).colorScheme.onSurface,

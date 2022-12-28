@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-class AppColors
-{
+class AppColors {
   static const lightBG = Color(0xffffffff);
   static const lightShade = Color(0xffe5e5e5);
   static const lightShadeSemiTransparent = Color(0xcce5e5e5);
@@ -14,13 +13,15 @@ class AppColors
   static const darkText = Color(0xffffffff);
   static const darkTextSecondary = Color(0xffcacaca);
 
-
-
-
+  //FIXME: Temporary selecitons for colors
   static const Color defaultAccent = Color(0xffC33149);
-
-
-
+  static const Color accent1 = Color(0xff1768AC);
+  static const Color accent2 = Color(0xff06A77D);
+  static const Color accent3 = Color(0xffF1A208);
+  static const Color accent4 = Color(0xff7D70BA);
+  static const Color accent5 = Color(0xff81667A);
+  static const Color accent6 = Color(0xffC97C5D);
+  static const Color accent7 = Color(0xffE85D75);
 
   static const win = [
     Color(0xff66c2a9),
@@ -46,26 +47,15 @@ class AppColors
     Color(0xcc061a40),
   ];
 
-
-
-
   static final winToTransparentGradient = LinearGradient(
-    colors: [
-      win[0],
-      win[2],
-      Colors.transparent
-    ],
+    colors: [win[0], win[2], Colors.transparent],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     stops: const [0.0, 0.5, 1.0],
   );
 
   static final lossToTransparentGradient = LinearGradient(
-    colors: [
-      loss[0],
-      loss[2],
-      Colors.transparent
-    ],
+    colors: [loss[0], loss[2], Colors.transparent],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     stops: const [0.0, 0.5, 1.0],
@@ -93,34 +83,22 @@ class AppColors
     stops: [0.0, 0.5, 1.0],
   );
 
-
-
-
   static final winGradient = LinearGradient(
-    colors: [
-      win[0],
-      win[1]
-    ],
+    colors: [win[0], win[1]],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     stops: const [0.0, 1.0],
   );
 
   static final warnGradient = LinearGradient(
-    colors: [
-      warn[0],
-      warn[1]
-    ],
+    colors: [warn[0], warn[1]],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     stops: const [0.0, 1.0],
   );
 
   static final lossGradient = LinearGradient(
-    colors: [
-      loss[0],
-      loss[1]
-    ],
+    colors: [loss[0], loss[1]],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     stops: const [0.0, 1.0],
@@ -137,10 +115,7 @@ class AppColors
   );
 
   static final epilogueGradient = LinearGradient(
-    colors: [
-      epilogue[0],
-      epilogue[1]
-    ],
+    colors: [epilogue[0], epilogue[1]],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     stops: const [0.0, 1.0],

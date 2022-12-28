@@ -26,7 +26,6 @@ class LoginFragment extends StatelessWidget {
           autocorrect: false,
         ),
       ),
-
       Padding(
         padding: const EdgeInsets.only(bottom: 8.0),
         child: TextFormField(
@@ -40,24 +39,21 @@ class LoginFragment extends StatelessWidget {
           obscureText: true,
         ),
       ),
-      
       ElevatedButton(
-        onPressed: () {
-          AuthService.logIn(
+        onPressed: () async {
+          await AuthService.logIn(
             email: emailController.text,
             password: passwordController.text,
           );
         },
         child: const Text("Log in"),
       ),
-
       ElevatedButton(
         onPressed: () {
           notifyParent(AuthFragments.forgot.index);
         },
         child: const Text("Forgot password?"),
       ),
-
       ElevatedButton(
         onPressed: () {
           notifyParent(AuthFragments.signup.index);

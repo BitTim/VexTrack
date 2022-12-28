@@ -2,26 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vextrack/Services/data.dart';
 
-class HistoryFilterForm extends StatefulWidget
-{
+class HistoryFilterForm extends StatefulWidget {
   final List<String> seasonIDFilter;
   final List<String> gameModeFilter;
   final List<String> mapFilter;
 
-  const HistoryFilterForm({super.key, required this.seasonIDFilter, required this.gameModeFilter, required this.mapFilter});
+  const HistoryFilterForm(
+      {super.key,
+      required this.seasonIDFilter,
+      required this.gameModeFilter,
+      required this.mapFilter});
 
   @override
   HistoryFilterFormState createState() => HistoryFilterFormState();
 }
 
-class HistoryFilterFormState extends State<HistoryFilterForm>
-{
-  List<Widget> createSeasonChips()
-  {
+class HistoryFilterFormState extends State<HistoryFilterForm> {
+  List<Widget> createSeasonChips() {
     List<Widget> chips = [];
 
-    for(String seasonID in DataService.seasons.keys)
-    {
+    for (String seasonID in DataService.seasons.keys) {
       chips.add(FilterChip(
         label: Text(DataService.seasonMetas[seasonID]!.name),
         selected: widget.seasonIDFilter.contains(seasonID),
@@ -38,12 +38,10 @@ class HistoryFilterFormState extends State<HistoryFilterForm>
     return chips;
   }
 
-  List<Widget> createGameModeChips()
-  {
+  List<Widget> createGameModeChips() {
     List<Widget> chips = [];
 
-    for(String mode in DataService.modes.keys)
-    {
+    for (String mode in DataService.modes.keys) {
       chips.add(FilterChip(
         label: Text(DataService.modes[mode]!.name),
         selected: widget.gameModeFilter.contains(mode),
@@ -60,12 +58,10 @@ class HistoryFilterFormState extends State<HistoryFilterForm>
     return chips;
   }
 
-  List<Widget> createMapChips()
-  {
+  List<Widget> createMapChips() {
     List<Widget> chips = [];
 
-    for(String map in DataService.maps.keys)
-    {
+    for (String map in DataService.maps.keys) {
       chips.add(FilterChip(
         label: Text(DataService.maps[map]!.name),
         selected: widget.mapFilter.contains(map),
@@ -85,6 +81,7 @@ class HistoryFilterFormState extends State<HistoryFilterForm>
   @override
   Widget build(BuildContext context) {
     return Form(
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

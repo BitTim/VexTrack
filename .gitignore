@@ -2,6 +2,7 @@ config.json
 __pycache__
 dat/
 .vscode/
+.idea/
 dist/
 *.toc
 *.pyz

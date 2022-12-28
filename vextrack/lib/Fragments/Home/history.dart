@@ -6,18 +6,21 @@ import 'package:vextrack/Models/History/history_entry.dart';
 import 'package:vextrack/Models/History/history_entry_group.dart';
 import 'package:vextrack/Models/Seasons/season_meta.dart';
 import 'package:vextrack/Services/data.dart';
+import 'package:vextrack/Services/settings.dart';
 
 class HistoryFragment extends StatefulWidget {
   final String uid;
-  final Widget? Function({required List<String> unlocks, bool inverted}) createUnlockedDialog;
-  const HistoryFragment({Key? key, required this.uid, required this.createUnlockedDialog}) : super(key: key);
+  final Widget? Function({required List<String> unlocks, bool inverted})
+      createUnlockedDialog;
+  const HistoryFragment(
+      {Key? key, required this.uid, required this.createUnlockedDialog})
+      : super(key: key);
 
   @override
   HistoryFragmentState createState() => HistoryFragmentState();
 }
 
-class HistoryFragmentState extends State<HistoryFragment>
-{
+class HistoryFragmentState extends State<HistoryFragment> {
   List<HistoryEntryGroup> _history = [];
   List<HistoryEntryGroup> _filteredHistory = [];
   bool _loading = false;
@@ -26,130 +29,133 @@ class HistoryFragmentState extends State<HistoryFragment>
   List<String> gameModeFilter = [];
   List<String> mapFilter = [];
 
-  void editHistoryEntry(HistoryEntry he)
-  {
+  void editHistoryEntry(HistoryEntry he) {
     GlobalKey<FormState> formKey = GlobalKey<FormState>();
     HistoryEntryForm form = HistoryEntryForm(formKey: formKey, initEntry: he);
 
     showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          scrollable: true,
-          title: const Text('Edit history entry'),
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(16),
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            scrollable: true,
+            title: const Text('Edit history entry'),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(16),
+              ),
             ),
-          ),
-          content: Builder(
-            builder: (context) {
-              var width = MediaQuery.of(context).size.width;
+            content: Builder(
+              builder: (context) {
+                var width = MediaQuery.of(context).size.width;
 
-              return SizedBox(
-                width: width - 128, //TODO: Responsive layout (Fullscrenn diag on phones, restrained width on Desktop)
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: form,
-                ),
-              );
-            },
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
+                return SizedBox(
+                  width: width -
+                      128, //TODO: Responsive layout (Fullscrenn diag on phones, restrained width on Desktop)
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: form,
+                  ),
+                );
               },
-              child: const Text("Cancel"),
             ),
-            ElevatedButton(
-              onPressed: () async {
-                if(!formKey.currentState!.validate()) return;
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text("Cancel"),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  if (!formKey.currentState!.validate()) return;
 
-                Navigator.of(context).pop();
-                List<dynamic> ret = await DataService.editHistoryEntry(widget.uid, form.model);
-                List<String> unlocks = ret.isNotEmpty ? ret[1] : [];
-                update();
+                  Navigator.of(context).pop();
+                  List<dynamic> ret = await DataService.editHistoryEntry(
+                      widget.uid, form.model);
+                  List<String> unlocks = ret.isNotEmpty ? ret[1] : [];
+                  update();
 
-                Widget? unlockedDialog = widget.createUnlockedDialog(unlocks: unlocks, inverted: ret.isNotEmpty ? ret[0] : false);
-                if(unlockedDialog != null)
-                {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return unlockedDialog;
-                    },
-                  );
-                }
-              },
-              child: const Text("Save"),
-            )
-          ],
-        );
-      }
-    );
+                  Widget? unlockedDialog = widget.createUnlockedDialog(
+                      unlocks: unlocks,
+                      inverted: ret.isNotEmpty ? ret[0] : false);
+                  if (unlockedDialog != null) {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return unlockedDialog;
+                      },
+                    );
+                  }
+                },
+                child: const Text("Save"),
+              )
+            ],
+          );
+        });
   }
 
-  void deleteHistoryEntry(HistoryEntry he)
-  {
+  void deleteHistoryEntry(HistoryEntry he) {
     showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          icon: const Icon(Icons.delete),
-          title: const Text("Delete history entry"),
-          content: const Text("This action will permanently delete the selected entry"),
-          actions: [
-            TextButton(
-              child: const Text("Cancel"),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            ElevatedButton(
-              child: const Text("Delete"),
-              onPressed: () async {
-                Navigator.of(context).pop();
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            icon: const Icon(Icons.delete),
+            title: const Text("Delete history entry"),
+            content: const Text(
+                "This action will permanently delete the selected entry"),
+            actions: [
+              TextButton(
+                child: const Text("Cancel"),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              ElevatedButton(
+                child: const Text("Delete"),
+                onPressed: () async {
+                  Navigator.of(context).pop();
 
-                SnackBar sb = SnackBar(content: Text("Deleted Entry ${he.getFormattedDesc()}"));
-                ScaffoldMessenger.of(context).showSnackBar(sb);
+                  SnackBar sb = SnackBar(
+                      content: Text("Deleted Entry ${he.getFormattedDesc()}"));
+                  ScaffoldMessenger.of(context).showSnackBar(sb);
 
-                List<String> unlocks = await DataService.deleteHistoryEntry(widget.uid, he);
-                update();
+                  List<String> unlocks =
+                      await DataService.deleteHistoryEntry(widget.uid, he);
+                  update();
 
-                Widget? unlockedDialog = widget.createUnlockedDialog(unlocks: unlocks, inverted: true);
-                if(unlockedDialog != null)
-                {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return unlockedDialog;
-                    },
-                  );
-                }
-              },
-            ),
-          ],
-        );
-      }
-    );
+                  Widget? unlockedDialog = widget.createUnlockedDialog(
+                      unlocks: unlocks, inverted: true);
+                  if (unlockedDialog != null) {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return unlockedDialog;
+                      },
+                    );
+                  }
+                },
+              ),
+            ],
+          );
+        });
   }
 
   showHistory() {
     List<Widget> historyEntryGroupList = [];
-    
-    for(HistoryEntryGroup heg in _filteredHistory)
-    {
-      historyEntryGroupList.add(
-        HistoryEntryGroupWidget(model: heg, editHistoryEntry: editHistoryEntry, deleteHistoryEntry: deleteHistoryEntry,)
-      );
+
+    for (HistoryEntryGroup heg in _filteredHistory) {
+      historyEntryGroupList.add(HistoryEntryGroupWidget(
+        model: heg,
+        editHistoryEntry: editHistoryEntry,
+        deleteHistoryEntry: deleteHistoryEntry,
+      ));
     }
 
     return historyEntryGroupList;
   }
 
-  setupHistory() async
-  {
+  setupHistory() async {
     setState(() => _loading = true);
-    List<HistoryEntryGroup> history = await DataService.pullFullHistory(widget.uid);
+    List<HistoryEntryGroup> history =
+        await DataService.pullFullHistory(widget.uid);
 
     if (mounted) {
       setState(() {
@@ -159,41 +165,39 @@ class HistoryFragmentState extends State<HistoryFragment>
     }
   }
 
-  filterHistory()
-  {
+  filterHistory() {
     List<HistoryEntryGroup> history = [];
-    for(HistoryEntryGroup heg in _history)
-    {
-
-      if(seasonIDFilter.isEmpty) 
-      {
-        history.add(HistoryEntryGroup(heg.id, heg.day, heg.total, heg.date, heg.entries));
+    for (HistoryEntryGroup heg in _history) {
+      if (seasonIDFilter.isEmpty) {
+        history.add(HistoryEntryGroup(
+            heg.id, heg.day, heg.total, heg.date, heg.entries));
         continue;
       }
 
-      for(String seasonID in DataService.seasonMetas.keys)
-      {
+      for (String seasonID in DataService.seasonMetas.keys) {
         SeasonMeta meta = DataService.seasonMetas[seasonID]!;
-        
-        if(seasonIDFilter.contains(seasonID) && heg.date.compareTo(meta.startDate) >= 0 && heg.date.compareTo(meta.endDate) < 0)
-        {
-          history.add(HistoryEntryGroup(heg.id, heg.day, heg.total, heg.date, heg.entries));
+
+        if (seasonIDFilter.contains(seasonID) &&
+            heg.date.compareTo(meta.startDate) >= 0 &&
+            heg.date.compareTo(meta.endDate) < 0) {
+          history.add(HistoryEntryGroup(
+              heg.id, heg.day, heg.total, heg.date, heg.entries));
         }
       }
     }
 
-    for(int i = 0; i < history.length; i++)
-    {
-      if(gameModeFilter.isNotEmpty)
-      {
+    for (int i = 0; i < history.length; i++) {
+      // Hide Init
+      if (SettingsService.data!.hideInit) {
         List<HistoryEntry> entries = [];
 
-        for(HistoryEntry he in history[i].entries)
-        {
-          if(gameModeFilter.contains(he.mode)) entries.add(he);
+        for (HistoryEntry he in history[i].entries) {
+          if (he.desc != "Init" || he.map != "none" || he.mode != "custom") {
+            entries.add(he);
+          }
         }
 
-        if(entries.isEmpty) {
+        if (entries.isEmpty) {
           history.removeAt(i--);
           continue;
         } else {
@@ -201,16 +205,29 @@ class HistoryFragmentState extends State<HistoryFragment>
         }
       }
 
-      if(mapFilter.isNotEmpty)
-      {
+      if (gameModeFilter.isNotEmpty) {
         List<HistoryEntry> entries = [];
 
-        for(HistoryEntry he in history[i].entries)
-        {
-          if(mapFilter.contains(he.map)) entries.add(he);
+        for (HistoryEntry he in history[i].entries) {
+          if (gameModeFilter.contains(he.mode)) entries.add(he);
         }
 
-        if(entries.isEmpty) {
+        if (entries.isEmpty) {
+          history.removeAt(i--);
+          continue;
+        } else {
+          history[i].entries = entries;
+        }
+      }
+
+      if (mapFilter.isNotEmpty) {
+        List<HistoryEntry> entries = [];
+
+        for (HistoryEntry he in history[i].entries) {
+          if (mapFilter.contains(he.map)) entries.add(he);
+        }
+
+        if (entries.isEmpty) {
           history.removeAt(i--);
           continue;
         } else {
@@ -230,15 +247,16 @@ class HistoryFragmentState extends State<HistoryFragment>
     update();
   }
 
-  void update() async
-  {
+  void update() async {
     await setupHistory();
     filterHistory();
   }
 
-  Widget createFilterDialog()
-  {
-    HistoryFilterForm form = HistoryFilterForm(seasonIDFilter: seasonIDFilter, gameModeFilter: gameModeFilter, mapFilter: mapFilter);
+  Widget createFilterDialog() {
+    HistoryFilterForm form = HistoryFilterForm(
+        seasonIDFilter: seasonIDFilter,
+        gameModeFilter: gameModeFilter,
+        mapFilter: mapFilter);
 
     return AlertDialog(
       scrollable: true,
@@ -253,7 +271,8 @@ class HistoryFragmentState extends State<HistoryFragment>
           var width = MediaQuery.of(context).size.width;
 
           return SizedBox(
-            width: width - 128, //TODO: Responsive layout (Fullscrenn diag on phones, restrained width on Desktop)
+            width: width -
+                128, //TODO: Responsive layout (Fullscrenn diag on phones, restrained width on Desktop)
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: form,
@@ -271,7 +290,7 @@ class HistoryFragmentState extends State<HistoryFragment>
         ElevatedButton(
           onPressed: () {
             Navigator.of(context).pop();
-            seasonIDFilter = form.seasonIDFilter; 
+            seasonIDFilter = form.seasonIDFilter;
             gameModeFilter = form.gameModeFilter;
             mapFilter = form.mapFilter;
             filterHistory();
@@ -292,18 +311,17 @@ class HistoryFragmentState extends State<HistoryFragment>
           update();
         },
         child: ListView(
-          physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-          children: [
-            Column(
-              children: _history.isEmpty && _loading == false ? [
-                const Center(child: Text("No history"))
-              ] : showHistory()
-            ),
-            const SizedBox(
-              height: 88,
-            ),
-          ]
-        ),
+            physics: const BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics()),
+            children: [
+              Column(
+                  children: _history.isEmpty && _loading == false
+                      ? [const Center(child: Text("No history"))]
+                      : showHistory()),
+              const SizedBox(
+                height: 88,
+              ),
+            ]),
       ),
     );
   }

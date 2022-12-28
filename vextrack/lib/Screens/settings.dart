@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vextrack/Fragments/Forms/Settings/password_change.dart';
+import 'package:vextrack/Fragments/Forms/Settings/profile_edit.dart';
 import 'package:vextrack/Models/settings_data.dart';
 import 'package:vextrack/Models/user_data.dart';
 import 'package:vextrack/Services/data.dart';
@@ -12,6 +14,7 @@ class _SettingsState extends State<Settings> {
   late Function(int) _notifyParent;
   late SettingsData sd;
   late List<bool> selectedTheme;
+  bool profileImageHovered = false;
 
   _SettingsState(Function(int) notifyParent) {
     _notifyParent = notifyParent;
@@ -31,7 +34,15 @@ class _SettingsState extends State<Settings> {
   }
 
   void init() async {
-    await SettingsService.fetchSettingsData();
+    await SettingsService.fetchSettingsData(null);
+  }
+
+  void updateTheme(Color accent) {
+    setState(() {
+      sd.accentColor = accent;
+      SettingsService.updateSettingsData(sd);
+      widget.onThemeChanged();
+    });
   }
 
   @override
@@ -90,14 +101,47 @@ class _SettingsState extends State<Settings> {
                               children: [
                                 Flexible(
                                     flex: 1,
-                                    child: AspectRatio(
-                                      aspectRatio: 1 / 1,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          color: Colors
-                                              .red, // TODO: Replace with image
+                                    child: MouseRegion(
+                                      onEnter: (event) {
+                                        setState(
+                                            () => profileImageHovered = true);
+                                      },
+                                      onExit: (event) {
+                                        setState(
+                                            () => profileImageHovered = false);
+                                      },
+                                      child: IconButton(
+                                        onPressed: () {},
+                                        icon: AspectRatio(
+                                          aspectRatio: 1 / 1,
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              color: Colors
+                                                  .red, // TODO: Replace with image
+                                            ),
+                                            child: Visibility(
+                                              visible: profileImageHovered,
+                                              child: const Align(
+                                                alignment:
+                                                    Alignment.bottomRight,
+                                                child: Padding(
+                                                  padding: EdgeInsets.all(8.0),
+                                                  child: Icon(
+                                                    Icons.camera_alt,
+                                                    color: Colors.white,
+                                                    shadows: [
+                                                      Shadow(
+                                                          color:
+                                                              Color(0xcc000000),
+                                                          blurRadius: 8)
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     )),
@@ -145,7 +189,8 @@ class _SettingsState extends State<Settings> {
                                                         0, 0, 4, 0),
                                                 child: ElevatedButton(
                                                   onPressed: () {
-                                                    //TODO: Implement edit function for profile
+                                                    showEditProfileDialog(
+                                                        context);
                                                   },
                                                   child: const Text("Edit"),
                                                 ),
@@ -156,7 +201,8 @@ class _SettingsState extends State<Settings> {
                                                         4, 0, 0, 0),
                                                 child: ElevatedButton(
                                                   onPressed: () {
-                                                    //TODO: Implement password change
+                                                    showChangePasswordDialog(
+                                                        context);
                                                   },
                                                   child: const Text(
                                                       "Change Password"),
@@ -238,12 +284,12 @@ class _SettingsState extends State<Settings> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text("Ignore init"),
+                              const Text("Hide init"),
                               Switch(
-                                  value: sd.ignoreInit,
+                                  value: sd.hideInit,
                                   onChanged: (value) {
                                     setState(() {
-                                      sd.ignoreInit = value;
+                                      sd.hideInit = value;
                                       SettingsService.updateSettingsData(sd);
                                     });
                                   })
@@ -306,6 +352,7 @@ class _SettingsState extends State<Settings> {
                                     if (index == 2) sd.theme = "dark";
 
                                     SettingsService.updateSettingsData(sd);
+                                    widget.onThemeChanged();
                                   });
                                 },
                                 borderRadius:
@@ -356,12 +403,7 @@ class _SettingsState extends State<Settings> {
                                                 (states) =>
                                                     AppColors.defaultAccent),
                                         onChanged: (value) {
-                                          setState(() {
-                                            sd.accentColor =
-                                                AppColors.defaultAccent;
-                                            SettingsService.updateSettingsData(
-                                                sd);
-                                          });
+                                          updateTheme(AppColors.defaultAccent);
                                         },
                                       ),
                                       Radio(
@@ -371,11 +413,7 @@ class _SettingsState extends State<Settings> {
                                             MaterialStateColor.resolveWith(
                                                 (states) => AppColors.accent1),
                                         onChanged: (value) {
-                                          setState(() {
-                                            sd.accentColor = AppColors.accent1;
-                                            SettingsService.updateSettingsData(
-                                                sd);
-                                          });
+                                          updateTheme(AppColors.accent1);
                                         },
                                       ),
                                       Radio(
@@ -385,11 +423,7 @@ class _SettingsState extends State<Settings> {
                                             MaterialStateColor.resolveWith(
                                                 (states) => AppColors.accent2),
                                         onChanged: (value) {
-                                          setState(() {
-                                            sd.accentColor = AppColors.accent2;
-                                            SettingsService.updateSettingsData(
-                                                sd);
-                                          });
+                                          updateTheme(AppColors.accent2);
                                         },
                                       ),
                                       Radio(
@@ -399,11 +433,7 @@ class _SettingsState extends State<Settings> {
                                             MaterialStateColor.resolveWith(
                                                 (states) => AppColors.accent3),
                                         onChanged: (value) {
-                                          setState(() {
-                                            sd.accentColor = AppColors.accent3;
-                                            SettingsService.updateSettingsData(
-                                                sd);
-                                          });
+                                          updateTheme(AppColors.accent3);
                                         },
                                       ),
                                       Radio(
@@ -413,11 +443,7 @@ class _SettingsState extends State<Settings> {
                                             MaterialStateColor.resolveWith(
                                                 (states) => AppColors.accent4),
                                         onChanged: (value) {
-                                          setState(() {
-                                            sd.accentColor = AppColors.accent4;
-                                            SettingsService.updateSettingsData(
-                                                sd);
-                                          });
+                                          updateTheme(AppColors.accent4);
                                         },
                                       ),
                                       Radio(
@@ -427,11 +453,7 @@ class _SettingsState extends State<Settings> {
                                             MaterialStateColor.resolveWith(
                                                 (states) => AppColors.accent5),
                                         onChanged: (value) {
-                                          setState(() {
-                                            sd.accentColor = AppColors.accent5;
-                                            SettingsService.updateSettingsData(
-                                                sd);
-                                          });
+                                          updateTheme(AppColors.accent5);
                                         },
                                       ),
                                       Radio(
@@ -441,11 +463,7 @@ class _SettingsState extends State<Settings> {
                                             MaterialStateColor.resolveWith(
                                                 (states) => AppColors.accent6),
                                         onChanged: (value) {
-                                          setState(() {
-                                            sd.accentColor = AppColors.accent6;
-                                            SettingsService.updateSettingsData(
-                                                sd);
-                                          });
+                                          updateTheme(AppColors.accent6);
                                         },
                                       ),
                                       Radio(
@@ -455,11 +473,7 @@ class _SettingsState extends State<Settings> {
                                             MaterialStateColor.resolveWith(
                                                 (states) => AppColors.accent7),
                                         onChanged: (value) {
-                                          setState(() {
-                                            sd.accentColor = AppColors.accent7;
-                                            SettingsService.updateSettingsData(
-                                                sd);
-                                          });
+                                          updateTheme(AppColors.accent7);
                                         },
                                       ),
                                     ],
@@ -534,13 +548,106 @@ class _SettingsState extends State<Settings> {
       ),
     );
   }
+
+  void showEditProfileDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            scrollable: false,
+            title: const Text('Edit profile'),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(16),
+              ),
+            ),
+            content: Builder(
+              builder: (context) {
+                var width = MediaQuery.of(context).size.width;
+
+                return SizedBox(
+                  width: width -
+                      128, //TODO: Responsive layout (Fullscrenn diag on phones, restrained width on Desktop)
+                  child: const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: ProfileEditForm(),
+                  ),
+                );
+              },
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text("Cancel"),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text("Apply"),
+              )
+            ],
+          );
+        });
+  }
+
+  void showChangePasswordDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            scrollable: false,
+            title: const Text('Change Password'),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(16),
+              ),
+            ),
+            content: Builder(
+              builder: (context) {
+                var width = MediaQuery.of(context).size.width;
+
+                return SizedBox(
+                  width: width -
+                      128, //TODO: Responsive layout (Fullscrenn diag on phones, restrained width on Desktop)
+                  child: const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: PasswordChangeForm(),
+                  ),
+                );
+              },
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text("Cancel"),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text("Change"),
+              )
+            ],
+          );
+        });
+  }
 }
 
 class Settings extends StatefulWidget {
   final User user;
   final Function(int) notifyParent;
+  final Function() onThemeChanged;
 
-  const Settings({Key? key, required this.user, required this.notifyParent})
+  const Settings(
+      {Key? key,
+      required this.user,
+      required this.notifyParent,
+      required this.onThemeChanged})
       : super(key: key);
 
   @override

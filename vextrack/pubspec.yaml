@@ -52,6 +52,8 @@ dependencies:
   google_nav_bar: ^5.0.6
   dynamic_color: ^1.4.0
   firebase_performance: ^0.8.3+2
+  email_validator: ^2.1.17
+  colorize_text_avatar: ^1.0.2
 
 dev_dependencies:
   flutter_test:

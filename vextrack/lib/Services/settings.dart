@@ -3,13 +3,13 @@ import 'package:vextrack/Models/settings_data.dart';
 import 'package:vextrack/Models/user_data.dart';
 import 'package:vextrack/Services/data.dart';
 
-class SettingsService // FIXME: This is just a placeholder before Settings get actually implemented
-{
+class SettingsService {
   static SettingsData? data;
   static String? uid;
 
-  static setUID(String newUID) {
+  static setUID(String newUID, Function()? onThemeChanged) {
     uid = newUID;
+    fetchSettingsData(onThemeChanged);
   }
 
   static SettingsData getSettingsData() {
@@ -21,7 +21,7 @@ class SettingsService // FIXME: This is just a placeholder before Settings get a
     return data!;
   }
 
-  static Future<void> fetchSettingsData() async {
+  static Future<void> fetchSettingsData(Function()? onThemeChanged) async {
     if (uid == null) {
       updateSettingsData(null);
       return;
@@ -34,6 +34,8 @@ class SettingsService // FIXME: This is just a placeholder before Settings get a
       updateSettingsData(null);
       return;
     }
+
+    if (onThemeChanged != null) onThemeChanged();
   }
 
   static void updateSettingsData(SettingsData? sd) {

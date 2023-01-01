@@ -30,6 +30,7 @@
 
 				<ResourceDictionary Source="Theme/HistoryButtonTheme.xaml"/>
 				<ResourceDictionary Source="Theme/ProgressArcTheme.xaml"/>
+				<ResourceDictionary Source="Theme/SegmentedProgressTheme.xaml"/>
 				<ResourceDictionary Source="Theme/ScrollViewerTheme.xaml"/>
 				<ResourceDictionary Source="Theme/ProgressButtonTheme.xaml"/>
 				<ResourceDictionary Source="Theme/ColorPickerTheme.xaml"/>

@@ -12,11 +12,11 @@ using VexTrack.MVVM.ViewModel.Popups;
 
 namespace VexTrack.MVVM.ViewModel
 {
-	class DashboardViewModel : ObservableObject
+	internal class DashboardViewModel : ObservableObject
 	{
 		public RelayCommand OnAddClicked { get; set; }
-		private EditableHistoryEntryPopupViewModel EditableHEPopup { get; set; }
-		private MainViewModel MainVM { get; set; }
+		private EditableHistoryEntryPopupViewModel EditableHePopup { get; set; }
+		private MainViewModel MainVm { get; set; }
 
 		private string _title;
 		private string _username;
@@ -31,7 +31,7 @@ namespace VexTrack.MVVM.ViewModel
 		private int _deviationDaily;
 		private int _daysFinished;
 		private int _daysRemaining;
-		private PlotModel _graph;
+		private readonly PlotModel _graph;
 
 		public string Title
 		{
@@ -42,6 +42,7 @@ namespace VexTrack.MVVM.ViewModel
 				OnPropertyChanged();
 			}
 		}
+
 		public string Username
 		{
 			get => _username;
@@ -51,6 +52,7 @@ namespace VexTrack.MVVM.ViewModel
 				OnPropertyChanged();
 			}
 		}
+
 		public int Collected
 		{
 			get => _collected;
@@ -60,6 +62,7 @@ namespace VexTrack.MVVM.ViewModel
 				OnPropertyChanged();
 			}
 		}
+
 		public int Remaining
 		{
 			get => _remaining;
@@ -69,6 +72,7 @@ namespace VexTrack.MVVM.ViewModel
 				OnPropertyChanged();
 			}
 		}
+
 		public int Total
 		{
 			get => _total;
@@ -78,6 +82,7 @@ namespace VexTrack.MVVM.ViewModel
 				OnPropertyChanged();
 			}
 		}
+
 		public int Streak
 		{
 			get => _streak;
@@ -87,6 +92,7 @@ namespace VexTrack.MVVM.ViewModel
 				OnPropertyChanged();
 			}
 		}
+
 		public Brush StreakColor
 		{
 			get => _streakColor;
@@ -96,6 +102,7 @@ namespace VexTrack.MVVM.ViewModel
 				OnPropertyChanged();
 			}
 		}
+
 		public double Progress
 		{
 			get => _progress;
@@ -105,6 +112,7 @@ namespace VexTrack.MVVM.ViewModel
 				OnPropertyChanged();
 			}
 		}
+
 		public string SeasonName
 		{
 			get => _seasonName;
@@ -114,6 +122,7 @@ namespace VexTrack.MVVM.ViewModel
 				OnPropertyChanged();
 			}
 		}
+
 		public int DeviationIdeal
 		{
 			get => _deviationIdeal;
@@ -123,6 +132,7 @@ namespace VexTrack.MVVM.ViewModel
 				OnPropertyChanged();
 			}
 		}
+
 		public int DeviationDaily
 		{
 			get => _deviationDaily;
@@ -132,6 +142,7 @@ namespace VexTrack.MVVM.ViewModel
 				OnPropertyChanged();
 			}
 		}
+
 		public int DaysFinished
 		{
 			get => _daysFinished;
@@ -141,6 +152,7 @@ namespace VexTrack.MVVM.ViewModel
 				OnPropertyChanged();
 			}
 		}
+
 		public int DaysRemaining
 		{
 			get => _daysRemaining;
@@ -154,23 +166,22 @@ namespace VexTrack.MVVM.ViewModel
 		public PlotModel Graph
 		{
 			get => _graph;
-			set
+			init
 			{
 				_graph = value;
 				OnPropertyChanged();
 			}
 		}
 
-		public List<double> SegmentStops
-		{
-			get => new List<double> { 0.25, 0.5, 1.0 };
-		}
+		public static List<double> SegmentStops => new List<double> { 0.25, 0.5, 1.0 };
 
 		public DashboardViewModel()
 		{
-			Graph = new PlotModel();
-			Graph.PlotMargins = new OxyThickness(0, 0, 0, 16);
-			Graph.PlotAreaBorderColor = OxyColors.Transparent;
+			Graph = new PlotModel
+			{
+				PlotMargins = new OxyThickness(0, 0, 0, 16),
+				PlotAreaBorderColor = OxyColors.Transparent
+			};
 
 			ApplyAxes();
 
@@ -182,19 +193,20 @@ namespace VexTrack.MVVM.ViewModel
 			LinearAxis xAxis = new();
 			LinearAxis yAxis = new();
 
-			SolidColorBrush Foreground = (SolidColorBrush)Application.Current.FindResource("Foreground");
-			SolidColorBrush Shade = (SolidColorBrush)Application.Current.FindResource("Shade");
+			var foreground = (SolidColorBrush)Application.Current.FindResource("Foreground");
+			var shade = (SolidColorBrush)Application.Current.FindResource("Shade");
 
 			xAxis.Position = AxisPosition.Bottom;
 			xAxis.AbsoluteMinimum = 0;
 			xAxis.TickStyle = TickStyle.None;
 			xAxis.MajorStep = 5;
 			xAxis.MajorGridlineStyle = LineStyle.Dot;
-			xAxis.MajorGridlineColor = OxyColor.FromArgb(Shade.Color.A, Shade.Color.R, Shade.Color.G, Shade.Color.B);
 			xAxis.MaximumPadding = 0;
 			xAxis.MinimumPadding = 0;
 			xAxis.AbsoluteMaximum = TrackingDataHelper.GetDuration(TrackingDataHelper.CurrentSeasonUUID);
-			xAxis.TextColor = OxyColor.FromArgb(Foreground.Color.A, Foreground.Color.R, Foreground.Color.G, Foreground.Color.B);
+			
+			if (shade != null) xAxis.MajorGridlineColor = OxyColor.FromArgb(shade.Color.A, shade.Color.R, shade.Color.G, shade.Color.B);
+			if (foreground != null) xAxis.TextColor = OxyColor.FromArgb(foreground.Color.A, foreground.Color.R, foreground.Color.G, foreground.Color.B);
 
 			yAxis.Position = AxisPosition.Left;
 			yAxis.AbsoluteMinimum = 0;
@@ -208,14 +220,13 @@ namespace VexTrack.MVVM.ViewModel
 
 		public void Update(bool epilogue)
 		{
-			MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
-			EditableHEPopup = (EditableHistoryEntryPopupViewModel)ViewModelManager.ViewModels["EditableHEPopup"];
+			MainVm = (MainViewModel)ViewModelManager.ViewModels["Main"];
+			EditableHePopup = (EditableHistoryEntryPopupViewModel)ViewModelManager.ViewModels["EditableHEPopup"];
 
 			Username = SettingsHelper.Data.Username;
-			if (Username != "") Title = "Welcome back,";
-			else Title = "Welcome back";
+			Title = Username != "" ? "Welcome back," : "Welcome back";
 
-			DailyData data = DashboardDataCalc.CalcDailyData(epilogue);
+			var data = DashboardDataCalc.CalcDailyData(epilogue);
 
 			Collected = data.Collected;
 			Remaining = data.Remaining;
@@ -231,69 +242,72 @@ namespace VexTrack.MVVM.ViewModel
 
 			OnAddClicked = new RelayCommand(o =>
 			{
-				EditableHEPopup.SetParameters("Create History Entry", false);
-				MainVM.QueuePopup(EditableHEPopup);
+				EditableHePopup.SetParameters("Create History Entry", false);
+				MainVm.QueuePopup(EditableHePopup);
 			});
 		}
 
 		private (int, int) CalcGraph(bool epilogue)
 		{
-			SolidColorBrush GraphIdealPoint = (SolidColorBrush)Application.Current.FindResource("GraphIdealPoint");
+			var graphIdealPoint = (SolidColorBrush)Application.Current.FindResource("GraphIdealPoint");
 
-			SolidColorBrush Foreground = (SolidColorBrush)Application.Current.FindResource("Foreground");
-			SolidColorBrush Background = (SolidColorBrush)Application.Current.FindResource("Background");
-			SolidColorBrush Shade = (SolidColorBrush)Application.Current.FindResource("Shade");
+			var foreground = (SolidColorBrush)Application.Current.FindResource("Foreground");
+			var background = (SolidColorBrush)Application.Current.FindResource("Background");
+			var shade = (SolidColorBrush)Application.Current.FindResource("Shade");
 
-			LineSeries ideal = GraphCalc.CalcIdealGraph(TrackingDataHelper.CurrentSeasonUUID, epilogue);
-			LineSeries performance = GraphCalc.CalcPerformanceGraph(TrackingDataHelper.CurrentSeasonUUID);
-			LineSeries dailyIdeal = DashboardDataCalc.CalcDailyIdeal(performance, epilogue);
-			LineSeries average = DashboardDataCalc.CalcAverageGraph(performance, epilogue);
+			var ideal = GraphCalc.CalcIdealGraph(TrackingDataHelper.CurrentSeasonUUID, epilogue);
+			var performance = GraphCalc.CalcPerformanceGraph(TrackingDataHelper.CurrentSeasonUUID);
+			var dailyIdeal = DashboardDataCalc.CalcDailyIdeal(performance, epilogue);
+			var average = DashboardDataCalc.CalcAverageGraph(performance, epilogue);
 
-			LineSeries idealPoint = DashboardDataCalc.CalcGraphPoint(ideal, OxyColor.FromArgb(GraphIdealPoint.Color.A, GraphIdealPoint.Color.R, GraphIdealPoint.Color.G, GraphIdealPoint.Color.B));
-			LineSeries performancePoint = DashboardDataCalc.CalcGraphPoint(performance, OxyColors.Maroon);
-			LineSeries dailyIdealPoint = DashboardDataCalc.CalcGraphPoint(dailyIdeal, OxyColors.Navy);
+			if (graphIdealPoint != null)
+			{
+				var idealPoint = DashboardDataCalc.CalcGraphPoint(ideal, OxyColor.FromArgb(graphIdealPoint.Color.A, graphIdealPoint.Color.R, graphIdealPoint.Color.G, graphIdealPoint.Color.B));
+				var performancePoint = DashboardDataCalc.CalcGraphPoint(performance, OxyColors.Maroon);
+				var dailyIdealPoint = DashboardDataCalc.CalcGraphPoint(dailyIdeal, OxyColors.Navy);
 
-			RectangleAnnotation bufferZone = GraphCalc.CalcBufferZone(TrackingDataHelper.CurrentSeasonUUID, epilogue);
+				var bufferZone = GraphCalc.CalcBufferZone(TrackingDataHelper.CurrentSeasonUUID, epilogue);
 
-			Graph.LegendPosition = LegendPosition.LeftTop;
-			Graph.LegendBackground = OxyColor.FromArgb(Background.Color.A, Background.Color.R, Background.Color.G, Background.Color.B);
-			Graph.LegendTextColor = OxyColor.FromArgb(Foreground.Color.A, Foreground.Color.R, Foreground.Color.G, Foreground.Color.B);
-			Graph.LegendBorder = OxyColor.FromArgb(Shade.Color.A, Shade.Color.R, Shade.Color.G, Shade.Color.B);
+				Graph.LegendPosition = LegendPosition.LeftTop;
+				if (background != null) Graph.LegendBackground = OxyColor.FromArgb(background.Color.A, background.Color.R, background.Color.G, background.Color.B);
+				if (foreground != null) Graph.LegendTextColor = OxyColor.FromArgb(foreground.Color.A, foreground.Color.R, foreground.Color.G, foreground.Color.B);
+				if (shade != null) Graph.LegendBorder = OxyColor.FromArgb(shade.Color.A, shade.Color.R, shade.Color.G, shade.Color.B);
 
-			Graph.Series.Clear();
-			Graph.Axes.Clear();
-			Graph.Annotations.Clear();
+				Graph.Series.Clear();
+				Graph.Axes.Clear();
+				Graph.Annotations.Clear();
 
-			AddGraphLevels(epilogue);
-			AddGraphGoals();
-			ApplyAxes();
-			UpdateYAxis(performance, epilogue);
+				AddGraphLevels(epilogue);
+				AddGraphGoals();
+				ApplyAxes();
+				UpdateYAxis(performance, epilogue);
 
-			Graph.Series.Add(ideal);
-			Graph.Series.Add(dailyIdeal);
-			Graph.Series.Add(average);
-			Graph.Series.Add(performance);
+				Graph.Series.Add(ideal);
+				Graph.Series.Add(dailyIdeal);
+				Graph.Series.Add(average);
+				Graph.Series.Add(performance);
 
-			Graph.Series.Add(idealPoint);
-			if (dailyIdeal.Points.Count > 0) Graph.Series.Add(dailyIdealPoint);
-			Graph.Series.Add(performancePoint);
+				Graph.Series.Add(idealPoint);
+				if (dailyIdeal.Points.Count > 0) Graph.Series.Add(dailyIdealPoint);
+				Graph.Series.Add(performancePoint);
 
-			Graph.Annotations.Add(bufferZone);
+				Graph.Annotations.Add(bufferZone);
+			}
 
 			Graph.InvalidatePlot(true);
 
-			int t = performance.Points.Count - 1;
-			int deviationIdeal = (int)performance.Points[t].Y - (int)ideal.Points[t].Y;
+			var t = performance.Points.Count - 1;
+			var deviationIdeal = (int)performance.Points[t].Y - (int)ideal.Points[t].Y;
 
-			int deviationDaily = 0;
+			var deviationDaily = 0;
 			if (dailyIdeal.Points.Count > 0) deviationDaily = (int)performance.Points[t].Y - (int)dailyIdeal.Points[1].Y;
 
 			return (deviationIdeal, deviationDaily);
 		}
 
-		private void UpdateYAxis(LineSeries performance, bool epilogue)
+		private void UpdateYAxis(DataPointSeries performance, bool epilogue)
 		{
-			int maximum = GoalDataCalc.CalcTotalGoal("", TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP, epilogue).Total * 2;
+			var maximum = GoalDataCalc.CalcTotalGoal("", TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP, epilogue).Total * 2;
 			if (performance.Points.Last().Y >= maximum) maximum = (int)performance.Points.Last().Y + 20000;
 
 			Graph.Axes[1].AbsoluteMaximum = maximum;
@@ -301,23 +315,21 @@ namespace VexTrack.MVVM.ViewModel
 
 		private void AddGraphLevels(bool epilogue)
 		{
-			List<LineSeries> levels = GraphCalc.CalcBattlepassLevels(TrackingDataHelper.CurrentSeasonUUID);
-			foreach (LineSeries ls in levels) Graph.Series.Add(ls);
+			var levels = GraphCalc.CalcBattlepassLevels(TrackingDataHelper.CurrentSeasonUUID);
+			foreach (var ls in levels) Graph.Series.Add(ls);
 
 			if (!epilogue) return;
 
-			List<LineSeries> epilogueLevels = GraphCalc.CalcEpilogueLevels(TrackingDataHelper.CurrentSeasonUUID);
-			foreach (LineSeries ls in epilogueLevels) Graph.Series.Add(ls);
+			var epilogueLevels = GraphCalc.CalcEpilogueLevels(TrackingDataHelper.CurrentSeasonUUID);
+			foreach (var ls in epilogueLevels) Graph.Series.Add(ls);
 		}
 
 		private void AddGraphGoals()
 		{
-			List<LineSeries> levels;
-			List<TextAnnotation> annotations;
-			(levels, annotations) = GoalDataCalc.CalcGraphGoals(TrackingDataHelper.CurrentSeasonUUID);
+			var (levels, annotations) = GoalDataCalc.CalcGraphGoals(TrackingDataHelper.CurrentSeasonUUID);
 
-			foreach (LineSeries ls in levels) Graph.Series.Add(ls);
-			foreach (TextAnnotation ta in annotations) Graph.Annotations.Add(ta);
+			foreach (var ls in levels) Graph.Series.Add(ls);
+			foreach (var ta in annotations) Graph.Annotations.Add(ta);
 		}
 	}
 }

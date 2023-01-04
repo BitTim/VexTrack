@@ -13,6 +13,8 @@ namespace VexTrack.MVVM.Model
         private static readonly DependencyProperty ForegroundThicknessProperty = DependencyProperty.Register(nameof(ForegroundThickness), typeof(double), typeof(SegmentedProgressModel), new PropertyMetadata(8.0));
         private static readonly DependencyProperty ForegroundBrushProperty = DependencyProperty.Register(nameof(ForegroundBrush), typeof(Brush), typeof(SegmentedProgressModel), new PropertyMetadata(Application.Current.FindResource("Accent")));
 
+        private static readonly DependencyProperty SpacingProperty = DependencyProperty.Register(nameof(Spacing), typeof(int), typeof(SegmentedProgressModel), new PropertyMetadata(2));
+        
         private static readonly DependencyProperty ValueProperty = DependencyProperty.Register(nameof(Value), typeof(double), typeof(SegmentedProgressModel), new FrameworkPropertyMetadata(0.0, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnPropertyChanged));
         private static readonly DependencyProperty MinValueProperty = DependencyProperty.Register(nameof(MinValue), typeof(double), typeof(SegmentedProgressModel), new PropertyMetadata(0.0, OnPropertyChanged));
         private static readonly DependencyProperty MaxValueProperty = DependencyProperty.Register(nameof(MaxValue), typeof(double), typeof(SegmentedProgressModel), new PropertyMetadata(100.0, OnPropertyChanged));
@@ -36,6 +38,14 @@ namespace VexTrack.MVVM.Model
         {
             get => (Brush)GetValue(ForegroundBrushProperty);
             set => SetValue(ForegroundBrushProperty, value);
+        }
+
+
+
+        public int Spacing
+        {
+            get => (int)GetValue(SpacingProperty);
+            set => SetValue(SpacingProperty, value);
         }
 
 
@@ -129,18 +139,21 @@ namespace VexTrack.MVVM.Model
         private static List<SegmentData> CalcSegmentedData(IReadOnlyList<double> stops, double val)
         {
             var segmentedData = new List<SegmentData>();
+            var prevStop = 0.0;
             var i = 0;
-            
+
             while (val > 0)
             {
-                if (stops[i] > val)
+                var stopDiff = stops[i] - prevStop;
+                if (stopDiff > val)
                 {
                     segmentedData.Add(new SegmentData(val / stops[i]));
                     break;
                 }
                 
                 segmentedData.Add(new SegmentData(1.0));
-                val -= stops[i];
+                val -= stopDiff;
+                prevStop = stops[i];
                 i++;
             }
             

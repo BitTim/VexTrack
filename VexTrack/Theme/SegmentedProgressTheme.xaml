@@ -20,35 +20,40 @@
             <Setter Property="ItemTemplate">
                 <Setter.Value>
                     <DataTemplate DataType="{x:Type local:SegmentData}">
-                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                            <Line x:Name="Background"
-                                  Stretch="Fill"
-                                  X1="0" X2="1" Y1="0" Y2="0"
-                                  VerticalAlignment="Center"
-                                  HorizontalAlignment="Stretch"
-                                  StrokeThickness="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:SegmentedProgressModel}}, Path=BackgroundThickness}"
-                                  StrokeStartLineCap="Round"
-                                  StrokeEndLineCap="Round"
-                                  Stroke="{DynamicResource Shade}"/>
-                            
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="{Binding Length}"></ColumnDefinition>
-                                    <ColumnDefinition Width="{Binding Space}"></ColumnDefinition>
-                                </Grid.ColumnDefinitions>
-                                
-                                <Line x:Name="Foreground"
-                                      Grid.Column="0"
+                        <Grid HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch">
+                            <Border Padding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:SegmentedProgressModel}}, Path=Spacing}">
+                                <Line x:Name="Background"
                                       Stretch="Fill"
                                       X1="0" X2="1" Y1="0" Y2="0"
                                       VerticalAlignment="Center"
-                                      HorizontalAlignment="Left"
-                                      StrokeThickness="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:SegmentedProgressModel}}, Path=ForegroundThickness}"
+                                      HorizontalAlignment="Stretch"
+                                      StrokeThickness="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:SegmentedProgressModel}}, Path=BackgroundThickness}"
                                       StrokeStartLineCap="Round"
                                       StrokeEndLineCap="Round"
-                                      Stroke="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:SegmentedProgressModel}}, Path=ForegroundBrush}"
-                                      Visibility="{Binding Visible, Converter={StaticResource BoolToVisibleConv}}"/>
-                            </Grid>
+                                      Stroke="{DynamicResource Shade}"/>
+                            </Border>
+                            
+                            <Border Padding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:SegmentedProgressModel}}, Path=Spacing}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="{Binding Length}"></ColumnDefinition>
+                                        <ColumnDefinition Width="{Binding Space}"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <Line x:Name="Foreground"
+                                          Grid.Column="0"
+                                          Stretch="Fill"
+                                          X1="0" X2="1" Y1="0" Y2="0"
+                                          VerticalAlignment="Center"
+                                          HorizontalAlignment="Left"
+                                          StrokeThickness="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:SegmentedProgressModel}}, Path=ForegroundThickness}"
+                                          StrokeStartLineCap="Round"
+                                          StrokeEndLineCap="Round"
+                                          Stroke="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:SegmentedProgressModel}}, Path=ForegroundBrush}"
+                                          Visibility="{Binding Visible, Converter={StaticResource BoolToVisibleConv}}"/>
+                                </Grid>
+                            </Border>
                         </Grid>
                     </DataTemplate>
                 </Setter.Value>    

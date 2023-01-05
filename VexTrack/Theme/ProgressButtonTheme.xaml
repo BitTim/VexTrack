@@ -65,20 +65,20 @@
 											FontSize="16"
 											FontWeight="Bold"
 											Foreground="{TemplateBinding Foreground}"/>
-									<local:ProgressArcModel Grid.Row="1"
+									<local:SegmentedProgressModel Grid.Row="1"
 														Value="{TemplateBinding Value}"
 														MinValue="{TemplateBinding MinValue}"
 														MaxValue="{TemplateBinding MaxValue}"
 														Color="{TemplateBinding Color}"/>
 
 									<Path Width="24" Height="24"
-										  Grid.Row="1"
-										  x:Name="Left"
-										  HorizontalAlignment="Left"
-										  VerticalAlignment="Bottom"
-										  Margin="4, 0, 0, 4"
-										  Fill="{TemplateBinding BadgeLeftColor}"
-										  Data="{TemplateBinding BadgeLeftData}">
+									      Grid.Row="1"
+									      x:Name="Left"
+									      HorizontalAlignment="Left"
+									      VerticalAlignment="Bottom"
+									      Margin="4, 0, 0, 4"
+									      Fill="{TemplateBinding BadgeLeftColor}"
+									      Data="{TemplateBinding BadgeLeftData}">
 										<Path.Effect>
 											<DropShadowEffect BlurRadius="8"
 														  ShadowDepth="2"

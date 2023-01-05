@@ -67,17 +67,15 @@
 							   Foreground="{DynamicResource Foreground}"
 							   Margin="0, 0, 0, 4"/>
 
-					<model:ProgressArcModel Grid.Column="0"
-											Grid.Row="2"
+					<model:SegmentedProgressModel Grid.Column="0" Grid.Row="2"
 											HorizontalAlignment="Center"
 											Margin="0, 0, 0, 8"
-										Value="{Binding PackageProgress}"/>
+											Value="{Binding PackageProgress}"/>
 
-					<model:ProgressArcModel Grid.Column="1"
-											Grid.Row="2"
+					<model:SegmentedProgressModel Grid.Column="1" Grid.Row="2"
 											HorizontalAlignment="Center"
 											Margin="0, 0, 0, 8"
-										Value="{Binding UpdaterProgress}"/>
+											Value="{Binding UpdaterProgress}"/>
 
 					<Grid Grid.Row="3"
 						  Grid.Column="0">

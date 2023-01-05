@@ -19,6 +19,7 @@
                             <ItemsPresenter Grid.Column="0" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
                             <TextBlock Grid.Column="1"
                                        Padding="16, 0, 0, 0"
+                                       VerticalAlignment="Center"
                                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Percentage}"
                                        Foreground="{DynamicResource Foreground}"
                                        FontSize="14"

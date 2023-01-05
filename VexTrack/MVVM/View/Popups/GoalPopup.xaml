@@ -121,8 +121,8 @@
 										Margin="0, 0, 0, 4"/>
 				</Grid>
 
-				<model:ProgressArcModel Margin="32, 0, 4, 0"
-										Grid.Column="1"
+				<model:SegmentedProgressModel Margin="32, 0, 4, 0"
+										Grid.Column="1" Grid.Row="0"
 										Value="{Binding Progress}"
 										Color="{Binding Color}"/>
 

@@ -147,8 +147,8 @@
 					</Grid>
 				</Grid>
 
-				<model:ProgressArcModel Margin="32, 0, 4, 0"
-										Grid.Column="1"
+				<model:SegmentedProgressModel Margin="32, 0, 4, 0"
+										Grid.Column="1" Grid.Row="0"
 										Value="{Binding Progress}"/>
 
 				<oxy:PlotView Model="{Binding Graph}"

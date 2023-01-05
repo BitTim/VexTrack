@@ -29,13 +29,7 @@
 					<RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
 
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*"/>
-					<ColumnDefinition Width="Auto"/>
-				</Grid.ColumnDefinitions>
-
-				<Grid Grid.Row="0"
-					  Grid.Column="0">
+				<Grid Grid.Row="0">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*"/>
 						<ColumnDefinition Width="*"/>
@@ -48,6 +42,7 @@
 						<RowDefinition Height="30"/>
 						<RowDefinition Height="30"/>
 						<RowDefinition Height="30"/>
+						<RowDefinition Height="Auto"/>
 						<RowDefinition Height="Auto"/>
 					</Grid.RowDefinitions>
 
@@ -175,9 +170,15 @@
 							</Binding>
 						</TextBox.Text>
 					</TextBox>
+					
+					<model:SegmentedProgressModel Grid.Column="0" Grid.Row="6"
+					                              Grid.ColumnSpan="2"
+					                              VerticalAlignment="Center"
+					                              Margin="0, 8, 0, 0"
+					                              Value="{Binding Progress}"/>
 
 					<TextBlock Text="Note: Remaining Days are 1 more than Valorant shows ingame, because of the way Valorant handles the last day"
-							   Grid.Row="6"
+							   Grid.Row="7"
 							   Grid.ColumnSpan="2"
 							   Grid.Column="0"
 							   TextWrapping="WrapWithOverflow"
@@ -187,14 +188,8 @@
 							   Margin="0, 8, 0, 4"/>
 				</Grid>
 
-				<model:ProgressArcModel Margin="32, 0, 4, 0"
-										Grid.Column="1"
-										VerticalAlignment="Center"
-										Value="{Binding Progress}"/>
-
 				<Grid Grid.Row="1"
-					  Grid.ColumnSpan="2"
-					  Margin="0, 16, 0, 0">
+				      Margin="0, 16, 0, 0">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*"/>
 						<ColumnDefinition Width="*"/>

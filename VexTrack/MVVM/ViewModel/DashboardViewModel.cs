@@ -173,8 +173,6 @@ namespace VexTrack.MVVM.ViewModel
 			}
 		}
 
-		public static List<double> SegmentStops => new List<double> { 0.25, 0.5, 1.0 };
-
 		public DashboardViewModel()
 		{
 			Graph = new PlotModel

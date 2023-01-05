@@ -11,7 +11,18 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type local:SegmentedProgressModel}">
                         <Grid x:Name="Container">
-                            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <ItemsPresenter Grid.Column="0" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                            <TextBlock Grid.Column="1"
+                                       Padding="16, 0, 0, 0"
+                                       Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Percentage}"
+                                       Foreground="{DynamicResource Foreground}"
+                                       FontSize="14"
+                                       Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ShowPercentage, Converter={StaticResource BoolToVisibleConv}}"/>
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>    

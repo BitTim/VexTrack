@@ -22,6 +22,9 @@ namespace VexTrack.MVVM.Model
         private static readonly DependencyProperty SegmentedDataProperty = DependencyProperty.Register(nameof(SegmentedData), typeof(List<SegmentData>), typeof(SegmentedProgressModel), new PropertyMetadata(new List<SegmentData>() {new SegmentData(0.0)}, OnPropertyChanged));
         private static readonly DependencyProperty ColorProperty = DependencyProperty.Register(nameof(Color), typeof(string), typeof(SegmentedProgressModel), new PropertyMetadata("", OnPropertyChanged));
 
+        private static readonly DependencyProperty PercentageProperty = DependencyProperty.Register(nameof(Percentage), typeof(string), typeof(SegmentedProgressModel), new PropertyMetadata("0 %"));
+        private static readonly DependencyProperty ShowPercentageProperty = DependencyProperty.Register(nameof(ShowPercentage), typeof(bool), typeof(SegmentedProgressModel), new PropertyMetadata(true));
+        
         public double BackgroundThickness
         {
             get => (double)GetValue(BackgroundThicknessProperty);
@@ -85,6 +88,20 @@ namespace VexTrack.MVVM.Model
             get => (string)GetValue(ColorProperty);
             set => SetValue(ColorProperty, value);
         }
+
+
+
+        public string Percentage
+        {
+            get => (string)GetValue(PercentageProperty);
+            set => SetValue(PercentageProperty, value);
+        }
+
+        public bool ShowPercentage
+        {
+            get => (bool)GetValue(ShowPercentageProperty);
+            set => SetValue(ShowPercentageProperty, value);
+        }
         
         
         
@@ -107,6 +124,7 @@ namespace VexTrack.MVVM.Model
             if (Value < MinValue) Value = MinValue;
 
             var valuePercent = Math.Round((Value - MinValue) / MaxValue - MinValue, 2);
+            Percentage = (int)(valuePercent * 100) + " %";
 
             if (string.IsNullOrEmpty(Color)) ForegroundBrush = (Brush)Application.Current.FindResource("Accent");
             else
@@ -131,7 +149,6 @@ namespace VexTrack.MVVM.Model
                 segmentsGrid.ColumnDefinitions.Add(colDef);
                 Grid.SetColumn(segmentsGrid.Children[i], i);
             }
-
 
             _isUpdating = false;
         }

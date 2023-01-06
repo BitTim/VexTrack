@@ -25,12 +25,9 @@
 				<Grid Grid.Row="0"
 					  Grid.Column="0"
 					  Margin="0, 4, 0, 0">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*"/>
-						<ColumnDefinition Width="*"/>
-					</Grid.ColumnDefinitions>
-
 					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
 						<RowDefinition Height="Auto"/>
 						<RowDefinition Height="Auto"/>
 						<RowDefinition Height="Auto"/>
@@ -43,7 +40,6 @@
 					<TextBlock Text="Downloading Update"
 							   Grid.Column="0"
 							   Grid.Row="0"
-							   Grid.ColumnSpan="2"
 							   FontSize="20"
 							   FontWeight="Bold"
 							   Foreground="{DynamicResource Foreground}"
@@ -54,41 +50,22 @@
 							   Grid.Row="1"
 							   FontSize="14"
 							   FontWeight="Bold"
-							   HorizontalAlignment="Center"
+							   HorizontalAlignment="Left"
 							   Foreground="{DynamicResource Foreground}"
 							   Margin="0, 0, 0, 4"/>
 
-					<TextBlock Text="Updater Tool"
-							   Grid.Column="1"
-							   Grid.Row="1"
-							   FontSize="14"
-							   FontWeight="Bold"
-							   HorizontalAlignment="Center"
-							   Foreground="{DynamicResource Foreground}"
-							   Margin="0, 0, 0, 4"/>
-
-					<model:ProgressArcModel Grid.Column="0"
-											Grid.Row="2"
-											HorizontalAlignment="Center"
-											Margin="0, 0, 0, 8"
-										Value="{Binding PackageProgress}"/>
-
-					<model:ProgressArcModel Grid.Column="1"
-											Grid.Row="2"
-											HorizontalAlignment="Center"
-											Margin="0, 0, 0, 8"
-										Value="{Binding UpdaterProgress}"/>
-
-					<Grid Grid.Row="3"
+					<Grid Grid.Row="2"
 						  Grid.Column="0">
 						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="*"/>
 							<ColumnDefinition Width="*"/>
 							<ColumnDefinition Width="*"/>
 						</Grid.ColumnDefinitions>
 
 						<TextBlock Text="Total"
 							   Grid.Column="0"
-							   Grid.Row="3"
+							   Grid.Row="0"
 							   FontSize="14"
 							   FontWeight="Bold"
 							   Foreground="{DynamicResource Foreground}"
@@ -97,46 +74,54 @@
 						<model:TextWithUnit Text="{Binding PackageTotalSize}"
 										Unit="{Binding PackageTotalSizeUnit}"
 										Grid.Column="1"
-										Grid.Row="3"
+										Grid.Row="0"
 										FontSize="14"
 										Foreground="{DynamicResource Foreground}"
 										Margin="0, 0, 0, 4"/>
+						
+						<TextBlock Text="Size"
+						           Grid.Column="2"
+						           Grid.Row="0"
+						           FontSize="14"
+						           FontWeight="Bold"
+						           Foreground="{DynamicResource Foreground}"
+						           Margin="0, 0, 0, 4"/>
+
+						<model:TextWithUnit Text="{Binding PackageSize}"
+						                    Unit="{Binding PackageSizeUnit}"
+						                    Grid.Column="3"
+						                    Grid.Row="0"
+						                    FontSize="14"
+						                    Foreground="{DynamicResource Foreground}"
+						                    Margin="0, 0, 0, 4"/>
 					</Grid>
 
-					<Grid Grid.Row="4"
+					<model:SegmentedProgressModel Grid.Column="0" Grid.Row="3"
+					                              HorizontalAlignment="Center"
+					                              Margin="0, 0, 0, 8"
+					                              Value="{Binding PackageProgress}"/>
+
+					<TextBlock Text="Updater Tool"
+					           Grid.Column="0"
+					           Grid.Row="4"
+					           FontSize="14"
+					           FontWeight="Bold"
+					           HorizontalAlignment="Left"
+					           Foreground="{DynamicResource Foreground}"
+					           Margin="0, 16, 0, 4"/>
+					
+					<Grid Grid.Row="5"
 						  Grid.Column="0">
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="*"/>
 							<ColumnDefinition Width="*"/>
-						</Grid.ColumnDefinitions>
-
-						<TextBlock Text="Size"
-							   Grid.Column="0"
-							   Grid.Row="3"
-							   FontSize="14"
-							   FontWeight="Bold"
-							   Foreground="{DynamicResource Foreground}"
-							   Margin="0, 0, 0, 4"/>
-
-						<model:TextWithUnit Text="{Binding PackageSize}"
-										Unit="{Binding PackageSizeUnit}"
-										Grid.Column="1"
-										Grid.Row="3"
-										FontSize="14"
-										Foreground="{DynamicResource Foreground}"
-										Margin="0, 0, 0, 4"/>
-					</Grid>
-
-					<Grid Grid.Row="3"
-						  Grid.Column="1">
-						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="*"/>
 							<ColumnDefinition Width="*"/>
 						</Grid.ColumnDefinitions>
 
 						<TextBlock Text="Total"
 							   Grid.Column="0"
-							   Grid.Row="3"
+							   Grid.Row="0"
 							   FontSize="14"
 							   FontWeight="Bold"
 							   Foreground="{DynamicResource Foreground}"
@@ -145,56 +130,59 @@
 						<model:TextWithUnit Text="{Binding UpdaterTotalSize}"
 										Unit="{Binding UpdaterTotalSizeUnit}"
 										Grid.Column="1"
-										Grid.Row="3"
+										Grid.Row="0"
 										FontSize="14"
 										Foreground="{DynamicResource Foreground}"
 										Margin="0, 0, 0, 4"/>
+						
+						<TextBlock Text="Size"
+						           Grid.Column="2"
+						           Grid.Row="0"
+						           FontSize="14"
+						           FontWeight="Bold"
+						           Foreground="{DynamicResource Foreground}"
+						           Margin="0, 0, 0, 4"/>
+
+						<model:TextWithUnit Text="{Binding UpdaterSize}"
+						                    Unit="{Binding UpdaterSizeUnit}"
+						                    Grid.Column="3"
+						                    Grid.Row="0"
+						                    FontSize="14"
+						                    Foreground="{DynamicResource Foreground}"
+						                    Margin="0, 0, 0, 4"/>
 					</Grid>
 
-					<Grid Grid.Row="4"
-						  Grid.Column="1">
+					<model:SegmentedProgressModel Grid.Column="0" Grid.Row="6"
+					                              HorizontalAlignment="Center"
+					                              Margin="0, 0, 0, 8"
+					                              Value="{Binding UpdaterProgress}"/>
+
+					<Grid Grid.Column="0" Grid.Row="7">
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="*"/>
 							<ColumnDefinition Width="*"/>
 						</Grid.ColumnDefinitions>
+						
+						<TextBlock Text="Download Speed"
+						           Grid.Column="0"
+						           Grid.Row="0"
+						           FontSize="14"
+						           FontWeight="Bold"
+						           Foreground="{DynamicResource Foreground}"
+						           Margin="0, 8, 0, 4"/>
 
-						<TextBlock Text="Size"
-							   Grid.Column="0"
-							   Grid.Row="3"
-							   FontSize="14"
-							   FontWeight="Bold"
-							   Foreground="{DynamicResource Foreground}"
-							   Margin="0, 0, 0, 4"/>
-
-						<model:TextWithUnit Text="{Binding UpdaterSize}"
-										Unit="{Binding UpdaterSizeUnit}"
-										Grid.Column="1"
-										Grid.Row="3"
-										FontSize="14"
-										Foreground="{DynamicResource Foreground}"
-										Margin="0, 0, 0, 4"/>
+						<model:TextWithUnit Text="{Binding DownloadSpeed}"
+											Unit="{Binding DownloadSpeedUnit}"
+											Grid.Column="1"
+											Grid.Row="0"
+											FontSize="14"
+											Foreground="{DynamicResource Foreground}"
+											Margin="0, 8, 0, 4"/>
 					</Grid>
-
-					<TextBlock Text="Download Speed"
-							   Grid.Column="0"
-							   Grid.Row="5"
-							   FontSize="14"
-							   FontWeight="Bold"
-							   Foreground="{DynamicResource Foreground}"
-							   Margin="0, 8, 0, 4"/>
-
-					<model:TextWithUnit Text="{Binding DownloadSpeed}"
-										Unit="{Binding DownloadSpeedUnit}"
-										Grid.Column="1"
-										Grid.Row="5"
-										FontSize="14"
-										Foreground="{DynamicResource Foreground}"
-										Margin="0, 8, 0, 4"/>
 
 					<TextBlock Text="Note: VexTrack will restart after the download is completed. Make sure to not have any other programs open within the VexTrack installation folder"
 							   Grid.Column="0"
-							   Grid.ColumnSpan="2"
-							   Grid.Row="6"
+							   Grid.Row="8"
 							   FontSize="14"
 							   FontStyle="Italic"
 							   TextWrapping="Wrap"

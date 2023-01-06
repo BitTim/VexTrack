@@ -42,11 +42,12 @@
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*"/>
 						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
 					</Grid.ColumnDefinitions>
 
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto"/>
-						<RowDefinition Height="22"/>
 						<RowDefinition Height="22"/>
 						<RowDefinition Height="22"/>
 						<RowDefinition Height="Auto"/>
@@ -70,6 +71,14 @@
 							   Margin="0, 0, 0, 4"/>
 
 					<TextBlock Text="End Date"
+							   Grid.Row="1"
+							   Grid.Column="2"
+							   FontSize="14"
+							   FontWeight="Bold"
+							   Foreground="{DynamicResource Foreground}"
+							   Margin="0, 0, 0, 4"/>
+
+					<TextBlock Text="Strongest Day"
 							   Grid.Row="2"
 							   Grid.Column="0"
 							   FontSize="14"
@@ -77,17 +86,9 @@
 							   Foreground="{DynamicResource Foreground}"
 							   Margin="0, 0, 0, 4"/>
 
-					<TextBlock Text="Strongest Day"
-							   Grid.Row="3"
-							   Grid.Column="0"
-							   FontSize="14"
-							   FontWeight="Bold"
-							   Foreground="{DynamicResource Foreground}"
-							   Margin="0, 0, 0, 4"/>
-
 					<TextBlock Text="Weakest Day"
-							   Grid.Row="4"
-							   Grid.Column="0"
+							   Grid.Row="2"
+							   Grid.Column="2"
 							   FontSize="14"
 							   FontWeight="Bold"
 							   Foreground="{DynamicResource Foreground}"
@@ -102,17 +103,17 @@
 										Margin="0, 0, 0, 4"/>
 
 					<TextBlock Text="{Binding EndDate, Converter={StaticResource TimestampConv}, ConverterParameter=True}"
-							   Grid.Row="2"
-							   Grid.Column="1"
+							   Grid.Row="1"
+							   Grid.Column="3"
 							   Foreground="{DynamicResource Foreground}"
 							   FontSize="14"
 							   Margin="0, 0, 0, 4"/>
 
-					<Grid Grid.Row="3"
+					<Grid Grid.Row="2"
 						  Grid.Column="1">
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="*"/>
-							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition Width="*"/>
 						</Grid.ColumnDefinitions>
 
 						<TextBlock Text="{Binding StrongestDate, Converter={StaticResource TimestampConv}, ConverterParameter=True}"
@@ -127,11 +128,11 @@
 											Margin="0, 0, 0, 4"/>
 					</Grid>
 
-					<Grid Grid.Row="4"
-						  Grid.Column="1">
+					<Grid Grid.Row="2"
+						  Grid.Column="3">
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="*"/>
-							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition Width="*"/>
 						</Grid.ColumnDefinitions>
 
 						<TextBlock Text="{Binding WeakestDate, Converter={StaticResource TimestampConv}, ConverterParameter=True}"
@@ -145,18 +146,19 @@
 											Grid.Column="1"
 											Margin="0, 0, 0, 4"/>
 					</Grid>
+					
+					<model:SegmentedProgressModel Margin="0, 8, 0, 0"
+					                              Grid.Column="0" Grid.Row="3"
+					                              Grid.ColumnSpan="4"
+					                              Value="{Binding Progress}"/>
 				</Grid>
 
-				<model:ProgressArcModel Margin="32, 0, 4, 0"
-										Grid.Column="1"
-										Value="{Binding Progress}"/>
-
 				<oxy:PlotView Model="{Binding Graph}"
-							  Grid.Row="1"
-							  Grid.ColumnSpan="2"
-							  Background="{DynamicResource Background}"
-							  Foreground="{DynamicResource Foreground}"
-							  Margin="0, 0, 0, 0">
+				              Grid.Row="1"
+				              Grid.ColumnSpan="2"
+				              Background="{DynamicResource Background}"
+				              Foreground="{DynamicResource Foreground}"
+				              Margin="0, 0, 0, 0">
 					<oxy:PlotView.DefaultTrackerTemplate>
 						<ControlTemplate>
 							<oxy:TrackerControl Position="{Binding Position}"

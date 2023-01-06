@@ -41,11 +41,12 @@
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*"/>
 						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
 					</Grid.ColumnDefinitions>
 
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto"/>
-						<RowDefinition Height="22"/>
 						<RowDefinition Height="22"/>
 						<RowDefinition Height="22"/>
 						<RowDefinition Height="Auto"/>
@@ -69,6 +70,14 @@
 							   Margin="0, 0, 0, 4"/>
 
 					<TextBlock Text="Remaining"
+							   Grid.Row="1"
+							   Grid.Column="2"
+							   FontSize="14"
+							   FontWeight="Bold"
+							   Foreground="{DynamicResource Foreground}"
+							   Margin="0, 0, 0, 4"/>
+
+					<TextBlock Text="Total"
 							   Grid.Row="2"
 							   Grid.Column="0"
 							   FontSize="14"
@@ -76,17 +85,9 @@
 							   Foreground="{DynamicResource Foreground}"
 							   Margin="0, 0, 0, 4"/>
 
-					<TextBlock Text="Total"
-							   Grid.Row="3"
-							   Grid.Column="0"
-							   FontSize="14"
-							   FontWeight="Bold"
-							   Foreground="{DynamicResource Foreground}"
-							   Margin="0, 0, 0, 4"/>
-
 					<TextBlock Text="Active"
-							   Grid.Row="4"
-							   Grid.Column="0"
+							   Grid.Row="2"
+							   Grid.Column="2"
 							   FontSize="14"
 							   FontWeight="Bold"
 							   Foreground="{DynamicResource Foreground}"
@@ -103,32 +104,33 @@
 
 					<model:TextWithUnit Text="{Binding Remaining, Converter={StaticResource NegativeToZeroConv}}"
 										Unit="{Binding Unit}"
-										Grid.Row="2"
-										Grid.Column="1"
+										Grid.Row="1"
+										Grid.Column="3"
 										Margin="0, 0, 0, 4"/>
 
 					<model:TextWithUnit Text="{Binding Total}"
 										Unit="{Binding Unit}"
-										Grid.Row="3"
+										Grid.Row="2"
 										Grid.Column="1"
 										Margin="0, 0, 0, 4"/>
 
 					<model:TextWithUnit Text="{Binding Active}"
 										Unit="{Binding Unit}"
-										Grid.Row="4"
-										Grid.Column="1"
+										Grid.Row="2"
+										Grid.Column="3"
 										Visibility="{Binding Active, Converter={StaticResource NegativeToVisibleConv}}"
 										Margin="0, 0, 0, 4"/>
+					
+					<model:SegmentedProgressModel Padding="0, 8, 0, 0"
+					                              Grid.Column="0" Grid.Row="3"
+					                              Grid.ColumnSpan="4"
+					                              Value="{Binding Progress}"
+					                              Color="{Binding Color}"/>
 				</Grid>
 
-				<model:ProgressArcModel Margin="32, 0, 4, 0"
-										Grid.Column="1"
-										Value="{Binding Progress}"
-										Color="{Binding Color}"/>
-
 				<Grid Grid.Row="1"
-					  Grid.ColumnSpan="2"
-					  Margin="0, 16, 0, 0">
+				      Grid.ColumnSpan="2"
+				      Margin="0, 16, 0, 0">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*"/>
 						<ColumnDefinition Width="*"/>

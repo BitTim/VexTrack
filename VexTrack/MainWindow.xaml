@@ -210,17 +210,6 @@
 			
 				<StackPanel Grid.Row="3"
 							Margin="16, 0">
-                    
-                    <!-- 187 Easter Egg -->
-
-                    <TextBlock Foreground="{DynamicResource Background}"
-                                   Text="187"
-                               Opacity="0.25"
-                                   FontSize="100"
-                                   FontWeight="Bold"
-                                   HorizontalAlignment="Center"
-                                   Grid.Column="1"
-                                   Grid.Row="3"/>
 
                     <Grid Margin="0, 0, 0, 16">
 						<Grid.ColumnDefinitions>

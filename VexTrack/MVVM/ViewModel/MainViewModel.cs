@@ -9,9 +9,9 @@ using VexTrack.MVVM.ViewModel.Popups;
 
 namespace VexTrack.MVVM.ViewModel
 {
-	class MainViewModel : ObservableObject
+	internal class MainViewModel : ObservableObject
 	{
-		public ThemeWatcher Watcher { get; set; }
+		private ThemeWatcher Watcher { get; set; }
 
 		public RelayCommand DashboardViewCommand { get; set; }
 		public RelayCommand GoalViewCommand { get; set; }
@@ -19,21 +19,21 @@ namespace VexTrack.MVVM.ViewModel
 		public RelayCommand HistoryViewCommand { get; set; }
 		public RelayCommand SettingsViewCommand { get; set; }
 
-		public DashboardViewModel DashboardVM { get; set; }
-		public GoalViewModel GoalVM { get; set; }
-		public SeasonViewModel SeasonVM { get; set; }
-		public HistoryViewModel HistoryVM { get; set; }
-		public SettingsViewModel SettingsVM { get; set; }
+		private DashboardViewModel DashboardVm { get; set; }
+		private GoalViewModel GoalVm { get; set; }
+		private SeasonViewModel SeasonVm { get; set; }
+		private HistoryViewModel HistoryVm { get; set; }
+		private SettingsViewModel SettingsVm { get; set; }
 
-		private HistoryEntryPopupViewModel HEPopup { get; set; }
-		private EditableHistoryEntryPopupViewModel EditableHEPopup { get; set; }
+		private HistoryEntryPopupViewModel HePopup { get; set; }
+		private EditableHistoryEntryPopupViewModel EditableHePopup { get; set; }
 		private GoalPopupViewModel GoalPopup { get; set; }
 		private EditableGoalPopupViewModel EditableGoalPopup { get; set; }
 		private SeasonPopupViewModel SeasonPopup { get; set; }
 		private EditableSeasonPopupViewModel EditableSeasonPopup { get; set; }
 		private DataInitPopupViewModel DataInitPopup { get; set; }
 		private ResetDataConfirmationPopupViewModel ResetDataConfirmationPopup { get; set; }
-		private ProgressActivityPopupViewModel PAPopupVM { get; set; }
+		private ProgressActivityPopupViewModel PaPopupVm { get; set; }
 		private AboutPopupViewModel AboutPopup { get; set; }
 		private UpdateAvailablePopupViewModel UpdateAvailablePopup { get; set; }
 		private UpdateDownloadPopupViewModel UpdateDownloadPopup { get; set; }
@@ -47,17 +47,16 @@ namespace VexTrack.MVVM.ViewModel
 		private bool _epilogue;
 		private bool _epilogueButtonEnabled;
 
-		private Timer updateTimer;
-		private BasePopupViewModel _currentPopup = null;
+		private BasePopupViewModel _currentPopup;
 		private List<BasePopupViewModel> _popupQueue = new();
 
-		public bool ViewModelsInitialized = false;
+		private bool _viewModelsInitialized;
 		public bool InterruptUpdate = false;
 
 		public object CurrentView
 		{
-			get { return _currentView; }
-			set
+			get => _currentView;
+			private set
 			{
 				_currentView = value;
 				OnPropertyChanged();
@@ -66,7 +65,7 @@ namespace VexTrack.MVVM.ViewModel
 
 		public BasePopupViewModel CurrentPopup
 		{
-			get { return _currentPopup; }
+			get => _currentPopup;
 			set
 			{
 				_currentPopup = value;
@@ -76,7 +75,7 @@ namespace VexTrack.MVVM.ViewModel
 
 		public List<BasePopupViewModel> PopupQueue
 		{
-			get { return _popupQueue; }
+			get => _popupQueue;
 			set
 			{
 				_popupQueue = value;
@@ -109,12 +108,12 @@ namespace VexTrack.MVVM.ViewModel
 		{
 			if (Directory.Exists(Constants.LegacyDataFolder))
 			{
-				DirectoryInfo targetDir = new DirectoryInfo(Constants.DataFolder);
+				var targetDir = new DirectoryInfo(Constants.DataFolder);
 				if (!targetDir.Exists) Directory.CreateDirectory(Constants.DataFolder);
 
-				foreach (string f in Directory.GetFiles(Constants.LegacyDataFolder))
+				foreach (var f in Directory.GetFiles(Constants.LegacyDataFolder))
 				{
-					FileInfo file = new FileInfo(f);
+					var file = new FileInfo(f);
 					file.MoveTo(targetDir + "\\" + file.Name);
 				}
 
@@ -122,28 +121,28 @@ namespace VexTrack.MVVM.ViewModel
 			}
 
 			SettingsHelper.Init();
-			Watcher = new();
+			Watcher = new ThemeWatcher();
 
 			ViewModelManager.ViewModels.Add("Main", this);
 			InitPopupViewModels();
 
-			DashboardViewCommand = new RelayCommand(o => SetView(DashboardVM)); ;
-			GoalViewCommand = new RelayCommand(o => SetView(GoalVM));
-			SeasonViewCommand = new RelayCommand(o => SetView(SeasonVM));
-			HistoryViewCommand = new RelayCommand(o => SetView(HistoryVM));
-			SettingsViewCommand = new RelayCommand(o => SetView(SettingsVM));
+			DashboardViewCommand = new RelayCommand(_ => SetView(DashboardVm));
+			GoalViewCommand = new RelayCommand(_ => SetView(GoalVm));
+			SeasonViewCommand = new RelayCommand(_ => SetView(SeasonVm));
+			HistoryViewCommand = new RelayCommand(_ => SetView(HistoryVm));
+			SettingsViewCommand = new RelayCommand(_ => SetView(SettingsVm));
 
 			TrackingDataHelper.LoadData();
 			SettingsHelper.LoadSettings();
 
 			UpdateHelper.CheckUpdateAsync();
 
-			updateTimer = new(UpdateTimerCallback);
-			DateTime now = DateTime.Now.ToLocalTime();
-			DateTime midnight = DateTime.Today.ToLocalTime();
+			Timer updateTimer = new(UpdateTimerCallback);
+			var now = DateTime.Now.ToLocalTime();
+			var midnight = DateTime.Today.ToLocalTime();
 
 			if (now > midnight) midnight = midnight.AddDays(1).ToLocalTime();
-			int msUntilMidnight = (int)(midnight - now).TotalMilliseconds;
+			var msUntilMidnight = (int)(midnight - now).TotalMilliseconds;
 			updateTimer.Change(msUntilMidnight, Timeout.Infinite);
 
 			Update();
@@ -153,32 +152,32 @@ namespace VexTrack.MVVM.ViewModel
 		{
 			if (InterruptUpdate) return;
 
-			DashboardVM = new DashboardViewModel();
-			GoalVM = new GoalViewModel();
-			SeasonVM = new SeasonViewModel();
-			HistoryVM = new HistoryViewModel();
-			SettingsVM = new SettingsViewModel();
+			DashboardVm = new DashboardViewModel();
+			GoalVm = new GoalViewModel();
+			SeasonVm = new SeasonViewModel();
+			HistoryVm = new HistoryViewModel();
+			SettingsVm = new SettingsViewModel();
 
-			ViewModelManager.ViewModels.Add("Dashboard", DashboardVM);
-			ViewModelManager.ViewModels.Add("Goal", GoalVM);
-			ViewModelManager.ViewModels.Add("Season", SeasonVM);
-			ViewModelManager.ViewModels.Add("History", HistoryVM);
-			ViewModelManager.ViewModels.Add("Settings", SettingsVM);
+			ViewModelManager.ViewModels.Add("Dashboard", DashboardVm);
+			ViewModelManager.ViewModels.Add("Goal", GoalVm);
+			ViewModelManager.ViewModels.Add("Season", SeasonVm);
+			ViewModelManager.ViewModels.Add("History", HistoryVm);
+			ViewModelManager.ViewModels.Add("Settings", SettingsVm);
 
-			CurrentView = DashboardVM;
-			ViewModelsInitialized = true;
+			CurrentView = DashboardVm;
+			_viewModelsInitialized = true;
 		}
 
 		private void InitPopupViewModels()
 		{
-			DataInitPopup = new();
+			DataInitPopup = new DataInitPopupViewModel();
 			ViewModelManager.ViewModels.Add("DataInitPopup", DataInitPopup);
 
-			EditableHEPopup = new();
-			ViewModelManager.ViewModels.Add("EditableHEPopup", EditableHEPopup);
+			EditableHePopup = new EditableHistoryEntryPopupViewModel();
+			ViewModelManager.ViewModels.Add("EditableHEPopup", EditableHePopup);
 
-			HEPopup = new();
-			ViewModelManager.ViewModels.Add("HEPopup", HEPopup);
+			HePopup = new HistoryEntryPopupViewModel();
+			ViewModelManager.ViewModels.Add("HEPopup", HePopup);
 
 			DeleteGoalConfirmationPopup = new DeleteGoalConfirmationPopupViewModel();
 			ViewModelManager.ViewModels.Add("DeleteGoalConfirmationPopup", DeleteGoalConfirmationPopup);
@@ -186,23 +185,23 @@ namespace VexTrack.MVVM.ViewModel
 			DeleteGoalGroupConfirmationPopup = new DeleteGoalGroupConfirmationPopupViewModel();
 			ViewModelManager.ViewModels.Add("DeleteGoalGroupConfirmationPopup", DeleteGoalGroupConfirmationPopup);
 
-			EditableGoalPopup = new();
+			EditableGoalPopup = new EditableGoalPopupViewModel();
 			ViewModelManager.ViewModels.Add("EditableGoalPopup", EditableGoalPopup);
 
-			GoalPopup = new();
+			GoalPopup = new GoalPopupViewModel();
 			ViewModelManager.ViewModels.Add("GoalPopup", GoalPopup);
 
-			EditableSeasonPopup = new();
+			EditableSeasonPopup = new EditableSeasonPopupViewModel();
 			ViewModelManager.ViewModels.Add("EditableSeasonPopup", EditableSeasonPopup);
 
-			SeasonPopup = new();
+			SeasonPopup = new SeasonPopupViewModel();
 			ViewModelManager.ViewModels.Add("SeasonPopup", SeasonPopup);
 
 			ResetDataConfirmationPopup = new ResetDataConfirmationPopupViewModel();
 			ViewModelManager.ViewModels.Add("ResetDataConfirmationPopup", ResetDataConfirmationPopup);
 
-			PAPopupVM = new ProgressActivityPopupViewModel();
-			ViewModelManager.ViewModels.Add("PAPopup", PAPopupVM);
+			PaPopupVm = new ProgressActivityPopupViewModel();
+			ViewModelManager.ViewModels.Add("PAPopup", PaPopupVm);
 
 			AboutPopup = new AboutPopupViewModel();
 			ViewModelManager.ViewModels.Add("AboutPopup", AboutPopup);
@@ -223,7 +222,7 @@ namespace VexTrack.MVVM.ViewModel
 			ViewModelManager.ViewModels.Add("SeasonEndConfirmationPopup", SeasonEndConfirmationPopup);
 		}
 
-		public void SetView(object view)
+		private void SetView(object view)
 		{
 			CurrentView = view;
 		}
@@ -231,7 +230,7 @@ namespace VexTrack.MVVM.ViewModel
 		public void Update(bool epilogueOnly = false)
 		{
 			if (InterruptUpdate) return;
-			if (!ViewModelsInitialized) InitViewModels();
+			if (!_viewModelsInitialized) InitViewModels();
 
 			if (InterruptUpdate) return;
 
@@ -242,15 +241,13 @@ namespace VexTrack.MVVM.ViewModel
 			}
 			else EpilogueButtonEnabled = true;
 
-			DashboardVM.Update(Epilogue);
-			GoalVM.Update(Epilogue);
-			SeasonVM.Update(Epilogue);
+			DashboardVm.Update(Epilogue);
+			GoalVm.Update(Epilogue);
+			SeasonVm.Update(Epilogue);
 
-			if (!epilogueOnly)
-			{
-				HistoryVM.Update();
-				SettingsVM.Update();
-			}
+			if (epilogueOnly) return;
+			HistoryVm.Update();
+			SettingsVm.Update();
 		}
 
 		public void QueuePopup(BasePopupViewModel popup)
@@ -264,8 +261,7 @@ namespace VexTrack.MVVM.ViewModel
 		{
 			PopupQueue.Remove(popup);
 
-			if (PopupQueue.Count == 0) CurrentPopup = null;
-			else CurrentPopup = PopupQueue.Last();
+			CurrentPopup = PopupQueue.Count == 0 ? null : PopupQueue.Last();
 
 			popup.IsOpen = false;
 		}
@@ -277,8 +273,7 @@ namespace VexTrack.MVVM.ViewModel
 		}
 
 
-
-		public void UpdateTimerCallback(object state)
+		private void UpdateTimerCallback(object state)
 		{
 			Application.Current.Dispatcher.Invoke(delegate { Update(); });
 		}

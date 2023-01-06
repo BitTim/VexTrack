@@ -66,10 +66,11 @@
 											FontWeight="Bold"
 											Foreground="{TemplateBinding Foreground}"/>
 									<local:SegmentedProgressModel Grid.Row="1"
-														Value="{TemplateBinding Value}"
-														MinValue="{TemplateBinding MinValue}"
-														MaxValue="{TemplateBinding MaxValue}"
-														Color="{TemplateBinding Color}"/>
+									                              Margin="4, 0, 4, 0"
+									                              Value="{TemplateBinding Value}"
+									                              MinValue="{TemplateBinding MinValue}"
+									                              MaxValue="{TemplateBinding MaxValue}"
+									                              Color="{TemplateBinding Color}"/>
 
 									<Path Width="24" Height="24"
 									      Grid.Row="1"

@@ -50,6 +50,7 @@
 						<RowDefinition Height="30"/>
 						<RowDefinition Height="30"/>
 						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
 					</Grid.RowDefinitions>
 
 					<TextBlock Text="{Binding PopupTitle}"
@@ -203,19 +204,18 @@
 											Margin="0, 8, 0, 0"
 											Visibility="{Binding UseAccentColor, Converter={StaticResource InvBoolToVisibileConv}, ConverterParameter=true}"
 											Hex="{Binding Color, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+					
+					<model:SegmentedProgressModel Margin="0, 8, 0, 0"
+					                              Grid.Column="0" Grid.Row="8"
+					                              Grid.ColumnSpan="2"
+					                              VerticalAlignment="Center"
+					                              Value="{Binding Progress}"
+					                              Color="{Binding Color, UpdateSourceTrigger=PropertyChanged}"/>
 				</Grid>
 
-
-
-				<model:SegmentedProgressModel Margin="32, 0, 4, 0"
-										Grid.Column="1" Grid.Row="0"
-										VerticalAlignment="Center"
-										Value="{Binding Progress}"
-										Color="{Binding Color, UpdateSourceTrigger=PropertyChanged}"/>
-
 				<Grid Grid.Row="1"
-					  Grid.ColumnSpan="2"
-					  Margin="0, 16, 0, 0">
+				      Grid.ColumnSpan="2"
+				      Margin="0, 16, 0, 0">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*"/>
 						<ColumnDefinition Width="*"/>

@@ -13,13 +13,14 @@
                         <Grid x:Name="Container">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="48"/>
                             </Grid.ColumnDefinitions>
                             
                             <ItemsPresenter Grid.Column="0" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
                             <TextBlock Grid.Column="1"
                                        Padding="16, 0, 0, 0"
                                        VerticalAlignment="Center"
+                                       HorizontalAlignment="Right"
                                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Percentage}"
                                        Foreground="{DynamicResource Foreground}"
                                        FontSize="14"

@@ -135,10 +135,6 @@
 							   Margin="0, 8, 0, 4"/>
 				</Grid>
 
-				<model:SegmentedProgressModel Margin="32, 0, 4, 0"
-										Grid.Column="1" Grid.Row="0"
-										Value="{Binding Progress}"/>
-
 				<Grid Grid.Row="2"
 					  Grid.ColumnSpan="2"
 					  Margin="0, 16, 0, 0">

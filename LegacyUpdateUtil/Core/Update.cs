@@ -17,47 +17,47 @@ namespace LegacyUpdateUtil.Core
 	{
 		public static async Task DownloadUpdate(string packageFile, string updaterFile, string tag, HttpClient client)
 		{
-			byte[] buffer = new byte[1024 * 1024];
-			int i = 0;
+			var buffer = new byte[1024 * 1024];
+			var i = 0;
 			DateTimeOffset startTime;
 
-			MainViewModel MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
+			var mainVm = (MainViewModel)ViewModelManager.ViewModels["Main"];
 
-			string packageURL = Constants.BaseDownloadURL + "/" + tag + "/UpdatePackage.zip";
-			string updaterURL = Constants.BaseDownloadURL + "/" + tag + "/Updater.exe";
+			var packageUrl = Constants.BaseDownloadUrl + "/" + tag + "/UpdatePackage.zip";
+			var updaterUrl = Constants.BaseDownloadUrl + "/" + tag + "/Updater.exe";
 
-			HttpResponseMessage packageResponse = await client.GetAsync(packageURL, HttpCompletionOption.ResponseHeadersRead);
-			HttpResponseMessage updaterResponse = await client.GetAsync(updaterURL, HttpCompletionOption.ResponseHeadersRead);
+			var packageResponse = await client.GetAsync(packageUrl, HttpCompletionOption.ResponseHeadersRead);
+			var updaterResponse = await client.GetAsync(updaterUrl, HttpCompletionOption.ResponseHeadersRead);
 
-			long packageContentLength = (long)packageResponse.Content.Headers.ContentLength;
-			long updaterContentLength = (long)updaterResponse.Content.Headers.ContentLength;
+			var packageContentLength = (long)packageResponse.Content.Headers.ContentLength;
+			var updaterContentLength = (long)updaterResponse.Content.Headers.ContentLength;
 
-			MainVM.SetPackageData(packageContentLength, 0, 0);
-			MainVM.SetUpdaterData(updaterContentLength, 0, 0);
+			mainVm.SetPackageData(packageContentLength, 0, 0);
+			mainVm.SetUpdaterData(updaterContentLength, 0, 0);
 
 
 
 			// Downlaod Update Package
 
-			Stream packageStream = await packageResponse.Content.ReadAsStreamAsync();
-			FileStream packageFileStream = File.Create(packageFile);
+			var packageStream = await packageResponse.Content.ReadAsStreamAsync();
+			var packageFileStream = File.Create(packageFile);
 			long packageTotalBytesRead = 0;
 			startTime = DateTimeOffset.Now;
 
 			i = 0;
-			for (int len = packageStream.Read(buffer, 0, 1024 * 1024); len != 0; len = packageStream.Read(buffer, 0, 1024 * 1024))
+			for (var len = packageStream.Read(buffer, 0, 1024 * 1024); len != 0; len = packageStream.Read(buffer, 0, 1024 * 1024))
 			{
 
 				packageTotalBytesRead += len;
 				await packageFileStream.WriteAsync(buffer, 0, len);
 
-				double packageProgress = CalcUtil.CalcProgress(packageContentLength, packageTotalBytesRead);
-				MainVM.SetPackageData(packageContentLength, packageTotalBytesRead, packageProgress);
+				var packageProgress = CalcUtil.CalcProgress(packageContentLength, packageTotalBytesRead);
+				mainVm.SetPackageData(packageContentLength, packageTotalBytesRead, packageProgress);
 
 				if (i % 15 == 0)
 				{
-					double downloadSpeed = packageTotalBytesRead / (DateTimeOffset.Now - startTime).TotalSeconds;
-					MainVM.SetDownloadSpeed(downloadSpeed);
+					var downloadSpeed = packageTotalBytesRead / (DateTimeOffset.Now - startTime).TotalSeconds;
+					mainVm.SetDownloadSpeed(downloadSpeed);
 				}
 				i++;
 			}
@@ -69,25 +69,25 @@ namespace LegacyUpdateUtil.Core
 
 			// Download Updater
 
-			Stream updaterStream = await updaterResponse.Content.ReadAsStreamAsync();
-			FileStream updaterFileStream = File.Create(updaterFile);
+			var updaterStream = await updaterResponse.Content.ReadAsStreamAsync();
+			var updaterFileStream = File.Create(updaterFile);
 			long updaterTotalBytesRead = 0;
 			startTime = DateTimeOffset.Now;
 
 			i = 0;
-			for (int len = updaterStream.Read(buffer, 0, 1024 * 1024); len != 0; len = updaterStream.Read(buffer, 0, 1024 * 1024))
+			for (var len = updaterStream.Read(buffer, 0, 1024 * 1024); len != 0; len = updaterStream.Read(buffer, 0, 1024 * 1024))
 			{
 
 				updaterTotalBytesRead += len;
 				await updaterFileStream.WriteAsync(buffer, 0, len);
 
-				double updaterProgress = CalcUtil.CalcProgress(updaterContentLength, updaterTotalBytesRead);
-				MainVM.SetUpdaterData(updaterContentLength, updaterTotalBytesRead, updaterProgress);
+				var updaterProgress = CalcUtil.CalcProgress(updaterContentLength, updaterTotalBytesRead);
+				mainVm.SetUpdaterData(updaterContentLength, updaterTotalBytesRead, updaterProgress);
 
 				if (i % 15 == 0)
 				{
-					double downloadSpeed = updaterTotalBytesRead / (DateTimeOffset.Now - startTime).TotalSeconds;
-					MainVM.SetDownloadSpeed(downloadSpeed);
+					var downloadSpeed = updaterTotalBytesRead / (DateTimeOffset.Now - startTime).TotalSeconds;
+					mainVm.SetDownloadSpeed(downloadSpeed);
 				}
 				i++;
 			}
@@ -117,12 +117,12 @@ namespace LegacyUpdateUtil.Core
 
 		public static (double, string) FormatSize(double rawSize, bool isSpeed = false)
 		{
-			double size = rawSize;
-			string unit = " B";
+			var size = rawSize;
+			var unit = " B";
 
 			if (isSpeed) unit = " B/s";
 
-			int divisions = 0;
+			var divisions = 0;
 			while (size > 1)
 			{
 				size /= 1024;
@@ -149,38 +149,38 @@ namespace LegacyUpdateUtil.Core
 
 	public static class UpdateHelper
 	{
-		private static readonly HttpClient client = new HttpClient();
-		private static string latestVersionTag = "";
+		private static readonly HttpClient Client = new HttpClient();
+		private static string _latestVersionTag = "";
 
-		private static string UpdaterFile = Constants.UpdateFolder + "/Updater.exe";
-		private static string SourceFile = Constants.UpdateFolder + "/UpdatePackage.zip";
-		private static string ExtractTarget = Constants.UpdateFolder + "/ExtractedPackage";
+		private static string _updaterFile = Constants.UpdateFolder + "/Updater.exe";
+		private static string _sourceFile = Constants.UpdateFolder + "/UpdatePackage.zip";
+		private static string _extractTarget = Constants.UpdateFolder + "/ExtractedPackage";
 
 		public static async void CheckUpdateAsync(bool forceUpdate = false)
 		{
 			if (Directory.Exists(Constants.UpdateFolder)) Directory.Delete(Constants.UpdateFolder, true);
 
-			HttpRequestMessage request = new HttpRequestMessage() { RequestUri = new Uri(Constants.ReleasesURL), Method = HttpMethod.Get };
+			var request = new HttpRequestMessage() { RequestUri = new Uri(Constants.ReleasesUrl), Method = HttpMethod.Get };
 			request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 			request.Headers.UserAgent.Add(new ProductInfoHeaderValue(Constants.AppName, Constants.Version));
 
-			HttpResponseMessage response = await client.SendAsync(request);
-			string res = await response.Content.ReadAsStringAsync();
+			var response = await Client.SendAsync(request);
+			var res = await response.Content.ReadAsStringAsync();
 
-			JArray ja = JArray.Parse(res);
+			var ja = JArray.Parse(res);
 			foreach (JObject release in ja)
 			{
 				List<string> tokenizedName = release["name"].ToString().Split().ToList();
 				if (tokenizedName[0] != Constants.AppName) continue;
 				if (tokenizedName[1] != Constants.UpdateVersion) continue;
 
-				float newestVersion = float.Parse(tokenizedName[1].Split("v")[1]);
-				float currentVersion = float.Parse(Constants.Version.Split("v")[1]);
+				var newestVersion = float.Parse(tokenizedName[1].Split("v")[1]);
+				var currentVersion = float.Parse(Constants.Version.Split("v")[1]);
 
 				if (currentVersion >= newestVersion && !forceUpdate) break;
 				//if ((bool)release["prerelease"]) continue;
 
-				latestVersionTag = (string)release["tag_name"];
+				_latestVersionTag = (string)release["tag_name"];
 				GetUpdate();
 				break;
 			}
@@ -190,9 +190,9 @@ namespace LegacyUpdateUtil.Core
 		{
 			if (!Directory.Exists(Constants.UpdateFolder)) Directory.CreateDirectory(Constants.UpdateFolder);
 
-			await UpdateUtil.DownloadUpdate(SourceFile, UpdaterFile, latestVersionTag, client);
-			UpdateUtil.ExtractUpdate(SourceFile, ExtractTarget);
-			UpdateUtil.ApplyUpdate(UpdaterFile, ExtractTarget, Environment.CurrentDirectory);
+			await UpdateUtil.DownloadUpdate(_sourceFile, _updaterFile, _latestVersionTag, Client);
+			UpdateUtil.ExtractUpdate(_sourceFile, _extractTarget);
+			UpdateUtil.ApplyUpdate(_updaterFile, _extractTarget, Environment.CurrentDirectory);
 		}
 	}
 }

@@ -10,15 +10,15 @@ namespace VexTrack.Core
 	{
 		public static int CalcCurrentStreak(bool epilogue)
 		{
-			int streak = 0;
+			var streak = 0;
 			List<string> targetStatus = new();
 			targetStatus.Add(Constants.StreakStatusOrder.Keys.ElementAt(2));
 			if (!epilogue) targetStatus.Add(Constants.StreakStatusOrder.Keys.ElementAt(1));
 
 			DateTimeOffset today = DateTimeOffset.Now.ToLocalTime().Date;
-			DateTimeOffset prevDate = DateTimeOffset.FromUnixTimeSeconds(TrackingDataHelper.Data.Streak[0].Date);
+			var prevDate = DateTimeOffset.FromUnixTimeSeconds(TrackingDataHelper.Data.Streak[0].Date);
 
-			foreach (StreakEntry streakEntry in TrackingDataHelper.Data.Streak)
+			foreach (var streakEntry in TrackingDataHelper.Data.Streak)
 			{
 				if ((prevDate - DateTimeOffset.FromUnixTimeSeconds(streakEntry.Date)).Days > 1) break;
 				prevDate = DateTimeOffset.FromUnixTimeSeconds(streakEntry.Date);
@@ -36,7 +36,7 @@ namespace VexTrack.Core
 		{
 			date = date.ToLocalTime().Date;
 
-			int index = TrackingDataHelper.Data.Streak.FindIndex(x => x.Date == date.ToUnixTimeSeconds());
+			var index = TrackingDataHelper.Data.Streak.FindIndex(x => x.Date == date.ToUnixTimeSeconds());
 			if (index == -1)
 			{
 				TrackingDataHelper.Data.Streak.Add(new StreakEntry(Guid.NewGuid().ToString(), date.ToUnixTimeSeconds(), status));
@@ -52,17 +52,17 @@ namespace VexTrack.Core
 
 		public static Brush GetStreakColor(DateTimeOffset date, bool epilogue)
 		{
-			Dictionary<string, Brush> brushes = new Dictionary<string, Brush>();
+			var brushes = new Dictionary<string, Brush>();
 			brushes.Add(Constants.StreakStatusOrder.Keys.ElementAt(0), (Brush)Application.Current.FindResource("Shade"));
 			brushes.Add(Constants.StreakStatusOrder.Keys.ElementAt(1), (Brush)Application.Current.FindResource("AccOrange"));
 			brushes.Add(Constants.StreakStatusOrder.Keys.ElementAt(2), (Brush)Application.Current.FindResource("AccBlue"));
 
 			date = date.ToLocalTime().Date;
 
-			int index = TrackingDataHelper.Data.Streak.FindIndex(x => x.Date == date.ToUnixTimeSeconds());
+			var index = TrackingDataHelper.Data.Streak.FindIndex(x => x.Date == date.ToUnixTimeSeconds());
 			if (index == -1) return null;
 
-			string status = TrackingDataHelper.Data.Streak[index].Status;
+			var status = TrackingDataHelper.Data.Streak[index].Status;
 			if (Constants.StreakStatusOrder[status] > 1 && !epilogue) status = Constants.StreakStatusOrder.Keys.ElementAt(1);
 			if (Constants.StreakStatusOrder[status] == 1 && epilogue) status = Constants.StreakStatusOrder.Keys.ElementAt(0);
 

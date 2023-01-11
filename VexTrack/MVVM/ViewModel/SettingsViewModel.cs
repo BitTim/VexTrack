@@ -5,11 +5,11 @@ namespace VexTrack.MVVM.ViewModel
 {
 	class SettingsViewModel : ObservableObject
 	{
-		private bool NoUpdate = true;
+		private bool _noUpdate = true;
 
 		private ResetDataConfirmationPopupViewModel ResetDataConfirmationPopup { get; set; }
 		private AboutPopupViewModel AboutPopup { get; set; }
-		private MainViewModel MainVM { get; set; }
+		private MainViewModel MainVm { get; set; }
 		public RelayCommand ThemeButtonCommand { get; set; }
 		public RelayCommand AccentButtonCommand { get; set; }
 		public RelayCommand OnAboutClicked { get; set; }
@@ -56,7 +56,7 @@ namespace VexTrack.MVVM.ViewModel
 				_username = value;
 				SettingsHelper.Data.Username = value;
 				OnPropertyChanged();
-				if (!NoUpdate) SettingsHelper.CallUpdate();
+				if (!_noUpdate) SettingsHelper.CallUpdate();
 			}
 		}
 		public int BufferDays
@@ -69,7 +69,7 @@ namespace VexTrack.MVVM.ViewModel
 				_bufferDays = value;
 				SettingsHelper.Data.BufferDays = value;
 				OnPropertyChanged();
-				if (!NoUpdate) SettingsHelper.CallUpdate();
+				if (!_noUpdate) SettingsHelper.CallUpdate();
 			}
 		}
 		public bool IgnoreInactive
@@ -82,7 +82,7 @@ namespace VexTrack.MVVM.ViewModel
 				_ignoreInactive = value;
 				SettingsHelper.Data.IgnoreInactiveDays = value;
 				OnPropertyChanged();
-				if (!NoUpdate) SettingsHelper.CallUpdate();
+				if (!_noUpdate) SettingsHelper.CallUpdate();
 			}
 		}
 		public bool IgnoreInit
@@ -95,7 +95,7 @@ namespace VexTrack.MVVM.ViewModel
 				_ignoreInit = value;
 				SettingsHelper.Data.IgnoreInit = value;
 				OnPropertyChanged();
-				if (!NoUpdate) SettingsHelper.CallUpdate();
+				if (!_noUpdate) SettingsHelper.CallUpdate();
 			}
 		}
 		public bool IgnorePreReleases
@@ -108,7 +108,7 @@ namespace VexTrack.MVVM.ViewModel
 				_ignorePreReleases = value;
 				SettingsHelper.Data.IgnorePreReleases = value;
 				OnPropertyChanged();
-				if (!NoUpdate) SettingsHelper.CallUpdate();
+				if (!_noUpdate) SettingsHelper.CallUpdate();
 			}
 		}
 		public bool ForceEpilogue
@@ -121,7 +121,7 @@ namespace VexTrack.MVVM.ViewModel
 				_forceEpilogue = value;
 				SettingsHelper.Data.ForceEpilogue = value;
 				OnPropertyChanged();
-				if (!NoUpdate) SettingsHelper.CallUpdate();
+				if (!_noUpdate) SettingsHelper.CallUpdate();
 			}
 		}
 		public bool SingleSeasonHistory
@@ -134,13 +134,13 @@ namespace VexTrack.MVVM.ViewModel
 				_singleSeasonHistory = value;
 				SettingsHelper.Data.SingleSeasonHistory = value;
 				OnPropertyChanged();
-				if (!NoUpdate) SettingsHelper.CallUpdate();
+				if (!_noUpdate) SettingsHelper.CallUpdate();
 			}
 		}
 
 		public SettingsViewModel()
 		{
-			MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
+			MainVm = (MainViewModel)ViewModelManager.ViewModels["Main"];
 			ResetDataConfirmationPopup = (ResetDataConfirmationPopupViewModel)ViewModelManager.ViewModels["ResetDataConfirmationPopup"];
 			AboutPopup = (AboutPopupViewModel)ViewModelManager.ViewModels["AboutPopup"];
 
@@ -155,15 +155,15 @@ namespace VexTrack.MVVM.ViewModel
 			});
 			OnResetClicked = new RelayCommand(o =>
 			{
-				MainVM.QueuePopup(ResetDataConfirmationPopup);
+				MainVm.QueuePopup(ResetDataConfirmationPopup);
 			});
 			OnAboutClicked = new RelayCommand(o =>
 			{
-				MainVM.QueuePopup(AboutPopup);
+				MainVm.QueuePopup(AboutPopup);
 			});
 
 			Update();
-			NoUpdate = false;
+			_noUpdate = false;
 		}
 
 		public void Update()

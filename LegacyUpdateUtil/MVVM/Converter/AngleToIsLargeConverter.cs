@@ -8,7 +8,7 @@ namespace LegacyUpdateUtil.MVVM.Converter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			double angle = (double)value;
+			var angle = (double)value;
 
 			if (angle >= 180) return true;
 			return false;

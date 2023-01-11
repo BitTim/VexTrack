@@ -10,8 +10,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public RelayCommand OnDoneClicked { get; set; }
 
 		public string PopupTitle { get; set; }
-		public string UUID { get; set; }
-		public int StartXP { get; set; }
+		public string Uuid { get; set; }
+		public int StartXp { get; set; }
 		public bool EditMode { get; set; }
 		public bool Paused { get; set; }
 
@@ -80,7 +80,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		}
 
 
-		public List<GoalGroup> AvailableGroups => TrackingDataHelper.Data.Goals;
+		public List<Contract> AvailableGroups => TrackingDataHelper.Data.Contracts;
 		public List<Goal> AvailableDependencies
 		{
 			get
@@ -88,10 +88,10 @@ namespace VexTrack.MVVM.ViewModel.Popups
 				List<Goal> goals;
 				if (Group == null) goals = new();
 
-				goals = new(TrackingDataHelper.Data.Goals[TrackingDataHelper.Data.Goals.FindIndex(gg => gg.UUID == Group)].Goals);
+				goals = new(TrackingDataHelper.Data.Contracts[TrackingDataHelper.Data.Contracts.FindIndex(gg => gg.Uuid == Group)].Goals);
 				goals.Insert(0, new Goal("", "No Dependency", 0, 0, "#000000", "", true));
 
-				int index = goals.FindIndex(gg => gg.UUID == UUID);
+				var index = goals.FindIndex(gg => gg.Uuid == Uuid);
 				if (index >= 0) goals.RemoveAt(index);
 				return goals;
 			}
@@ -139,8 +139,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			OnBackClicked = new RelayCommand(o => { if (CanCancel) Close(); });
 			OnDoneClicked = new RelayCommand(o =>
 			{
-				if (EditMode) TrackingDataHelper.EditGoal(Group, UUID, new Goal(UUID, Title, Total, Collected, Color, Dependency, Paused));
-				else TrackingDataHelper.AddGoal(Group, new Goal(UUID, Title, Total, Collected, Color, Dependency, Paused));
+				if (EditMode) TrackingDataHelper.EditGoal(Group, Uuid, new Goal(Uuid, Title, Total, Collected, Color, Dependency, Paused));
+				else TrackingDataHelper.AddGoal(Group, new Goal(Uuid, Title, Total, Collected, Color, Dependency, Paused));
 				Close();
 			});
 		}
@@ -155,7 +155,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 		public void InitData()
 		{
-			UUID = Guid.NewGuid().ToString();
+			Uuid = Guid.NewGuid().ToString();
 			Title = "";
 			Total = 0;
 			Collected = 0;
@@ -165,10 +165,10 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 			if (AvailableGroups.Count == 0)
 			{
-				TrackingDataHelper.AddGoalGroup(new GoalGroup(Constants.DefaultGroupUUID, "No Group", new List<Goal>()));
-				Group = Constants.DefaultGroupUUID;
+				TrackingDataHelper.AddContract(new Contract(Constants.DefaultGroupUuid, "No Group", new List<Goal>()));
+				Group = Constants.DefaultGroupUuid;
 			}
-			else Group = AvailableGroups[0].UUID;
+			else Group = AvailableGroups[0].Uuid;
 
 			Dependency = "";
 			IsInitialized = true;
@@ -176,20 +176,20 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 		public void SetData(GoalEntryData data)
 		{
-			UUID = data.UUID;
+			Uuid = data.Uuid;
 			Title = data.Title;
 			Total = data.Total;
 			Collected = data.Collected;
 			UseAccentColor = data.Color == "" ? true : false;
 			Color = data.Color;
-			StartXP = data.StartXP;
+			StartXp = data.StartXp;
 			Paused = data.Paused;
 
-			if (AvailableGroups.FindIndex(gg => gg.UUID == data.GroupUUID) == -1) Group = Constants.DefaultGroupUUID;
-			else Group = data.GroupUUID;
+			if (AvailableGroups.FindIndex(gg => gg.Uuid == data.GroupUuid) == -1) Group = Constants.DefaultGroupUuid;
+			else Group = data.GroupUuid;
 
-			if (AvailableDependencies.FindIndex(d => d.UUID == data.DepUUID) == -1) Dependency = "";
-			else Dependency = data.DepUUID;
+			if (AvailableDependencies.FindIndex(d => d.Uuid == data.DepUuid) == -1) Dependency = "";
+			else Dependency = data.DepUuid;
 
 			IsInitialized = true;
 		}

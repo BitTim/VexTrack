@@ -8,11 +8,11 @@ namespace VexTrack.MVVM.Validation
 	{
 		public override ValidationResult Validate(object value, CultureInfo cultureInfo)
 		{
-			string strValue = Convert.ToString(value);
+			var strValue = Convert.ToString(value);
 
 			if (string.IsNullOrEmpty(strValue))
 				return new ValidationResult(false, $"This field cannot be empty, last known value will be used");
-			bool canConvert = false;
+			var canConvert = false;
 
 			int val;
 			canConvert = int.TryParse(strValue, out val);

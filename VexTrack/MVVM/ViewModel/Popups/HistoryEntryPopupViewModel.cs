@@ -7,11 +7,11 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public RelayCommand OnBackClicked { get; set; }
 		public RelayCommand OnEditClicked { get; set; }
 		public RelayCommand OnDeleteClicked { get; set; }
-		private EditableHistoryEntryPopupViewModel EditableHEPopup { get; set; }
+		private EditableHistoryEntryPopupViewModel EditableHePopup { get; set; }
 
 		private HistoryEntryData RawData { get; set; }
-		public string SUUID { get; set; }
-		public string HUUID { get; set; }
+		public string Suuid { get; set; }
+		public string Huuid { get; set; }
 		public string Title { get; set; }
 		public long Time { get; set; }
 		public int Amount { get; set; }
@@ -21,30 +21,30 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 		public HistoryEntryPopupViewModel()
 		{
-			EditableHEPopup = (EditableHistoryEntryPopupViewModel)ViewModelManager.ViewModels["EditableHEPopup"];
+			EditableHePopup = (EditableHistoryEntryPopupViewModel)ViewModelManager.ViewModels["EditableHEPopup"];
 			CanCancel = true;
 
 			OnBackClicked = new RelayCommand(o => { Close(); });
 			OnEditClicked = new RelayCommand(o =>
 			{
-				EditableHEPopup.SetParameters("Edit History Entry", true);
-				EditableHEPopup.SetData(RawData);
-				MainVM.QueuePopup(EditableHEPopup);
+				EditableHePopup.SetParameters("Edit History Entry", true);
+				EditableHePopup.SetData(RawData);
+				MainVm.QueuePopup(EditableHePopup);
 			});
 			OnDeleteClicked = new RelayCommand(o =>
 			{
 				IsInitialized = false;
-				TrackingDataHelper.RemoveHistoryEntry(SUUID, HUUID);
+				TrackingDataHelper.RemoveHistoryEntry(Suuid, Huuid);
 			});
 		}
 
-		public void SetData(HistoryEntryData data, string initUUID)
+		public void SetData(HistoryEntryData data, string initUuid)
 		{
 			RawData = data;
 			Deletable = true;
 
-			SUUID = data.SUUID;
-			HUUID = data.HUUID;
+			Suuid = data.Suuid;
+			Huuid = data.Huuid;
 			Title = data.Title;
 			Time = data.Time;
 			Amount = data.Amount;
@@ -53,14 +53,14 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 			if (Result == "") Result = "-";
 			if (Map == "" || Map == null) Map = "-";
-			if (data.HUUID == initUUID) Deletable = false;
+			if (data.Huuid == initUuid) Deletable = false;
 
 			IsInitialized = true;
 		}
 
 		public override void Close()
 		{
-			EditableHEPopup.Close();
+			EditableHePopup.Close();
 			base.Close();
 		}
 	}

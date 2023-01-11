@@ -20,8 +20,8 @@ namespace VexTrack.Core
 			{
 				if (score == -1) return "";
 
-				string scoreString = score.ToString();
-				string suffix = "th";
+				var scoreString = score.ToString();
+				var suffix = "th";
 
 				if (scoreString.Last() == '1') suffix = "st";
 				if (scoreString.Last() == '2') suffix = "nd";
@@ -41,17 +41,17 @@ namespace VexTrack.Core
 		{
 			if (description == "" || description == null) return "";
 
-			string[] splitDesc = description.Split(" ");
-			string scoreStr = "";
+			var splitDesc = description.Split(" ");
+			var scoreStr = "";
 
-			foreach (string token in splitDesc)
+			foreach (var token in splitDesc)
 			{
 				if (!token.Contains("-")) { continue; }
 				scoreStr = token;
 
 				if (scoreStr == "") return "";
 
-				string[] scoreTokens = scoreStr.Split("-");
+				var scoreTokens = scoreStr.Split("-");
 				if (scoreTokens.Length != 2) return "";
 				if (scoreTokens[0] == "" || scoreTokens[1] == "") return "";
 
@@ -67,9 +67,9 @@ namespace VexTrack.Core
 
 		public static (string, string, int, int) DescriptionToScores(string description)
 		{
-			bool isCustom = true;
-			string gameMode = "Custom";
-			foreach (string mode in Constants.Gamemodes)
+			var isCustom = true;
+			var gameMode = "Custom";
+			foreach (var mode in Constants.Gamemodes)
 			{
 				if (description.Contains(mode))
 				{
@@ -79,20 +79,20 @@ namespace VexTrack.Core
 				}
 			}
 
-			int score = -1;
-			int enemyScore = -1;
+			var score = -1;
+			var enemyScore = -1;
 
 			if (!isCustom)
 			{
-				string[] splitDesc = description.Split(" ");
-				string scoreStr = "";
+				var splitDesc = description.Split(" ");
+				var scoreStr = "";
 
-				foreach (string token in splitDesc)
+				foreach (var token in splitDesc)
 				{
 					if (!token.Contains("-")) { continue; }
 					scoreStr = token;
 
-					string[] scoreTokens = scoreStr.Split("-");
+					var scoreTokens = scoreStr.Split("-");
 					if (scoreTokens.Length != 2) continue;
 					if (scoreTokens[0] == "" || scoreTokens[1] == "") continue;
 
@@ -101,15 +101,15 @@ namespace VexTrack.Core
 				}
 			}
 
-			string desc = isCustom ? description : "";
+			var desc = isCustom ? description : "";
 			return (gameMode, desc, score, enemyScore);
 		}
 	}
 
 	public class HistoryEntryData
 	{
-		public string SUUID { get; set; }
-		public string HUUID { get; set; }
+		public string Suuid { get; set; }
+		public string Huuid { get; set; }
 		public string GameMode { get; set; }
 		public int Score { get; set; }
 		public int EnemyScore { get; set; }
@@ -122,10 +122,10 @@ namespace VexTrack.Core
 		public string Result { get; set; }
 		public string Title { get; set; }
 
-		public HistoryEntryData(string sUUID, string hUUID, string gameMode, long time, int amount, string map, string result, string description, int score, int enemyScore, bool surrenderedWin, bool surrenderedLoss)
+		public HistoryEntryData(string sUuid, string hUuid, string gameMode, long time, int amount, string map, string result, string description, int score, int enemyScore, bool surrenderedWin, bool surrenderedLoss)
 		{
-			SUUID = sUUID;
-			HUUID = hUUID;
+			Suuid = sUuid;
+			Huuid = hUuid;
 			GameMode = gameMode;
 			Time = time;
 			Amount = amount;
@@ -145,15 +145,15 @@ namespace VexTrack.Core
 
 	public class HistoryGroupData
 	{
-		public string SUUID { get; set; }
-		public string GUUID { get; set; }
+		public string Suuid { get; set; }
+		public string Guuid { get; set; }
 		public long Date { get; set; }
 		public ObservableCollection<HistoryEntryData> Entries { get; set; }
 
-		public HistoryGroupData(string sUUID, string gUUID, long date, ObservableCollection<HistoryEntryData> entries)
+		public HistoryGroupData(string sUuid, string gUuid, long date, ObservableCollection<HistoryEntryData> entries)
 		{
-			SUUID = sUUID;
-			GUUID = gUUID;
+			Suuid = sUuid;
+			Guuid = gUuid;
 			Date = date;
 			Entries = entries;
 		}

@@ -11,9 +11,9 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		private DeleteGoalConfirmationPopupViewModel DeleteGoalConfirmationPopup { get; set; }
 
 		private GoalEntryData RawData { get; set; }
-		public string UUID { get; set; }
-		public string GroupUUID { get; set; }
-		public string DepUUID { get; set; }
+		public string Uuid { get; set; }
+		public string GroupUuid { get; set; }
+		public string DepUuid { get; set; }
 		public string Title { get; set; }
 		public string Unit { get; set; }
 		public int Collected { get; set; }
@@ -26,17 +26,17 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public bool CanDelete { get; set; }
 		public bool CanEdit { get; set; }
 
-		private bool _paused { get; set; }
+		private bool PausedState { get; set; }
 		public bool Paused
 		{
-			get => _paused;
+			get => PausedState;
 			set
 			{
-				if (value == _paused) return;
+				if (value == PausedState) return;
 
-				_paused = value;
-				RawData.Paused = _paused;
-				TrackingDataHelper.EditGoal(GroupUUID, UUID, new Goal(UUID, Title, Total, Collected, Color, DepUUID, _paused));
+				PausedState = value;
+				RawData.Paused = PausedState;
+				TrackingDataHelper.EditGoal(GroupUuid, Uuid, new Goal(Uuid, Title, Total, Collected, Color, DepUuid, PausedState));
 
 				OnPropertyChanged();
 			}
@@ -53,13 +53,13 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			{
 				EditableGoalPopup.SetParameters("Edit Goal", true);
 				EditableGoalPopup.SetData(RawData);
-				MainVM.QueuePopup(EditableGoalPopup);
+				MainVm.QueuePopup(EditableGoalPopup);
 			});
 			OnDeleteClicked = new RelayCommand(o =>
 			{
 				IsInitialized = false;
-				DeleteGoalConfirmationPopup.SetData(GroupUUID, UUID);
-				MainVM.QueuePopup(DeleteGoalConfirmationPopup);
+				DeleteGoalConfirmationPopup.SetData(GroupUuid, Uuid);
+				MainVm.QueuePopup(DeleteGoalConfirmationPopup);
 			});
 		}
 
@@ -74,9 +74,9 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			if (data == null) return;
 			RawData = data;
 
-			UUID = data.UUID;
-			GroupUUID = data.GroupUUID;
-			DepUUID = data.DepUUID;
+			Uuid = data.Uuid;
+			GroupUuid = data.GroupUuid;
+			DepUuid = data.DepUuid;
 			Title = data.Title;
 			Collected = data.Collected;
 			Remaining = data.Remaining;

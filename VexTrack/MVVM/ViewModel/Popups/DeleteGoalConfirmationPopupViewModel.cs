@@ -7,8 +7,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public RelayCommand OnYesClicked { get; set; }
 		public RelayCommand OnNoClicked { get; set; }
 
-		private string GroupUUID = "";
-		private string UUID = "";
+		private string _groupUuid = "";
+		private string _uuid = "";
 
 		public DeleteGoalConfirmationPopupViewModel()
 		{
@@ -16,16 +16,16 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 			OnYesClicked = new RelayCommand(o =>
 			{
-				TrackingDataHelper.RemoveGoal(GroupUUID, UUID);
+				TrackingDataHelper.RemoveGoal(_groupUuid, _uuid);
 				Close();
 			});
 			OnNoClicked = new RelayCommand(o => Close());
 		}
 
-		public void SetData(string groupUUID, string uuid)
+		public void SetData(string groupUuid, string uuid)
 		{
-			GroupUUID = groupUUID;
-			UUID = uuid;
+			_groupUuid = groupUuid;
+			_uuid = uuid;
 		}
 	}
 }

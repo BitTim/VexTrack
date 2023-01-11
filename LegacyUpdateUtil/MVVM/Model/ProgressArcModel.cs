@@ -163,7 +163,7 @@ namespace LegacyUpdateUtil.MVVM.Model
 		{
 			if (d is ProgressArcModel)
 			{
-				ProgressArcModel p = d as ProgressArcModel;
+				var p = d as ProgressArcModel;
 				p.Update();
 			}
 		}
@@ -178,9 +178,9 @@ namespace LegacyUpdateUtil.MVVM.Model
 			if (Value > MaxValue) Value = MaxValue;
 			if (Value < MinValue) Value = MinValue;
 
-			double percent = (Value - MinValue) * 100 / (MaxValue - MinValue);
+			var percent = (Value - MinValue) * 100 / (MaxValue - MinValue);
 
-			double angle = percent / 100 * 360;
+			var angle = percent / 100 * 360;
 			angle = angle == 360 ? 359.99 : angle;
 			ForegroundAngle = angle;
 
@@ -210,13 +210,13 @@ namespace LegacyUpdateUtil.MVVM.Model
 
 		public (double, double) CalcPointFromProgress(double percent, double rad)
 		{
-			double angle = percent / 100 * 360;
+			var angle = percent / 100 * 360;
 
 			angle = angle == 360 ? 359.99 : angle;
-			double angleInRadians = angle * Math.PI / 180;
+			var angleInRadians = angle * Math.PI / 180;
 
-			double px = rad + (Math.Sin(angleInRadians) * rad);
-			double py = rad + (-Math.Cos(angleInRadians) * rad);
+			var px = rad + (Math.Sin(angleInRadians) * rad);
+			var py = rad + (-Math.Cos(angleInRadians) * rad);
 
 			return (px, py);
 		}

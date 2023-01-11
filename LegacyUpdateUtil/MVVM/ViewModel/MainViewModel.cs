@@ -158,12 +158,12 @@ namespace LegacyUpdateUtil.MVVM.ViewModel
 		{
 			if (Directory.Exists(Constants.LegacyDataFolder))
 			{
-				DirectoryInfo targetDir = new DirectoryInfo(Constants.DataFolder);
+				var targetDir = new DirectoryInfo(Constants.DataFolder);
 				if (!targetDir.Exists) Directory.CreateDirectory(Constants.DataFolder);
 
-				foreach (string f in Directory.GetFiles(Constants.LegacyDataFolder))
+				foreach (var f in Directory.GetFiles(Constants.LegacyDataFolder))
 				{
-					FileInfo file = new FileInfo(f);
+					var file = new FileInfo(f);
 					file.MoveTo(targetDir + "\\" + file.Name);
 				}
 

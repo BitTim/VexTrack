@@ -8,11 +8,11 @@ namespace VexTrack.MVVM.Converter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			long timestamp = (long)value;
-			string noTime = (string)parameter;
+			var timestamp = (long)value;
+			var noTime = (string)parameter;
 
-			string str = "";
-			DateTimeOffset dt = DateTimeOffset.FromUnixTimeSeconds(timestamp).ToLocalTime();
+			var str = "";
+			var dt = DateTimeOffset.FromUnixTimeSeconds(timestamp).ToLocalTime();
 
 			if (noTime.ToLower() == "true") str = dt.ToString("d");
 			else str = dt.ToString("g");
@@ -24,7 +24,7 @@ namespace VexTrack.MVVM.Converter
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			string str = value as string;
+			var str = value as string;
 
 			DateTimeOffset dto;
 			if (DateTimeOffset.TryParse(str, out dto) == false) return DateTimeOffset.Now.ToUnixTimeSeconds();

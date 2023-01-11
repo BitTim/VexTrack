@@ -8,7 +8,7 @@ namespace LegacyUpdateUtil.Core
 		{
 			if (total <= 0) return 100;
 
-			double ret = Math.Floor(collected / total * 100);
+			var ret = Math.Floor(collected / total * 100);
 			return ret;
 		}
 	}

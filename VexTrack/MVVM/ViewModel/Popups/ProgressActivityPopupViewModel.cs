@@ -49,8 +49,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			Completed.Clear();
 			Lost.Clear();
 
-			foreach (string c in completed) Completed.Add(c);
-			foreach (string l in lost) Lost.Add(l);
+			foreach (var c in completed) Completed.Add(c);
+			foreach (var l in lost) Lost.Add(l);
 
 			IsInitialized = true;
 		}

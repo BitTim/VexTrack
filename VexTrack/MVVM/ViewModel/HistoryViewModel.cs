@@ -9,13 +9,13 @@ namespace VexTrack.MVVM.ViewModel
 {
 	class HistoryViewModel : ObservableObject
 	{
-		private string initUUID;
+		private string _initUuid;
 
 		public RelayCommand HistoryButtonClick { get; set; }
 		public RelayCommand OnAddClicked { get; set; }
-		private HistoryEntryPopupViewModel HEPopup { get; set; }
-		private EditableHistoryEntryPopupViewModel EditableHEPopup { get; set; }
-		private MainViewModel MainVM { get; set; }
+		private HistoryEntryPopupViewModel HePopup { get; set; }
+		private EditableHistoryEntryPopupViewModel EditableHePopup { get; set; }
+		private MainViewModel MainVm { get; set; }
 
 		private ObservableCollection<HistoryGroupData> _groups = new();
 		public ObservableCollection<HistoryGroupData> Groups
@@ -33,15 +33,15 @@ namespace VexTrack.MVVM.ViewModel
 
 		public HistoryViewModel()
 		{
-			MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
-			HEPopup = (HistoryEntryPopupViewModel)ViewModelManager.ViewModels["HEPopup"];
-			EditableHEPopup = (EditableHistoryEntryPopupViewModel)ViewModelManager.ViewModels["EditableHEPopup"];
+			MainVm = (MainViewModel)ViewModelManager.ViewModels["Main"];
+			HePopup = (HistoryEntryPopupViewModel)ViewModelManager.ViewModels["HEPopup"];
+			EditableHePopup = (EditableHistoryEntryPopupViewModel)ViewModelManager.ViewModels["EditableHEPopup"];
 
 			HistoryButtonClick = new RelayCommand(OnHistoryButtonClick);
 			OnAddClicked = new RelayCommand(o =>
 			{
-				EditableHEPopup.SetParameters("Create History Entry", false);
-				MainVM.QueuePopup(EditableHEPopup);
+				EditableHePopup.SetParameters("Create History Entry", false);
+				MainVm.QueuePopup(EditableHePopup);
 			});
 
 			Update();
@@ -50,62 +50,62 @@ namespace VexTrack.MVVM.ViewModel
 		public void Update()
 		{
 			List<HistoryGroupData> removedGroups = new();
-			foreach (HistoryGroupData g in Groups)
+			foreach (var g in Groups)
 			{
-				List<HistoryEntryData> removedEntries = g.Entries.Where(ge => TrackingDataHelper.CurrentSeasonData.History.All(e => e.UUID != ge.HUUID)).ToList();
-				foreach (HistoryEntryData r in removedEntries) g.Entries.Remove(r);
+				var removedEntries = g.Entries.Where(ge => TrackingDataHelper.CurrentSeasonData.History.All(e => e.Uuid != ge.Huuid)).ToList();
+				foreach (var r in removedEntries) g.Entries.Remove(r);
 
 				if (g.Entries.Count == 0) removedGroups.Add(g);
 			}
 
-			foreach (HistoryGroupData g in removedGroups)
+			foreach (var g in removedGroups)
 				Groups.Remove(g);
 
 			List<Season> seasons = new();
 			if (SettingsHelper.Data.SingleSeasonHistory) seasons.Add(TrackingDataHelper.CurrentSeasonData);
 			else seasons = TrackingDataHelper.Data.Seasons;
 
-			foreach (Season season in seasons)
+			foreach (var season in seasons)
 			{
-				foreach (HistoryEntry he in season.History)
+				foreach (var he in season.History)
 				{
 					if (!(from g in Groups
 						  from e in g.Entries
-						  where e.HUUID == he.UUID
+						  where e.Huuid == he.Uuid
 						  select e).Any())
 					{
-						string result = HistoryDataCalc.CalcHistoryResultFromScores(Constants.ScoreTypes[he.GameMode], he.Score, he.EnemyScore, he.SurrenderedWin, he.SurrenderedLoss);
-						HistoryEntryData hed = new HistoryEntryData(TrackingDataHelper.CurrentSeasonUUID, he.UUID, he.GameMode, he.Time, he.Amount, he.Map, result, he.Description, he.Score, he.EnemyScore, he.SurrenderedWin, he.SurrenderedLoss);
+						var result = HistoryDataCalc.CalcHistoryResultFromScores(Constants.ScoreTypes[he.GameMode], he.Score, he.EnemyScore, he.SurrenderedWin, he.SurrenderedLoss);
+						var hed = new HistoryEntryData(TrackingDataHelper.CurrentSeasonUuid, he.Uuid, he.GameMode, he.Time, he.Amount, he.Map, result, he.Description, he.Score, he.EnemyScore, he.SurrenderedWin, he.SurrenderedLoss);
 
 						InsertEntry(hed);
 					}
 				}
 			}
 
-			initUUID = Groups.Last().Entries.Last().HUUID;
+			_initUuid = Groups.Last().Entries.Last().Huuid;
 
-			HistoryEntryData entry = (from g in Groups
+			var entry = (from g in Groups
 									  from e in g.Entries
-									  where e.HUUID == HEPopup.HUUID
+									  where e.Huuid == HePopup.Huuid
 									  select e).FirstOrDefault();
 
-			if (HEPopup.IsInitialized && entry != null) HEPopup.SetData(entry, initUUID);
-			else HEPopup.Close();
+			if (HePopup.IsInitialized && entry != null) HePopup.SetData(entry, _initUuid);
+			else HePopup.Close();
 		}
 
 		public void InsertEntry(HistoryEntryData data)
 		{
 			DateTimeOffset date = DateTimeOffset.FromUnixTimeSeconds(data.Time).ToLocalTime().Date;
 
-			HistoryGroupData activeGroup = Groups.FirstOrDefault(g => g.Date == date.ToUnixTimeSeconds());
+			var activeGroup = Groups.FirstOrDefault(g => g.Date == date.ToUnixTimeSeconds());
 			if (activeGroup != null)
 			{
-				int gIndex = Groups.IndexOf(activeGroup);
-				List<HistoryEntryData> entries = Groups[gIndex].Entries.ToList();
+				var gIndex = Groups.IndexOf(activeGroup);
+				var entries = Groups[gIndex].Entries.ToList();
 				entries.Add(data);
 				entries = entries.OrderByDescending(e => e.Time).ToList();
 
-				int eIndex = entries.IndexOf(data);
+				var eIndex = entries.IndexOf(data);
 				Groups[gIndex].Entries.Insert(eIndex, data);
 			}
 			else
@@ -113,22 +113,22 @@ namespace VexTrack.MVVM.ViewModel
 				ObservableCollection<HistoryEntryData> entries = new();
 				entries.Insert(0, data);
 
-				HistoryGroupData groupData = new(TrackingDataHelper.CurrentSeasonUUID, Guid.NewGuid().ToString(), date.ToUnixTimeSeconds(), entries);
+				HistoryGroupData groupData = new(TrackingDataHelper.CurrentSeasonUuid, Guid.NewGuid().ToString(), date.ToUnixTimeSeconds(), entries);
 
-				List<HistoryGroupData> groups = Groups.ToList();
+				var groups = Groups.ToList();
 				groups.Add(groupData);
 				groups = groups.OrderByDescending(g => g.Date).ToList();
 
-				int iIndex = groups.IndexOf(groupData);
+				var iIndex = groups.IndexOf(groupData);
 				Groups.Insert(iIndex, groupData);
 			}
 		}
 
 		public void EditEntry(HistoryEntryData data)
 		{
-			foreach (HistoryGroupData g in Groups)
+			foreach (var g in Groups)
 			{
-				HistoryEntryData obj = g.Entries.FirstOrDefault(e => e.HUUID == data.HUUID);
+				var obj = g.Entries.FirstOrDefault(e => e.Huuid == data.Huuid);
 				if (obj != null)
 				{
 					g.Entries.Remove(obj);
@@ -141,14 +141,14 @@ namespace VexTrack.MVVM.ViewModel
 
 		public void OnHistoryButtonClick(object parameter)
 		{
-			string hUUID = (string)parameter;
+			var hUuid = (string)parameter;
 
-			HEPopup.SetData((from g in Groups
+			HePopup.SetData((from g in Groups
 							 from e in g.Entries
-							 where e.HUUID == hUUID
-							 select e).FirstOrDefault(), initUUID);
+							 where e.Huuid == hUuid
+							 select e).FirstOrDefault(), _initUuid);
 
-			MainVM.QueuePopup(HEPopup);
+			MainVm.QueuePopup(HePopup);
 		}
 	}
 }

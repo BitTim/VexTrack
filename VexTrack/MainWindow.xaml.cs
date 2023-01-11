@@ -25,22 +25,22 @@ namespace VexTrack
 
 		public static IntPtr HookProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
 		{
-			if (msg == WM_GETMINMAXINFO)
+			if (msg == WmGetminmaxinfo)
 			{
 				// We need to tell the system what our size should be when maximized. Otherwise it will cover the whole screen,
 				// including the task bar.
-				MINMAXINFO mmi = (MINMAXINFO)Marshal.PtrToStructure(lParam, typeof(MINMAXINFO));
+				var mmi = (Minmaxinfo)Marshal.PtrToStructure(lParam, typeof(Minmaxinfo));
 
 				// Adjust the maximized size and position to fit the work area of the correct monitor
-				IntPtr monitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+				var monitor = MonitorFromWindow(hwnd, MonitorDefaulttonearest);
 
 				if (monitor != IntPtr.Zero)
 				{
-					MONITORINFO monitorInfo = new MONITORINFO();
-					monitorInfo.cbSize = Marshal.SizeOf(typeof(MONITORINFO));
+					var monitorInfo = new Monitorinfo();
+					monitorInfo.cbSize = Marshal.SizeOf(typeof(Monitorinfo));
 					GetMonitorInfo(monitor, ref monitorInfo);
-					RECT rcWorkArea = monitorInfo.rcWork;
-					RECT rcMonitorArea = monitorInfo.rcMonitor;
+					var rcWorkArea = monitorInfo.rcWork;
+					var rcMonitorArea = monitorInfo.rcMonitor;
 					mmi.ptMaxPosition.X = Math.Abs(rcWorkArea.Left - rcMonitorArea.Left);
 					mmi.ptMaxPosition.Y = Math.Abs(rcWorkArea.Top - rcMonitorArea.Top);
 					mmi.ptMaxSize.X = Math.Abs(rcWorkArea.Right - rcWorkArea.Left);
@@ -53,26 +53,26 @@ namespace VexTrack
 			return IntPtr.Zero;
 		}
 
-		private const int WM_GETMINMAXINFO = 0x0024;
+		private const int WmGetminmaxinfo = 0x0024;
 
-		private const uint MONITOR_DEFAULTTONEAREST = 0x00000002;
+		private const uint MonitorDefaulttonearest = 0x00000002;
 
 		[DllImport("user32.dll")]
 		private static extern IntPtr MonitorFromWindow(IntPtr handle, uint flags);
 
 		[DllImport("user32.dll")]
-		private static extern bool GetMonitorInfo(IntPtr hMonitor, ref MONITORINFO lpmi);
+		private static extern bool GetMonitorInfo(IntPtr hMonitor, ref Monitorinfo lpmi);
 
 		[Serializable]
 		[StructLayout(LayoutKind.Sequential)]
-		public struct RECT
+		public struct Rect
 		{
 			public int Left;
 			public int Top;
 			public int Right;
 			public int Bottom;
 
-			public RECT(int left, int top, int right, int bottom)
+			public Rect(int left, int top, int right, int bottom)
 			{
 				this.Left = left;
 				this.Top = top;
@@ -82,22 +82,22 @@ namespace VexTrack
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		public struct MONITORINFO
+		public struct Monitorinfo
 		{
 			public int cbSize;
-			public RECT rcMonitor;
-			public RECT rcWork;
+			public Rect rcMonitor;
+			public Rect rcWork;
 			public uint dwFlags;
 		}
 
 		[Serializable]
 		[StructLayout(LayoutKind.Sequential)]
-		public struct POINT
+		public struct Point
 		{
 			public int X;
 			public int Y;
 
-			public POINT(int x, int y)
+			public Point(int x, int y)
 			{
 				this.X = x;
 				this.Y = y;
@@ -105,13 +105,13 @@ namespace VexTrack
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		public struct MINMAXINFO
+		public struct Minmaxinfo
 		{
-			public POINT ptReserved;
-			public POINT ptMaxSize;
-			public POINT ptMaxPosition;
-			public POINT ptMinTrackSize;
-			public POINT ptMaxTrackSize;
+			public Point ptReserved;
+			public Point ptMaxSize;
+			public Point ptMaxPosition;
+			public Point ptMinTrackSize;
+			public Point ptMaxTrackSize;
 		}
 
 		private void OnMinimizeButtonClick(object sender, RoutedEventArgs e)
@@ -133,8 +133,8 @@ namespace VexTrack
 
 		private void OnCloseButtonClick(object sender, RoutedEventArgs e)
 		{
-			MainViewModel MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
-			MainVM.Destroy();
+			var mainVm = (MainViewModel)ViewModelManager.ViewModels["Main"];
+			mainVm.Destroy();
 
 			this.Close();
 		}

@@ -8,9 +8,9 @@ namespace VexTrack.MVVM.Converter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			string val = value.ToString();
-			string param = (string)parameter;
-			string str = val + " " + param;
+			var val = value.ToString();
+			var param = (string)parameter;
+			var str = val + " " + param;
 
 			if (param == "NegativeToNone")
 			{
@@ -23,8 +23,8 @@ namespace VexTrack.MVVM.Converter
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			string val = (string)value;
-			string num = val.Split(" ")[0];
+			var val = (string)value;
+			var num = val.Split(" ")[0];
 			return int.Parse(num);
 		}
 	}

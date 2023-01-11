@@ -18,7 +18,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		private EditableSeasonPopupViewModel EditableSeasonPopup { get; set; }
 
 		private SeasonEntryData RawData { get; set; }
-		public string UUID { get; set; }
+		public string Uuid { get; set; }
 		public string Title { get; set; }
 		public double Progress { get; set; }
 		public int Average { get; set; }
@@ -53,12 +53,12 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			{
 				EditableSeasonPopup.SetParameters("Edit Season", true);
 				EditableSeasonPopup.SetData(RawData);
-				MainVM.QueuePopup(EditableSeasonPopup);
+				MainVm.QueuePopup(EditableSeasonPopup);
 			});
 			OnDeleteClicked = new RelayCommand(o =>
 			{
 				IsInitialized = false;
-				TrackingDataHelper.RemoveSeason(UUID);
+				TrackingDataHelper.RemoveSeason(Uuid);
 			});
 
 			Graph = new PlotModel();
@@ -71,19 +71,19 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			LinearAxis xAxis = new();
 			LinearAxis yAxis = new();
 
-			SolidColorBrush Foreground = (SolidColorBrush)Application.Current.FindResource("Foreground");
-			SolidColorBrush Shade = (SolidColorBrush)Application.Current.FindResource("Shade");
+			var foreground = (SolidColorBrush)Application.Current.FindResource("Foreground");
+			var shade = (SolidColorBrush)Application.Current.FindResource("Shade");
 
 			xAxis.Position = AxisPosition.Bottom;
 			xAxis.AbsoluteMinimum = 0;
 			xAxis.TickStyle = TickStyle.None;
 			xAxis.MajorStep = 5;
 			xAxis.MajorGridlineStyle = LineStyle.Dot;
-			xAxis.MajorGridlineColor = OxyColor.FromArgb(Shade.Color.A, Shade.Color.R, Shade.Color.G, Shade.Color.B);
+			xAxis.MajorGridlineColor = OxyColor.FromArgb(shade.Color.A, shade.Color.R, shade.Color.G, shade.Color.B);
 			xAxis.MaximumPadding = 0;
 			xAxis.MinimumPadding = 0;
-			xAxis.AbsoluteMaximum = TrackingDataHelper.GetDuration(UUID);
-			xAxis.TextColor = OxyColor.FromArgb(Foreground.Color.A, Foreground.Color.R, Foreground.Color.G, Foreground.Color.B);
+			xAxis.AbsoluteMaximum = TrackingDataHelper.GetDuration(Uuid);
+			xAxis.TextColor = OxyColor.FromArgb(foreground.Color.A, foreground.Color.R, foreground.Color.G, foreground.Color.B);
 
 			yAxis.Position = AxisPosition.Left;
 			yAxis.AbsoluteMinimum = 0;
@@ -98,21 +98,21 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 		private void UpdateGraph(bool epilogue)
 		{
-			SolidColorBrush GraphIdealPoint = (SolidColorBrush)Application.Current.FindResource("GraphIdealPoint");
+			var graphIdealPoint = (SolidColorBrush)Application.Current.FindResource("GraphIdealPoint");
 
-			SolidColorBrush Foreground = (SolidColorBrush)Application.Current.FindResource("Foreground");
-			SolidColorBrush Background = (SolidColorBrush)Application.Current.FindResource("Background");
-			SolidColorBrush Shade = (SolidColorBrush)Application.Current.FindResource("Shade");
+			var foreground = (SolidColorBrush)Application.Current.FindResource("Foreground");
+			var background = (SolidColorBrush)Application.Current.FindResource("Background");
+			var shade = (SolidColorBrush)Application.Current.FindResource("Shade");
 
-			LineSeries ideal = GraphCalc.CalcIdealGraph(UUID, epilogue);
-			LineSeries performance = GraphCalc.CalcPerformanceGraph(UUID);
+			var ideal = GraphCalc.CalcIdealGraph(Uuid, epilogue);
+			var performance = GraphCalc.CalcPerformanceGraph(Uuid);
 			
-			RectangleAnnotation bufferZone = GraphCalc.CalcBufferZone(UUID, epilogue);
+			var bufferZone = GraphCalc.CalcBufferZone(Uuid, epilogue);
 
 			Graph.LegendPosition = LegendPosition.LeftTop;
-			Graph.LegendBackground = OxyColor.FromArgb(Background.Color.A, Background.Color.R, Background.Color.G, Background.Color.B);
-			Graph.LegendTextColor = OxyColor.FromArgb(Foreground.Color.A, Foreground.Color.R, Foreground.Color.G, Foreground.Color.B);
-			Graph.LegendBorder = OxyColor.FromArgb(Shade.Color.A, Shade.Color.R, Shade.Color.G, Shade.Color.B);
+			Graph.LegendBackground = OxyColor.FromArgb(background.Color.A, background.Color.R, background.Color.G, background.Color.B);
+			Graph.LegendTextColor = OxyColor.FromArgb(foreground.Color.A, foreground.Color.R, foreground.Color.G, foreground.Color.B);
+			Graph.LegendBorder = OxyColor.FromArgb(shade.Color.A, shade.Color.R, shade.Color.G, shade.Color.B);
 
 			Graph.Series.Clear();
 			Graph.Annotations.Clear();
@@ -124,10 +124,10 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			Graph.Series.Add(performance);
 
 			// Only add points to current season
-			if (UUID == TrackingDataHelper.CurrentSeasonUUID)
+			if (Uuid == TrackingDataHelper.CurrentSeasonUuid)
 			{
-				LineSeries idealPoint = DashboardDataCalc.CalcGraphPoint(ideal, OxyColor.FromArgb(GraphIdealPoint.Color.A, GraphIdealPoint.Color.R, GraphIdealPoint.Color.G, GraphIdealPoint.Color.B));
-				LineSeries performancePoint = DashboardDataCalc.CalcGraphPoint(performance, OxyColors.Maroon);
+				var idealPoint = DashboardDataCalc.CalcGraphPoint(ideal, OxyColor.FromArgb(graphIdealPoint.Color.A, graphIdealPoint.Color.R, graphIdealPoint.Color.G, graphIdealPoint.Color.B));
+				var performancePoint = DashboardDataCalc.CalcGraphPoint(performance, OxyColors.Maroon);
 
 				Graph.Series.Add(idealPoint);
 				Graph.Series.Add(performancePoint);
@@ -140,7 +140,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 		private void UpdateYAxis(LineSeries performance, bool epilogue)
 		{
-			int maximum = GoalDataCalc.CalcTotalGoal("", TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP, epilogue).Total * 2;
+			var maximum = GoalDataCalc.CalcTotalGoal("", TrackingDataHelper.CurrentSeasonData.ActiveBpLevel, TrackingDataHelper.CurrentSeasonData.Cxp, epilogue).Total * 2;
 			if (performance.Points.Last().Y >= maximum) maximum = (int)performance.Points.Last().Y + 20000;
 
 			Graph.Axes[1].AbsoluteMaximum = maximum;
@@ -156,7 +156,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		{
 			RawData = data;
 
-			UUID = data.UUID;
+			Uuid = data.Uuid;
 			Title = data.Title;
 			Progress = data.Progress;
 			Average = data.Average;
@@ -173,13 +173,13 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 		private void AddGraphLevels(bool epilogue)
 		{
-			List<LineSeries> levels = GraphCalc.CalcBattlepassLevels(UUID);
-			foreach (LineSeries ls in levels) Graph.Series.Add(ls);
+			var levels = GraphCalc.CalcBattlepassLevels(Uuid);
+			foreach (var ls in levels) Graph.Series.Add(ls);
 
 			if (!epilogue) return;
 
-			List<LineSeries> epilogueLevels = GraphCalc.CalcEpilogueLevels(UUID);
-			foreach (LineSeries ls in epilogueLevels) Graph.Series.Add(ls);
+			var epilogueLevels = GraphCalc.CalcEpilogueLevels(Uuid);
+			foreach (var ls in epilogueLevels) Graph.Series.Add(ls);
 		}
 
 		public override void Close()

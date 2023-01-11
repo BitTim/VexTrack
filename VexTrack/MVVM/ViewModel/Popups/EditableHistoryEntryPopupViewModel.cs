@@ -10,8 +10,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public RelayCommand OnDoneClicked { get; set; }
 
 		public string Title { get; set; }
-		public string SUUID { get; set; }
-		public string HUUID { get; set; }
+		public string Suuid { get; set; }
+		public string Huuid { get; set; }
 		public List<string> Maps => Constants.Maps;
 		public List<string> GameModes => Constants.Gamemodes;
 		public string ScoreType => Constants.ScoreTypes[GameMode];
@@ -139,8 +139,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 				if (ScoreType == "None") Score = -1;
 				if (ScoreType == "Score") Description = "";
 
-				if (EditMode) TrackingDataHelper.EditHistoryEntry(SUUID, HUUID, new HistoryEntry(HUUID, Time, GameMode, Amount, Map, Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss));
-				else TrackingDataHelper.AddHistoryEntry(SUUID, new HistoryEntry(HUUID, Time, GameMode, Amount, Map, Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss));
+				if (EditMode) TrackingDataHelper.EditHistoryEntry(Suuid, Huuid, new HistoryEntry(Huuid, Time, GameMode, Amount, Map, Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss));
+				else TrackingDataHelper.AddHistoryEntry(Suuid, new HistoryEntry(Huuid, Time, GameMode, Amount, Map, Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss));
 				Close();
 			});
 		}
@@ -158,8 +158,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		{
 			Time = DateTimeOffset.Now.ToUnixTimeSeconds();
 
-			SUUID = TrackingDataHelper.CurrentSeasonUUID;
-			HUUID = Guid.NewGuid().ToString();
+			Suuid = TrackingDataHelper.CurrentSeasonUuid;
+			Huuid = Guid.NewGuid().ToString();
 			Description = "";
 			GameMode = Constants.Gamemodes[0];
 			Map = Constants.Maps[0];
@@ -174,8 +174,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 		public void SetData(HistoryEntryData data)
 		{
-			SUUID = data.SUUID;
-			HUUID = data.HUUID;
+			Suuid = data.Suuid;
+			Huuid = data.Huuid;
 			GameMode = data.GameMode;
 			Score = data.Score;
 			EnemyScore = data.EnemyScore;

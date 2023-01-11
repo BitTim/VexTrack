@@ -9,8 +9,8 @@ namespace VexTrack.MVVM.Converter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			string val = value as string;
-			bool convValue = bool.Parse(val);
+			var val = value as string;
+			var convValue = bool.Parse(val);
 
 			if (convValue) return Visibility.Visible;
 			return Visibility.Hidden;

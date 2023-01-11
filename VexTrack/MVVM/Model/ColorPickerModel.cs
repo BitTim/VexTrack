@@ -79,13 +79,13 @@ namespace VexTrack.MVVM.Model
 			set => SetValue(ValueBrushProperty, value);
 		}
 
-		private Border clickableBorder { get; set; }
+		private Border ClickableBorder { get; set; }
 
 		private static void OnHSVChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
 			if (d is ColorPickerModel)
 			{
-				ColorPickerModel p = d as ColorPickerModel;
+				var p = d as ColorPickerModel;
 				p.Update("HSV");
 			}
 		}
@@ -94,7 +94,7 @@ namespace VexTrack.MVVM.Model
 		{
 			if (d is ColorPickerModel)
 			{
-				ColorPickerModel p = d as ColorPickerModel;
+				var p = d as ColorPickerModel;
 				p.Update("RGB");
 			}
 		}
@@ -103,14 +103,14 @@ namespace VexTrack.MVVM.Model
 		{
 			if (d is ColorPickerModel)
 			{
-				ColorPickerModel p = d as ColorPickerModel;
+				var p = d as ColorPickerModel;
 				p.Update("HEX");
 			}
 		}
 
 		public Brush CreateBrush(Color startCol, Color endCol, string dir)
 		{
-			LinearGradientBrush brush = new LinearGradientBrush();
+			var brush = new LinearGradientBrush();
 			brush.StartPoint = new Point(0, 0);
 
 			if (dir == "Horizontal") brush.EndPoint = new Point(1, 0);
@@ -151,27 +151,27 @@ namespace VexTrack.MVVM.Model
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(ColorPickerModel), new FrameworkPropertyMetadata(typeof(ColorPickerModel)));
 		}
 
-		private void UpdateRGB(Color currentColor)
+		private void UpdateRgb(Color currentColor)
 		{
 			Red = currentColor.R;
 			Green = currentColor.G;
 			Blue = currentColor.B;
 		}
 
-		private void UpdateHSV(Color currentColor)
+		private void UpdateHsv(Color currentColor)
 		{
-			System.Drawing.Color convertedColor = ColorConv.ToSDColor(currentColor);
+			var convertedColor = ColorConv.ToSdColor(currentColor);
 
 			Hue = (int)convertedColor.GetHue();
 			Saturation = convertedColor.GetSaturation();
-			Value = ColorUtil.getValue(convertedColor);
+			Value = ColorUtil.GetValue(convertedColor);
 
-			if (clickableBorder != null) HighlightMargin = new Thickness(Saturation * clickableBorder.ActualWidth, (1f - Value) * clickableBorder.ActualHeight, 0, 0);
+			if (ClickableBorder != null) HighlightMargin = new Thickness(Saturation * ClickableBorder.ActualWidth, (1f - Value) * ClickableBorder.ActualHeight, 0, 0);
 		}
 
 		private void UpdateHex(Color currentColor)
 		{
-			string rawHex = currentColor.ToString();
+			var rawHex = currentColor.ToString();
 			rawHex = rawHex.Remove(1, 2);
 			Hex = rawHex;
 		}
@@ -189,14 +189,14 @@ namespace VexTrack.MVVM.Model
 			{
 				currentColor = Color.FromArgb(255, Red, Green, Blue);
 
-				UpdateHSV(currentColor);
+				UpdateHsv(currentColor);
 				UpdateHex(currentColor);
 			}
 			else if (source == "HSV")
 			{
-				currentColor = ColorConv.ToSWMColor(ColorUtil.ColorFromHSV(new ColorUtil.HSV(Hue, Saturation, Value)));
+				currentColor = ColorConv.ToSwmColor(ColorUtil.ColorFromHsv(new ColorUtil.Hsv(Hue, Saturation, Value)));
 
-				UpdateRGB(currentColor);
+				UpdateRgb(currentColor);
 				UpdateHex(currentColor);
 			}
 			else if (source == "HEX")
@@ -209,11 +209,11 @@ namespace VexTrack.MVVM.Model
 
 				currentColor = (Color)ColorConverter.ConvertFromString(Hex);
 
-				UpdateRGB(currentColor);
-				UpdateHSV(currentColor);
+				UpdateRgb(currentColor);
+				UpdateHsv(currentColor);
 			}
 
-			Color colorMatrixHueColor = ColorConv.ToSWMColor(ColorUtil.ColorFromHSV(new ColorUtil.HSV(Hue, 1, 1)));
+			var colorMatrixHueColor = ColorConv.ToSwmColor(ColorUtil.ColorFromHsv(new ColorUtil.Hsv(Hue, 1, 1)));
 			ColorBrush = CreateBrush(Color.FromArgb(255, 255, 255, 255), colorMatrixHueColor, "Horizontal");
 
 			_isUpdating = false;
@@ -221,10 +221,10 @@ namespace VexTrack.MVVM.Model
 
 		public override void OnApplyTemplate()
 		{
-			clickableBorder = Template.FindName("PART_ClickableBorder", this) as Border;
-			clickableBorder.MouseLeftButtonDown += new MouseButtonEventHandler(PART_ColorMatrix_MouseLeftButtonDown);
-			clickableBorder.MouseLeftButtonUp += new MouseButtonEventHandler(PART_ColorMatrix_MouseLeftButtonUp);
-			clickableBorder.MouseMove += new MouseEventHandler(PART_ColorMatrix_MouseMove);
+			ClickableBorder = Template.FindName("PART_ClickableBorder", this) as Border;
+			ClickableBorder.MouseLeftButtonDown += new MouseButtonEventHandler(PART_ColorMatrix_MouseLeftButtonDown);
+			ClickableBorder.MouseLeftButtonUp += new MouseButtonEventHandler(PART_ColorMatrix_MouseLeftButtonUp);
+			ClickableBorder.MouseMove += new MouseEventHandler(PART_ColorMatrix_MouseMove);
 
 			base.OnApplyTemplate();
 		}
@@ -239,7 +239,7 @@ namespace VexTrack.MVVM.Model
 		private void PART_ColorMatrix_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 		{
 			_mouseDown = true;
-			Mouse.Capture(clickableBorder);
+			Mouse.Capture(ClickableBorder);
 			UpdateMouse(sender, e);
 		}
 
@@ -250,9 +250,9 @@ namespace VexTrack.MVVM.Model
 		}
 		private void UpdateMouse(object sender, MouseEventArgs e)
 		{
-			Border clickableBorder = sender as Border;
+			var clickableBorder = sender as Border;
 			Point dimensions = new(clickableBorder.ActualWidth, clickableBorder.ActualHeight);
-			Point mousePos = e.GetPosition(clickableBorder);
+			var mousePos = e.GetPosition(clickableBorder);
 
 			if (mousePos.X < 0) mousePos.X = 0;
 			if (mousePos.X > dimensions.X) mousePos.X = dimensions.X;

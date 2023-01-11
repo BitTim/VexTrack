@@ -18,7 +18,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			}
 		}
 
-		private string UUID = "";
+		private string _uuid = "";
 
 		public DeleteGoalGroupConfirmationPopupViewModel()
 		{
@@ -28,15 +28,15 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			{
 				if (KeepGoals)
 				{
-					foreach (Goal goal in TrackingDataHelper.Data.Goals.Find(gg => gg.UUID == UUID).Goals)
+					foreach (var goal in TrackingDataHelper.Data.Contracts.Find(gg => gg.Uuid == _uuid).Goals)
 					{
-						TrackingDataHelper.MoveGoal(UUID, Constants.DefaultGroupUUID, goal.UUID);
+						TrackingDataHelper.MoveGoal(_uuid, Constants.DefaultGroupUuid, goal.Uuid);
 					}
 
 					KeepGoals = false;
 				}
 
-				TrackingDataHelper.RemoveGoalGroup(UUID);
+				TrackingDataHelper.RemoveContract(_uuid);
 				Close();
 			});
 			OnNoClicked = new RelayCommand(o => Close());
@@ -44,7 +44,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 		public void SetData(string uuid)
 		{
-			UUID = uuid;
+			_uuid = uuid;
 		}
 	}
 }

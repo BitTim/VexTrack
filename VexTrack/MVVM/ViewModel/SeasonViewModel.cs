@@ -12,7 +12,7 @@ namespace VexTrack.MVVM.ViewModel
 
 		public SeasonPopupViewModel SeasonPopup { get; set; }
 		private SeasonEndConfirmationPopupViewModel SeasonEndPopup { get; set; }
-		private MainViewModel MainVM { get; set; }
+		private MainViewModel MainVm { get; set; }
 		private bool Epilogue { get; set; }
 
 		private ObservableCollection<SeasonEntryData> _entries = new();
@@ -31,15 +31,15 @@ namespace VexTrack.MVVM.ViewModel
 
 		public SeasonViewModel()
 		{
-			MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
+			MainVm = (MainViewModel)ViewModelManager.ViewModels["Main"];
 			SeasonPopup = (SeasonPopupViewModel)ViewModelManager.ViewModels["SeasonPopup"];
 			SeasonEndPopup = (SeasonEndConfirmationPopupViewModel)ViewModelManager.ViewModels["SeasonEndConfirmationPopup"];
 
 			SeasonButtonClick = new RelayCommand(OnSeasonButtonClick);
 			OnAddClicked = new RelayCommand(o =>
 			{
-				SeasonEndPopup.SetData(TrackingDataHelper.CurrentSeasonUUID);
-				MainVM.QueuePopup(SeasonEndPopup);
+				SeasonEndPopup.SetData(TrackingDataHelper.CurrentSeasonUuid);
+				MainVm.QueuePopup(SeasonEndPopup);
 			});
 
 			Update(false);
@@ -50,22 +50,22 @@ namespace VexTrack.MVVM.ViewModel
 			Epilogue = epilogue;
 			Entries.Clear();
 
-			foreach (Season s in TrackingDataHelper.Data.Seasons)
+			foreach (var s in TrackingDataHelper.Data.Seasons)
 			{
 				Entries.Add(SeasonDataCalc.CalcSeason(s, epilogue));
 			}
 
-			if (SeasonPopup.IsInitialized) SeasonPopup.SetData(Entries.Where(e => e.UUID == SeasonPopup.UUID).First(), epilogue);
+			if (SeasonPopup.IsInitialized) SeasonPopup.SetData(Entries.Where(e => e.Uuid == SeasonPopup.Uuid).First(), epilogue);
 			else SeasonPopup.Close();
 		}
 
 		public void OnSeasonButtonClick(object parameter)
 		{
-			string uuid = (string)parameter;
+			var uuid = (string)parameter;
 
 			SeasonPopup.SetFlags(true, true);
-			SeasonPopup.SetData(Entries.Where(e => e.UUID == uuid).First(), Epilogue);
-			MainVM.QueuePopup(SeasonPopup);
+			SeasonPopup.SetData(Entries.Where(e => e.Uuid == uuid).First(), Epilogue);
+			MainVm.QueuePopup(SeasonPopup);
 		}
 	}
 }

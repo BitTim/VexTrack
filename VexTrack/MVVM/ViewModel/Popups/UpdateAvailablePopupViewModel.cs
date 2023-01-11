@@ -81,8 +81,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			CurrentVersion = Constants.Version;
 			NewVersion = newVersion;
 
-			foreach (string c in changelog) Changelog.Add(c);
-			foreach (string w in warnings) Warnings.Add(w);
+			foreach (var c in changelog) Changelog.Add(c);
+			foreach (var w in warnings) Warnings.Add(w);
 
 			IsInitialized = true;
 		}

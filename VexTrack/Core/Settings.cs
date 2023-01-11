@@ -66,8 +66,8 @@ namespace VexTrack.Core
 
 		public static void CallUpdate()
 		{
-			MainViewModel MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
-			MainVM.Update();
+			var mainVm = (MainViewModel)ViewModelManager.ViewModels["Main"];
+			mainVm.Update();
 			SaveSettings();
 		}
 
@@ -86,10 +86,10 @@ namespace VexTrack.Core
 				return;
 			}
 
-			string rawJSON = File.ReadAllText(Constants.SettingsPath);
-			JObject jo = JObject.Parse(rawJSON);
+			var rawJson = File.ReadAllText(Constants.SettingsPath);
+			var jo = JObject.Parse(rawJson);
 
-			bool resave = false;
+			var resave = false;
 
 			Data.SetDefault();
 
@@ -145,7 +145,7 @@ namespace VexTrack.Core
 
 			if (!File.Exists(Constants.SettingsPath))
 			{
-				int sep = Constants.SettingsPath.LastIndexOf("/");
+				var sep = Constants.SettingsPath.LastIndexOf("/");
 
 				Directory.CreateDirectory(Constants.SettingsPath.Substring(0, sep));
 				File.CreateText(Constants.SettingsPath).Close();
@@ -156,15 +156,15 @@ namespace VexTrack.Core
 
 		public static void ApplyVisualSettings()
 		{
-			if (!Constants.ThemeURIs.Keys.Contains(Data.Theme)) Data.Theme = "Auto";
-			if (!Constants.AccentURIs.Keys.Contains(Data.Accent)) Data.Accent = "Blue";
+			if (!Constants.ThemeUrIs.Keys.Contains(Data.Theme)) Data.Theme = "Auto";
+			if (!Constants.AccentUrIs.Keys.Contains(Data.Accent)) Data.Accent = "Blue";
 
-			string accentString = Data.Accent;
-			string themeString = Data.Theme;
+			var accentString = Data.Accent;
+			var themeString = Data.Theme;
 			if (themeString == "Auto") themeString = Data.SystemTheme;
 
-			Application.Current.Resources.MergedDictionaries[1].Source = new Uri(Constants.ThemeURIs[themeString], UriKind.Relative);
-			Application.Current.Resources.MergedDictionaries[2].Source = new Uri(Constants.AccentURIs[accentString], UriKind.Relative);
+			Application.Current.Resources.MergedDictionaries[1].Source = new Uri(Constants.ThemeUrIs[themeString], UriKind.Relative);
+			Application.Current.Resources.MergedDictionaries[2].Source = new Uri(Constants.AccentUrIs[accentString], UriKind.Relative);
 		}
 	}
 
@@ -181,15 +181,15 @@ namespace VexTrack.Core
 
 		private static WindowsTheme GetWindowsTheme()
 		{
-			using (RegistryKey key = Registry.CurrentUser.OpenSubKey(RegistryKeyPath))
+			using (var key = Registry.CurrentUser.OpenSubKey(RegistryKeyPath))
 			{
-				object registryValueObject = key?.GetValue(RegistryValueName);
+				var registryValueObject = key?.GetValue(RegistryValueName);
 				if (registryValueObject == null)
 				{
 					return WindowsTheme.Light;
 				}
 
-				int registryValue = (int)registryValueObject;
+				var registryValue = (int)registryValueObject;
 
 				return registryValue > 0 ? WindowsTheme.Light : WindowsTheme.Dark;
 			}
@@ -199,7 +199,7 @@ namespace VexTrack.Core
 		{
 			SystemEvents.UserPreferenceChanged += SystemEvents_UserPreferenceChanged;
 
-			string theme = GetWindowsTheme().ToString();
+			var theme = GetWindowsTheme().ToString();
 			SettingsHelper.Data.SystemTheme = theme;
 		}
 
@@ -211,7 +211,7 @@ namespace VexTrack.Core
 		private void SystemEvents_UserPreferenceChanged(object sender, UserPreferenceChangedEventArgs e)
 		{
 			if (e.Category != UserPreferenceCategory.General) return;
-			string theme = GetWindowsTheme().ToString();
+			var theme = GetWindowsTheme().ToString();
 
 			SettingsHelper.Data.SystemTheme = theme;
 			SettingsHelper.ApplyVisualSettings();

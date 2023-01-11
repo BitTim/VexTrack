@@ -8,7 +8,7 @@ namespace VexTrack.MVVM.Converter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			int val = (int)value;
+			var val = (int)value;
 
 			if (val < 0) return 0;
 			return val;

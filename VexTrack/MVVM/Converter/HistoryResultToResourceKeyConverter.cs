@@ -9,8 +9,8 @@ namespace VexTrack.MVVM.Converter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			string result = value as string;
-			string property = parameter as string;
+			var result = value as string;
+			var property = parameter as string;
 
 			if (result.Split()[0] == "Surrendered") result = result.Split()[1];
 			if (result == "Win" || result == "Loss")

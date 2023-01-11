@@ -10,9 +10,9 @@ namespace VexTrack.MVVM.Converter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			string val = value as string;
+			var val = value as string;
 
-			if (val == Constants.DefaultGroupUUID) return Visibility.Collapsed;
+			if (val == Constants.DefaultGroupUuid) return Visibility.Collapsed;
 			return Visibility.Visible;
 		}
 

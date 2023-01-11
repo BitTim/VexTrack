@@ -9,20 +9,20 @@ namespace VexTrack.Core
 {
 	public static class GoalDataCalc
 	{
-		public static GoalEntryData CalcTotalGoal(string uuid, int activeLevel, int cxp, bool epilogue)
+		/*public static GoalEntryData CalcTotalGoal(string uuid, int activeLevel, int cxp, bool epilogue)
 		{
 			GoalEntryData ret = new(uuid);
 
 			ret.Title = "Total XP";
 
-			ret.Total = CalcUtil.CumulativeSum(Constants.BattlepassLevels, Constants.Level2Offset, Constants.XPPerLevel);
-			if (epilogue) ret.Total += Constants.EpilogueLevels * Constants.XPPerEpilogueLevel;
+			ret.Total = CalcUtil.CumulativeSum(Constants.BattlepassLevels, Constants.Level2Offset, Constants.XpPerLevel);
+			if (epilogue) ret.Total += Constants.EpilogueLevels * Constants.XpPerEpilogueLevel;
 
 			ret.Collected = CalcUtil.CalcTotalCollected(activeLevel, cxp);
 			ret.Remaining = ret.Total - ret.Collected;
 			ret.Progress = CalcUtil.CalcProgress(ret.Total, ret.Collected);
 			ret.Active = -1;
-			ret.StartXP = -1;
+			ret.StartXp = -1;
 			ret.Paused = false;
 			if (ret.Progress >= 100) ret.CompletionStatus = "Done";
 
@@ -42,7 +42,7 @@ namespace VexTrack.Core
 			ret.Remaining = ret.Total - ret.Collected;
 			ret.Progress = CalcUtil.CalcProgress(ret.Total, ret.Collected);
 			ret.Active = activeLevel > Constants.BattlepassLevels + Constants.EpilogueLevels ? -1 : activeLevel;
-			ret.StartXP = -1;
+			ret.StartXp = -1;
 			ret.Paused = false;
 			if (ret.Progress >= 100) ret.CompletionStatus = "Done";
 
@@ -54,9 +54,9 @@ namespace VexTrack.Core
 			GoalEntryData ret = new(uuid);
 
 			int total;
-			if (activeLevel - 1 < Constants.BattlepassLevels) total = Constants.Level2Offset + Constants.XPPerLevel * activeLevel;
+			if (activeLevel - 1 < Constants.BattlepassLevels) total = Constants.Level2Offset + Constants.XpPerLevel * activeLevel;
 			else if (activeLevel > Constants.BattlepassLevels + Constants.EpilogueLevels) total = 0;
-			else total = Constants.XPPerEpilogueLevel;
+			else total = Constants.XpPerEpilogueLevel;
 
 			if (activeLevel > Constants.BattlepassLevels + Constants.EpilogueLevels) ret.Title = "Post Completion";
 			else ret.Title = "Level " + activeLevel.ToString();
@@ -66,38 +66,39 @@ namespace VexTrack.Core
 			ret.Remaining = ret.Total - ret.Collected;
 			ret.Progress = CalcUtil.CalcProgress(ret.Total, ret.Collected);
 			ret.Active = -1;
-			ret.StartXP = -1;
+			ret.StartXp = -1;
 			ret.Paused = false;
 			if (ret.Progress >= 100) ret.CompletionStatus = "Done";
 
 			return ret;
-		}
+		}*/
 
-		public static GoalEntryData CalcUserGoal(string groupUUID, Goal goalData)
+		public static GoalEntryData CalcGoal(string groupUuid, Goal goalData)
 		{
-			GoalEntryData ret = new(goalData.UUID);
+			GoalEntryData ret = new(goalData.Uuid)
+			{
+				Title = goalData.Name,
+				GroupUuid = groupUuid,
+				//ret.DepUuid = goalData.Dependency;
+				Total = goalData.Total,
+				Collected = goalData.Collected,
+				Remaining = goalData.Total - goalData.Collected
+			};
 
-			ret.Title = goalData.Name;
-
-			ret.GroupUUID = groupUUID;
-			ret.DepUUID = goalData.Dependency;
-			ret.Total = goalData.Total;
-			ret.Collected = goalData.Collected;
-			ret.Remaining = goalData.Total - goalData.Collected;
 			ret.Progress = CalcUtil.CalcProgress(ret.Total, ret.Collected);
-			ret.Active = -1;
-			ret.Color = goalData.Color;
-			ret.Paused = goalData.Paused;
+			//ret.Active = -1;
+			//ret.Color = goalData.Color;
+			//ret.Paused = goalData.Paused;
 
-			if (ret.DepUUID != null && ret.DepUUID != "") ret.ActivityStatus = "Linked";
+			//if (ret.DepUuid != null && ret.DepUuid != "") ret.ActivityStatus = "Linked";
 
-			if (ret.Paused) ret.CompletionStatus = "Paused";
-			if (ret.Progress >= 100) ret.CompletionStatus = "Done";
+			// if (ret.Paused) ret.CompletionStatus = "Paused";
+			// if (ret.Progress >= 100) ret.CompletionStatus = "Done";
 
 			return ret;
 		}
 
-		public static bool checkPaused(GoalGroup gg, Goal g)
+		/*public static bool CheckPaused(Contract gg, Goal g)
 		{
 			if (g.Collected >= g.Total) return false; // If done, it cannot be paused
 
@@ -105,41 +106,41 @@ namespace VexTrack.Core
 			{
 				if (g.Paused) return true; // Break chain if something other than the root is paused
 
-				int index = gg.Goals.FindIndex(x => x.UUID == g.Dependency);
+				int index = gg.Goals.FindIndex(x => x.Uuid == g.Dependency);
 				if (index < 0) return true; // Has invalid Dependency = Dont show
 
 				Goal nextG = gg.Goals[index];
-				return checkPaused(gg, nextG);
+				return CheckPaused(gg, nextG);
 			}
 
 			return g.Paused;
-		}
+		}*/
 
-		public static (List<LineSeries>, List<TextAnnotation>) CalcGraphGoals(string sUUID)
+		/*public static (List<LineSeries>, List<TextAnnotation>) CalcGraphGoals(string sUuid)
 		{
-			List<LineSeries> lsret = new();
-			List<TextAnnotation> taret = new();
+			List<LineSeries> lsRet = new();
+			List<TextAnnotation> taRet = new();
 
-			foreach (GoalGroup gg in TrackingDataHelper.Data.Goals)
+			foreach (var contract in TrackingDataHelper.Data.Contracts)
 			{
-				foreach (Goal g in gg.Goals)
+				foreach (var goal in contract.Goals)
 				{
 					LineSeries ls = new();
 					TextAnnotation ta = new();
 					byte alpha = 128;
 
-					GoalEntryData ge = CalcUserGoal(gg.UUID, g);
-					int totalCollected = CalcUtil.CalcTotalCollected(TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP);
+					GoalEntryData ge = CalcUserGoal(contract.Uuid, goal);
+					int totalCollected = CalcUtil.CalcTotalCollected(TrackingDataHelper.CurrentSeasonData.ActiveBpLevel, TrackingDataHelper.CurrentSeasonData.Cxp);
 					int val = totalCollected - ge.Collected + ge.Total;
 
 					if (val <= 0) continue;
-					if (checkPaused(gg, g)) continue;
+					if (CheckPaused(contract, goal)) continue;
 
 					ls.Points.Add(new DataPoint(0, val));
-					ls.Points.Add(new DataPoint(TrackingDataHelper.GetDuration(sUUID), val));
+					ls.Points.Add(new DataPoint(TrackingDataHelper.GetDuration(sUuid), val));
 
 					ta.Text = ge.Title;
-					ta.TextPosition = new DataPoint(TrackingDataHelper.GetDuration(sUUID) / 2, val);
+					ta.TextPosition = new DataPoint(TrackingDataHelper.GetDuration(sUuid) / 2, val);
 					ta.StrokeThickness = 0;
 
 					if (totalCollected >= val) alpha = 13;
@@ -150,67 +151,71 @@ namespace VexTrack.Core
 					ls.Color = OxyColor.FromAColor(alpha, OxyColor.Parse(ge.Color));
 					ta.TextColor = OxyColor.FromAColor(alpha, OxyColor.Parse(ge.Color));
 
-					lsret.Add(ls);
-					taret.Add(ta);
+					lsRet.Add(ls);
+					taRet.Add(ta);
 				}
 			}
 
-			return (lsret, taret);
-		}
+			return (lsRet, taRet);
+		}*/
 	}
 
 	public class GoalEntryData
 	{
-		public string UUID { get; set; }
-		public string GroupUUID { get; set; }
-		public string DepUUID { get; set; }
+		public string Uuid { get; set; }
+		public string GroupUuid { get; set; }
+		//public string DepUuid { get; set; }
 		public string Title { get; set; }
 		public double Progress { get; set; }
 		public int Collected { get; set; }
 		public int Remaining { get; set; }
 		public int Total { get; set; }
-		public string Color { get; set; }
-		public string CompletionStatus { get; set; }
-		public string ActivityStatus { get; set; }
-		public int StartXP { get; set; }
-		public int Active { get; set; }
-		public bool Paused { get; set; }
+		//public string Color { get; set; }
+		//public string CompletionStatus { get; set; }
+		//public string ActivityStatus { get; set; }
+		//public int StartXp { get; set; }
+		//public int Active { get; set; }
+		//public bool Paused { get; set; }
 
 		public GoalEntryData(string uuid)
 		{
-			UUID = uuid;
+			Uuid = uuid;
 		}
 
-		public GoalEntryData(string uuid, string groupUUID, string depUUID, string title, double progress, int collected, int remaining, int total, string color, string completionStatus, string activityStatus, bool paused, int startXP = -1, int active = -1)
+		public GoalEntryData(string uuid, string groupUuid, string title, double progress, int collected, int remaining, int total)
 		{
-			UUID = uuid;
-			GroupUUID = groupUUID;
-			DepUUID = depUUID;
+			Uuid = uuid;
+			GroupUuid = groupUuid;
+			//DepUuid = depUuid;
 			Title = title;
 			Progress = progress;
 			Collected = collected;
 			Remaining = remaining;
 			Total = total;
-			Color = color;
-			CompletionStatus = completionStatus;
-			ActivityStatus = activityStatus;
-			Paused = paused;
+			//Color = color;
+			//CompletionStatus = completionStatus;
+			//ActivityStatus = activityStatus;
+			//Paused = paused;
 
-			StartXP = startXP;
-			Active = active;
+			//StartXp = startXp;
+			//Active = active;
 		}
 	}
 
-	public class GoalGroupData
+	public class ContractData
 	{
-		public string UUID { get; set; }
+		public string Uuid { get; set; }
 		public string Name { get; set; }
+		public string Color { get; set; }
+		public bool Paused { get; set; }
 		public List<GoalEntryData> Goals { get; set; }
 
-		public GoalGroupData(string uuid, string name, List<GoalEntryData> goals)
+		public ContractData(string uuid, string name, string color, bool paused, List<GoalEntryData> goals)
 		{
-			UUID = uuid;
+			Uuid = uuid;
 			Name = name;
+			Color = color;
+			Paused = paused;
 			Goals = goals;
 		}
 	}

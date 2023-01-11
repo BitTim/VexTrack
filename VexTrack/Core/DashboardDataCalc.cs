@@ -12,13 +12,13 @@ namespace VexTrack.Core
 		{
 			DailyData ret = new();
 
-			var totalDataNormal = GoalDataCalc.CalcTotalGoal("", TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP, false);
-			var totalDataEpilogue = GoalDataCalc.CalcTotalGoal("", TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP, true);
+			var totalDataNormal = GoalDataCalc.CalcTotalGoal("", TrackingDataHelper.CurrentSeasonData.ActiveBpLevel, TrackingDataHelper.CurrentSeasonData.Cxp, false);
+			var totalDataEpilogue = GoalDataCalc.CalcTotalGoal("", TrackingDataHelper.CurrentSeasonData.ActiveBpLevel, TrackingDataHelper.CurrentSeasonData.Cxp, true);
 
 			var totalData = epilogue ? totalDataEpilogue : totalDataNormal;
 
 			var bufferDays = SettingsHelper.Data.BufferDays;
-			var idealRemainingDays = TrackingDataHelper.GetRemainingDays(TrackingDataHelper.CurrentSeasonUUID) - bufferDays;
+			var idealRemainingDays = TrackingDataHelper.GetRemainingDays(TrackingDataHelper.CurrentSeasonUuid) - bufferDays;
 
 			if (idealRemainingDays <= -bufferDays && idealRemainingDays <= 0)
 			{
@@ -53,18 +53,18 @@ namespace VexTrack.Core
 			LineSeries ret = new();
 
 			List<int> amounts = new();
-			var total = GoalDataCalc.CalcTotalGoal("", TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP, epilogue).Total;
+			var total = GoalDataCalc.CalcTotalGoal("", TrackingDataHelper.CurrentSeasonData.ActiveBpLevel, TrackingDataHelper.CurrentSeasonData.Cxp, epilogue).Total;
 			var bufferDays = SettingsHelper.Data.BufferDays;
-			var effectiveRemaining = TrackingDataHelper.GetRemainingDays(TrackingDataHelper.CurrentSeasonUUID) - bufferDays + 1;
+			var effectiveRemaining = TrackingDataHelper.GetRemainingDays(TrackingDataHelper.CurrentSeasonUuid) - bufferDays + 1;
 			if (effectiveRemaining <= 0) effectiveRemaining = 1;
 
-			var remainingDays = TrackingDataHelper.GetRemainingDays(TrackingDataHelper.CurrentSeasonUUID);
-			var duration = TrackingDataHelper.GetDuration(TrackingDataHelper.CurrentSeasonUUID);
+			var remainingDays = TrackingDataHelper.GetRemainingDays(TrackingDataHelper.CurrentSeasonUuid);
+			var duration = TrackingDataHelper.GetDuration(TrackingDataHelper.CurrentSeasonUuid);
 			var graphOffset = duration - remainingDays - 1;
 
 			var startOffset = 0;
 			DateTimeOffset today = DateTimeOffset.Now.ToLocalTime().Date;
-			DateTimeOffset lastEntryDate = DateTimeOffset.FromUnixTimeSeconds(TrackingDataHelper.GetLastHistoryEntry(TrackingDataHelper.CurrentSeasonUUID).Time).ToLocalTime().Date;
+			DateTimeOffset lastEntryDate = DateTimeOffset.FromUnixTimeSeconds(TrackingDataHelper.GetLastHistoryEntry(TrackingDataHelper.CurrentSeasonUuid).Time).ToLocalTime().Date;
 			if (lastEntryDate == today) startOffset = 1;
 
 			var initAmount = (int)performance.Points.First().Y;
@@ -95,10 +95,10 @@ namespace VexTrack.Core
 		{
 			LineSeries ret = new();
 
-			var total = GoalDataCalc.CalcTotalGoal("", TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP, epilogue).Total;
-			var duration = TrackingDataHelper.GetDuration(TrackingDataHelper.CurrentSeasonUUID);
-			var daysPassed = duration - TrackingDataHelper.GetRemainingDays(TrackingDataHelper.CurrentSeasonUUID);
-			var totalCollected = CalcUtil.CalcTotalCollected(TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP);
+			var total = GoalDataCalc.CalcTotalGoal("", TrackingDataHelper.CurrentSeasonData.ActiveBpLevel, TrackingDataHelper.CurrentSeasonData.Cxp, epilogue).Total;
+			var duration = TrackingDataHelper.GetDuration(TrackingDataHelper.CurrentSeasonUuid);
+			var daysPassed = duration - TrackingDataHelper.GetRemainingDays(TrackingDataHelper.CurrentSeasonUuid);
+			var totalCollected = CalcUtil.CalcTotalCollected(TrackingDataHelper.CurrentSeasonData.ActiveBpLevel, TrackingDataHelper.CurrentSeasonData.Cxp);
 			var average = (int)MathF.Round((float)totalCollected / (daysPassed + 1));
 
 			if (totalCollected >= total) return ret;
@@ -129,8 +129,8 @@ namespace VexTrack.Core
 		{
 			LineSeries ret = new();
 
-			var remainingDays = TrackingDataHelper.GetRemainingDays(TrackingDataHelper.CurrentSeasonUUID);
-			var duration = TrackingDataHelper.GetDuration(TrackingDataHelper.CurrentSeasonUUID);
+			var remainingDays = TrackingDataHelper.GetRemainingDays(TrackingDataHelper.CurrentSeasonUuid);
+			var duration = TrackingDataHelper.GetDuration(TrackingDataHelper.CurrentSeasonUuid);
 			var xPos = duration - remainingDays;
 
 			ret.Points.Add(new DataPoint(xPos, series.Points.Find(p => (int)p.X == xPos).Y));
@@ -146,11 +146,11 @@ namespace VexTrack.Core
 		{
 			var daysFinished = 0;
 
-			var total = GoalDataCalc.CalcTotalGoal("", TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP, epilogue).Total;
-			var duration = TrackingDataHelper.GetDuration(TrackingDataHelper.CurrentSeasonUUID);
-			var remainingDays = TrackingDataHelper.GetRemainingDays(TrackingDataHelper.CurrentSeasonUUID);
+			var total = GoalDataCalc.CalcTotalGoal("", TrackingDataHelper.CurrentSeasonData.ActiveBpLevel, TrackingDataHelper.CurrentSeasonData.Cxp, epilogue).Total;
+			var duration = TrackingDataHelper.GetDuration(TrackingDataHelper.CurrentSeasonUuid);
+			var remainingDays = TrackingDataHelper.GetRemainingDays(TrackingDataHelper.CurrentSeasonUuid);
 			var daysPassed = duration - remainingDays;
-			var totalCollected = CalcUtil.CalcTotalCollected(TrackingDataHelper.CurrentSeasonData.ActiveBPLevel, TrackingDataHelper.CurrentSeasonData.CXP);
+			var totalCollected = CalcUtil.CalcTotalCollected(TrackingDataHelper.CurrentSeasonData.ActiveBpLevel, TrackingDataHelper.CurrentSeasonData.Cxp);
 			var average = (int)MathF.Round((float)totalCollected / (daysPassed + 1));
 
 			var val = totalCollected;

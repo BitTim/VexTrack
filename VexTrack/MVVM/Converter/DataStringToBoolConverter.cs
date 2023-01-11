@@ -8,8 +8,8 @@ namespace VexTrack.MVVM.Converter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			string val = (string)value;
-			string param = (string)parameter;
+			var val = (string)value;
+			var param = (string)parameter;
 
 			return val == param;
 		}

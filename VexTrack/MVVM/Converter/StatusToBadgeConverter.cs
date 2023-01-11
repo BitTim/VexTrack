@@ -11,17 +11,17 @@ namespace VexTrack.MVVM.Converter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			string status = (string)value;
-			string mode = (string)parameter;
+			var status = (string)value;
+			var mode = (string)parameter;
 
-			Path checkIcon = (Path)Application.Current.FindResource("CheckIcon");
-			Path crossIcon = (Path)Application.Current.FindResource("CrossIcon");
-			Path pauseIcon = (Path)Application.Current.FindResource("LockIcon");
-			Path linkedIcon = (Path)Application.Current.FindResource("ChainIcon");
+			var checkIcon = (Path)Application.Current.FindResource("CheckIcon");
+			var crossIcon = (Path)Application.Current.FindResource("CrossIcon");
+			var pauseIcon = (Path)Application.Current.FindResource("LockIcon");
+			var linkedIcon = (Path)Application.Current.FindResource("ChainIcon");
 
-			Brush green = (Brush)Application.Current.FindResource("AccGreen");
-			Brush red = (Brush)Application.Current.FindResource("AccRed");
-			Brush foreground = (Brush)Application.Current.FindResource("Foreground");
+			var green = (Brush)Application.Current.FindResource("AccGreen");
+			var red = (Brush)Application.Current.FindResource("AccRed");
+			var foreground = (Brush)Application.Current.FindResource("Foreground");
 
 			if (mode == "Data")
 			{

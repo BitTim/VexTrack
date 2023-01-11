@@ -12,7 +12,7 @@ namespace LegacyUpdateUtil.Core
 		public static readonly string LegacyDataFolder = @"dat";
 		public static readonly string UpdateFolder = DataFolder + @"/Update";
 
-		public static readonly string ReleasesURL = "https://api.github.com/repos/BitTim/VexTrack/releases";
-		public static readonly string BaseDownloadURL = "https://github.com/BitTim/VexTrack/releases/download";
+		public static readonly string ReleasesUrl = "https://api.github.com/repos/BitTim/VexTrack/releases";
+		public static readonly string BaseDownloadUrl = "https://github.com/BitTim/VexTrack/releases/download";
 	}
 }

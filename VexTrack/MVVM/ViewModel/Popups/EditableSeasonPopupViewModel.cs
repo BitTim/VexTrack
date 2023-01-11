@@ -10,7 +10,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public RelayCommand OnDoneClicked { get; set; }
 
 		public string Title { get; set; }
-		public string UUID { get; set; }
+		public string Uuid { get; set; }
 		public bool EditMode { get; set; }
 
 		private string _name;
@@ -45,7 +45,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 				OnPropertyChanged();
 			}
 		}
-		public int RemainingDays => TrackingDataHelper.GetRemainingDays(UUID, DateTimeOffset.FromUnixTimeSeconds(EndDate).ToLocalTime().Date, true);
+		public int RemainingDays => TrackingDataHelper.GetRemainingDays(Uuid, DateTimeOffset.FromUnixTimeSeconds(EndDate).ToLocalTime().Date, true);
 
 		public EditableSeasonPopupViewModel()
 		{
@@ -55,14 +55,14 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			OnDoneClicked = new RelayCommand(o =>
 			{
 				CanCancel = true;
-				MainVM.InterruptUpdate = false;
+				MainVm.InterruptUpdate = false;
 
-				string endDate = DateTimeOffset.FromUnixTimeSeconds(EndDate).ToLocalTime().Date.ToString("d");
+				var endDate = DateTimeOffset.FromUnixTimeSeconds(EndDate).ToLocalTime().Date.ToString("d");
 				List<HistoryEntry> initList = new();
 				initList.Add(new HistoryEntry(Guid.NewGuid().ToString(), DateTimeOffset.Now.AddDays(-1).ToLocalTime().ToUnixTimeSeconds(), "Custom", 0, "", "Initialization", -1, -1, false, false));
 
-				if (EditMode) TrackingDataHelper.EditSeason(UUID, new Season(UUID, Name, endDate, TrackingDataHelper.GetSeason(UUID).ActiveBPLevel, TrackingDataHelper.GetSeason(UUID).CXP, TrackingDataHelper.GetSeason(UUID).History));
-				else TrackingDataHelper.AddSeason(new Season(UUID, Name, endDate, 2, 0, initList));
+				if (EditMode) TrackingDataHelper.EditSeason(Uuid, new Season(Uuid, Name, endDate, TrackingDataHelper.GetSeason(Uuid).ActiveBpLevel, TrackingDataHelper.GetSeason(Uuid).Cxp, TrackingDataHelper.GetSeason(Uuid).History));
+				else TrackingDataHelper.AddSeason(new Season(Uuid, Name, endDate, 2, 0, initList));
 
 				Close();
 			});
@@ -80,7 +80,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		{
 			EndDate = DateTimeOffset.Now.AddDays(61).ToUnixTimeSeconds();
 
-			UUID = Guid.NewGuid().ToString();
+			Uuid = Guid.NewGuid().ToString();
 			Name = "";
 			Progress = 0;
 
@@ -91,7 +91,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		{
 			EndDate = data.EndDate;
 
-			UUID = data.UUID;
+			Uuid = data.Uuid;
 			Name = data.Title;
 			Progress = data.Progress;
 

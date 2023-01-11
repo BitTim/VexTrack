@@ -43,7 +43,7 @@
 				<view:DashboardView/>
 			</DataTemplate>
 
-			<DataTemplate DataType="{x:Type viewModel:GoalViewModel}">
+			<DataTemplate DataType="{x:Type viewModel:ContractViewModel}">
 				<view:GoalView/>
 			</DataTemplate>
 

@@ -7,43 +7,43 @@ namespace VexTrack.Core
 	{
 		Color SetHue(Color oldColor)
 		{
-			var temp = new HSV();
-			temp.h = oldColor.GetHue();
-			temp.s = oldColor.GetSaturation();
-			temp.v = getValue(oldColor);
-			return ColorFromHSV(temp);
+			var temp = new Hsv();
+			temp.H = oldColor.GetHue();
+			temp.S = oldColor.GetSaturation();
+			temp.V = GetValue(oldColor);
+			return ColorFromHsv(temp);
 		}
 
-		public struct HSV
+		public struct Hsv
 		{
-			public float h;
-			public float s;
-			public float v;
+			public float H;
+			public float S;
+			public float V;
 
-			public HSV(float hue, float saturation, float value) { (h, s, v) = (hue, saturation, value); }
+			public Hsv(float hue, float saturation, float value) { (H, S, V) = (hue, saturation, value); }
 		}
 
-		static public Color ColorFromHSV(HSV hsv)
+		static public Color ColorFromHsv(Hsv hsv)
 		{
-			float c = hsv.v * hsv.s;
-			float x = c * (1 - MathF.Abs((hsv.h / 60 % 2) - 1));
-			float m = hsv.v - c;
+			var c = hsv.V * hsv.S;
+			var x = c * (1 - MathF.Abs((hsv.H / 60 % 2) - 1));
+			var m = hsv.V - c;
 
 			float r = 0, g = 0, b = 0;
 
-			while (hsv.h >= 360) hsv.h -= 360;
+			while (hsv.H >= 360) hsv.H -= 360;
 
-			if (hsv.h >= 0 && hsv.h < 60) (r, g, b) = (c, x, 0);
-			if (hsv.h >= 60 && hsv.h < 120) (r, g, b) = (x, c, 0);
-			if (hsv.h >= 120 && hsv.h < 180) (r, g, b) = (0, c, x);
-			if (hsv.h >= 180 && hsv.h < 240) (r, g, b) = (0, x, c);
-			if (hsv.h >= 240 && hsv.h < 300) (r, g, b) = (x, 0, c);
-			if (hsv.h >= 300 && hsv.h < 360) (r, g, b) = (c, 0, x);
+			if (hsv.H >= 0 && hsv.H < 60) (r, g, b) = (c, x, 0);
+			if (hsv.H >= 60 && hsv.H < 120) (r, g, b) = (x, c, 0);
+			if (hsv.H >= 120 && hsv.H < 180) (r, g, b) = (0, c, x);
+			if (hsv.H >= 180 && hsv.H < 240) (r, g, b) = (0, x, c);
+			if (hsv.H >= 240 && hsv.H < 300) (r, g, b) = (x, 0, c);
+			if (hsv.H >= 300 && hsv.H < 360) (r, g, b) = (c, 0, x);
 
 			return Color.FromArgb(255, (int)((r + m) * 255), (int)((g + m) * 255), (int)((b + m) * 255));
 		}
 
-		public static float getValue(Color c)
+		public static float GetValue(Color c)
 		{
 			float r, g, b;
 
@@ -59,7 +59,7 @@ namespace VexTrack.Core
 
 	public static class ColorConv
 	{
-		public static System.Windows.Media.Color ToSWMColor(this Color color) => System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B);
-		public static Color ToSDColor(this System.Windows.Media.Color color) => Color.FromArgb(color.A, color.R, color.G, color.B);
+		public static System.Windows.Media.Color ToSwmColor(this Color color) => System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B);
+		public static Color ToSdColor(this System.Windows.Media.Color color) => Color.FromArgb(color.A, color.R, color.G, color.B);
 	}
 }

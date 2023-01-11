@@ -10,7 +10,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public RelayCommand OnDoneClicked { get; set; }
 
 		public string Title { get; set; }
-		public string UUID { get; set; }
+		public string Uuid { get; set; }
 		public bool EditMode { get; set; }
 
 		private string _name;
@@ -45,7 +45,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			{
 				_collected = value;
 
-				int maxForTier = CalcUtil.CalcMaxForTier(ActiveTier);
+				var maxForTier = CalcUtil.CalcMaxForTier(ActiveTier);
 				if (_collected >= maxForTier) _collected = maxForTier - 1;
 
 				OnPropertyChanged();
@@ -69,20 +69,20 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			OnBackClicked = new RelayCommand(o => { if (CanCancel) Close(); });
 			OnDoneClicked = new RelayCommand(o =>
 			{
-				if (EditMode) TrackingDataHelper.EditGoalGroup(UUID, Name);
+				if (EditMode) TrackingDataHelper.EditContracts(Uuid, Name);
 				else
 				{
-					TrackingDataHelper.AddGoalGroup(new GoalGroup(UUID, Name, new List<Goal>()));
+					TrackingDataHelper.AddContract(new Contract(Uuid, Name, new List<Goal>()));
 
 					if (GenerateAgentGoals)
 					{
-						string prevUUID = "";
+						var prevUuid = "";
 
-						for (int i = ActiveTier; i < Constants.AgentTiers + 1; i++)
+						for (var i = ActiveTier; i < Constants.AgentTiers + 1; i++)
 						{
-							string uuid = Guid.NewGuid().ToString();
-							TrackingDataHelper.AddGoal(UUID, new Goal(uuid, Name + " Tier " + i.ToString(), CalcUtil.CalcMaxForTier(i), i == ActiveTier ? Collected : 0, "", prevUUID, false));
-							prevUUID = uuid;
+							var uuid = Guid.NewGuid().ToString();
+							TrackingDataHelper.AddGoal(Uuid, new Goal(uuid, Name + " Tier " + i.ToString(), CalcUtil.CalcMaxForTier(i), i == ActiveTier ? Collected : 0, "", prevUuid, false));
+							prevUuid = uuid;
 						}
 
 						ActiveTier = 1;
@@ -105,15 +105,15 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 		public void InitData()
 		{
-			UUID = Guid.NewGuid().ToString();
+			Uuid = Guid.NewGuid().ToString();
 			Name = "";
 
 			IsInitialized = true;
 		}
 
-		public void SetData(GoalGroupData data)
+		public void SetData(ContractData data)
 		{
-			UUID = data.UUID;
+			Uuid = data.Uuid;
 			Name = data.Name;
 
 			IsInitialized = true;

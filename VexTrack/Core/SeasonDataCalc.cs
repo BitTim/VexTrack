@@ -8,34 +8,34 @@ namespace VexTrack.Core
 	{
 		public static SeasonEntryData CalcSeason(Season seasonData, bool epilogue)
 		{
-			SeasonEntryData ret = new(seasonData.UUID);
-			GoalEntryData totalData = GoalDataCalc.CalcTotalGoal(ret.UUID, seasonData.ActiveBPLevel, seasonData.CXP, epilogue);
+			SeasonEntryData ret = new(seasonData.Uuid);
+			GoalEntryData totalData = GoalDataCalc.CalcTotalGoal(ret.Uuid, seasonData.ActiveBpLevel, seasonData.Cxp, epilogue);
 
 			DateTimeOffset today = DateTimeOffset.Now.ToLocalTime().Date;
 			DateTimeOffset seasonEndDate = DateTimeOffset.Parse(seasonData.EndDate).ToLocalTime().Date;
-			bool ended = false;
+			var ended = false;
 			if (today >= seasonEndDate) ended = true;
 
-			int remainingDays = TrackingDataHelper.GetRemainingDays(ret.UUID);
-			int daysPassed = TrackingDataHelper.GetDuration(ret.UUID) - remainingDays;
-			int average = (int)MathF.Round(totalData.Collected / (daysPassed + 1));
+			var remainingDays = TrackingDataHelper.GetRemainingDays(ret.Uuid);
+			var daysPassed = TrackingDataHelper.GetDuration(ret.Uuid) - remainingDays;
+			var average = (int)MathF.Round(totalData.Collected / (daysPassed + 1));
 
-			int currentDayAmount = 0;
-			int strongestAmount = 0;
-			int weakestAmount = -1;
+			var currentDayAmount = 0;
+			var strongestAmount = 0;
+			var weakestAmount = -1;
 			DateTimeOffset strongestDate = new();
 			DateTimeOffset weakestDate = new();
 
-			bool ignoreInitDay = SettingsHelper.Data.IgnoreInit;
-			bool ignoreInactiveDays = SettingsHelper.Data.IgnoreInactiveDays;
+			var ignoreInitDay = SettingsHelper.Data.IgnoreInit;
+			var ignoreInactiveDays = SettingsHelper.Data.IgnoreInactiveDays;
 
-			List<HistoryEntry> history = seasonData.History;
+			var history = seasonData.History;
 			if (ignoreInitDay) history = seasonData.History.GetRange(1, seasonData.History.Count - 1);
 			if (history.Count > 0)
 			{
 				DateTimeOffset prevDate = DateTimeOffset.FromUnixTimeSeconds(history.First().Time).ToLocalTime().Date;
 
-				foreach (HistoryEntry he in history)
+				foreach (var he in history)
 				{
 					DateTimeOffset currDate = DateTimeOffset.FromUnixTimeSeconds(he.Time).ToLocalTime().Date;
 					if (currDate == prevDate)
@@ -51,8 +51,8 @@ namespace VexTrack.Core
 
 					if (!ignoreInactiveDays)
 					{
-						int gapSize = (currDate - prevDate).Days;
-						for (int i = 1; i < gapSize; i++) (strongestAmount, weakestAmount, strongestDate, weakestDate) = EvaluateAmounts(0, strongestAmount, weakestAmount, prevDate.AddDays(1), strongestDate, weakestDate);
+						var gapSize = (currDate - prevDate).Days;
+						for (var i = 1; i < gapSize; i++) (strongestAmount, weakestAmount, strongestDate, weakestDate) = EvaluateAmounts(0, strongestAmount, weakestAmount, prevDate.AddDays(1), strongestDate, weakestDate);
 					}
 
 					prevDate = currDate;
@@ -98,7 +98,7 @@ namespace VexTrack.Core
 
 	public class SeasonEntryData
 	{
-		public string UUID { get; set; }
+		public string Uuid { get; set; }
 		public string Title { get; set; }
 		public double Progress { get; set; }
 		public bool Ended { get; set; }
@@ -113,12 +113,12 @@ namespace VexTrack.Core
 
 		public SeasonEntryData(string uuid)
 		{
-			UUID = uuid;
+			Uuid = uuid;
 		}
 
 		public SeasonEntryData(string uuid, string title, double progress, bool ended, int average, long endDate, DateTimeOffset strongestDate, DateTimeOffset weakestDate, int strongestAmount, int weakestAmount, string status, List<HistoryEntry> history)
 		{
-			(UUID, Title, Progress, Ended, Average, EndDate, StrongestDate, WeakestDate, StrongestAmount, WeakestAmount, Status, History) = (uuid, title, progress, ended, average, endDate, strongestDate, weakestDate, strongestAmount, weakestAmount, status, history);
+			(Uuid, Title, Progress, Ended, Average, EndDate, StrongestDate, WeakestDate, StrongestAmount, WeakestAmount, Status, History) = (uuid, title, progress, ended, average, endDate, strongestDate, weakestDate, strongestAmount, weakestAmount, status, history);
 		}
 	}
 }

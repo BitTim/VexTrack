@@ -69,7 +69,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 				OnPropertyChanged(nameof(Progress));
 			}
 		}
-		public int RemainingDays => TrackingDataHelper.GetRemainingDays("", DateTimeOffset.FromUnixTimeSeconds(EndDate).ToLocalTime().Date, true);
+		public int RemainingDays => TrackingData.GetRemainingDays("", DateTimeOffset.FromUnixTimeSeconds(EndDate).ToLocalTime().Date, true);
 
 		public DataInitPopupViewModel()
 		{
@@ -80,12 +80,12 @@ namespace VexTrack.MVVM.ViewModel.Popups
 				CanCancel = true;
 				MainVm.InterruptUpdate = false;
 
-				var endDate = DateTimeOffset.FromUnixTimeSeconds(EndDate).ToLocalTime().Date.ToString("d");
 				List<HistoryEntry> initList = new();
 				var totalCollectedXp = CalcUtil.CalcTotalCollected(ActiveBpLevel, Collected);
-				initList.Add(new HistoryEntry(Guid.NewGuid().ToString(), DateTimeOffset.Now.AddDays(-1).ToLocalTime().ToUnixTimeSeconds(), "Custom", totalCollectedXp, "", "Initialization", -1, -1, false, false));
-
-				TrackingDataHelper.AddSeason(new Season(Guid.NewGuid().ToString(), Name, endDate, ActiveBpLevel, Collected, initList));
+				var seasonUuid = Guid.NewGuid().ToString();
+				
+				initList.Add(new HistoryEntry(seasonUuid, Guid.NewGuid().ToString(), DateTimeOffset.Now.AddDays(-1).ToLocalTime().ToUnixTimeSeconds(), "Custom", totalCollectedXp, "", "Initialization", -1, -1, false, false));
+				TrackingData.AddSeason(new Season(seasonUuid, Name, EndDate, ActiveBpLevel, Collected, initList));
 
 				Close();
 			});

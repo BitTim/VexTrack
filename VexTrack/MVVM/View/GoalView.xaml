@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:VexTrack.MVVM.View"
              xmlns:model="clr-namespace:VexTrack.MVVM.Model"
 			 xmlns:conv="clr-namespace:VexTrack.MVVM.Converter"
+			 xmlns:core="clr-namespace:VexTrack.Core"
 			 mc:Ignorable="d" 
              d:DesignHeight="780" d:DesignWidth="640">
 
@@ -59,7 +60,7 @@
 							<model:ProgressButtonModel Title="{Binding Path=Title}"
 													   Value="{Binding Path=Progress}"
 													   Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.BuiltinGoalButtonClick}"
-													   CommandParameter="{Binding Path=UUID}"
+													   CommandParameter="{Binding Path=Uuid}"
 													   BadgeRightData="{Binding Path=Status, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Data}"
 													   BadgeRightColor="{Binding Path=Status, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Color}"
 													   BadgeLeftData="{Binding Path=ActivityStatus, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Data}"
@@ -79,7 +80,7 @@
 				<ItemsControl x:Name="CustomContentGroupContainer"
 							  Grid.Row="3"
 							  Margin="0, 0, 0, 12"
-							  ItemsSource="{Binding UserEntries}">
+							  ItemsSource="{Binding Entries}">
 
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
@@ -125,11 +126,11 @@
 
 									<ItemsControl.ItemTemplate>
 										<DataTemplate>
-											<model:ProgressButtonModel Title="{Binding Path=Title}"
+											<model:ProgressButtonModel Title="{Binding Path=Name}"
 														   Value="{Binding Path=Progress}"
-														   Color="{Binding Path=Color}"
+														   Color="{Binding RelativeSource={RelativeSource AncestorType={x:Type core:Contract}}, Path=Color}"
 														   Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.UserGoalButtonClick}"
-														   CommandParameter="{Binding Path=UUID}"
+														   CommandParameter="{Binding Path=Uuid}"
 														   BadgeRightData="{Binding Path=CompletionStatus, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Data}"
 														   BadgeRightColor="{Binding Path=CompletionStatus, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Color}"
 														   BadgeLeftData="{Binding Path=ActivityStatus, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Data}"

@@ -45,7 +45,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 				OnPropertyChanged();
 			}
 		}
-		public int RemainingDays => TrackingDataHelper.GetRemainingDays(Uuid, DateTimeOffset.FromUnixTimeSeconds(EndDate).ToLocalTime().Date, true);
+		public int RemainingDays => TrackingData.GetRemainingDays(Uuid, DateTimeOffset.FromUnixTimeSeconds(EndDate).ToLocalTime().Date, true);
 
 		public EditableSeasonPopupViewModel()
 		{
@@ -56,13 +56,14 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			{
 				CanCancel = true;
 				MainVm.InterruptUpdate = false;
+				
+				List<HistoryEntry> initList = new()
+				{
+					new HistoryEntry(Uuid, Guid.NewGuid().ToString(), DateTimeOffset.Now.AddDays(-1).ToLocalTime().ToUnixTimeSeconds(), "Custom", 0, "", "Initialization", -1, -1, false, false)
+				};
 
-				var endDate = DateTimeOffset.FromUnixTimeSeconds(EndDate).ToLocalTime().Date.ToString("d");
-				List<HistoryEntry> initList = new();
-				initList.Add(new HistoryEntry(Guid.NewGuid().ToString(), DateTimeOffset.Now.AddDays(-1).ToLocalTime().ToUnixTimeSeconds(), "Custom", 0, "", "Initialization", -1, -1, false, false));
-
-				if (EditMode) TrackingDataHelper.EditSeason(Uuid, new Season(Uuid, Name, endDate, TrackingDataHelper.GetSeason(Uuid).ActiveBpLevel, TrackingDataHelper.GetSeason(Uuid).Cxp, TrackingDataHelper.GetSeason(Uuid).History));
-				else TrackingDataHelper.AddSeason(new Season(Uuid, Name, endDate, 2, 0, initList));
+				if (EditMode) TrackingData.EditSeason(Uuid, new Season(Uuid, Name, EndDate, TrackingData.GetSeason(Uuid).ActiveBpLevel, TrackingData.GetSeason(Uuid).Cxp, TrackingData.GetSeason(Uuid).History));
+				else TrackingData.AddSeason(new Season(Uuid, Name, EndDate, 2, 0, initList));
 
 				Close();
 			});
@@ -76,7 +77,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			if (!EditMode) InitData();
 		}
 
-		public void InitData()
+		private void InitData()
 		{
 			EndDate = DateTimeOffset.Now.AddDays(61).ToUnixTimeSeconds();
 
@@ -87,13 +88,13 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			IsInitialized = true;
 		}
 
-		public void SetData(SeasonEntryData data)
+		public void SetData(Season data)
 		{
 			EndDate = data.EndDate;
 
 			Uuid = data.Uuid;
-			Name = data.Title;
-			Progress = data.Progress;
+			Name = data.Name;
+			Progress = CalcUtil.CalcProgress(CalcUtil.CalcMaxForSeason(false), data.Cxp);
 
 			IsInitialized = true;
 		}

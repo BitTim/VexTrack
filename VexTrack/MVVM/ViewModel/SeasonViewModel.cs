@@ -15,8 +15,8 @@ namespace VexTrack.MVVM.ViewModel
 		private MainViewModel MainVm { get; set; }
 		private bool Epilogue { get; set; }
 
-		private ObservableCollection<SeasonEntryData> _entries = new();
-		public ObservableCollection<SeasonEntryData> Entries
+		private ObservableCollection<Season> _entries = new();
+		public ObservableCollection<Season> Entries
 		{
 			get => _entries;
 			set
@@ -38,7 +38,7 @@ namespace VexTrack.MVVM.ViewModel
 			SeasonButtonClick = new RelayCommand(OnSeasonButtonClick);
 			OnAddClicked = new RelayCommand(o =>
 			{
-				SeasonEndPopup.SetData(TrackingDataHelper.CurrentSeasonUuid);
+				SeasonEndPopup.SetData(TrackingData.CurrentSeasonData.Uuid);
 				MainVm.QueuePopup(SeasonEndPopup);
 			});
 
@@ -50,12 +50,12 @@ namespace VexTrack.MVVM.ViewModel
 			Epilogue = epilogue;
 			Entries.Clear();
 
-			foreach (var s in TrackingDataHelper.Data.Seasons)
+			foreach (var s in TrackingData.Seasons)
 			{
-				Entries.Add(SeasonDataCalc.CalcSeason(s, epilogue));
+				Entries.Add(s);
 			}
 
-			if (SeasonPopup.IsInitialized) SeasonPopup.SetData(Entries.Where(e => e.Uuid == SeasonPopup.Uuid).First(), epilogue);
+			if (SeasonPopup.IsInitialized) SeasonPopup.SetData(Entries.First(e => e.Uuid == SeasonPopup.Uuid), epilogue);
 			else SeasonPopup.Close();
 		}
 
@@ -64,7 +64,7 @@ namespace VexTrack.MVVM.ViewModel
 			var uuid = (string)parameter;
 
 			SeasonPopup.SetFlags(true, true);
-			SeasonPopup.SetData(Entries.Where(e => e.Uuid == uuid).First(), Epilogue);
+			SeasonPopup.SetData(Entries.First(e => e.Uuid == uuid), Epilogue);
 			MainVm.QueuePopup(SeasonPopup);
 		}
 	}

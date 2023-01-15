@@ -13,7 +13,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 			OnYesClicked = new RelayCommand(o =>
 			{
-				TrackingDataHelper.ResetData();
+				TrackingData.ResetData();
 				Close();
 			});
 			OnNoClicked = new RelayCommand(o => Close());

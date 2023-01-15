@@ -10,8 +10,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public RelayCommand OnDoneClicked { get; set; }
 
 		public string Title { get; set; }
-		public string Suuid { get; set; }
-		public string Huuid { get; set; }
+		public string SeasonUuid { get; set; }
+		public string Uuid { get; set; }
 		public List<string> Maps => Constants.Maps;
 		public List<string> GameModes => Constants.Gamemodes;
 		public string ScoreType => Constants.ScoreTypes[GameMode];
@@ -126,7 +126,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			}
 		}
 
-		public string Result => HistoryDataCalc.CalcHistoryResultFromScores(ScoreType, Score, EnemyScore, SurrenderedWin, SurrenderedLoss);
+		public string Result => HistoryEntry.CalcHistoryResultFromScores(ScoreType, Score, EnemyScore, SurrenderedWin, SurrenderedLoss);
 
 		public EditableHistoryEntryPopupViewModel()
 		{
@@ -135,12 +135,12 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			OnBackClicked = new RelayCommand(o => { if (CanCancel) Close(); });
 			OnDoneClicked = new RelayCommand(o =>
 			{
-				if (ScoreType == "Placement" || ScoreType == "None") EnemyScore = -1;
+				if (ScoreType is "Placement" or "None") EnemyScore = -1;
 				if (ScoreType == "None") Score = -1;
 				if (ScoreType == "Score") Description = "";
 
-				if (EditMode) TrackingDataHelper.EditHistoryEntry(Suuid, Huuid, new HistoryEntry(Huuid, Time, GameMode, Amount, Map, Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss));
-				else TrackingDataHelper.AddHistoryEntry(Suuid, new HistoryEntry(Huuid, Time, GameMode, Amount, Map, Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss));
+				if (EditMode) TrackingData.EditHistoryEntry(SeasonUuid, Uuid, new HistoryEntry(SeasonUuid, Uuid, Time, GameMode, Amount, Map, Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss));
+				else TrackingData.AddHistoryEntry(SeasonUuid, new HistoryEntry(SeasonUuid, Uuid, Time, GameMode, Amount, Map, Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss));
 				Close();
 			});
 		}
@@ -158,8 +158,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		{
 			Time = DateTimeOffset.Now.ToUnixTimeSeconds();
 
-			Suuid = TrackingDataHelper.CurrentSeasonUuid;
-			Huuid = Guid.NewGuid().ToString();
+			SeasonUuid = TrackingData.CurrentSeasonData.Uuid;
+			Uuid = Guid.NewGuid().ToString();
 			Description = "";
 			GameMode = Constants.Gamemodes[0];
 			Map = Constants.Maps[0];
@@ -172,10 +172,10 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			IsInitialized = true;
 		}
 
-		public void SetData(HistoryEntryData data)
+		public void SetData(HistoryEntry data)
 		{
-			Suuid = data.Suuid;
-			Huuid = data.Huuid;
+			SeasonUuid = data.SeasonUuid;
+			Uuid = data.Uuid;
 			GameMode = data.GameMode;
 			Score = data.Score;
 			EnemyScore = data.EnemyScore;

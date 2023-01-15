@@ -28,15 +28,15 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			{
 				if (KeepGoals)
 				{
-					foreach (var goal in TrackingDataHelper.Data.Contracts.Find(gg => gg.Uuid == _uuid).Goals)
+					foreach (var goal in TrackingData.Contracts.Find(gg => gg.Uuid == _uuid).Goals)
 					{
-						TrackingDataHelper.MoveGoal(_uuid, Constants.DefaultGroupUuid, goal.Uuid);
+						TrackingData.MoveGoal(_uuid, Constants.DefaultGroupUuid, goal.Uuid);
 					}
 
 					KeepGoals = false;
 				}
 
-				TrackingDataHelper.RemoveContract(_uuid);
+				TrackingData.RemoveContract(_uuid);
 				Close();
 			});
 			OnNoClicked = new RelayCommand(o => Close());

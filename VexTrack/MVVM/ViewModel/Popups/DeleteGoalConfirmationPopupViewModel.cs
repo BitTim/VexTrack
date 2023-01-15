@@ -16,7 +16,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 			OnYesClicked = new RelayCommand(o =>
 			{
-				TrackingDataHelper.RemoveGoal(_groupUuid, _uuid);
+				TrackingData.RemoveGoal(_groupUuid, _uuid);
 				Close();
 			});
 			OnNoClicked = new RelayCommand(o => Close());

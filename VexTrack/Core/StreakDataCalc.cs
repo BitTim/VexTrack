@@ -16,9 +16,9 @@ namespace VexTrack.Core
 			if (!epilogue) targetStatus.Add(Constants.StreakStatusOrder.Keys.ElementAt(1));
 
 			DateTimeOffset today = DateTimeOffset.Now.ToLocalTime().Date;
-			var prevDate = DateTimeOffset.FromUnixTimeSeconds(TrackingDataHelper.Data.Streak[0].Date);
+			var prevDate = DateTimeOffset.FromUnixTimeSeconds(TrackingData.Streak[0].Date);
 
-			foreach (var streakEntry in TrackingDataHelper.Data.Streak)
+			foreach (var streakEntry in TrackingData.Streak)
 			{
 				if ((prevDate - DateTimeOffset.FromUnixTimeSeconds(streakEntry.Date)).Days > 1) break;
 				prevDate = DateTimeOffset.FromUnixTimeSeconds(streakEntry.Date);
@@ -28,7 +28,7 @@ namespace VexTrack.Core
 				streak++;
 			}
 
-			if (TrackingDataHelper.Data.Streak.FindIndex(x => x.Date == today.ToUnixTimeSeconds()) == -1) SetStreakEntry(today, Constants.StreakStatusOrder.Keys.ElementAt(0));
+			if (TrackingData.Streak.FindIndex(x => x.Date == today.ToUnixTimeSeconds()) == -1) SetStreakEntry(today, Constants.StreakStatusOrder.Keys.ElementAt(0));
 			return streak;
 		}
 
@@ -36,18 +36,18 @@ namespace VexTrack.Core
 		{
 			date = date.ToLocalTime().Date;
 
-			var index = TrackingDataHelper.Data.Streak.FindIndex(x => x.Date == date.ToUnixTimeSeconds());
+			var index = TrackingData.Streak.FindIndex(x => x.Date == date.ToUnixTimeSeconds());
 			if (index == -1)
 			{
-				TrackingDataHelper.Data.Streak.Add(new StreakEntry(Guid.NewGuid().ToString(), date.ToUnixTimeSeconds(), status));
-				TrackingDataHelper.Data.Streak = TrackingDataHelper.Data.Streak.OrderByDescending(t => t.Date).ToList();
-				TrackingDataHelper.SaveData();
+				TrackingData.Streak.Add(new StreakEntry(Guid.NewGuid().ToString(), date.ToUnixTimeSeconds(), status));
+				TrackingData.Streak = TrackingData.Streak.OrderByDescending(t => t.Date).ToList();
+				TrackingData.SaveData();
 				return;
 			}
 
-			//if (Constants.StreakStatusOrder[status] <= Constants.StreakStatusOrder[TrackingDataHelper.Data.Streak[index].Status]) return;
-			TrackingDataHelper.Data.Streak[index].Status = status;
-			TrackingDataHelper.SaveData();
+			//if (Constants.StreakStatusOrder[status] <= Constants.StreakStatusOrder[TrackingData.Streak[index].Status]) return;
+			TrackingData.Streak[index].Status = status;
+			TrackingData.SaveData();
 		}
 
 		public static Brush GetStreakColor(DateTimeOffset date, bool epilogue)
@@ -59,14 +59,28 @@ namespace VexTrack.Core
 
 			date = date.ToLocalTime().Date;
 
-			var index = TrackingDataHelper.Data.Streak.FindIndex(x => x.Date == date.ToUnixTimeSeconds());
+			var index = TrackingData.Streak.FindIndex(x => x.Date == date.ToUnixTimeSeconds());
 			if (index == -1) return null;
 
-			var status = TrackingDataHelper.Data.Streak[index].Status;
+			var status = TrackingData.Streak[index].Status;
 			if (Constants.StreakStatusOrder[status] > 1 && !epilogue) status = Constants.StreakStatusOrder.Keys.ElementAt(1);
 			if (Constants.StreakStatusOrder[status] == 1 && epilogue) status = Constants.StreakStatusOrder.Keys.ElementAt(0);
 
 			return brushes[status];
+		}
+	}
+	
+	public class StreakEntry
+	{
+		public string Uuid { get; set; }
+		public long Date { get; set; }
+		public string Status { get; set; }
+
+		public StreakEntry(string uuid, long date, string status)
+		{
+			Uuid = uuid;
+			Date = date;
+			Status = status;
 		}
 	}
 }

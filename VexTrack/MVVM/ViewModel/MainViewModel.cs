@@ -132,7 +132,7 @@ namespace VexTrack.MVVM.ViewModel
 			HistoryViewCommand = new RelayCommand(_ => SetView(HistoryVm));
 			SettingsViewCommand = new RelayCommand(_ => SetView(SettingsVm));
 
-			TrackingDataHelper.LoadData();
+			TrackingData.LoadData();
 			SettingsHelper.LoadSettings();
 
 			UpdateHelper.CheckUpdateAsync();
@@ -234,7 +234,7 @@ namespace VexTrack.MVVM.ViewModel
 
 			if (InterruptUpdate) return;
 
-			if (TrackingDataHelper.CurrentSeasonData.ActiveBpLevel > Constants.BattlepassLevels && SettingsHelper.Data.ForceEpilogue)
+			if (TrackingData.CurrentSeasonData.ActiveBpLevel > Constants.BattlepassLevels && SettingsHelper.Data.ForceEpilogue)
 			{
 				if (!Epilogue) Epilogue = true;
 				EpilogueButtonEnabled = false;

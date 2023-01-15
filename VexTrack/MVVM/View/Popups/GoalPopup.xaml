@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:VexTrack.MVVM.View.Popups"
 			 xmlns:conv="clr-namespace:VexTrack.MVVM.Converter"
 			 xmlns:model="clr-namespace:VexTrack.MVVM.Model"
+			 xmlns:core="clr-namespace:VexTrack.Core"
 			 mc:Ignorable="d" 
              d:DesignHeight="812" d:DesignWidth="872">
 
@@ -52,7 +53,7 @@
 						<RowDefinition Height="Auto"/>
 					</Grid.RowDefinitions>
 
-					<TextBlock Text="{Binding Title}"
+					<TextBlock Text="{Binding Name}"
 							   Grid.Column="0"
 							   Grid.Row="0"
 							   Grid.ColumnSpan="2"
@@ -125,7 +126,7 @@
 					                              Grid.Column="0" Grid.Row="3"
 					                              Grid.ColumnSpan="4"
 					                              Value="{Binding Progress}"
-					                              Color="{Binding Color}"/>
+					                              Color="{Binding RelativeSource={RelativeSource AncestorType={x:Type core:Contract}}, Path=Color}"/>
 				</Grid>
 
 				<Grid Grid.Row="1"

@@ -1,4 +1,5 @@
-﻿using VexTrack.Core;
+﻿using System;
+using VexTrack.Core;
 
 namespace VexTrack.MVVM.ViewModel.Popups
 {
@@ -18,7 +19,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 			OnYesClicked = new RelayCommand(o =>
 			{
-				TrackingDataHelper.EndSeason(_uuid);
+				TrackingData.EndSeason(_uuid);
 				Close();
 			});
 			OnNoClicked = new RelayCommand(o => Close());
@@ -27,8 +28,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public void SetData(string seasonUuid)
 		{
 			_uuid = seasonUuid;
-			Name = TrackingDataHelper.GetSeason(_uuid).Name;
-			EndDate = TrackingDataHelper.GetSeason(_uuid).EndDate;
+			Name = TrackingData.GetSeason(_uuid).Name;
+			EndDate = DateTimeOffset.FromUnixTimeSeconds(TrackingData.GetSeason(_uuid).EndDate).ToLocalTime().Date.ToString("d");
 		}
 	}
 }

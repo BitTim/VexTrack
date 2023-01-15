@@ -9,9 +9,9 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public RelayCommand OnDeleteClicked { get; set; }
 		private EditableHistoryEntryPopupViewModel EditableHePopup { get; set; }
 
-		private HistoryEntryData RawData { get; set; }
-		public string Suuid { get; set; }
-		public string Huuid { get; set; }
+		private HistoryEntry RawData { get; set; }
+		public string SeasonUuid { get; set; }
+		public string Uuid { get; set; }
 		public string Title { get; set; }
 		public long Time { get; set; }
 		public int Amount { get; set; }
@@ -34,26 +34,26 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			OnDeleteClicked = new RelayCommand(o =>
 			{
 				IsInitialized = false;
-				TrackingDataHelper.RemoveHistoryEntry(Suuid, Huuid);
+				TrackingData.RemoveHistoryEntry(SeasonUuid, Uuid);
 			});
 		}
 
-		public void SetData(HistoryEntryData data, string initUuid)
+		public void SetData(HistoryEntry data, string initUuid)
 		{
 			RawData = data;
 			Deletable = true;
 
-			Suuid = data.Suuid;
-			Huuid = data.Huuid;
-			Title = data.Title;
+			SeasonUuid = data.SeasonUuid;
+			Uuid = data.Uuid;
+			Title = data.GetTitle();
 			Time = data.Time;
 			Amount = data.Amount;
 			Map = data.Map;
-			Result = data.Result;
+			Result = data.GetResult();
 
 			if (Result == "") Result = "-";
-			if (Map == "" || Map == null) Map = "-";
-			if (data.Huuid == initUuid) Deletable = false;
+			if (string.IsNullOrEmpty(Map)) Map = "-";
+			if (data.Uuid == initUuid) Deletable = false;
 
 			IsInitialized = true;
 		}

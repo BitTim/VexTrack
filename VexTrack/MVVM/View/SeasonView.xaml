@@ -10,7 +10,7 @@
              d:DesignHeight="780" d:DesignWidth="640">
 
 	<UserControl.Resources>
-		<conv:StatusToBadgeConverter x:Key="statusToBadgeConv"/>
+		<conv:StatusToBadgeConverter x:Key="StatusToBadgeConv"/>
 	</UserControl.Resources>
 	
     <Grid>
@@ -39,12 +39,12 @@
 
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
-							<model:ProgressButtonModel Title="{Binding Path=Title}"
+							<model:ProgressButtonModel Title="{Binding Path=Name}"
 													   Value="{Binding Path=Progress}"
 													   Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.SeasonButtonClick}"
-													   CommandParameter="{Binding Path=UUID}"
-													   BadgeRightData="{Binding Path=Status, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Data}"
-													   BadgeRightColor="{Binding Path=Status, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Color}"
+													   CommandParameter="{Binding Path=Uuid}"
+													   BadgeRightData="{Binding Path=Status, Converter={StaticResource StatusToBadgeConv}, ConverterParameter=Data}"
+													   BadgeRightColor="{Binding Path=Status, Converter={StaticResource StatusToBadgeConv}, ConverterParameter=Color}"
 													   Margin="8, 8, 0, 0"/>
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>

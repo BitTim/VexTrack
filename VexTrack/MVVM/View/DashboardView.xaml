@@ -10,7 +10,8 @@
 			 xmlns:oxy="http://oxyplot.org/wpf"
              mc:Ignorable="d" 
              d:DesignHeight="780"
-			 d:DesignWidth="640" d:DataContext="{vm:DashboardViewModel}">
+			 d:DesignWidth="640"
+             d:DataContext="{vm:DashboardViewModel}">
 
 	<UserControl.Resources>
 		<conv:NegativeToZeroConverter x:Key="NegativeToZeroConv"/>

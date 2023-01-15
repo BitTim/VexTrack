@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace VexTrack.Core
 {
-	class ObservableObject : INotifyPropertyChanged
+	public class ObservableObject : INotifyPropertyChanged
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
 

@@ -19,7 +19,7 @@ namespace VexTrack.Core
 		{
 			int collected;
 			if (activeLevel - 1 <= Constants.BattlepassLevels) collected = CalcUtil.CumulativeSum(activeLevel - 1, Constants.Level2Offset, Constants.XpPerLevel) + cxp;
-			else collected = CalcUtil.CumulativeSum(Constants.BattlepassLevels, Constants.Level2Offset, Constants.XpPerLevel) + cxp + (activeLevel - Constants.BattlepassLevels - 1) * Constants.XpPerEpilogueLevel;
+			else collected = CalcMaxForSeason(false) + cxp + (activeLevel - Constants.BattlepassLevels - 1) * Constants.XpPerEpilogueLevel;
 
 			return collected;
 		}
@@ -39,20 +39,28 @@ namespace VexTrack.Core
 
 		public static int CalcMaxForTier(int tier)
 		{
-			switch (tier)
+			return tier switch
 			{
-				case 1: return 20000;
-				case 2: return 30000;
-				case 3: return 40000;
-				case 4: return 50000;
-				case 5: return 60000;
-				case 6: return 75000;
-				case 7: return 100000;
-				case 8: return 150000;
-				case 9: return 200000;
-				case 10: return 250000;
-				default: return 0;
-			}
+				1 => 20000,
+				2 => 30000,
+				3 => 40000,
+				4 => 50000,
+				5 => 60000,
+				6 => 75000,
+				7 => 100000,
+				8 => 150000,
+				9 => 200000,
+				10 => 250000,
+				_ => 0
+			};
+		}
+
+		public static int CalcMaxForSeason(bool epilogue)
+		{
+			var sum = CumulativeSum(Constants.BattlepassLevels, Constants.Level2Offset, Constants.XpPerLevel);
+			if (epilogue) sum += Constants.EpilogueLevels * Constants.XpPerEpilogueLevel;
+
+			return sum;
 		}
 	}
 }

@@ -152,9 +152,9 @@ namespace LegacyUpdateUtil.Core
 		private static readonly HttpClient Client = new HttpClient();
 		private static string _latestVersionTag = "";
 
-		private static string _updaterFile = Constants.UpdateFolder + "/Updater.exe";
-		private static string _sourceFile = Constants.UpdateFolder + "/UpdatePackage.zip";
-		private static string _extractTarget = Constants.UpdateFolder + "/ExtractedPackage";
+		private static readonly string _updaterFile = Constants.UpdateFolder + "/Updater.exe";
+		private static readonly string _sourceFile = Constants.UpdateFolder + "/UpdatePackage.zip";
+		private static readonly string _extractTarget = Constants.UpdateFolder + "/ExtractedPackage";
 
 		public static async void CheckUpdateAsync(bool forceUpdate = false)
 		{

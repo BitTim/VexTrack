@@ -1,4 +1,6 @@
-﻿using VexTrack.Core;
+﻿using System.Collections.ObjectModel;
+using System.Linq;
+using VexTrack.Core;
 
 namespace VexTrack.MVVM.ViewModel.Popups
 {
@@ -10,11 +12,10 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		private EditableGoalPopupViewModel EditableGoalPopup { get; set; }
 		private DeleteGoalConfirmationPopupViewModel DeleteGoalConfirmationPopup { get; set; }
 
-		private GoalEntryData RawData { get; set; }
+		private Goal RawData { get; set; }
 		public string Uuid { get; set; }
-		public string GroupUuid { get; set; }
 		public string DepUuid { get; set; }
-		public string Title { get; set; }
+		public string Name { get; set; }
 		public string Unit { get; set; }
 		public int Collected { get; set; }
 		public int Remaining { get; set; }
@@ -22,6 +23,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public double Progress { get; set; }
 		public int Active { get; set; }
 		public string Color { get; set; }
+
+		public ObservableCollection<Goal> Goals { get; set; }
 
 		public bool CanDelete { get; set; }
 		public bool CanEdit { get; set; }
@@ -35,8 +38,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 				if (value == PausedState) return;
 
 				PausedState = value;
-				RawData.Paused = PausedState;
-				TrackingDataHelper.EditGoal(GroupUuid, Uuid, new Goal(Uuid, Title, Total, Collected, Color, DepUuid, PausedState));
+				//RawData.Paused = PausedState;
+				TrackingData.EditContract(Uuid, new Contract(Uuid, Name, Color, PausedState, Goals.ToList()));
 
 				OnPropertyChanged();
 			}
@@ -58,7 +61,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			OnDeleteClicked = new RelayCommand(o =>
 			{
 				IsInitialized = false;
-				DeleteGoalConfirmationPopup.SetData(GroupUuid, Uuid);
+				DeleteGoalConfirmationPopup.SetData(Uuid, Uuid);
 				MainVm.QueuePopup(DeleteGoalConfirmationPopup);
 			});
 		}
@@ -69,23 +72,17 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			CanEdit = canEdit;
 		}
 
-		public void SetData(GoalEntryData data, string unit = " XP")
+		public void SetData(Goal data, string unit = " XP")
 		{
 			if (data == null) return;
 			RawData = data;
 
 			Uuid = data.Uuid;
-			GroupUuid = data.GroupUuid;
-			DepUuid = data.DepUuid;
-			Title = data.Title;
+			Name = data.Name;
 			Collected = data.Collected;
-			Remaining = data.Remaining;
+			Remaining = data.Total - data.Collected;
 			Total = data.Total;
-			Progress = data.Progress;
-			Active = data.Active;
-			Color = data.Color;
-			Unit = unit;
-			Paused = data.Paused;
+			Progress = CalcUtil.CalcProgress(data.Total, data.Collected);
 
 			IsInitialized = true;
 		}

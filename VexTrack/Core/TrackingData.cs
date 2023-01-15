@@ -8,140 +8,24 @@ using VexTrack.MVVM.ViewModel.Popups;
 
 namespace VexTrack.Core
 {
-	public class HistoryEntry
-	{
-		public string Uuid { get; set; }
-		public long Time { get; set; }
-		public string GameMode { get; set; }
-		public int Amount { get; set; }
-		public string Map { get; set; }
-		public string Description { get; set; }
-		public int Score { get; set; }
-		public int EnemyScore { get; set; }
-		public bool SurrenderedWin { get; set; }
-		public bool SurrenderedLoss { get; set; }
-
-		public HistoryEntry(string uuid, long time, string gamemode, int amount, string map, string desc, int score, int enemyScore, bool surrenderedWin, bool surrenderedLoss)
-		{
-			Uuid = uuid;
-			Time = time;
-			GameMode = gamemode;
-			Amount = amount;
-			Map = map;
-			Description = desc;
-			Score = score;
-			EnemyScore = enemyScore;
-			SurrenderedWin = surrenderedWin;
-			SurrenderedLoss = surrenderedLoss;
-		}
-	}
-
-	public class StreakEntry
-	{
-		public string Uuid { get; set; }
-		public long Date { get; set; }
-		public string Status { get; set; }
-
-		public StreakEntry(string uuid, long date, string status)
-		{
-			Uuid = uuid;
-			Date = date;
-			Status = status;
-		}
-	}
-
-	public class Goal
-	{
-		public string Uuid { get; set; }
-		public string Name { get; set; }
-		public int Total { get; set; }
-		public int Collected { get; set; }
-		//public string Color { get; set; }
-		//public string Dependency { get; set; }
-		//public bool Paused { get; set; }
-
-		public Goal(string uuid, string name, int total, int collected)
-		{
-			Uuid = uuid;
-			Name = name;
-			Total = total;
-			Collected = collected;
-			//Color = color;
-			//Dependency = dependency;
-			//Paused = paused;
-		}
-	}
-
-	public class Contract
-	{
-		public string Uuid { get; set; }
-		public string Name { get; set; }
-		public string Color { get; set; }
-		public bool Paused { get; set; }
-		public List<Goal> Goals { get; set; }
-
-		public Contract(string uuid, string name, string color, bool paused, List<Goal> goals)
-		{
-			Uuid = uuid;
-			Name = name;
-			Color = color;
-			Paused = paused;
-			Goals = goals;
-		}
-	}
-
-	public class Season
-	{
-		public string Uuid { get; set; }
-		public string Name { get; set; }
-		public string EndDate { get; set; }
-		public int ActiveBpLevel { get; set; }
-		public int Cxp { get; set; }
-		public List<HistoryEntry> History { get; set; }
-
-		public Season(string uuid, string name, string endDate, int activeBpLevel, int cXp, List<HistoryEntry> history)
-		{
-			(Uuid, Name, EndDate, ActiveBpLevel, Cxp, History) = (uuid, name, endDate, activeBpLevel, cXp, history);
-		}
-	}
-
 	public class TrackingData
 	{
-		public List<Contract> Contracts { get; set; }
-		public List<StreakEntry> Streak { get; set; }
-		public List<Season> Seasons { get; set; }
+		public static List<Contract> Contracts { get; set; }
+		public static List<StreakEntry> Streak { get; set; }
+		public static List<Season> Seasons { get; set; }
 
 		public TrackingData(List<Contract> contracts, List<StreakEntry> streak, List<Season> seasons)
 		{
 			(Contracts, Streak, Seasons) = (contracts, streak, seasons);
 		}
-	}
 
-	public static class TrackingDataHelper
-	{
-		public static TrackingData Data { get; set; }
-		public static string CurrentSeasonUuid
-		{
-			get
-			{
-				if (Data != null) return Data.Seasons.Last().Uuid;
-				else return null;
-			}
-		}
-		public static Season CurrentSeasonData
-		{
-			get
-			{
-				if (Data != null) return Data.Seasons.Last();
-				else return null;
-			}
-		}
+		public static Season CurrentSeasonData => Seasons?.Last();
 
 		public static int GetRemainingDays(string sUuid = "", DateTimeOffset endDate = new(), bool overrideEndDate = false)
 		{
 			if (sUuid == "" && !overrideEndDate) return -1;
 
-			if (!overrideEndDate) endDate = DateTimeOffset.Parse(Data.Seasons.Find(s => s.Uuid == sUuid).EndDate).ToLocalTime().Date;
+			if (!overrideEndDate) endDate = DateTimeOffset.FromUnixTimeSeconds(Seasons.Find(s => s.Uuid == sUuid).EndDate).ToLocalTime().Date;
 			DateTimeOffset today = DateTimeOffset.Now.ToLocalTime().Date;
 
 			var remainingDays = (endDate - today).Days;
@@ -153,8 +37,8 @@ namespace VexTrack.Core
 
 		public static int GetDuration(string sUuid)
 		{
-			DateTimeOffset endDate = DateTimeOffset.Parse(Data.Seasons.Find(s => s.Uuid == sUuid).EndDate).ToLocalTime().Date;
-			DateTimeOffset startDate = DateTimeOffset.FromUnixTimeSeconds(Data.Seasons.Find(s => s.Uuid == sUuid).History.First().Time).ToLocalTime().Date;
+			DateTimeOffset endDate = DateTimeOffset.FromUnixTimeSeconds(Seasons.Find(s => s.Uuid == sUuid).EndDate).ToLocalTime().Date;
+			DateTimeOffset startDate = DateTimeOffset.FromUnixTimeSeconds(Seasons.Find(s => s.Uuid == sUuid).History.First().Time).ToLocalTime().Date;
 
 			var duration = (endDate - startDate).Days;
 			if ((endDate - startDate).Hours > 12) { duration += 1; }
@@ -169,13 +53,18 @@ namespace VexTrack.Core
 		//  Init and Convert
 		// ================================
 		
+		private static void SetData(List<Contract> contracts, List<StreakEntry> streak, List<Season> seasons)
+		{
+			(Contracts, Streak, Seasons) = (contracts, streak, seasons);
+		}
+		
 		public static void InitData()
 		{
-			List<Contract> goals = new();
+			List<Contract> contracts = new();
 			List<StreakEntry> streak = new();
 			List<Season> seasons = new();
 
-			Data = new TrackingData(goals, streak, seasons);
+			SetData(contracts, streak, seasons);
 		}
 
 		public static void ConvertFromLegacyData()
@@ -184,8 +73,9 @@ namespace VexTrack.Core
 			var jo = JObject.Parse(rawJson);
 
 			List<Contract> contracts = new();
-			foreach (JObject contract in jo["goals"])
+			foreach (var jTokenGoals in jo["goals"]!)
 			{
+				var contract = (JObject)jTokenGoals;
 				var gName = (string)contract["name"];
 				var collected = CalcUtil.CalcTotalCollected((int)jo["activeBPLevel"], (int)jo["cXP"]) - (int)contract["startXP"];
 				var total = collected + (int)contract["remaining"];
@@ -198,27 +88,29 @@ namespace VexTrack.Core
 			List<StreakEntry> streak = new();
 			List<Season> seasons = new();
 
-			var name = "First Season";
+			const string name = "Legacy Season";
 			var endDate = (string)jo["seasonEndDate"];
 			var activeBpLevel = (int)jo["activeBPLevel"];
 			var cXp = (int)jo["cXP"];
+			var seasonUuid = Guid.NewGuid().ToString();
 
 			List<HistoryEntry> history = new();
-			foreach (JObject historyEntry in jo["history"])
+			foreach (var jTokenHistory in jo["history"]!)
 			{
+				var historyEntry = (JObject)jTokenHistory;
 				var time = (long)historyEntry["time"];
 				var description = (string)historyEntry["description"];
 				var amount = (int)historyEntry["amount"];
 				var map = (string)historyEntry["map"];
 
 				if (string.IsNullOrEmpty(map)) map = Constants.Maps.Last();
-				var (gameMode, desc, score, enemyScore) = HistoryDataCalc.DescriptionToScores(description);
+				var (gameMode, desc, score, enemyScore) = HistoryEntry.DescriptionToScores(description);
 
-				history.Add(new HistoryEntry(Guid.NewGuid().ToString(), time, gameMode, amount, map, desc, score, enemyScore, false, false));
+				history.Add(new HistoryEntry(seasonUuid, Guid.NewGuid().ToString(), time, gameMode, amount, map, desc, score, enemyScore, false, false));
 			}
 
-			seasons.Add(new Season(Guid.NewGuid().ToString(), name, endDate, activeBpLevel, cXp, history));
-			Data = new TrackingData(contracts, streak, seasons);
+			seasons.Add(new Season(seasonUuid, name, DateTimeOffset.Parse(endDate!).ToUnixTimeSeconds(), activeBpLevel, cXp, history));
+			SetData(contracts, streak, seasons);
 
 			File.Move(Constants.LegacyDataPath, Constants.LegacyDataPath + ".bak");
 			SaveData();
@@ -228,7 +120,7 @@ namespace VexTrack.Core
 
 			editableSeasonPopup.CanCancel = false;
 			editableSeasonPopup.SetParameters("Edit Season", true);
-			editableSeasonPopup.SetData(SeasonDataCalc.CalcSeason(seasons.Last(), false));
+			editableSeasonPopup.SetData(seasons.Last());
 
 			mainVm.QueuePopup(editableSeasonPopup);
 		}
@@ -276,7 +168,7 @@ namespace VexTrack.Core
 
 					if (gamemode == null)
 					{
-						(gameMode, desc, score, enemyScore) = HistoryDataCalc.DescriptionToScores(description);
+						(gameMode, desc, score, enemyScore) = HistoryEntry.DescriptionToScores(description);
 						surrenderedWin = false;
 						surrenderedLoss = false;
 					}
@@ -291,7 +183,69 @@ namespace VexTrack.Core
 					}
 
 					hUuid ??= Guid.NewGuid().ToString();
-					history.Add(new HistoryEntry(hUuid, time, gameMode, amount, map, desc, score, enemyScore, surrenderedWin, surrenderedLoss));
+					history.Add(new HistoryEntry(sUuid, hUuid, time, gameMode, amount, map, desc, score, enemyScore, surrenderedWin, surrenderedLoss));
+				}
+
+				sUuid ??= Guid.NewGuid().ToString();
+				seasons.Add(new Season(sUuid, name, DateTimeOffset.Parse(endDate).ToUnixTimeSeconds(), activeBpLevel, cXp, history));
+			}
+
+			return seasons;
+		}
+		
+		private static List<Season> LoadSeasonsV2(JObject jo)
+		{
+			List<Season> seasons = new();
+			foreach (var jTokenSeason in jo["seasons"])
+			{
+				var season = (JObject)jTokenSeason;
+				var sUuid = (string)season["uuid"];
+				var name = (string)season["name"];
+				var endDate = (long)season["endDate"];
+				var activeBpLevel = (int)season["activeBPLevel"];
+				var cXp = (int)season["cXP"];
+
+				var historyKey = "history";
+				if (season["history"] == null)
+				{
+					historyKey = "xpHistory";
+				}
+
+				List<HistoryEntry> history = new();
+				foreach (var jTokenEntry in season[historyKey])
+				{
+					var historyEntry = (JObject)jTokenEntry;
+					var hUuid = (string)historyEntry["uuid"];
+					var gamemode = (string)historyEntry["gameMode"];
+					var time = (long)historyEntry["time"];
+					var amount = (int)historyEntry["amount"];
+					var map = (string)historyEntry["map"];
+					var description = (string)historyEntry["description"];
+
+					if (string.IsNullOrEmpty(map)) map = Constants.Maps.Last();
+
+					string gameMode, desc;
+					int score, enemyScore;
+					bool surrenderedWin, surrenderedLoss;
+
+					if (gamemode == null)
+					{
+						(gameMode, desc, score, enemyScore) = HistoryEntry.DescriptionToScores(description);
+						surrenderedWin = false;
+						surrenderedLoss = false;
+					}
+					else
+					{
+						gameMode = gamemode;
+						desc = description;
+						score = (int)historyEntry["score"];
+						enemyScore = (int)historyEntry["enemyScore"];
+						surrenderedWin = (bool)historyEntry["surrenderedWin"];
+						surrenderedLoss = (bool)historyEntry["surrenderedLoss"];
+					}
+
+					hUuid ??= Guid.NewGuid().ToString();
+					history.Add(new HistoryEntry(sUuid, hUuid, time, gameMode, amount, map, desc, score, enemyScore, surrenderedWin, surrenderedLoss));
 				}
 
 				sUuid ??= Guid.NewGuid().ToString();
@@ -358,8 +312,14 @@ namespace VexTrack.Core
 				
 				var uuid = (string)contract["uuid"];
 				var name = (string)contract["name"];
-				var color = (string)contract["goals"]?["color"];
-				var paused = (bool)contract["goals"]?["paused"];
+				var loadedGoals = (JArray)contract["goals"];
+
+				string color;
+				bool paused;
+
+				if (loadedGoals.Count < 1) (color, paused) = ("", false);
+				else (color, paused) = ((string)loadedGoals.First()["color"], (bool)loadedGoals.First()["paused"]);
+				
 				contracts.Add(new Contract(uuid, name, color, paused, goals));
 			}
 
@@ -434,7 +394,7 @@ namespace VexTrack.Core
 					break;
 				
 				case "v2":
-					seasons = LoadSeasonsV1(jo);
+					seasons = LoadSeasonsV2(jo);
 					streak = LoadStreakV1(jo);
 					contracts = LoadContractsV2(jo);
 					break;
@@ -442,7 +402,7 @@ namespace VexTrack.Core
 
 			if (seasons.Count == 0) CreateDataInitPopup();
 
-			Data = new TrackingData(contracts, streak, seasons);
+			SetData(contracts, streak, seasons);
 			Recalculate();
 		}
 		
@@ -454,11 +414,10 @@ namespace VexTrack.Core
 
 		public static void SaveData()
 		{
-			JObject jo = new();
-			jo.Add("version", Constants.DataVersion);
-			
-			JArray goalGroups = new();
-			foreach (var contract in Data.Contracts)
+			JObject jo = new() { { "version", Constants.DataVersion } };
+
+			JArray contracts = new();
+			foreach (var contract in Contracts)
 			{
 				JObject contractObj = new()
 				{
@@ -469,27 +428,25 @@ namespace VexTrack.Core
 				};
 
 				JArray goals = new();
-				foreach (var goal in contract.Goals)
+				foreach (var goalObj in contract.Goals.Select(goal => new JObject()
+				         {
+					         { "uuid", goal.Uuid },
+					         { "name", goal.Name },
+					         { "total", goal.Total },
+					         { "collected", goal.Collected }
+				         }))
 				{
-					JObject goalObj = new()
-					{
-						{ "uuid", goal.Uuid },
-						{ "name", goal.Name },
-						{ "total", goal.Total },
-						{ "collected", goal.Collected }
-					};
-
 					goals.Add(goalObj);
 				}
 
 				contractObj.Add("goals", goals);
-				goalGroups.Add(contractObj);
+				contracts.Add(contractObj);
 			}
-			jo.Add("goals", goalGroups);
+			jo.Add("contracts", contracts);
 
-			Data.Streak = Data.Streak.OrderByDescending(t => t.Date).ToList();
+			Streak = Streak.OrderByDescending(t => t.Date).ToList();
 			JArray streak = new();
-			foreach (var streakEntry in Data.Streak)
+			foreach (var streakEntry in Streak)
 			{
 				JObject streakEntryObj = new()
 				{
@@ -503,7 +460,7 @@ namespace VexTrack.Core
 			jo.Add("streak", streak);
 
 			JArray seasons = new();
-			foreach (var season in Data.Seasons)
+			foreach (var season in Seasons)
 			{
 				JObject seasonObj = new()
 				{
@@ -515,22 +472,20 @@ namespace VexTrack.Core
 				};
 
 				JArray history = new();
-				foreach (var historyEntry in season.History)
+				foreach (var historyEntryObj in season.History.Select(historyEntry => new JObject()
+				         {
+					         { "uuid", historyEntry.Uuid },
+					         { "gameMode", historyEntry.GameMode },
+					         { "time", historyEntry.Time },
+					         { "amount", historyEntry.Amount },
+					         { "map", historyEntry.Map },
+					         { "description", historyEntry.Description },
+					         { "score", historyEntry.Score },
+					         { "enemyScore", historyEntry.EnemyScore },
+					         { "surrenderedWin", historyEntry.SurrenderedWin },
+					         { "surrenderedLoss", historyEntry.SurrenderedLoss }
+				         }))
 				{
-					JObject historyEntryObj = new()
-					{
-						{ "uuid", historyEntry.Uuid },
-						{ "gameMode", historyEntry.GameMode },
-						{ "time", historyEntry.Time },
-						{ "amount", historyEntry.Amount },
-						{ "map", historyEntry.Map },
-						{ "description", historyEntry.Description },
-						{ "score", historyEntry.Score },
-						{ "enemyScore", historyEntry.EnemyScore },
-						{ "surrenderedWin", historyEntry.SurrenderedWin },
-						{ "surrenderedLoss", historyEntry.SurrenderedLoss }
-					};
-
 					history.Add(historyEntryObj);
 				}
 
@@ -542,9 +497,9 @@ namespace VexTrack.Core
 
 			if (!File.Exists(Constants.DataPath))
 			{
-				var sep = Constants.DataPath.LastIndexOf("/");
+				var sep = Constants.DataPath.LastIndexOf("/", StringComparison.Ordinal);
 
-				Directory.CreateDirectory(Constants.DataPath.Substring(0, sep));
+				Directory.CreateDirectory(Constants.DataPath[..sep]);
 				File.CreateText(Constants.DataPath).Close();
 			}
 
@@ -563,28 +518,20 @@ namespace VexTrack.Core
 			List<string> lost = new();
 
 			//Get Completed goals
-			List<string> completedGoals = new();
-			foreach (var gg in Data.Contracts)
-				foreach (var g in gg.Goals)
-					if (g.Collected >= g.Total) completedGoals.Add(g.Uuid);
+			var completedGoals = (from contract in Contracts from goal in contract.Goals where goal.Collected >= goal.Total select goal.Uuid).ToList();
 
 			//Recalculate total collected XP, collected XP in level and current level
 			var prevTotalXp = CalcUtil.CalcTotalCollected(CurrentSeasonData.ActiveBpLevel, CurrentSeasonData.Cxp);
 
-			var cxp = 0;
 			var iter = 2;
-
-			foreach (var he in TrackingDataHelper.CurrentSeasonData.History)
-				cxp += he.Amount;
+			var cxp = CurrentSeasonData.History.Sum(he => he.Amount);
 
 			while (cxp >= 0)
 			{
-				if (iter <= Constants.BattlepassLevels)
-					cxp -= Constants.Level2Offset + (iter * Constants.XpPerLevel);
-				else if (iter < Constants.BattlepassLevels + Constants.EpilogueLevels + 2)
-					cxp -= Constants.XpPerEpilogueLevel;
-				else
-					break;
+				if (iter <= Constants.BattlepassLevels) cxp -= Constants.Level2Offset + (iter * Constants.XpPerLevel);
+				else if (iter < Constants.BattlepassLevels + Constants.EpilogueLevels + 2) cxp -= Constants.XpPerEpilogueLevel;
+				else break;
+				
 				iter++;
 			}
 			iter--;
@@ -608,70 +555,44 @@ namespace VexTrack.Core
 			var currTotalXp = CalcUtil.CalcTotalCollected(CurrentSeasonData.ActiveBpLevel, CurrentSeasonData.Cxp);
 			var deltaXp = currTotalXp - prevTotalXp;
 
-			for (var pass = 1; pass <= 2; pass++)
+			
+			foreach (var contract in Contracts)
 			{
-				foreach (var contract in Data.Contracts)
+				if (contract.Paused) continue;
+				var xpPool = Math.Abs(deltaXp);
+				
+				foreach (var goal in contract.Goals)
 				{
-					foreach (var goal in contract.Goals)
-					{
-						var appliedXp = deltaXp;
-						var hasDep = false;
+					var goalLimit = deltaXp > 0 ? goal.Total - goal.Collected : goal.Collected;
+
+					var appliedXp = xpPool > goalLimit ? goalLimit : xpPool;
+					appliedXp *= Math.Sign(deltaXp);
+					xpPool -= appliedXp;
 						
-						if (pass != 2) continue;
+					var newCollected = goal.Collected + appliedXp;
+					if (newCollected < 0) newCollected = 0;
 
-						// TODO: Remove Dep
-						var dep = contract.Goals.Find(x => x.Uuid == goal.Dependency);
-						if (dep != null)
-						{
-							hasDep = true;
+					goal.Collected = newCollected;
 
-							if (deltaXp > 0)
-							{
-								var depRemaining = dep.Total - (dep.Collected - deltaXp);
-								if (depRemaining < 0) depRemaining = 0;
-
-								appliedXp = deltaXp - depRemaining;
-								if (appliedXp < 0) appliedXp = 0;
-							}
-							else
-							{
-								if (deltaXp * -1 >= goal.Collected) appliedXp = goal.Collected * -1;
-							}
-						}
-
-						if (pass == 2 && !hasDep) continue;
-
-						var newCollected = goal.Collected + appliedXp;
-						if (newCollected < 0)
-						{
-							goal.Total += -newCollected;
-							newCollected = 0;
-						}
-
-						goal.Collected = newCollected;
-
-						if (goal.Collected >= goal.Total && !completedGoals.Contains(goal.Uuid)) completed.Add(goal.Name);
-						if (goal.Collected < goal.Total && completedGoals.Contains(goal.Uuid)) lost.Add(goal.Name);
-					}
+					if (goal.Collected >= goal.Total && !completedGoals.Contains(goal.Uuid)) completed.Add(goal.Name);
+					if (goal.Collected < goal.Total && completedGoals.Contains(goal.Uuid)) lost.Add(goal.Name);
 				}
 			}
 
-			if (completed.Count != 0 || lost.Count != 0)
-			{
-				var mainVm = (MainViewModel)ViewModelManager.ViewModels["Main"];
-				var paPopupVm = (ProgressActivityPopupViewModel)ViewModelManager.ViewModels["PAPopup"];
+			if (completed.Count == 0 && lost.Count == 0) return;
+			var mainVm = (MainViewModel)ViewModelManager.ViewModels["Main"];
+			var paPopupVm = (ProgressActivityPopupViewModel)ViewModelManager.ViewModels["PAPopup"];
 
-				paPopupVm.SetData(completed, lost);
-				mainVm.QueuePopup(paPopupVm);
-			}
+			paPopupVm.SetData(completed, lost);
+			mainVm.QueuePopup(paPopupVm);
 		}
 
 		public static void CallUpdate()
 		{
-			for (var i = 0; i < Data.Seasons.Count; i++)
+			for (var i = 0; i < Seasons.Count; i++)
 			{
-				var sortedHistory = Data.Seasons[i].History.OrderBy(h => h.Time).ToList();
-				Data.Seasons[i].History = sortedHistory;
+				var sortedHistory = Seasons[i].History.OrderBy(h => h.Time).ToList();
+				Seasons[i].History = sortedHistory;
 			}
 
 			SaveData();
@@ -689,52 +610,52 @@ namespace VexTrack.Core
 
 
 
-		public static HistoryEntry GetHistoryEntry(string sUuid, string hUuid)
+		public static HistoryEntry GetHistoryEntry(string seasonUuid, string uuid)
 		{
-			return Data.Seasons.Find(s => s.Uuid == sUuid).History.Find(h => h.Uuid == hUuid);
+			return Seasons.Find(s => s.Uuid == seasonUuid).History.Find(h => h.Uuid == uuid);
 		}
 
-		public static HistoryEntry GetFirstHistoryEntry(string sUuid)
+		public static HistoryEntry GetFirstHistoryEntry(string uuid)
 		{
-			return Data.Seasons.Find(s => s.Uuid == sUuid).History.First();
+			return Seasons.Find(s => s.Uuid == uuid).History.First();
 		}
 
-		public static HistoryEntry GetLastHistoryEntry(string sUuid)
+		public static HistoryEntry GetLastHistoryEntry(string uuid)
 		{
-			return Data.Seasons.Find(s => s.Uuid == sUuid).History.Last();
+			return Seasons.Find(s => s.Uuid == uuid).History.Last();
 		}
 
-		public static Season GetSeason(string sUuid)
+		public static Season GetSeason(string uuid)
 		{
-			return Data.Seasons.Find(s => s.Uuid == sUuid);
+			return Seasons.Find(s => s.Uuid == uuid);
 		}
 
 
-		public static void AddHistoryEntry(string sUuid, HistoryEntry data)
+		public static void AddHistoryEntry(string seasonUuid, HistoryEntry data)
 		{
-			Data.Seasons[Data.Seasons.FindIndex(s => s.Uuid == sUuid)].History.Add(data);
+			Seasons[Seasons.FindIndex(s => s.Uuid == seasonUuid)].History.Add(data);
 			Recalculate();
 			CallUpdate();
 		}
 
-		public static void RemoveHistoryEntry(string sUuid, string hUuid)
+		public static void RemoveHistoryEntry(string seasonUuid, string uuid)
 		{
-			Data.Seasons[Data.Seasons.FindIndex(s => s.Uuid == sUuid)]
-				.History.RemoveAt(Data.Seasons[Data.Seasons.FindIndex(s => s.Uuid == sUuid)]
-				.History.FindIndex(he => he.Uuid == hUuid));
+			Seasons[Seasons.FindIndex(s => s.Uuid == seasonUuid)]
+				.History.RemoveAt(Seasons[Seasons.FindIndex(s => s.Uuid == seasonUuid)]
+				.History.FindIndex(he => he.Uuid == uuid));
 
 			Recalculate();
 			CallUpdate();
 		}
 
-		public static void EditHistoryEntry(string sUuid, string hUuid, HistoryEntry data)
+		public static void EditHistoryEntry(string seasonUuid, string uuid, HistoryEntry data)
 		{
-			Data.Seasons[Data.Seasons.FindIndex(s => s.Uuid == sUuid)]
-				.History[Data.Seasons[Data.Seasons.FindIndex(s => s.Uuid == sUuid)]
-				.History.FindIndex(he => he.Uuid == hUuid)] = data;
+			Seasons[Seasons.FindIndex(s => s.Uuid == seasonUuid)]
+				.History[Seasons[Seasons.FindIndex(s => s.Uuid == seasonUuid)]
+				.History.FindIndex(he => he.Uuid == uuid)] = data;
 
 			var historyVm = (HistoryViewModel)ViewModelManager.ViewModels["History"];
-			historyVm.EditEntry(new HistoryEntryData(sUuid, hUuid, data.GameMode, data.Time, data.Amount, data.Map, HistoryDataCalc.CalcHistoryResultFromScores(Constants.ScoreTypes[data.GameMode], data.Score, data.EnemyScore, data.SurrenderedWin, data.SurrenderedLoss), data.Description, data.Score, data.EnemyScore, data.SurrenderedWin, data.SurrenderedLoss));
+			historyVm.EditEntry(new HistoryEntry(seasonUuid, uuid, data.Time, data.GameMode, data.Amount, data.Map, data.Description, data.Score, data.EnemyScore, data.SurrenderedWin, data.SurrenderedLoss));
 
 			Recalculate();
 			CallUpdate();
@@ -744,39 +665,39 @@ namespace VexTrack.Core
 
 		public static void AddGoal(string contractUuid, Goal data)
 		{
-			Data.Contracts[Data.Contracts.FindIndex(c => c.Uuid == contractUuid)].Goals.Add(data);
+			Contracts[Contracts.FindIndex(c => c.Uuid == contractUuid)].Goals.Add(data);
 			CallUpdate();
 		}
 
 		public static void RemoveGoal(string contractUuid, string uuid)
 		{
-			Data.Contracts[Data.Contracts.FindIndex(c => c.Uuid == contractUuid)]
-				.Goals.RemoveAt(Data.Contracts[Data.Contracts.FindIndex(c => c.Uuid == contractUuid)]
+			Contracts[Contracts.FindIndex(c => c.Uuid == contractUuid)]
+				.Goals.RemoveAt(Contracts[Contracts.FindIndex(c => c.Uuid == contractUuid)]
 				.Goals.FindIndex(g => g.Uuid == uuid));
 			CallUpdate();
 		}
 
 		public static void EditGoal(string contractUuid, string uuid, Goal data)
 		{
-			var index = Data.Contracts[Data.Contracts.FindIndex(c => c.Uuid == contractUuid)]
+			var index = Contracts[Contracts.FindIndex(c => c.Uuid == contractUuid)]
 							.Goals.FindIndex(g => g.Uuid == uuid);
 			if (index >= 0)
 			{
-				Data.Contracts[Data.Contracts.FindIndex(c => c.Uuid == contractUuid)]
+				Contracts[Contracts.FindIndex(c => c.Uuid == contractUuid)]
 					.Goals[index] = data;
 				CallUpdate();
 				return;
 			}
 
-			var prevGroupUuid = Data.Contracts.First(c => c.Goals.Any(g => g.Uuid == uuid)).Uuid;
+			var prevGroupUuid = Contracts.First(c => c.Goals.Any(g => g.Uuid == uuid)).Uuid;
 			MoveGoal(prevGroupUuid, contractUuid, uuid, true);
 		}
 
 		// TODO: Evaluate if this is still needed
 		public static void MoveGoal(string srcGroupUuid, string dstGroupUuid, string uuid, bool deleteGoalFromGroup = false)
 		{
-			var goal = Data.Contracts[Data.Contracts.FindIndex(gg => gg.Uuid == srcGroupUuid)]
-							.Goals[Data.Contracts[Data.Contracts.FindIndex(gg => gg.Uuid == srcGroupUuid)]
+			var goal = Contracts[Contracts.FindIndex(gg => gg.Uuid == srcGroupUuid)]
+							.Goals[Contracts[Contracts.FindIndex(gg => gg.Uuid == srcGroupUuid)]
 							.Goals.FindIndex(g => g.Uuid == uuid)];
 
 			AddGoal(dstGroupUuid, goal);
@@ -786,19 +707,22 @@ namespace VexTrack.Core
 
 		public static void AddContract(Contract data)
 		{
-			Data.Contracts.Add(data);
+			Contracts.Add(data);
 			CallUpdate();
 		}
 
 		public static void RemoveContract(string uuid)
 		{
-			Data.Contracts.RemoveAt(Data.Contracts.FindIndex(gg => gg.Uuid == uuid));
+			Contracts.RemoveAt(Contracts.FindIndex(gg => gg.Uuid == uuid));
 			CallUpdate();
 		}
 
-		public static void EditContracts(string uuid, string name)
+		public static void EditContract(string uuid, Contract data)
 		{
-			Data.Contracts[Data.Contracts.FindIndex(gg => gg.Uuid == uuid)].Name = name;
+			var index = Contracts.FindIndex(c => c.Uuid == uuid);
+			if (index < 0) return;
+			
+			Contracts[index] = data;
 			CallUpdate();
 		}
 
@@ -806,28 +730,28 @@ namespace VexTrack.Core
 
 		public static void AddSeason(Season data)
 		{
-			Data.Seasons.Add(data);
+			Seasons.Add(data);
 			CallUpdate();
 		}
 
 		public static void RemoveSeason(string uuid)
 		{
-			Data.Seasons.RemoveAt(Data.Seasons.FindIndex(s => s.Uuid == uuid));
-			if (Data.Seasons.Count == 0) CreateDataInitPopup();
+			Seasons.RemoveAt(Seasons.FindIndex(s => s.Uuid == uuid));
+			if (Seasons.Count == 0) CreateDataInitPopup();
 			else if (GetActiveSeasons().Count == 0) CreateSeasonInitPopup();
 			CallUpdate();
 		}
 
 		public static void EditSeason(string uuid, Season data)
 		{
-			Data.Seasons[Data.Seasons.FindIndex(s => s.Uuid == uuid)] = data;
+			Seasons[Seasons.FindIndex(s => s.Uuid == uuid)] = data;
 			CallUpdate();
 		}
 
 		public static void EndSeason(string uuid)
 		{
 			// Set end date to today
-			Data.Seasons[Data.Seasons.FindIndex(s => s.Uuid == uuid)].EndDate = DateTime.Today.ToLocalTime().Date.ToString("d");
+			Seasons[Seasons.FindIndex(s => s.Uuid == uuid)].EndDate = ((DateTimeOffset)DateTime.Today.ToLocalTime()).ToUnixTimeSeconds();
 			CallUpdate();
 		}
 
@@ -858,15 +782,9 @@ namespace VexTrack.Core
 
 		public static List<string> GetActiveSeasons()
 		{
-			List<string> activeSeasons = new();
 			DateTimeOffset today = DateTimeOffset.Now.ToLocalTime().Date;
 
-			foreach (var s in Data.Seasons)
-			{
-				if (DateTimeOffset.Parse(s.EndDate).ToLocalTime().Date > today) activeSeasons.Add(s.Uuid);
-			}
-
-			return activeSeasons;
+			return (from s in Seasons where DateTimeOffset.FromUnixTimeSeconds(s.EndDate).ToLocalTime().Date > today select s.Uuid).ToList();
 		}
 	}
 }

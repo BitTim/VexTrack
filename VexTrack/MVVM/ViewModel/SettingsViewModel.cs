@@ -5,7 +5,7 @@ namespace VexTrack.MVVM.ViewModel
 {
 	class SettingsViewModel : ObservableObject
 	{
-		private bool _noUpdate = true;
+		private readonly bool _noUpdate = true;
 
 		private ResetDataConfirmationPopupViewModel ResetDataConfirmationPopup { get; set; }
 		private AboutPopupViewModel AboutPopup { get; set; }

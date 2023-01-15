@@ -69,10 +69,10 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			OnBackClicked = new RelayCommand(o => { if (CanCancel) Close(); });
 			OnDoneClicked = new RelayCommand(o =>
 			{
-				if (EditMode) TrackingDataHelper.EditContracts(Uuid, Name);
+				if (EditMode) TrackingData.EditContract(Uuid, new Contract(Uuid, Name, "", false, new List<Goal>()));
 				else
 				{
-					TrackingDataHelper.AddContract(new Contract(Uuid, Name, new List<Goal>()));
+					TrackingData.AddContract(new Contract(Uuid, Name, "",false, new List<Goal>()));
 
 					if (GenerateAgentGoals)
 					{
@@ -81,7 +81,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 						for (var i = ActiveTier; i < Constants.AgentTiers + 1; i++)
 						{
 							var uuid = Guid.NewGuid().ToString();
-							TrackingDataHelper.AddGoal(Uuid, new Goal(uuid, Name + " Tier " + i.ToString(), CalcUtil.CalcMaxForTier(i), i == ActiveTier ? Collected : 0, "", prevUuid, false));
+							TrackingData.AddGoal(Uuid, new Goal(uuid, Name + " Tier " + i.ToString(), CalcUtil.CalcMaxForTier(i), i == ActiveTier ? Collected : 0));
 							prevUuid = uuid;
 						}
 
@@ -111,7 +111,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			IsInitialized = true;
 		}
 
-		public void SetData(ContractData data)
+		public void SetData(Contract data)
 		{
 			Uuid = data.Uuid;
 			Name = data.Name;

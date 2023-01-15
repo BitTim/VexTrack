@@ -17,7 +17,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public RelayCommand OnDeleteClicked { get; set; }
 		private EditableSeasonPopupViewModel EditableSeasonPopup { get; set; }
 
-		private SeasonEntryData RawData { get; set; }
+		private Season RawData { get; set; }
 		public string Uuid { get; set; }
 		public string Title { get; set; }
 		public double Progress { get; set; }
@@ -58,12 +58,14 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			OnDeleteClicked = new RelayCommand(o =>
 			{
 				IsInitialized = false;
-				TrackingDataHelper.RemoveSeason(Uuid);
+				TrackingData.RemoveSeason(Uuid);
 			});
 
-			Graph = new PlotModel();
-			Graph.PlotMargins = new OxyThickness(0, 0, 0, 16);
-			Graph.PlotAreaBorderColor = OxyColors.Transparent;
+			Graph = new PlotModel
+			{
+				PlotMargins = new OxyThickness(0, 0, 0, 16),
+				PlotAreaBorderColor = OxyColors.Transparent
+			};
 		}
 
 		private void ApplyAxes()
@@ -71,8 +73,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			LinearAxis xAxis = new();
 			LinearAxis yAxis = new();
 
-			var foreground = (SolidColorBrush)Application.Current.FindResource("Foreground");
-			var shade = (SolidColorBrush)Application.Current.FindResource("Shade");
+			var foreground = (SolidColorBrush)Application.Current.FindResource("Foreground") ?? new SolidColorBrush();
+			var shade = (SolidColorBrush)Application.Current.FindResource("Shade") ?? new SolidColorBrush();
 
 			xAxis.Position = AxisPosition.Bottom;
 			xAxis.AbsoluteMinimum = 0;
@@ -82,7 +84,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			xAxis.MajorGridlineColor = OxyColor.FromArgb(shade.Color.A, shade.Color.R, shade.Color.G, shade.Color.B);
 			xAxis.MaximumPadding = 0;
 			xAxis.MinimumPadding = 0;
-			xAxis.AbsoluteMaximum = TrackingDataHelper.GetDuration(Uuid);
+			xAxis.AbsoluteMaximum = TrackingData.GetDuration(Uuid);
 			xAxis.TextColor = OxyColor.FromArgb(foreground.Color.A, foreground.Color.R, foreground.Color.G, foreground.Color.B);
 
 			yAxis.Position = AxisPosition.Left;
@@ -98,11 +100,11 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 		private void UpdateGraph(bool epilogue)
 		{
-			var graphIdealPoint = (SolidColorBrush)Application.Current.FindResource("GraphIdealPoint");
+			var graphIdealPoint = (SolidColorBrush)Application.Current.FindResource("GraphIdealPoint") ?? new SolidColorBrush();
 
-			var foreground = (SolidColorBrush)Application.Current.FindResource("Foreground");
-			var background = (SolidColorBrush)Application.Current.FindResource("Background");
-			var shade = (SolidColorBrush)Application.Current.FindResource("Shade");
+			var foreground = (SolidColorBrush)Application.Current.FindResource("Foreground") ?? new SolidColorBrush();
+			var background = (SolidColorBrush)Application.Current.FindResource("Background") ?? new SolidColorBrush();
+			var shade = (SolidColorBrush)Application.Current.FindResource("Shade") ?? new SolidColorBrush();
 
 			var ideal = GraphCalc.CalcIdealGraph(Uuid, epilogue);
 			var performance = GraphCalc.CalcPerformanceGraph(Uuid);
@@ -124,7 +126,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			Graph.Series.Add(performance);
 
 			// Only add points to current season
-			if (Uuid == TrackingDataHelper.CurrentSeasonUuid)
+			if (Uuid == TrackingData.CurrentSeasonData.Uuid)
 			{
 				var idealPoint = DashboardDataCalc.CalcGraphPoint(ideal, OxyColor.FromArgb(graphIdealPoint.Color.A, graphIdealPoint.Color.R, graphIdealPoint.Color.G, graphIdealPoint.Color.B));
 				var performancePoint = DashboardDataCalc.CalcGraphPoint(performance, OxyColors.Maroon);
@@ -138,9 +140,9 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			Graph.InvalidatePlot(true);
 		}
 
-		private void UpdateYAxis(LineSeries performance, bool epilogue)
+		private void UpdateYAxis(DataPointSeries performance, bool epilogue)
 		{
-			var maximum = GoalDataCalc.CalcTotalGoal("", TrackingDataHelper.CurrentSeasonData.ActiveBpLevel, TrackingDataHelper.CurrentSeasonData.Cxp, epilogue).Total * 2;
+			var maximum = CalcUtil.CalcMaxForSeason(epilogue) * 2;
 			if (performance.Points.Last().Y >= maximum) maximum = (int)performance.Points.Last().Y + 20000;
 
 			Graph.Axes[1].AbsoluteMaximum = maximum;
@@ -152,19 +154,16 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			CanEdit = canEdit;
 		}
 
-		public void SetData(SeasonEntryData data, bool epilogue)
+		public void SetData(Season data, bool epilogue)
 		{
 			RawData = data;
 
 			Uuid = data.Uuid;
-			Title = data.Title;
-			Progress = data.Progress;
-			Average = data.Average;
+			Title = data.Name;
+			Progress = data.GetProgress();
+			Average = data.GetAverage();
 			EndDate = data.EndDate;
-			StrongestAmount = data.StrongestAmount;
-			StrongestDate = data.StrongestDate.ToUnixTimeSeconds();
-			WeakestAmount = data.WeakestAmount;
-			WeakestDate = data.WeakestDate.ToUnixTimeSeconds();
+			(StrongestAmount, StrongestDate, WeakestAmount, WeakestDate) = data.GetExtremes();
 
 			IsInitialized = true;
 			ApplyAxes();

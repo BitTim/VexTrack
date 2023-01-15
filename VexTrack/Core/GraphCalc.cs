@@ -15,13 +15,13 @@ namespace VexTrack.Core
 		{
 			LineSeries ret = new();
 
-			var foreground = (SolidColorBrush)Application.Current.FindResource("Foreground");
+			var foreground = (SolidColorBrush)Application.Current.FindResource("Foreground") ?? new SolidColorBrush();
 
-			int total = GoalDataCalc.CalcTotalGoal("", TrackingDataHelper.GetSeason(sUuid).ActiveBpLevel, TrackingDataHelper.GetSeason(sUuid).Cxp, epilogue).Total;
+			var total = CalcUtil.CalcMaxForSeason(epilogue);
 			var bufferDays = SettingsHelper.Data.BufferDays;
-			var duration = TrackingDataHelper.GetDuration(sUuid);
+			var duration = TrackingData.GetDuration(sUuid);
 
-			var initCollected = TrackingDataHelper.GetFirstHistoryEntry(sUuid).Amount;
+			var initCollected = TrackingData.GetFirstHistoryEntry(sUuid).Amount;
 			var initRemaining = total - initCollected;
 			var totalDaily = initRemaining / (double)(duration - bufferDays);
 
@@ -44,17 +44,17 @@ namespace VexTrack.Core
 		{
 			LineSeries ret = new();
 
-			DateTimeOffset prevDate = DateTimeOffset.FromUnixTimeSeconds(TrackingDataHelper.GetFirstHistoryEntry(sUuid).Time).ToLocalTime().Date;
+			DateTimeOffset prevDate = DateTimeOffset.FromUnixTimeSeconds(TrackingData.GetFirstHistoryEntry(sUuid).Time).ToLocalTime().Date;
 			List<int> dailyAmounts = new();
 
 			// Construct list of daily amounts
 
-			foreach (var h in TrackingDataHelper.GetSeason(sUuid).History)
+			foreach (var h in TrackingData.GetSeason(sUuid).History)
 			{
 				DateTimeOffset currDate = DateTimeOffset.FromUnixTimeSeconds(h.Time).ToLocalTime().Date;
 				if (currDate == prevDate && dailyAmounts.Count != 0)
 				{
-					dailyAmounts[dailyAmounts.Count - 1] += h.Amount;
+					dailyAmounts[^1] += h.Amount;
 					continue;
 				}
 
@@ -68,15 +68,13 @@ namespace VexTrack.Core
 				dailyAmounts.Add(h.Amount + prevValue);
 			}
 
-			var inactiveDays = 0;
 			DateTimeOffset today = DateTimeOffset.Now.ToLocalTime().Date;
-			DateTimeOffset seasonEndDate = DateTimeOffset.Parse(TrackingDataHelper.GetSeason(sUuid).EndDate).ToLocalTime().Date;
+			DateTimeOffset seasonEndDate = DateTimeOffset.FromUnixTimeSeconds(TrackingData.GetSeason(sUuid).EndDate).ToLocalTime().Date;
 
-			if (today < seasonEndDate) inactiveDays = (today - prevDate).Days;
-			else inactiveDays = (seasonEndDate - prevDate).Days;
+			var inactiveDays = today < seasonEndDate ? (today - prevDate).Days : (seasonEndDate - prevDate).Days;
 			for (var i = 0; i < inactiveDays; i++) dailyAmounts.Add(dailyAmounts.Last());
 
-			// Translate list to datapoints
+			// Translate list to data points
 
 			var idx = 0;
 			foreach (var amount in dailyAmounts) ret.Points.Add(new DataPoint(idx++, amount));
@@ -91,9 +89,9 @@ namespace VexTrack.Core
 		{
 			RectangleAnnotation ret = new();
 
-			int total = GoalDataCalc.CalcTotalGoal("", TrackingDataHelper.GetSeason(sUuid).ActiveBpLevel, TrackingDataHelper.GetSeason(sUuid).Cxp, epilogue).Total;
+			var total = CalcUtil.CalcMaxForSeason(epilogue);
 			var bufferDays = SettingsHelper.Data.BufferDays;
-			var duration = TrackingDataHelper.GetDuration(sUuid);
+			var duration = TrackingData.GetDuration(sUuid);
 
 			ret.MinimumX = duration - bufferDays;
 			ret.MaximumX = duration;
@@ -112,15 +110,14 @@ namespace VexTrack.Core
 			{
 				LineSeries ls = new();
 				byte alpha = 128;
-				var val = CalcUtil.CumulativeSum(i, Constants.Level2Offset, Constants.XpPerLevel);
+				var val = CalcUtil.CalcMaxForSeason(false);
 
 				ls.Points.Add(new DataPoint(0, val));
-				ls.Points.Add(new DataPoint(TrackingDataHelper.GetDuration(sUuid), val));
+				ls.Points.Add(new DataPoint(TrackingData.GetDuration(sUuid), val));
 
-				if (CalcUtil.CalcTotalCollected(TrackingDataHelper.CurrentSeasonData.ActiveBpLevel, TrackingDataHelper.CurrentSeasonData.Cxp) >= val) alpha = 13;
+				if (CalcUtil.CalcTotalCollected(TrackingData.CurrentSeasonData.ActiveBpLevel, TrackingData.CurrentSeasonData.Cxp) >= val) alpha = 13;
 
-				if (i % 5 == 0) ls.Color = OxyColor.FromAColor(alpha, OxyColors.LimeGreen);
-				else ls.Color = OxyColor.FromAColor(alpha, OxyColors.LightGray);
+				ls.Color = OxyColor.FromAColor(alpha, i % 5 == 0 ? OxyColors.LimeGreen : OxyColors.LightGray);
 
 				ret.Add(ls);
 			}
@@ -136,12 +133,12 @@ namespace VexTrack.Core
 			{
 				LineSeries ls = new();
 				byte alpha = 128;
-				var val = CalcUtil.CumulativeSum(Constants.BattlepassLevels, Constants.Level2Offset, Constants.XpPerLevel) + i * Constants.XpPerEpilogueLevel;
+				var val = CalcUtil.CalcMaxForSeason(true) + i * Constants.XpPerEpilogueLevel;
 
 				ls.Points.Add(new DataPoint(0, val));
-				ls.Points.Add(new DataPoint(TrackingDataHelper.GetDuration(sUuid), val));
+				ls.Points.Add(new DataPoint(TrackingData.GetDuration(sUuid), val));
 
-				if (CalcUtil.CalcTotalCollected(TrackingDataHelper.CurrentSeasonData.ActiveBpLevel, TrackingDataHelper.CurrentSeasonData.Cxp) >= val) alpha = 13;
+				if (CalcUtil.CalcTotalCollected(TrackingData.CurrentSeasonData.ActiveBpLevel, TrackingData.CurrentSeasonData.Cxp) >= val) alpha = 13;
 
 				ls.Color = OxyColor.FromAColor(alpha, OxyColors.Gold);
 

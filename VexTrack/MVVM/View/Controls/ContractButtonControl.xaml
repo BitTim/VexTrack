@@ -9,7 +9,11 @@
              mc:Ignorable="d"
              d:DesignHeight="780" d:DesignWidth="640"
              d:DataContext="{cont:ContractButtonControlViewModel}">
-    <Grid>
+    
+    <Grid Height="Auto"
+          Margin="8, 0, 8, 0"
+          VerticalAlignment="Center">
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -17,15 +21,38 @@
         </Grid.RowDefinitions>
         
         <TextBlock Grid.Row="0"
-                   Text="{Binding Title}"
+                   Text="Contract Title"
                    Foreground="{DynamicResource Foreground}"
                    FontSize="20"
-                   Margin="8, 8, 0, 0"
                    FontWeight="Bold"/>
         
-        <model:SegmentedProgressModel Grid.Row="0"
-                                      Padding="0, 8, 0, 0"
+        <model:SegmentedProgressModel Grid.Row="1"
                                       Value="{Binding Progress}"
                                       Color="{Binding Color}"/>
+        
+        <WrapPanel Grid.Row="2">
+            <TextBlock Text="2400"
+                       FontSize="14"
+                       Foreground="{DynamicResource Foreground}"/>
+            
+            <TextBlock Text=" / "
+                       FontSize="14"
+                       Foreground="{DynamicResource Foreground}"/>
+            
+            <model:TextWithUnit Text="10000"
+                                Unit="XP"
+                                FontSize="14"
+                                Foreground="{DynamicResource Foreground}"/>
+            
+            
+            
+            <TextBlock Text="Remaining: "
+                       FontSize="14"
+                       Foreground="{DynamicResource Foreground}"/>
+            
+            <TextBlock Text="2385 / 10400 XP"
+                       FontSize="14"
+                       Foreground="{DynamicResource Foreground}"/>
+        </WrapPanel>
     </Grid>
 </UserControl>

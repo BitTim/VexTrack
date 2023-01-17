@@ -58,7 +58,7 @@
 			<DataTemplate DataType="{x:Type viewModel:SettingsViewModel}">
 				<view:SettingsView/>
 			</DataTemplate>
-
+			
 			<!-- Popups -->
 			
 			<DataTemplate DataType="{x:Type popupViewModel:HistoryEntryPopupViewModel}">

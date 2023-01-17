@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace VexTrack.Core;
 
@@ -18,4 +19,8 @@ public class Contract
         Paused = paused;
         Goals = goals;
     }
+
+    public int GetTotal() { return Goals.Sum(goal => goal.Total); }
+    public int GetCollected() { return Goals.Sum(goal => goal.Collected); }
+    public int GetRemaining() { return GetTotal() - GetCollected(); }
 }

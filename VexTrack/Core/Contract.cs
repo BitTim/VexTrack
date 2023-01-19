@@ -10,7 +10,19 @@ public class Contract
     public string Color { get; set; }
     public bool Paused { get; set; }
     public List<Goal> Goals { get; set; }
+    
+    
+    
+    public int Total => GetTotal();
+    public int Collected => GetCollected();
+    public int Remaining => GetRemaining();
+    public double Progress => CalcUtil.CalcProgress(Total, Collected);
+    public string NextUnlockName => GetNextUnlock()?.Name ?? "None";
+    public double NextUnlockProgress => GetNextUnlock()?.Progress ?? 1.0;
+    public int NextUnlockRemaining => GetNextUnlock()?.Remaining ?? 0;
+    
 
+    
     public Contract(string uuid, string name, string color, bool paused, List<Goal> goals)
     {
         Uuid = uuid;
@@ -23,4 +35,9 @@ public class Contract
     public int GetTotal() { return Goals.Sum(goal => goal.Total); }
     public int GetCollected() { return Goals.Sum(goal => goal.Collected); }
     public int GetRemaining() { return GetTotal() - GetCollected(); }
+
+    public Goal GetNextUnlock()
+    {
+        return Goals.FirstOrDefault(goal => !goal.IsCompleted());
+    }
 }

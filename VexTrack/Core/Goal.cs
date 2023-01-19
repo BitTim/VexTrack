@@ -9,6 +9,7 @@ public class Goal
 
 
     public double Progress => GetProgress();
+    public int Remaining => GetRemaining();
     
     
     public Goal(string uuid, string name, int total, int collected)
@@ -19,8 +20,7 @@ public class Goal
         Collected = collected;
     }
 
-    public double GetProgress()
-    {
-        return CalcUtil.CalcProgress(Total, Collected);
-    }
+    public double GetProgress() { return CalcUtil.CalcProgress(Total, Collected); }
+    public int GetRemaining() { return Total - Collected; }
+    public bool IsCompleted() { return Collected >= Total; }
 }

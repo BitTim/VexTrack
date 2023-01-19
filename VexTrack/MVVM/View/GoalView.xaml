@@ -83,63 +83,22 @@
 							  ItemsSource="{Binding Entries}">
 
 					<ItemsControl.ItemTemplate>
-						<DataTemplate>
-							<StackPanel>
-								<Grid Margin="0, 4, 0, 4">
-									<TextBlock Text="{Binding Name}"
-											   Foreground="{DynamicResource Foreground}"
-											   FontSize="14"
-											   VerticalAlignment="Center"
-											   Margin="8, 0, 0, 8"
-											   FontWeight="Bold"/>
-
-									<Button Grid.Row="0"
-											Width="32" Height="32"
-											HorizontalAlignment="Right"
-											VerticalAlignment="Center"
-											Margin="0, 0, 16, 0"
-											Visibility="{Binding UUID, Converter={StaticResource IsDefaultToVisibleConv}}"
-											Style="{DynamicResource SmallDeleteButtonTheme}"
-											Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.OnGroupDeleteClicked}"
-											CommandParameter="{Binding UUID}"/>
-
-									<Button Grid.Row="0"
-											Width="32" Height="32"
-											HorizontalAlignment="Right"
-											VerticalAlignment="Center"
-											Margin="0, 0, 52, 0"
-											Visibility="{Binding UUID, Converter={StaticResource IsDefaultToVisibleConv}}"
-											Style="{DynamicResource SmallEditButtonTheme}"
-											Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.OnGroupEditClicked}"
-											CommandParameter="{Binding UUID}"/>
-								</Grid>
-								
-								<ItemsControl x:Name="CustomContentContainer"
-											Grid.Row="3"
-											Margin="0, 0, 0, 12"
-											ItemsSource="{Binding Goals}">
-									<ItemsControl.ItemsPanel>
-										<ItemsPanelTemplate>
-											<WrapPanel/>
-										</ItemsPanelTemplate>
-									</ItemsControl.ItemsPanel>
-
-									<ItemsControl.ItemTemplate>
-										<DataTemplate>
-											<model:ProgressButtonModel Title="{Binding Path=Name}"
-														   Value="{Binding Path=Progress}"
-														   Color="{Binding RelativeSource={RelativeSource AncestorType={x:Type core:Contract}}, Path=Color}"
-														   Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.UserGoalButtonClick}"
-														   CommandParameter="{Binding Path=Uuid}"
-														   BadgeRightData="{Binding Path=CompletionStatus, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Data}"
-														   BadgeRightColor="{Binding Path=CompletionStatus, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Color}"
-														   BadgeLeftData="{Binding Path=ActivityStatus, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Data}"
-														   BadgeLeftColor="{Binding Path=ActivityStatus, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Color}"
-														   Margin="8, 8, 0, 0"/>
-										</DataTemplate>
-									</ItemsControl.ItemTemplate>
-								</ItemsControl>
-							</StackPanel>
+						<DataTemplate DataType="{x:Type core:Contract}">
+							<!-- <model:ProgressButtonModel Title="{Binding Path=Name}" -->
+							<!-- 			   Value="{Binding Path=Progress}" -->
+							<!-- 			   Color="{Binding RelativeSource={RelativeSource AncestorType={x:Type core:Contract}}, Path=Color}" -->
+							<!-- 			   Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.UserGoalButtonClick}" -->
+							<!-- 			   CommandParameter="{Binding Path=Uuid}" -->
+							<!-- 			   BadgeRightData="{Binding Path=CompletionStatus, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Data}" -->
+							<!-- 			   BadgeRightColor="{Binding Path=CompletionStatus, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Color}" -->
+							<!-- 			   BadgeLeftData="{Binding Path=ActivityStatus, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Data}" -->
+							<!-- 			   BadgeLeftColor="{Binding Path=ActivityStatus, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Color}" -->
+							<!-- 			   Margin="8, 8, 0, 0"/> -->
+							<model:ContractButtonModel Title="{Binding Name}"
+							                           Progress="{Binding Progress}"
+							                           Collected="{Binding Collected}"
+							                           Total="{Binding Total}"
+							                           Remaining="{Binding Remaining}"/>
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
 				</ItemsControl>

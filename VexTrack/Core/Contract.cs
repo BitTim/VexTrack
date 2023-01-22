@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace VexTrack.Core;
@@ -20,9 +21,11 @@ public class Contract
     public string NextUnlockName => GetNextUnlock()?.Name ?? "None";
     public double NextUnlockProgress => GetNextUnlock()?.Progress ?? 1.0;
     public int NextUnlockRemaining => GetNextUnlock()?.Remaining ?? 0;
+    public ObservableCollection<Goal> ObservableGoals => new ObservableCollection<Goal>(Goals);
+    public bool IsExpanded { get; set; }
     
 
-    
+
     public Contract(string uuid, string name, string color, bool paused, List<Goal> goals)
     {
         Uuid = uuid;
@@ -30,6 +33,8 @@ public class Contract
         Color = color;
         Paused = paused;
         Goals = goals;
+
+        IsExpanded = false;
     }
 
     public int GetTotal() { return Goals.Sum(goal => goal.Total); }
@@ -40,4 +45,8 @@ public class Contract
     {
         return Goals.FirstOrDefault(goal => !goal.IsCompleted());
     }
+    
+    
+    
+    public void OnToggleExpandedClicked() { IsExpanded = !IsExpanded; }
 }

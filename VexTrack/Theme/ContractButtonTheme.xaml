@@ -8,15 +8,12 @@
     
     <conv:NegativeToZeroConverter x:Key="NegativeToZeroConverter"/>
     
-    <Style TargetType="{x:Type local:ContractButtonModel}"
-           BasedOn="{StaticResource {x:Type Button}}">
+    <Style TargetType="{x:Type local:ContractButtonModel}">
         <Style.Setters>
-            <Setter Property="Command" Value="{Binding Path=OnToggleExpandedClicked}"/>
-            
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type local:ContractButtonModel}">
-                        <Grid Margin="8, 4">
+                        <Grid Margin="8, 4" d:DataContext="{local:ContractButtonModel}">
                             <Border x:Name="PART_ShadowBorder"
                                     Background="{DynamicResource Background}"
                                     CornerRadius="8">
@@ -55,7 +52,7 @@
                                     CornerRadius="8"
                                     IsHitTestVisible="False">
                                 <Expander ExpandDirection="Down"
-                                          IsExpanded="{Binding IsExpanded}">
+                                          IsExpanded="True">
                                     <Expander.Header>
                                         <Grid Height="Auto"
                                               Margin="8"
@@ -158,7 +155,13 @@
                                         </Grid>
                                     </Expander.Header>
                                     
-                                    <ItemsControl ItemsSource="{Binding ObservableGoals}">
+                                    <ItemsControl ItemsSource="{Binding Goals}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel Orientation="Vertical"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="{TemplateBinding Name}"

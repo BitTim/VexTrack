@@ -22,7 +22,6 @@ public class Contract
     public double NextUnlockProgress => GetNextUnlock()?.Progress ?? 1.0;
     public int NextUnlockRemaining => GetNextUnlock()?.Remaining ?? 0;
     public ObservableCollection<Goal> ObservableGoals => new ObservableCollection<Goal>(Goals);
-    public bool IsExpanded { get; set; }
     
 
 
@@ -33,8 +32,6 @@ public class Contract
         Color = color;
         Paused = paused;
         Goals = goals;
-
-        IsExpanded = false;
     }
 
     public int GetTotal() { return Goals.Sum(goal => goal.Total); }
@@ -45,8 +42,4 @@ public class Contract
     {
         return Goals.FirstOrDefault(goal => !goal.IsCompleted());
     }
-    
-    
-    
-    public void OnToggleExpandedClicked() { IsExpanded = !IsExpanded; }
 }

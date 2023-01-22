@@ -8,10 +8,10 @@
 			 xmlns:conv="clr-namespace:VexTrack.MVVM.Converter"
 			 xmlns:core="clr-namespace:VexTrack.Core"
 			 mc:Ignorable="d" 
-             d:DesignHeight="780" d:DesignWidth="640">
+             d:DesignHeight="780" d:DesignWidth="640" d:DataContext="{local:GoalView }">
 
 	<UserControl.Resources>
-		<conv:StatusToBadgeConverter x:Key="statusToBadgeConv"/>
+		<conv:StatusToBadgeConverter x:Key="StatusToBadgeConv"/>
 		<conv:IsDefaultGroupToVisibilityConverter x:Key="IsDefaultToVisibleConv"/>
 	</UserControl.Resources>
 
@@ -21,13 +21,13 @@
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 
-		<TextBlock Text="Goals"
+		<TextBlock Text="Contracts"
 				   Margin="16, 16, 16, 16"
 				   Foreground="{DynamicResource Foreground}"
 				   FontSize="36"
 				   FontWeight="Bold"/>
 
-		<ScrollViewer Grid.Row="2"
+		<ScrollViewer Grid.Row="1"
 					  Style="{DynamicResource ScrollViewerTheme}"
 					  Margin="16">
 			<Grid>
@@ -38,7 +38,7 @@
 					<RowDefinition Height="*"/>
 				</Grid.RowDefinitions>
 
-				<TextBlock Text="Built-in Goals"
+				<TextBlock Text="Seasons"
 						   Grid.Row="0"
 						   Foreground="{DynamicResource Foreground}"
 						   FontSize="20"
@@ -57,20 +57,20 @@
 
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
-							<model:ProgressButtonModel Title="{Binding Path=Title}"
-													   Value="{Binding Path=Progress}"
-													   Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.BuiltinGoalButtonClick}"
-													   CommandParameter="{Binding Path=Uuid}"
-													   BadgeRightData="{Binding Path=Status, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Data}"
-													   BadgeRightColor="{Binding Path=Status, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Color}"
-													   BadgeLeftData="{Binding Path=ActivityStatus, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Data}"
-													   BadgeLeftColor="{Binding Path=ActivityStatus, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Color}"
-													   Margin="8, 8, 0, 0"/>
+							<!-- <model:ProgressButtonModel Title="{Binding Path=Title}" -->
+							<!-- 						   Value="{Binding Path=Progress}" -->
+							<!-- 						   Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.BuiltinGoalButtonClick}" -->
+							<!-- 						   CommandParameter="{Binding Path=Uuid}" -->
+							<!-- 						   BadgeRightData="{Binding Path=Status, Converter={StaticResource StatusToBadgeConv}, ConverterParameter=Data}" -->
+							<!-- 						   BadgeRightColor="{Binding Path=Status, Converter={StaticResource StatusToBadgeConv}, ConverterParameter=Color}" -->
+							<!-- 						   BadgeLeftData="{Binding Path=ActivityStatus, Converter={StaticResource StatusToBadgeConv}, ConverterParameter=Data}" -->
+							<!-- 						   BadgeLeftColor="{Binding Path=ActivityStatus, Converter={StaticResource StatusToBadgeConv}, ConverterParameter=Color}" -->
+							<!-- 						   Margin="8, 8, 0, 0"/> -->
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
 				</ItemsControl>
 
-				<TextBlock Text="Custom Goals"
+				<TextBlock Text="Contracts"
 						   Grid.Row="2"
 						   Foreground="{DynamicResource Foreground}"
 						   FontSize="20"
@@ -94,11 +94,15 @@
 							<!-- 			   BadgeLeftData="{Binding Path=ActivityStatus, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Data}" -->
 							<!-- 			   BadgeLeftColor="{Binding Path=ActivityStatus, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Color}" -->
 							<!-- 			   Margin="8, 8, 0, 0"/> -->
+							
+							<!-- TODO: These Bindings get ignored -->
 							<model:ContractButtonModel Title="{Binding Name}"
 							                           Progress="{Binding Progress}"
 							                           Collected="{Binding Collected}"
 							                           Total="{Binding Total}"
-							                           Remaining="{Binding Remaining}"/>
+							                           Remaining="{Binding Remaining}"
+							                           Goals="{Binding ObservableGoals}"
+							                           Color="#FF00FF"/>
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
 				</ItemsControl>

@@ -5,13 +5,15 @@ using VexTrack.Core;
 
 namespace VexTrack.MVVM.Model;
 
-public class ContractButtonModel : Button
+public class ContractButtonModel : Control
 {
     private static readonly DependencyProperty TitleProperty = DependencyProperty.Register(nameof(Title), typeof(string), typeof(ContractButtonModel), new PropertyMetadata(""));
     private static readonly DependencyProperty CollectedProperty = DependencyProperty.Register(nameof(Collected), typeof(int), typeof(ContractButtonModel), new PropertyMetadata(0));
     private static readonly DependencyProperty TotalProperty = DependencyProperty.Register(nameof(Total), typeof(int), typeof(ContractButtonModel), new PropertyMetadata(0));
     private static readonly DependencyProperty RemainingProperty = DependencyProperty.Register(nameof(Remaining), typeof(int), typeof(ContractButtonModel), new PropertyMetadata(0));
     private static readonly DependencyProperty ProgressProperty = DependencyProperty.Register(nameof(Progress), typeof(double), typeof(ContractButtonModel), new PropertyMetadata(0.0));
+    private static readonly DependencyProperty ColorProperty = DependencyProperty.Register(nameof(Color), typeof(string), typeof(ContractButtonModel), new PropertyMetadata(""));
+    private static readonly DependencyProperty GoalsProperty = DependencyProperty.Register(nameof(Goals), typeof(ObservableCollection<Goal>), typeof(ContractButtonModel), new PropertyMetadata(new ObservableCollection<Goal>()));
 
     public string Title
     {
@@ -41,5 +43,17 @@ public class ContractButtonModel : Button
     {
         get => (double)GetValue(ProgressProperty);
         set => SetValue(ProgressProperty, value);
+    }
+
+    public string Color
+    {
+        get => (string)GetValue(ColorProperty);
+        set => SetValue(ColorProperty, value);
+    }
+    
+    public ObservableCollection<Goal> Goals
+    {
+        get => (ObservableCollection<Goal>)GetValue(GoalsProperty);
+        set => SetValue(GoalsProperty, value);
     }
 }

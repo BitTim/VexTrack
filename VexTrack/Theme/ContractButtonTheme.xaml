@@ -13,7 +13,8 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type local:ContractButtonModel}">
-                        <Grid Margin="8, 4" d:DataContext="{local:ContractButtonModel}">
+                        <Grid Margin="8, 4"
+                              d:DataContext="{local:ContractButtonModel}">
                             <Border x:Name="PART_ShadowBorder"
                                     Background="{DynamicResource Background}"
                                     CornerRadius="8">
@@ -65,14 +66,14 @@
                                             </Grid.RowDefinitions>
 
                                             <TextBlock Grid.Row="0"
-                                                       Text="{Binding Name}"
+                                                       Text="{TemplateBinding Title}"
                                                        Foreground="{DynamicResource Foreground}"
                                                        FontSize="20"
                                                        FontWeight="Bold" />
 
                                             <local:SegmentedProgressModel Grid.Row="1"
-                                                                          Value="{Binding Progress, Mode=OneWay}"
-                                                                          Color="{Binding Color}" />
+                                                                          Value="{TemplateBinding Progress}"
+                                                                          Color="{TemplateBinding Color}" />
 
                                             <StackPanel Grid.Row="2">
                                                 <WrapPanel>
@@ -83,7 +84,7 @@
                                                                    FontWeight="Bold"
                                                                    Foreground="{DynamicResource Foreground}" />
 
-                                                        <TextBlock Text="{Binding Collected}"
+                                                        <TextBlock Text="{TemplateBinding Collected}"
                                                                    FontSize="14"
                                                                    Margin="0, 0, 4, 0"
                                                                    Foreground="{DynamicResource Foreground}" />
@@ -93,7 +94,7 @@
                                                                    Margin="0, 0, 4, 0"
                                                                    Foreground="{DynamicResource Foreground}" />
 
-                                                        <local:TextWithUnit Text="{Binding Total}"
+                                                        <local:TextWithUnit Text="{TemplateBinding Total}"
                                                                             Unit=" XP"
                                                                             FontSize="14"
                                                                             Foreground="{DynamicResource Foreground}" />
@@ -106,7 +107,7 @@
                                                                    Foreground="{DynamicResource Foreground}" />
 
                                                         <local:TextWithUnit
-                                                            Text="{Binding Remaining, Converter={StaticResource NegativeToZeroConverter}}"
+                                                            Text="{TemplateBinding Remaining, Converter={StaticResource NegativeToZeroConverter}}"
                                                             Unit=" XP"
                                                             FontSize="14"
                                                             Foreground="{DynamicResource Foreground}" />
@@ -121,7 +122,7 @@
                                                                    FontWeight="Bold"
                                                                    Foreground="{DynamicResource Foreground}" />
 
-                                                        <TextBlock Text="{Binding NextUnlockName}"
+                                                        <TextBlock Text="{TemplateBinding NextUnlockName}"
                                                                    FontSize="14"
                                                                    Foreground="{DynamicResource Foreground}" />
 
@@ -130,7 +131,7 @@
                                                                    FontSize="14"
                                                                    Foreground="{DynamicResource Foreground}" />
 
-                                                        <local:TextWithUnit Text="{Binding NextUnlockProgress}"
+                                                        <local:TextWithUnit Text="{TemplateBinding NextUnlockProgress}"
                                                                             Unit=" %"
                                                                             FontSize="14"
                                                                             Foreground="{DynamicResource Foreground}" />
@@ -145,7 +146,7 @@
                                                                    FontSize="14"
                                                                    Foreground="{DynamicResource Foreground}" />
 
-                                                        <local:TextWithUnit Text="{Binding NextUnlockRemaining}"
+                                                        <local:TextWithUnit Text="{TemplateBinding NextUnlockRemaining}"
                                                                             Unit=" XP"
                                                                             FontSize="14"
                                                                             Foreground="{DynamicResource Foreground}" />
@@ -155,7 +156,7 @@
                                         </Grid>
                                     </Expander.Header>
                                     
-                                    <ItemsControl ItemsSource="{Binding Goals}">
+                                    <ItemsControl ItemsSource="{TemplateBinding Goals}">
                                         <ItemsControl.ItemsPanel>
                                             <ItemsPanelTemplate>
                                                 <StackPanel Orientation="Vertical"/>
@@ -164,7 +165,7 @@
                                         
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="{TemplateBinding Name}"
+                                                <TextBlock Text="{Binding Name}"
                                                            FontSize="14"
                                                            Foreground="{DynamicResource Foreground}"/>
                                             </DataTemplate>

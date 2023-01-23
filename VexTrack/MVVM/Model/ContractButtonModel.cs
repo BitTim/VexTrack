@@ -7,14 +7,18 @@ namespace VexTrack.MVVM.Model;
 
 public class ContractButtonModel : Control
 {
-    private static readonly DependencyProperty TitleProperty = DependencyProperty.Register(nameof(Title), typeof(string), typeof(ContractButtonModel), new PropertyMetadata(""));
-    private static readonly DependencyProperty CollectedProperty = DependencyProperty.Register(nameof(Collected), typeof(int), typeof(ContractButtonModel), new PropertyMetadata(0));
-    private static readonly DependencyProperty TotalProperty = DependencyProperty.Register(nameof(Total), typeof(int), typeof(ContractButtonModel), new PropertyMetadata(0));
-    private static readonly DependencyProperty RemainingProperty = DependencyProperty.Register(nameof(Remaining), typeof(int), typeof(ContractButtonModel), new PropertyMetadata(0));
-    private static readonly DependencyProperty ProgressProperty = DependencyProperty.Register(nameof(Progress), typeof(double), typeof(ContractButtonModel), new PropertyMetadata(0.0));
-    private static readonly DependencyProperty ColorProperty = DependencyProperty.Register(nameof(Color), typeof(string), typeof(ContractButtonModel), new PropertyMetadata(""));
-    private static readonly DependencyProperty GoalsProperty = DependencyProperty.Register(nameof(Goals), typeof(ObservableCollection<Goal>), typeof(ContractButtonModel), new PropertyMetadata(new ObservableCollection<Goal>()));
+    public static readonly DependencyProperty TitleProperty = DependencyProperty.Register(nameof(Title), typeof(string), typeof(ContractButtonModel), new PropertyMetadata(""));
+    public static readonly DependencyProperty CollectedProperty = DependencyProperty.Register(nameof(Collected), typeof(int), typeof(ContractButtonModel), new PropertyMetadata(0));
+    public static readonly DependencyProperty TotalProperty = DependencyProperty.Register(nameof(Total), typeof(int), typeof(ContractButtonModel), new PropertyMetadata(0));
+    public static readonly DependencyProperty RemainingProperty = DependencyProperty.Register(nameof(Remaining), typeof(int), typeof(ContractButtonModel), new PropertyMetadata(0));
+    public static readonly DependencyProperty ProgressProperty = DependencyProperty.Register(nameof(Progress), typeof(double), typeof(ContractButtonModel), new PropertyMetadata(0.0));
+    public static readonly DependencyProperty ColorProperty = DependencyProperty.Register(nameof(Color), typeof(string), typeof(ContractButtonModel), new PropertyMetadata(""));
+    public static readonly DependencyProperty GoalsProperty = DependencyProperty.Register(nameof(Goals), typeof(ObservableCollection<Goal>), typeof(ContractButtonModel), new PropertyMetadata(new ObservableCollection<Goal>()));
 
+    public static readonly DependencyProperty NextUnlockNameProperty = DependencyProperty.Register(nameof(NextUnlockName), typeof(string), typeof(ContractButtonModel), new PropertyMetadata("None"));
+    public static readonly DependencyProperty NextUnlockProgressProperty = DependencyProperty.Register(nameof(NextUnlockProgress), typeof(double), typeof(ContractButtonModel), new PropertyMetadata(0.0));
+    public static readonly DependencyProperty NextUnlockRemainingProperty = DependencyProperty.Register(nameof(NextUnlockRemaining), typeof(int), typeof(ContractButtonModel), new PropertyMetadata(0));
+    
     public string Title
     {
         get => (string)GetValue(TitleProperty);
@@ -55,5 +59,25 @@ public class ContractButtonModel : Control
     {
         get => (ObservableCollection<Goal>)GetValue(GoalsProperty);
         set => SetValue(GoalsProperty, value);
+    }
+
+
+
+    public string NextUnlockName
+    {
+        get => (string)GetValue(NextUnlockNameProperty);
+        set => SetValue(NextUnlockNameProperty, value);
+    }
+
+    public double NextUnlockProgress
+    {
+        get => (double)GetValue(NextUnlockProgressProperty);
+        set => SetValue(NextUnlockProgressProperty, value);
+    }
+
+    public int NextUnlockRemaining
+    {
+        get => (int)GetValue(NextUnlockRemainingProperty);
+        set => SetValue(NextUnlockRemainingProperty, value);
     }
 }

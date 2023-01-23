@@ -95,14 +95,16 @@
 							<!-- 			   BadgeLeftColor="{Binding Path=ActivityStatus, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Color}" -->
 							<!-- 			   Margin="8, 8, 0, 0"/> -->
 							
-							<!-- TODO: These Bindings get ignored -->
-							<model:ContractButtonModel Title="{Binding Name}"
+							<model:ContractButtonModel Title="{TemplateBinding Name}"
 							                           Progress="{Binding Progress}"
-							                           Collected="{Binding Collected}"
+							                           Collected="1000"
 							                           Total="{Binding Total}"
 							                           Remaining="{Binding Remaining}"
 							                           Goals="{Binding ObservableGoals}"
-							                           Color="#FF00FF"/>
+							                           Color="{Binding Color}"
+							                           NextUnlockName="{Binding NextUnlockName}"
+							                           NextUnlockProgress="{Binding NextUnlockProgress}"
+							                           NextUnlockRemaining="{Binding NextUnlockRemaining}"/>
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
 				</ItemsControl>

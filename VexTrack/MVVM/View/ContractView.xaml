@@ -81,6 +81,14 @@
 							  Grid.Row="3"
 							  Margin="0, 0, 0, 12"
 							  ItemsSource="{Binding Entries}">
+					
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<model:FlexWrapPanelModel Orientation="Horizontal"
+							                          MinItemWidth="550"
+							                          ItemMargin="8, 4"/>
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
 
 					<ItemsControl.ItemTemplate>
 						<DataTemplate DataType="{x:Type core:Contract}">
@@ -95,9 +103,9 @@
 							<!-- 			   BadgeLeftColor="{Binding Path=ActivityStatus, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Color}" -->
 							<!-- 			   Margin="8, 8, 0, 0"/> -->
 							
-							<model:ContractButtonModel Title="{TemplateBinding Name}"
+							<model:ContractButtonModel Title="{Binding Name}"
 							                           Progress="{Binding Progress}"
-							                           Collected="1000"
+							                           Collected="{Binding Collected}"
 							                           Total="{Binding Total}"
 							                           Remaining="{Binding Remaining}"
 							                           Goals="{Binding ObservableGoals}"

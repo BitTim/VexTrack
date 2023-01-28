@@ -1,11 +1,13 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using VexTrack.Core;
 
 namespace VexTrack.MVVM.Model;
 
-public class ContractButtonModel : Control
+public class ContractButtonModel : ToggleButton
 {
     public static readonly DependencyProperty TitleProperty = DependencyProperty.Register(nameof(Title), typeof(string), typeof(ContractButtonModel), new PropertyMetadata(""));
     public static readonly DependencyProperty CollectedProperty = DependencyProperty.Register(nameof(Collected), typeof(int), typeof(ContractButtonModel), new PropertyMetadata(0));
@@ -80,4 +82,7 @@ public class ContractButtonModel : Control
         get => (int)GetValue(NextUnlockRemainingProperty);
         set => SetValue(NextUnlockRemainingProperty, value);
     }
+
+
+    public void Remeasure() { Measure(new Size(double.PositiveInfinity, double.PositiveInfinity)); }
 }

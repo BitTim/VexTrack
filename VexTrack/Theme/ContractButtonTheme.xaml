@@ -4,17 +4,27 @@
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     xmlns:conv="clr-namespace:VexTrack.MVVM.Converter"
+                    xmlns:math="http://hexinnovation.com/math"
+                    xmlns:core="clr-namespace:VexTrack.Core"
                     mc:Ignorable="d">
     
     <conv:NegativeToZeroConverter x:Key="NegativeToZeroConverter"/>
+    <math:MathConverter x:Key="MathConv"/>
     
-    <Style TargetType="{x:Type local:ContractButtonModel}">
+    <Style TargetType="{x:Type local:ContractButtonModel}"
+           BasedOn="{StaticResource {x:Type ToggleButton}}">
         <Style.Setters>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type local:ContractButtonModel}">
                         <Grid Margin="8, 4"
-                              d:DataContext="{local:ContractButtonModel}">
+                              d:DataContext="{local:ContractButtonModel}"
+                              x:Name="PART_RootGrid"
+                              MinWidth="550">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            
                             <Border x:Name="PART_ShadowBorder"
                                     Background="{DynamicResource Background}"
                                     CornerRadius="8">
@@ -52,111 +62,133 @@
                             <Border x:Name="PART_ContentBorder"
                                     CornerRadius="8"
                                     IsHitTestVisible="False">
-                                <Expander ExpandDirection="Down"
-                                          IsExpanded="True">
-                                    <Expander.Header>
-                                        <Grid Height="Auto"
-                                              Margin="8"
-                                              VerticalAlignment="Center">
+                                <StackPanel Orientation="Vertical">
+                                    <Grid Height="Auto"
+                                          Margin="8"
+                                          VerticalAlignment="Center"
+                                          x:Name="Header">
 
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="Auto" />
-                                            </Grid.RowDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
 
-                                            <TextBlock Grid.Row="0"
-                                                       Text="{TemplateBinding Title}"
-                                                       Foreground="{DynamicResource Foreground}"
-                                                       FontSize="20"
-                                                       FontWeight="Bold" />
+                                        <TextBlock Grid.Row="0"
+                                                   Text="{TemplateBinding Title}"
+                                                   Foreground="{DynamicResource Foreground}"
+                                                   FontSize="20"
+                                                   FontWeight="Bold" />
 
-                                            <local:SegmentedProgressModel Grid.Row="1"
-                                                                          Value="{TemplateBinding Progress}"
-                                                                          Color="{TemplateBinding Color}" />
+                                        <local:SegmentedProgressModel Grid.Row="1" Grid.Column="0"
+                                                                      Value="{TemplateBinding Progress}"
+                                                                      Color="{TemplateBinding Color}" />
 
-                                            <StackPanel Grid.Row="2">
-                                                <WrapPanel>
-                                                    <StackPanel Orientation="Horizontal"
-                                                                Margin="0, 0, 16, 0">
-                                                        <TextBlock Text="Progress: "
-                                                                   FontSize="14"
-                                                                   FontWeight="Bold"
-                                                                   Foreground="{DynamicResource Foreground}" />
+                                        <StackPanel Grid.Row="2" Grid.Column="0">
+                                            <WrapPanel>
+                                                <StackPanel Orientation="Horizontal"
+                                                            Margin="0, 0, 16, 0">
+                                                    <TextBlock Text="Progress: "
+                                                               FontSize="14"
+                                                               FontWeight="Bold"
+                                                               Foreground="{DynamicResource Foreground}" />
 
-                                                        <TextBlock Text="{TemplateBinding Collected}"
-                                                                   FontSize="14"
-                                                                   Margin="0, 0, 4, 0"
-                                                                   Foreground="{DynamicResource Foreground}" />
+                                                    <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Collected}"
+                                                               FontSize="14"
+                                                               Margin="0, 0, 4, 0"
+                                                               Foreground="{DynamicResource Foreground}" />
 
-                                                        <TextBlock Text="/"
-                                                                   FontSize="14"
-                                                                   Margin="0, 0, 4, 0"
-                                                                   Foreground="{DynamicResource Foreground}" />
+                                                    <TextBlock Text="/"
+                                                               FontSize="14"
+                                                               Margin="0, 0, 4, 0"
+                                                               Foreground="{DynamicResource Foreground}" />
 
-                                                        <local:TextWithUnit Text="{TemplateBinding Total}"
-                                                                            Unit=" XP"
-                                                                            FontSize="14"
-                                                                            Foreground="{DynamicResource Foreground}" />
-                                                    </StackPanel>
-
-
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <TextBlock Text="Remaining: "
-                                                                   FontSize="14"
-                                                                   Foreground="{DynamicResource Foreground}" />
-
-                                                        <local:TextWithUnit
-                                                            Text="{TemplateBinding Remaining, Converter={StaticResource NegativeToZeroConverter}}"
-                                                            Unit=" XP"
-                                                            FontSize="14"
-                                                            Foreground="{DynamicResource Foreground}" />
-                                                    </StackPanel>
-                                                </WrapPanel>
-
-                                                <WrapPanel>
-                                                    <StackPanel Orientation="Horizontal"
-                                                                Margin="0, 0, 16, 0">
-                                                        <TextBlock Text="Next Unlock: "
-                                                                   FontSize="14"
-                                                                   FontWeight="Bold"
-                                                                   Foreground="{DynamicResource Foreground}" />
-
-                                                        <TextBlock Text="{TemplateBinding NextUnlockName}"
-                                                                   FontSize="14"
-                                                                   Foreground="{DynamicResource Foreground}" />
+                                                    <local:TextWithUnit Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Total}"
+                                                                        Unit=" XP"
+                                                                        FontSize="14"
+                                                                        Foreground="{DynamicResource Foreground}" />
+                                                </StackPanel>
 
 
-                                                        <TextBlock Text=" ("
-                                                                   FontSize="14"
-                                                                   Foreground="{DynamicResource Foreground}" />
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="Remaining: "
+                                                               FontSize="14"
+                                                               Foreground="{DynamicResource Foreground}" />
 
-                                                        <local:TextWithUnit Text="{TemplateBinding NextUnlockProgress}"
-                                                                            Unit=" %"
-                                                                            FontSize="14"
-                                                                            Foreground="{DynamicResource Foreground}" />
+                                                    <local:TextWithUnit
+                                                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Remaining, Converter={StaticResource NegativeToZeroConverter}}"
+                                                        Unit=" XP"
+                                                        FontSize="14"
+                                                        Foreground="{DynamicResource Foreground}" />
+                                                </StackPanel>
+                                            </WrapPanel>
 
-                                                        <TextBlock Text=")"
-                                                                   FontSize="14"
-                                                                   Foreground="{DynamicResource Foreground}" />
-                                                    </StackPanel>
+                                            <WrapPanel>
+                                                <StackPanel Orientation="Horizontal"
+                                                            Margin="0, 0, 16, 0">
+                                                    <TextBlock Text="Next Unlock: "
+                                                               FontSize="14"
+                                                               FontWeight="Bold"
+                                                               Foreground="{DynamicResource Foreground}" />
 
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <TextBlock Text="Remaining: "
-                                                                   FontSize="14"
-                                                                   Foreground="{DynamicResource Foreground}" />
+                                                    <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=NextUnlockName}"
+                                                               FontSize="14"
+                                                               Foreground="{DynamicResource Foreground}" />
 
-                                                        <local:TextWithUnit Text="{TemplateBinding NextUnlockRemaining}"
-                                                                            Unit=" XP"
-                                                                            FontSize="14"
-                                                                            Foreground="{DynamicResource Foreground}" />
-                                                    </StackPanel>
-                                                </WrapPanel>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Expander.Header>
+
+                                                    <TextBlock Text=" ("
+                                                               FontSize="14"
+                                                               Foreground="{DynamicResource Foreground}" />
+
+                                                    <local:TextWithUnit Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=NextUnlockProgress}"
+                                                                        Unit=" %"
+                                                                        FontSize="14"
+                                                                        Foreground="{DynamicResource Foreground}" />
+
+                                                    <TextBlock Text=")"
+                                                               FontSize="14"
+                                                               Foreground="{DynamicResource Foreground}" />
+                                                </StackPanel>
+
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="Remaining: "
+                                                               FontSize="14"
+                                                               Foreground="{DynamicResource Foreground}" />
+
+                                                    <local:TextWithUnit Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=NextUnlockRemaining}"
+                                                                        Unit=" XP"
+                                                                        FontSize="14"
+                                                                        Foreground="{DynamicResource Foreground}" />
+                                                </StackPanel>
+                                            </WrapPanel>
+                                        </StackPanel>
+
+                                        <Path Grid.Row="0" Grid.Column="1"
+                                              Grid.RowSpan="3"
+                                              VerticalAlignment="Center"
+                                              Margin="16, 0, 8, 0"
+                                              Width="24" Height="24"
+                                              Fill="{DynamicResource Foreground}"
+                                              Data="{Binding Source={StaticResource ChevronDownIcon}, Path=Data}"/>
+                                    </Grid>
                                     
-                                    <ItemsControl ItemsSource="{TemplateBinding Goals}">
+                                    <Border x:Name="ScaleAnimationDummy" Width="0" Height="0"/>
+                                    
+                                    <ItemsControl ItemsSource="{TemplateBinding Goals}"
+                                                  x:Name="Expanded">
+                                        <ItemsControl.Height>
+                                            <MultiBinding Converter="{StaticResource MathConv}" ConverterParameter="(256+16)*y">
+                                                <!-- TODO: This is always 0 -->
+                                                <Binding ElementName="Expanded" Path="DesiredSize.Height"/>
+                                                <Binding ElementName="ScaleAnimationDummy" Path="Width"/>
+                                            </MultiBinding>
+                                        </ItemsControl.Height>
+                                        
                                         <ItemsControl.ItemsPanel>
                                             <ItemsPanelTemplate>
                                                 <StackPanel Orientation="Vertical"/>
@@ -164,16 +196,48 @@
                                         </ItemsControl.ItemsPanel>
                                         
                                         <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding Name}"
-                                                           FontSize="14"
-                                                           Foreground="{DynamicResource Foreground}"/>
+                                            <DataTemplate DataType="{x:Type core:Goal}">
+                                                <!--TODO: Measure Height of one element to calc total height of all items for expansion-->
+                                                <local:GoalDisplayModel Title="{Binding Name}"
+                                                                        Collected="{Binding Collected}"
+                                                                        Total="{Binding Total}"
+                                                                        Remaining="{Binding Remaining}"
+                                                                        Progress="{Binding Progress}"
+                                                                        Color="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ContractButtonModel}}, Path=Color}"/>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
-                                </Expander>
+                                </StackPanel>
                             </Border>
                         </Grid>
+                        
+                        <ControlTemplate.Triggers>
+                            <EventTrigger RoutedEvent="Checked">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ScaleAnimationDummy"
+                                                         Storyboard.TargetProperty="(Border.Width)"
+                                                         From="0"
+                                                         To="1"
+                                                         Duration="00:00:00.10"
+                                                         AutoReverse="False"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+            
+                            <EventTrigger RoutedEvent="Unchecked">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ScaleAnimationDummy"
+                                                         Storyboard.TargetProperty="(Border.Width)"
+                                                         From="1"
+                                                         To="0"
+                                                         Duration="00:00:00.10"
+                                                         AutoReverse="False"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>

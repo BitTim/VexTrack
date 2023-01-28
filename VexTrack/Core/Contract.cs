@@ -17,9 +17,9 @@ public class Contract
     public int Total => GetTotal();
     public int Collected => GetCollected();
     public int Remaining => GetRemaining();
-    public double Progress => CalcUtil.CalcProgress(Total, Collected);
+    public int Progress => CalcUtil.CalcProgress(Total, Collected);
     public string NextUnlockName => GetNextUnlock()?.Name ?? "None";
-    public double NextUnlockProgress => GetNextUnlock()?.Progress ?? 1.0;
+    public double NextUnlockProgress => GetNextUnlock()?.Progress ?? 100;
     public int NextUnlockRemaining => GetNextUnlock()?.Remaining ?? 0;
     public ObservableCollection<Goal> ObservableGoals => new ObservableCollection<Goal>(Goals);
     

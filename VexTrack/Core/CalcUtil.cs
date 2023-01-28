@@ -24,11 +24,11 @@ namespace VexTrack.Core
 			return collected;
 		}
 
-		public static double CalcProgress(double total, double collected)
+		public static int CalcProgress(double total, double collected)
 		{
 			if (total <= 0) return 100;
 
-			var ret = Math.Floor(collected / total * 100);
+			var ret = (int)Math.Floor(collected / total * 100);
 			return ret;
 		}
 

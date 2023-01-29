@@ -16,6 +16,7 @@ public class ContractButtonModel : ToggleButton
     public static readonly DependencyProperty ProgressProperty = DependencyProperty.Register(nameof(Progress), typeof(double), typeof(ContractButtonModel), new PropertyMetadata(0.0));
     public static readonly DependencyProperty ColorProperty = DependencyProperty.Register(nameof(Color), typeof(string), typeof(ContractButtonModel), new PropertyMetadata(""));
     public static readonly DependencyProperty GoalsProperty = DependencyProperty.Register(nameof(Goals), typeof(ObservableCollection<Goal>), typeof(ContractButtonModel), new PropertyMetadata(new ObservableCollection<Goal>()));
+    public static readonly DependencyProperty GoalDisplayHeightProperty = DependencyProperty.Register(nameof(GoalDisplayHeight), typeof(double), typeof(ContractButtonModel), new PropertyMetadata(72.0));
 
     public static readonly DependencyProperty NextUnlockNameProperty = DependencyProperty.Register(nameof(NextUnlockName), typeof(string), typeof(ContractButtonModel), new PropertyMetadata("None"));
     public static readonly DependencyProperty NextUnlockProgressProperty = DependencyProperty.Register(nameof(NextUnlockProgress), typeof(double), typeof(ContractButtonModel), new PropertyMetadata(0.0));
@@ -63,6 +64,12 @@ public class ContractButtonModel : ToggleButton
         set => SetValue(GoalsProperty, value);
     }
 
+    public double GoalDisplayHeight
+    {
+        get => (double)GetValue(GoalDisplayHeightProperty);
+        set => SetValue(GoalDisplayHeightProperty, value);
+    }
+
 
 
     public string NextUnlockName
@@ -83,6 +90,5 @@ public class ContractButtonModel : ToggleButton
         set => SetValue(NextUnlockRemainingProperty, value);
     }
 
-
-    public void Remeasure() { Measure(new Size(double.PositiveInfinity, double.PositiveInfinity)); }
+    public int NumGoals => Goals.Count;
 }

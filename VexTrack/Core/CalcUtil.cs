@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace VexTrack.Core
 {
@@ -61,6 +64,23 @@ namespace VexTrack.Core
 			if (epilogue) sum += Constants.EpilogueLevels * Constants.XpPerEpilogueLevel;
 
 			return sum;
+		}
+
+		// TODO: Convert to double to decimal
+		public static List<double> CalcStops(List<int> segments, bool proportional)
+		{
+			var total = segments.Sum();
+			var stops = new List<double>();
+			var prevVal = 0.0;
+			
+			foreach (var rawVal in segments.Select(segment => proportional ? Math.Round(segment * 100.0 / total, 2) : Math.Round(100.0 / segments.Count, 2)))
+			{
+				var val = Math.Round(rawVal / 100, 2);
+				stops.Add(prevVal + val);
+				prevVal += val;
+			}
+
+			return stops;
 		}
 	}
 }

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -91,4 +93,5 @@ public class ContractButtonModel : ToggleButton
     }
 
     public int NumGoals => Goals.Count;
+    public List<double> SegmentsStops => CalcUtil.CalcStops(Goals.Select(goal => goal.Total).ToList(), false);
 }

@@ -87,6 +87,7 @@
                                                    FontWeight="Bold" />
 
                                         <local:SegmentedProgressModel Grid.Row="1" Grid.Column="0"
+                                                                      SegmentsStops="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SegmentsStops}"
                                                                       Value="{TemplateBinding Progress}"
                                                                       Color="{TemplateBinding Color}" />
 

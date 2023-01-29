@@ -88,8 +88,8 @@
 
                                         <local:SegmentedProgressModel Grid.Row="1" Grid.Column="0"
                                                                       SegmentsStops="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SegmentsStops}"
-                                                                      Value="{TemplateBinding Progress}"
-                                                                      Color="{TemplateBinding Color}" />
+                                                                      Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Progress}"
+                                                                      Color="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Color}" />
 
                                         <StackPanel Grid.Row="2" Grid.Column="0">
                                             <WrapPanel>
@@ -185,7 +185,7 @@
                                     
                                     <Border x:Name="ScaleAnimationDummy" Width="0" Height="0"/>
                                         
-                                    <ItemsControl ItemsSource="{TemplateBinding Goals}"
+                                    <ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Goals}"
                                                   x:Name="Expanded">
                                         <ItemsControl.Height>
                                             <MultiBinding Converter="{StaticResource MathConv}" ConverterParameter="xyz">

@@ -50,8 +50,8 @@
                             <Border Padding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:SegmentedProgressModel}}, Path=Spacing}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="{Binding Length}"></ColumnDefinition>
-                                        <ColumnDefinition Width="{Binding Space}"></ColumnDefinition>
+                                        <ColumnDefinition Width="{Binding Length}"/>
+                                        <ColumnDefinition Width="{Binding Space}"/>
                                     </Grid.ColumnDefinitions>
                                     
                                     <Line x:Name="Foreground"

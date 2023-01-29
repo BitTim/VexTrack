@@ -93,5 +93,5 @@ public class ContractButtonModel : ToggleButton
     }
 
     public int NumGoals => Goals.Count;
-    public List<double> SegmentsStops => CalcUtil.CalcStops(Goals.Select(goal => goal.Total).ToList(), false);
+    public List<decimal> SegmentsStops => CalcUtil.CalcStops(Goals.Select(goal => goal.Total).ToList(), false);
 }

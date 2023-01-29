@@ -66,16 +66,15 @@ namespace VexTrack.Core
 			return sum;
 		}
 
-		// TODO: Convert to double to decimal
-		public static List<double> CalcStops(List<int> segments, bool proportional)
+		public static List<decimal> CalcStops(List<int> segments, bool proportional)
 		{
 			var total = segments.Sum();
-			var stops = new List<double>();
-			var prevVal = 0.0;
+			var stops = new List<decimal>();
+			decimal prevVal = 0;
 			
-			foreach (var rawVal in segments.Select(segment => proportional ? Math.Round(segment * 100.0 / total, 2) : Math.Round(100.0 / segments.Count, 2)))
+			foreach (var rawVal in segments.Select(segment => proportional ? (decimal)segment  / total : 1 / (decimal)segments.Count))
 			{
-				var val = Math.Round(rawVal / 100, 2);
+				var val = Math.Round(rawVal, 2);
 				stops.Add(prevVal + val);
 				prevVal += val;
 			}

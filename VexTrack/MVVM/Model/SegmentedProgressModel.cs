@@ -14,16 +14,18 @@ namespace VexTrack.MVVM.Model
         private static readonly DependencyProperty ForegroundBrushProperty = DependencyProperty.Register(nameof(ForegroundBrush), typeof(Brush), typeof(SegmentedProgressModel), new PropertyMetadata(Application.Current.FindResource("Accent")));
 
         private static readonly DependencyProperty SpacingProperty = DependencyProperty.Register(nameof(Spacing), typeof(int), typeof(SegmentedProgressModel), new PropertyMetadata(2));
+        private static readonly DependencyProperty AvailableWidthProperty = DependencyProperty.Register(nameof(AvailableWidth), typeof(double), typeof(SegmentedProgressModel), new PropertyMetadata(0.0));
         
         private static readonly DependencyProperty ValueProperty = DependencyProperty.Register(nameof(Value), typeof(double), typeof(SegmentedProgressModel), new FrameworkPropertyMetadata(0.0, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnPropertyChanged));
         private static readonly DependencyProperty MinValueProperty = DependencyProperty.Register(nameof(MinValue), typeof(double), typeof(SegmentedProgressModel), new PropertyMetadata(0.0, OnPropertyChanged));
         private static readonly DependencyProperty MaxValueProperty = DependencyProperty.Register(nameof(MaxValue), typeof(double), typeof(SegmentedProgressModel), new PropertyMetadata(100.0, OnPropertyChanged));
         private static readonly DependencyProperty SegmentsStopsProperty = DependencyProperty.Register(nameof(SegmentsStops), typeof(List<decimal>), typeof(SegmentedProgressModel), new PropertyMetadata(new List<decimal> {1}, OnPropertyChanged));
-        private static readonly DependencyProperty SegmentedDataProperty = DependencyProperty.Register(nameof(SegmentedData), typeof(List<SegmentData>), typeof(SegmentedProgressModel), new PropertyMetadata(new List<SegmentData>() {new(0)}, OnPropertyChanged));
+        private static readonly DependencyProperty SegmentedDataProperty = DependencyProperty.Register(nameof(SegmentedData), typeof(List<SegmentData>), typeof(SegmentedProgressModel), new PropertyMetadata(new List<SegmentData>() {new(0, 0)}, OnPropertyChanged));
         private static readonly DependencyProperty ColorProperty = DependencyProperty.Register(nameof(Color), typeof(string), typeof(SegmentedProgressModel), new PropertyMetadata("", OnPropertyChanged));
 
         private static readonly DependencyProperty PercentageProperty = DependencyProperty.Register(nameof(Percentage), typeof(string), typeof(SegmentedProgressModel), new PropertyMetadata("0 %"));
         private static readonly DependencyProperty ShowPercentageProperty = DependencyProperty.Register(nameof(ShowPercentage), typeof(bool), typeof(SegmentedProgressModel), new PropertyMetadata(true));
+        private static readonly DependencyProperty PercentageWidthProperty = DependencyProperty.Register(nameof(PercentageWidth), typeof(double), typeof(SegmentedProgressModel), new PropertyMetadata(48.0));
         
         public double BackgroundThickness
         {
@@ -49,6 +51,12 @@ namespace VexTrack.MVVM.Model
         {
             get => (int)GetValue(SpacingProperty);
             set => SetValue(SpacingProperty, value);
+        }
+
+        public double AvailableWidth
+        {
+            get => (double)GetValue(AvailableWidthProperty);
+            set => SetValue(AvailableWidthProperty, value);
         }
 
 
@@ -102,6 +110,12 @@ namespace VexTrack.MVVM.Model
             get => (bool)GetValue(ShowPercentageProperty);
             set => SetValue(ShowPercentageProperty, value);
         }
+
+        public double PercentageWidth
+        {
+            get => (double)GetValue(PercentageWidthProperty);
+            set => SetValue(PercentageWidthProperty, value);
+        }
         
         
         
@@ -133,50 +147,41 @@ namespace VexTrack.MVVM.Model
                 ForegroundBrush = brush;
             }
             
-            SegmentedData = CalcSegmentedData(SegmentsStops, (decimal) valuePercent);
-
-            decimal prevStep = 0;
-            var segmentsGrid = (Grid) typeof(ItemsControl).InvokeMember("ItemsHost",
-                BindingFlags.NonPublic | BindingFlags.GetProperty | BindingFlags.Instance, null, this, null);
-            segmentsGrid?.ColumnDefinitions.Clear();
-            
-            for (var i = 0; i < SegmentsStops.Count; i++)
-            {
-                var colDef = new ColumnDefinition() { Width = new GridLength(decimal.ToDouble(SegmentsStops[i] - (decimal) prevStep) * 100, GridUnitType.Star) };
-                prevStep = SegmentsStops[i];
-
-                if (segmentsGrid == null) break;
-                segmentsGrid.ColumnDefinitions.Add(colDef);
-                Grid.SetColumn(segmentsGrid.Children[i], i);
-            }
+            var availableWidth = AvailableWidth == 0 ? (double)Parent.GetValue(ActualWidthProperty) - Margin.Left - Margin.Right - PercentageWidth : AvailableWidth;
+            SegmentedData = CalcSegmentedData(SegmentsStops, (decimal)valuePercent, availableWidth);
 
             _isUpdating = false;
         }
 
-        private static List<SegmentData> CalcSegmentedData(IReadOnlyList<decimal> stops, decimal val)
+        private static List<SegmentData> CalcSegmentedData(IReadOnlyList<decimal> stops, decimal val, double availableWidth)
         {
-            if (stops.Count == 0) return new List<SegmentData>() { new(1) };
+            if (stops.Count == 0) return new List<SegmentData>() { new(1, availableWidth) };
             
             var segmentedData = new List<SegmentData>();
             decimal prevStop = 0;
-            var i = 0;
 
-            while (val > 0)
+            foreach (var stop in stops)
             {
-                var stopDiff = stops[i] - prevStop;
-                if (stopDiff > val)
+                var stopDiff = stop - prevStop;
+                var segmentWidth = availableWidth * decimal.ToDouble(stopDiff); 
+                prevStop = stop;
+
+                if (val > 0)
                 {
-                    segmentedData.Add(new SegmentData(val / stops[i]));
-                    break;
+                    if (stopDiff > val)
+                    {
+                        segmentedData.Add(new SegmentData(val / stop, segmentWidth));
+                        break;
+                    }
+                
+                    segmentedData.Add(new SegmentData(1, segmentWidth));
+                    val -= stopDiff;
+                    continue;
                 }
                 
-                segmentedData.Add(new SegmentData(1));
-                val -= stopDiff;
-                prevStop = stops[i];
-                i++;
+                segmentedData.Add(new SegmentData(0, segmentWidth));
             }
             
-            while (segmentedData.Count < stops.Count) segmentedData.Add(new SegmentData(0));
             return segmentedData;
         }
     }
@@ -186,12 +191,14 @@ namespace VexTrack.MVVM.Model
         public bool Visible { get; }
         public GridLength Length { get; }
         public GridLength Space { get; }
+        public double SegmentWidth { get;  }
 
-        public SegmentData(decimal value)
+        public SegmentData(decimal value, double segmentWidth)
         {
             Visible = value > 0;
             Length = new GridLength(decimal.ToDouble(value * 100), GridUnitType.Star);
             Space = new GridLength(decimal.ToDouble(100 - value * 100), GridUnitType.Star);
+            SegmentWidth = segmentWidth;
         }
     }
 }

@@ -13,7 +13,7 @@
                         <Grid x:Name="Container">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="48"/>
+                                <ColumnDefinition Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=PercentageWidth}"/>
                             </Grid.ColumnDefinitions>
                             
                             <ItemsPresenter Grid.Column="0" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
@@ -33,8 +33,9 @@
             <Setter Property="ItemTemplate">
                 <Setter.Value>
                     <DataTemplate DataType="{x:Type local:SegmentData}">
-                        <Grid HorizontalAlignment="Stretch"
-                              VerticalAlignment="Stretch">
+                        <Grid HorizontalAlignment="Left"
+                              VerticalAlignment="Stretch"
+                              Width="{Binding SegmentWidth}">
                             <Border Padding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:SegmentedProgressModel}}, Path=Spacing}">
                                 <Line x:Name="Background"
                                       Stretch="Fill"
@@ -74,8 +75,10 @@
             
             <Setter Property="ItemsPanel">
                 <Setter.Value>
-                    <ItemsPanelTemplate >
-                        <Grid x:Name="segmentsGrid" IsItemsHost="True" />
+                    <ItemsPanelTemplate>
+                        <!--<Grid x:Name="segmentsGrid" IsItemsHost="True" ColumnDefinitions="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:SegmentedProgressModel}}, Path=GeneratedItemsPanelTemplate}"/>-->
+                        <!-- <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type local:SegmentedProgressModel}}" Path="GeneratedItemsPanelTemplate"/> -->
+                        <StackPanel Orientation="Horizontal"/>
                     </ItemsPanelTemplate>
                 </Setter.Value>
             </Setter>

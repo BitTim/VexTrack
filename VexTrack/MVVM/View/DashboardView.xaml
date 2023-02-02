@@ -135,6 +135,7 @@
 
 				<model:SegmentedProgressModel x:Name="DailySegmentedProgress"
 				                              Value="{Binding Progress}"
+				                              SegmentsStops="{Binding Stops}"
 				                              Grid.ColumnSpan="4" Grid.Column="0" Grid.Row="3"/>
 				
 				<!-- <model:ProgressArcModel x:Name="DailyProgressArc" -->

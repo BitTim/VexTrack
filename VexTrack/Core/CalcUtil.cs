@@ -72,9 +72,8 @@ namespace VexTrack.Core
 			var stops = new List<decimal>();
 			decimal prevVal = 0;
 			
-			foreach (var rawVal in segments.Select(segment => proportional ? (decimal)segment  / total : 1 / (decimal)segments.Count))
+			foreach (var val in segments.Select(segment => proportional ? (decimal)segment  / total : 1 / (decimal)segments.Count))
 			{
-				var val = Math.Round(rawVal, 2);
 				stops.Add(prevVal + val);
 				prevVal += val;
 			}

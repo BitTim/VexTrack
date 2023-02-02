@@ -344,6 +344,7 @@ namespace VexTrack.Core
 
 					var total = (int)goal["total"];
 					var collected = (int)goal["collected"];
+					if (collected > total) collected = total;
 					
 					goalUuid ??= Guid.NewGuid().ToString();
 					goals.Add(new Goal(goalUuid, goalName, total, collected));

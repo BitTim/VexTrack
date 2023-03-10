@@ -6,7 +6,6 @@
                     xmlns:conv="clr-namespace:VexTrack.MVVM.Converter"
                     xmlns:math="http://hexinnovation.com/math"
                     xmlns:core="clr-namespace:VexTrack.Core"
-                    xmlns:sys="clr-namespace:System;assembly=System.Runtime"
                     mc:Ignorable="d">
     
     <conv:NegativeToZeroConverter x:Key="NegativeToZeroConverter"/>
@@ -88,7 +87,6 @@
                                                    FontWeight="Bold" />
 
                                         <local:SegmentedProgressModel Grid.Row="1" Grid.Column="0"
-                                                                      AvailableWidth="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ContractButtonModel}}, Path=Width}"
                                                                       SegmentsStops="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SegmentsStops}"
                                                                       Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Progress}"
                                                                       Color="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Color}" />

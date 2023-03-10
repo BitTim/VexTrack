@@ -13,10 +13,10 @@
                         <Grid x:Name="Container">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=PercentageWidth}"/>
+                                <ColumnDefinition Width="48"/>
                             </Grid.ColumnDefinitions>
                             
-                            <ItemsPresenter Grid.Column="0" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                            <ItemsPresenter x:Name="segmentsPresenter" Grid.Column="0" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
                             <TextBlock Grid.Column="1"
                                        Padding="16, 0, 0, 0"
                                        VerticalAlignment="Center"
@@ -33,9 +33,8 @@
             <Setter Property="ItemTemplate">
                 <Setter.Value>
                     <DataTemplate DataType="{x:Type local:SegmentData}">
-                        <Grid HorizontalAlignment="Left"
-                              VerticalAlignment="Stretch"
-                              Width="{Binding SegmentWidth}">
+                        <Grid HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch">
                             <Border Padding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:SegmentedProgressModel}}, Path=Spacing}">
                                 <Line x:Name="Background"
                                       Stretch="Fill"
@@ -75,10 +74,8 @@
             
             <Setter Property="ItemsPanel">
                 <Setter.Value>
-                    <ItemsPanelTemplate>
-                        <!--<Grid x:Name="segmentsGrid" IsItemsHost="True" ColumnDefinitions="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:SegmentedProgressModel}}, Path=GeneratedItemsPanelTemplate}"/>-->
-                        <!-- <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type local:SegmentedProgressModel}}" Path="GeneratedItemsPanelTemplate"/> -->
-                        <StackPanel Orientation="Horizontal"/>
+                    <ItemsPanelTemplate >
+                        <Grid x:Name="segmentsGrid" IsItemsHost="True" />
                     </ItemsPanelTemplate>
                 </Setter.Value>
             </Setter>

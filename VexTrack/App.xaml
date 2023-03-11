@@ -38,7 +38,7 @@
 				<ResourceDictionary Source="Theme/TextWithUnitTheme.xaml"/>
 				<ResourceDictionary Source="Theme/ComboBoxTheme.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
-
+			
 			<!-- Pages -->
 			
 			<DataTemplate DataType="{x:Type viewModel:DashboardViewModel}">

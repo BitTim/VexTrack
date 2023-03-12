@@ -53,6 +53,7 @@
 						<RowDefinition Height="Auto"/>
 						<RowDefinition Height="Auto"/>
 						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
 					</Grid.RowDefinitions>
 
 					<TextBlock Text="Daily Progress"
@@ -136,7 +137,14 @@
 				<model:SegmentedProgressModel x:Name="DailySegmentedProgress"
 				                              Value="{Binding Progress}"
 				                              SegmentsStops="{Binding Stops}"
-				                              Grid.ColumnSpan="4" Grid.Column="0" Grid.Row="3"/>
+				                              Grid.ColumnSpan="4" Grid.Column="0" Grid.Row="3"
+				                              DebugName="Dashboard"/>
+
+				<model:SegmentedProgressModel x:Name="DailySegmentedProgress2"
+				                              Value="69"
+				                              SegmentsStops="{Binding Stops}"
+				                              Grid.ColumnSpan="4" Grid.Column="0" Grid.Row="4"
+				                              DebugName="Dashboard"/>
 				
 				<!-- <model:ProgressArcModel x:Name="DailyProgressArc" -->
 				<!-- 						Value="{Binding Progress}" -->

@@ -87,10 +87,10 @@
                                                    FontWeight="Bold" />
 
                                         <local:SegmentedProgressModel Grid.Row="1" Grid.Column="0"
-                                                                      SegmentsStops="{TemplateBinding SegmentStops}"
-                                                                      Value="{TemplateBinding Progress}"
-                                                                      Color="{TemplateBinding Color}"
-                                                                      DebugName="{TemplateBinding Title}"/>
+                                                                      SegmentsStops="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SegmentsStops}"
+                                                                      Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Progress}"
+                                                                      Color="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Color}"
+                                                                      DebugName="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Title}"/>
 
                                         <StackPanel Grid.Row="2" Grid.Column="0">
                                             <WrapPanel>

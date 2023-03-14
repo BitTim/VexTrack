@@ -23,10 +23,7 @@ public class ContractButtonModel : ToggleButton
     public static readonly DependencyProperty NextUnlockNameProperty = DependencyProperty.Register(nameof(NextUnlockName), typeof(string), typeof(ContractButtonModel), new PropertyMetadata("None"));
     public static readonly DependencyProperty NextUnlockProgressProperty = DependencyProperty.Register(nameof(NextUnlockProgress), typeof(double), typeof(ContractButtonModel), new PropertyMetadata(0.0));
     public static readonly DependencyProperty NextUnlockRemainingProperty = DependencyProperty.Register(nameof(NextUnlockRemaining), typeof(int), typeof(ContractButtonModel), new PropertyMetadata(0));
-    
-    //TODO: My suspicion is that the SegmentStops don't get passed to SegmentedProgressModel because of incorrect binding. The line below was an attempt at trying to fix, but might lead to nothing.
-    //public static readonly DependencyProperty SegmentsStopsProperty = DependencyProperty.Register(nameof(SegmentsStops), typeof(List<decimal>), typeof(ContractButtonModel), new PropertyMetadata(new List<decimal>()));
-    
+
     public string Title
     {
         get => (string)GetValue(TitleProperty);
@@ -95,6 +92,6 @@ public class ContractButtonModel : ToggleButton
         set => SetValue(NextUnlockRemainingProperty, value);
     }
 
-    public List<decimal> SegmentsStops => CalcUtil.CalcStops(Goals.Select(goal => goal.Total).ToList(), false);
+    public List<decimal> SegmentsStops => CalcUtil.CalcStops(Goals.Select(goal => goal.Total).ToList(), true);
     public int NumGoals => Goals.Count;
 }

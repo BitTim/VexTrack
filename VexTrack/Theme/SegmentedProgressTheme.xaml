@@ -17,7 +17,6 @@
                             </Grid.ColumnDefinitions>
                             
                             <ItemsPresenter x:Name="segmentsPresenter" Grid.Column="0" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                            <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DebugName}"/>
                             <TextBlock Grid.Column="1"
                                        Padding="16, 0, 0, 0"
                                        VerticalAlignment="Center"
@@ -35,11 +34,12 @@
                 <Setter.Value>
                     <DataTemplate DataType="{x:Type local:SegmentData}">
                         <Grid HorizontalAlignment="Stretch"
-                              VerticalAlignment="Stretch">
+                              VerticalAlignment="Stretch"
+                              Grid.Column="{Binding Index}">
                             <Border Padding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:SegmentedProgressModel}}, Path=Spacing}">
                                 <Line x:Name="Background"
                                       Stretch="Fill"
-                                      X1="0" X2="1" Y1="0" Y2="0"
+                                      X1="0" X2="{Binding Length}" Y1="0" Y2="0"
                                       VerticalAlignment="Center"
                                       HorizontalAlignment="Stretch"
                                       StrokeThickness="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:SegmentedProgressModel}}, Path=BackgroundThickness}"
@@ -51,14 +51,14 @@
                             <Border Padding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:SegmentedProgressModel}}, Path=Spacing}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="{Binding Length}"/>
+                                        <ColumnDefinition Width="{Binding Filled}"/>
                                         <ColumnDefinition Width="{Binding Space}"/>
                                     </Grid.ColumnDefinitions>
                                     
                                     <Line x:Name="Foreground"
                                           Grid.Column="0"
                                           Stretch="Fill"
-                                          X1="0" X2="1" Y1="0" Y2="0"
+                                          X1="0" X2="{Binding Length}" Y1="0" Y2="0"
                                           VerticalAlignment="Center"
                                           HorizontalAlignment="Left"
                                           StrokeThickness="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:SegmentedProgressModel}}, Path=ForegroundThickness}"
@@ -76,8 +76,16 @@
             <Setter Property="ItemsPanel">
                 <Setter.Value>
                     <ItemsPanelTemplate >
-                        <Grid x:Name="segmentsGrid" IsItemsHost="True" />
+                        <Grid x:Name="segmentsGrid" IsItemsHost="True" local:GridHelpers.ColumnCount="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:SegmentedProgressModel}}, Path=NumSegments}"/>
                     </ItemsPanelTemplate>
+                </Setter.Value>
+            </Setter>
+            
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>
+                    <Style>
+                        <Setter Property="Grid.Column" Value="{Binding Index}"/>
+                    </Style>
                 </Setter.Value>
             </Setter>
             

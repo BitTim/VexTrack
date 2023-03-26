@@ -1,4 +1,4 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:VexTrack.MVVM.Model"
                     xmlns:conv="clr-namespace:VexTrack.MVVM.Converter">
@@ -17,6 +17,7 @@
                             </Grid.ColumnDefinitions>
                             
                             <ItemsPresenter x:Name="segmentsPresenter" Grid.Column="0" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                            <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DebugName}"/>
                             <TextBlock Grid.Column="1"
                                        Padding="16, 0, 0, 0"
                                        VerticalAlignment="Center"
@@ -50,7 +51,7 @@
                             <Border Padding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:SegmentedProgressModel}}, Path=Spacing}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="{Binding Filled}"/>
+                                        <ColumnDefinition Width="{Binding Length}"/>
                                         <ColumnDefinition Width="{Binding Space}"/>
                                     </Grid.ColumnDefinitions>
                                     

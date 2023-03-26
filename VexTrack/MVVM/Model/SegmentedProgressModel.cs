@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
@@ -23,10 +23,9 @@ namespace VexTrack.MVVM.Model
         public static readonly DependencyProperty VisualSegmentsStopsProperty = DependencyProperty.Register(nameof(VisualSegmentsStops), typeof(List<decimal>), typeof(SegmentedProgressModel), new PropertyMetadata(new List<decimal> {1}, OnPropertyChanged));
         public static readonly DependencyProperty ColorProperty = DependencyProperty.Register(nameof(Color), typeof(string), typeof(SegmentedProgressModel), new PropertyMetadata("", OnPropertyChanged));
 
-        public static readonly DependencyProperty SegmentedDataProperty = DependencyProperty.Register(nameof(SegmentedData), typeof(List<SegmentData>), typeof(SegmentedProgressModel), new PropertyMetadata(new List<SegmentData>() {new(0, 0, 1.0)}));
+        public static readonly DependencyProperty SegmentedDataProperty = DependencyProperty.Register(nameof(SegmentedData), typeof(List<SegmentData>), typeof(SegmentedProgressModel), new PropertyMetadata(new List<SegmentData>() {new(0)}));
         public static readonly DependencyProperty PercentageProperty = DependencyProperty.Register(nameof(Percentage), typeof(string), typeof(SegmentedProgressModel), new PropertyMetadata("0 %"));
         public static readonly DependencyProperty ShowPercentageProperty = DependencyProperty.Register(nameof(ShowPercentage), typeof(bool), typeof(SegmentedProgressModel), new PropertyMetadata(true));
-        public static readonly DependencyProperty NumSegmentsProperty = DependencyProperty.Register(nameof(NumSegments), typeof(int), typeof(SegmentedProgressModel), new PropertyMetadata(1));
         public static readonly DependencyProperty DebugNameProperty = DependencyProperty.Register(nameof(DebugName), typeof(string), typeof(SegmentedProgressModel), new PropertyMetadata("None", OnPropertyChanged));
         
         public double BackgroundThickness
@@ -214,18 +213,15 @@ namespace VexTrack.MVVM.Model
     public class SegmentData
     {
         public bool Visible { get; }
-        public double Length { get; }
-        public GridLength Filled { get; }
+        public GridLength Length { get; }
         public GridLength Space { get; }
         private int Index { get; }
 
-        public SegmentData(decimal value, int index, double length)
+        public SegmentData(decimal value)
         {
             Visible = value > 0;
-            Length = length;
-            Filled = new GridLength(decimal.ToDouble(value * 100), GridUnitType.Star);
+            Length = new GridLength(decimal.ToDouble(value * 100), GridUnitType.Star);
             Space = new GridLength(decimal.ToDouble(100 - value * 100), GridUnitType.Star);
-            Index = index;
         }
     }
 }

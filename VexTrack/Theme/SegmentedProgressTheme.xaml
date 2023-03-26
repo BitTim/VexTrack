@@ -17,7 +17,6 @@
                             </Grid.ColumnDefinitions>
                             
                             <ItemsPresenter x:Name="segmentsPresenter" Grid.Column="0" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                            <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DebugName}"/>
                             <TextBlock Grid.Column="1"
                                        Padding="16, 0, 0, 0"
                                        VerticalAlignment="Center"
@@ -51,7 +50,7 @@
                             <Border Padding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:SegmentedProgressModel}}, Path=Spacing}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="{Binding Length}"/>
+                                        <ColumnDefinition Width="{Binding Filled}"/>
                                         <ColumnDefinition Width="{Binding Space}"/>
                                     </Grid.ColumnDefinitions>
                                     

@@ -28,6 +28,7 @@
 				   FontWeight="Bold"/>
 
 		<ScrollViewer Grid.Row="1"
+		              HorizontalContentAlignment="Stretch"
 					  Style="{DynamicResource ScrollViewerTheme}"
 					  Margin="16">
 			<Grid>
@@ -35,7 +36,7 @@
 					<RowDefinition Height="40"/>
 					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="40"/>
-					<RowDefinition Height="*"/>
+					<RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
 
 				<TextBlock Text="Seasons"

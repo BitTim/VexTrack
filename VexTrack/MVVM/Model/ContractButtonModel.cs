@@ -92,6 +92,7 @@ public class ContractButtonModel : ToggleButton
         set => SetValue(NextUnlockRemainingProperty, value);
     }
 
-    public List<decimal> SegmentsStops => CalcUtil.CalcStops(Goals.Select(goal => goal.Total).ToList(), true);
+    public List<decimal> LogicalSegmentsStops => CalcUtil.CalcLogicalStops(Goals.Select(goal => goal.Total).ToList(), true);
+    public List<decimal> VisualSegmentsStops => CalcUtil.CalcVisualStops(Goals.Select(goal => goal.Total).ToList(), true);
     public int NumGoals => Goals.Count;
 }

@@ -173,7 +173,7 @@ namespace VexTrack.MVVM.ViewModel
 			}
 		}
 
-		public List<decimal> Stops => new List<decimal>() { (decimal)0.2, (decimal)0.4, (decimal)0.6, (decimal)0.8, 1 };
+		public List<decimal> Stops => new List<decimal>() { (decimal)0.8, 1 };
 
 		public DashboardViewModel()
 		{

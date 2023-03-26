@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Documents;
 
 namespace VexTrack.Core
 {
@@ -28,9 +29,23 @@ namespace VexTrack.Core
 		public static readonly int XpPerEpilogueLevel = 36500;
 		public static readonly int Level2Offset = 500;
 
+		public static readonly List<int> TierTotals = new()
+		{
+			20000,
+			30000,
+			40000,
+			50000,
+			60000,
+			75000,
+			100000,
+			150000,
+			200000,
+			250000
+		};
+
 		public static readonly string DefaultGroupUuid = "07a7c1e7-5cfc-40b5-b7a5-7d3aaa7a6352";
 
-		public static readonly List<string> Maps = new List<string>()
+		public static readonly List<string> Maps = new()
 		{
 			"Ascent",
 			"Bind",
@@ -42,7 +57,7 @@ namespace VexTrack.Core
 			"None"
 		};
 
-		public static readonly List<string> Gamemodes = new List<string>()
+		public static readonly List<string> Gamemodes = new()
 		{
 			"Unrated",
 			"Competetive",
@@ -54,7 +69,7 @@ namespace VexTrack.Core
 			"Custom"
 		};
 
-		public static readonly Dictionary<string, string> ScoreTypes = new Dictionary<string, string>()
+		public static readonly Dictionary<string, string> ScoreTypes = new()
 		{
 			[Gamemodes[0]] = "Score",
 			[Gamemodes[1]] = "Score",
@@ -66,20 +81,20 @@ namespace VexTrack.Core
 			[Gamemodes[7]] = "None"
 		};
 
-		public static readonly Dictionary<string, int> StreakStatusOrder = new Dictionary<string, int>
+		public static readonly Dictionary<string, int> StreakStatusOrder = new()
 		{
 			["None"] = 0,
 			["Daily"] = 1,
 			["DailyEpilogue"] = 2
 		};
 
-		public static Dictionary<string, string> ThemeUrIs = new Dictionary<string, string>
+		public static Dictionary<string, string> ThemeUrIs = new()
 		{
 			["Light"] = "Theme/AppTheme/LightTheme.xaml",
 			["Dark"] = "Theme/AppTheme/DarkTheme.xaml"
 		};
 
-		public static Dictionary<string, string> AccentUrIs = new Dictionary<string, string>
+		public static Dictionary<string, string> AccentUrIs = new()
 		{
 			["Blue"] = "Theme/AccentColors/Blue.xaml",
 			["Teal"] = "Theme/AccentColors/Teal.xaml",

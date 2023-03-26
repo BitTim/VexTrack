@@ -22,7 +22,7 @@
 
 		<Grid.RowDefinitions>
 			<RowDefinition Height="80"/>
-			<RowDefinition Height="182"/>
+			<RowDefinition Height="152"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 
@@ -136,14 +136,9 @@
 
 				<model:SegmentedProgressModel x:Name="DailySegmentedProgress"
 				                              Value="{Binding Progress}"
-				                              SegmentsStops="{Binding Stops}"
+				                              LogicalSegmentsStops="{Binding Stops}"
+				                              VisualSegmentsStops="{Binding Stops}"
 				                              Grid.ColumnSpan="4" Grid.Column="0" Grid.Row="3"
-				                              DebugName="Dashboard"/>
-
-				<model:SegmentedProgressModel x:Name="DailySegmentedProgress2"
-				                              Value="69"
-				                              SegmentsStops="{Binding Stops}"
-				                              Grid.ColumnSpan="4" Grid.Column="0" Grid.Row="4"
 				                              DebugName="Dashboard"/>
 				
 				<!-- <model:ProgressArcModel x:Name="DailyProgressArc" -->

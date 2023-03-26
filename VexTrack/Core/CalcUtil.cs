@@ -66,16 +66,41 @@ namespace VexTrack.Core
 			return sum;
 		}
 
-		public static List<decimal> CalcStops(List<int> segments, bool proportional)
+		public static decimal CalcEqualizedOffset(decimal index, int total, int nSegments)
+		{
+			var factor = -((decimal)total / 100);
+			return Math.Round(factor * index + (decimal)nSegments / 2 * -factor - factor / 2, 4);
+		}
+		
+		public static List<decimal> CalcVisualStops(List<int> segments, bool proportional)
 		{
 			var total = segments.Sum();
 			var stops = new List<decimal>();
 			decimal prevVal = 0;
-			
+
+			for (var i = 0; i < segments.Count; i++)
+			{
+				var val = proportional
+					? (segments[i] + CalcEqualizedOffset(i + 1, total, segments.Count)) / total
+					: 1 / (decimal)segments.Count;
+
+				prevVal += val;
+				stops.Add(prevVal);
+			}
+
+			return stops;
+		}
+		
+		public static List<decimal> CalcLogicalStops(List<int> segments, bool proportional)
+		{
+			var total = segments.Sum();
+			var stops = new List<decimal>();
+			decimal prevVal = 0;
+
 			foreach (var val in segments.Select(segment => proportional ? (decimal)segment  / total : 1 / (decimal)segments.Count))
 			{
-				stops.Add(prevVal + val);
 				prevVal += val;
+				stops.Add(prevVal);
 			}
 
 			return stops;

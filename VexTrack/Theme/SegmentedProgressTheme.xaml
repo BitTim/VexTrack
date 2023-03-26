@@ -33,13 +33,12 @@
             <Setter Property="ItemTemplate">
                 <Setter.Value>
                     <DataTemplate DataType="{x:Type local:SegmentData}">
-                        <Grid HorizontalAlignment="Stretch"
-                              VerticalAlignment="Stretch"
-                              Grid.Column="{Binding Index}">
+                        <Grid VerticalAlignment="Stretch"
+                              Width="{Binding Length}">
                             <Border Padding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:SegmentedProgressModel}}, Path=Spacing}">
                                 <Line x:Name="Background"
                                       Stretch="Fill"
-                                      X1="0" X2="{Binding Length}" Y1="0" Y2="0"
+                                      X1="0" X2="1" Y1="0" Y2="0"
                                       VerticalAlignment="Center"
                                       HorizontalAlignment="Stretch"
                                       StrokeThickness="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:SegmentedProgressModel}}, Path=BackgroundThickness}"
@@ -58,7 +57,7 @@
                                     <Line x:Name="Foreground"
                                           Grid.Column="0"
                                           Stretch="Fill"
-                                          X1="0" X2="{Binding Length}" Y1="0" Y2="0"
+                                          X1="0" X2="1" Y1="0" Y2="0"
                                           VerticalAlignment="Center"
                                           HorizontalAlignment="Left"
                                           StrokeThickness="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:SegmentedProgressModel}}, Path=ForegroundThickness}"
@@ -76,16 +75,8 @@
             <Setter Property="ItemsPanel">
                 <Setter.Value>
                     <ItemsPanelTemplate >
-                        <Grid x:Name="segmentsGrid" IsItemsHost="True" local:GridHelpers.ColumnCount="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:SegmentedProgressModel}}, Path=NumSegments}"/>
+                        <StackPanel Orientation="Horizontal"/>
                     </ItemsPanelTemplate>
-                </Setter.Value>
-            </Setter>
-            
-            <Setter Property="ItemContainerStyle">
-                <Setter.Value>
-                    <Style>
-                        <Setter Property="Grid.Column" Value="{Binding Index}"/>
-                    </Style>
                 </Setter.Value>
             </Setter>
             

@@ -42,20 +42,8 @@ namespace VexTrack.Core
 
 		public static int CalcMaxForTier(int tier)
 		{
-			return tier switch
-			{
-				1 => 20000,
-				2 => 30000,
-				3 => 40000,
-				4 => 50000,
-				5 => 60000,
-				6 => 75000,
-				7 => 100000,
-				8 => 150000,
-				9 => 200000,
-				10 => 250000,
-				_ => 0
-			};
+			if (tier < 1 || tier > Constants.TierTotals.Count) return 0;
+			return Constants.TierTotals[tier - 1];
 		}
 
 		public static int CalcMaxForSeason(bool epilogue)
@@ -66,7 +54,20 @@ namespace VexTrack.Core
 			return sum;
 		}
 
-		public static decimal CalcEqualizedOffset(decimal index, int total, int nSegments)
+		public static int CalcAverage(int activeLevel, int cxp, int duration, int remainingDays)
+		{
+			var totalCollected = CalcTotalCollected(activeLevel, cxp);
+			var daysPassed = duration - remainingDays;
+			return (int)MathF.Round((float)totalCollected / (daysPassed + 1));
+		}
+
+		
+		
+		// ================================================================
+		//  Segments / Stops
+		// ================================================================
+		
+		private static decimal CalcEqualizedOffset(decimal index, int total, int nSegments)
 		{
 			var factor = -((decimal)total / 100);
 			return Math.Round(factor * index + (decimal)nSegments / 2 * -factor - factor / 2, 4);

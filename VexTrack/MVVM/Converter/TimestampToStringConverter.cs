@@ -11,6 +11,14 @@ namespace VexTrack.MVVM.Converter
 			var timestamp = (long)value;
 			var noTime = (string)parameter;
 
+			switch (timestamp)
+			{
+				case -1:
+					return "Completed";
+				case -2:
+					return "Never";			// -2 is passed when no timestamp could be calculated because average is 0
+			}
+
 			var str = "";
 			var dt = DateTimeOffset.FromUnixTimeSeconds(timestamp).ToLocalTime();
 

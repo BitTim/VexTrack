@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -21,6 +22,8 @@ public class Contract
     public string NextUnlockName => GetNextUnlock()?.Name ?? "None";
     public double NextUnlockProgress => GetNextUnlock()?.Progress ?? 100;
     public int NextUnlockRemaining => GetNextUnlock()?.Remaining ?? 0;
+    public int CompletionForecastDays => GetCompletionForecastDays();
+    public long CompletionDateTimestamp => GetCompletionDateTimestamp();
     public ObservableCollection<Goal> ObservableGoals => new ObservableCollection<Goal>(Goals);
     
 
@@ -37,6 +40,21 @@ public class Contract
     public int GetTotal() { return Goals.Sum(goal => goal.Total); }
     public int GetCollected() { return Goals.Sum(goal => goal.Collected); }
     public int GetRemaining() { return GetTotal() - GetCollected(); }
+
+    public int GetCompletionForecastDays()
+    {
+        if (GetRemaining() <= 0) return -1;
+
+        var average = CalcUtil.CalcAverage(TrackingData.CurrentSeasonData.ActiveBpLevel, TrackingData.CurrentSeasonData.Cxp, TrackingData.GetDuration(), TrackingData.GetRemainingDays());
+        if (average <= 0) return -2;
+        
+        return (int)MathF.Ceiling((float)GetRemaining() / average);
+    }
+    public long GetCompletionDateTimestamp()
+    {
+        var nDays = CompletionForecastDays;
+        return nDays < 0 ? nDays : new DateTimeOffset(DateTime.Today.ToLocalTime().Date.AddDays(nDays)).ToUnixTimeSeconds();
+    }
 
     public Goal GetNextUnlock()
     {

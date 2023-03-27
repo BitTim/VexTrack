@@ -5,9 +5,9 @@
     <TargetFramework>net7.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Images\VexTrack.ico</ApplicationIcon>
-    <Version>1.87</Version>
+    <Version>1.9</Version>
     <Authors>BitTim</Authors>
-    <Description />
+    <Description>A companion app for Valorant with the ability to track match related data and provide predictions and visualisations about your performance</Description>
     <PackageProjectUrl>https://github.com/BitTim/VexTrack</PackageProjectUrl>
     <PackageIcon>VexTrack_128.png</PackageIcon>
     <PackageIconUrl />
@@ -16,6 +16,7 @@
     <RepositoryType>Git Repository</RepositoryType>
     <Platforms>x64;x86</Platforms>
     <MinimumPlatformVersion>10.0.17763.0</MinimumPlatformVersion>
+    <Title>VexTrack</Title>
   </PropertyGroup>
 
   <ItemGroup>

@@ -111,6 +111,8 @@
 							                           Remaining="{Binding Remaining}"
 							                           Goals="{Binding ObservableGoals}"
 							                           Color="{Binding Color}"
+							                           CompletionForecastDays="{Binding CompletionForecastDays}"
+							                           CompletionDateTimestamp="{Binding CompletionDateTimestamp}"
 							                           NextUnlockName="{Binding NextUnlockName}"
 							                           NextUnlockProgress="{Binding NextUnlockProgress}"
 							                           NextUnlockRemaining="{Binding NextUnlockRemaining}"/>

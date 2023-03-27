@@ -19,14 +19,13 @@ public class ContractButtonModel : ToggleButton
     public static readonly DependencyProperty ColorProperty = DependencyProperty.Register(nameof(Color), typeof(string), typeof(ContractButtonModel), new PropertyMetadata(""));
     public static readonly DependencyProperty GoalsProperty = DependencyProperty.Register(nameof(Goals), typeof(ObservableCollection<Goal>), typeof(ContractButtonModel), new PropertyMetadata(new ObservableCollection<Goal>()));
     public static readonly DependencyProperty GoalDisplayHeightProperty = DependencyProperty.Register(nameof(GoalDisplayHeight), typeof(double), typeof(ContractButtonModel), new PropertyMetadata(72.0));
-
+    public static readonly DependencyProperty CompletionForecastDaysProperty = DependencyProperty.Register(nameof(CompletionForecastDays), typeof(int), typeof(ContractButtonModel), new PropertyMetadata(0));
+    public static readonly DependencyProperty CompletionDateTimestampProperty = DependencyProperty.Register(nameof(CompletionDateTimestamp), typeof(long), typeof(ContractButtonModel), new PropertyMetadata((long) 0));
+    
     public static readonly DependencyProperty NextUnlockNameProperty = DependencyProperty.Register(nameof(NextUnlockName), typeof(string), typeof(ContractButtonModel), new PropertyMetadata("None"));
     public static readonly DependencyProperty NextUnlockProgressProperty = DependencyProperty.Register(nameof(NextUnlockProgress), typeof(double), typeof(ContractButtonModel), new PropertyMetadata(0.0));
     public static readonly DependencyProperty NextUnlockRemainingProperty = DependencyProperty.Register(nameof(NextUnlockRemaining), typeof(int), typeof(ContractButtonModel), new PropertyMetadata(0));
-    
-    //TODO: My suspicion is that the SegmentStops don't get passed to SegmentedProgressModel because of incorrect binding. The line below was an attempt at trying to fix, but might lead to nothing.
-    //public static readonly DependencyProperty SegmentsStopsProperty = DependencyProperty.Register(nameof(SegmentsStops), typeof(List<decimal>), typeof(ContractButtonModel), new PropertyMetadata(new List<decimal>()));
-    
+
     public string Title
     {
         get => (string)GetValue(TitleProperty);
@@ -73,6 +72,18 @@ public class ContractButtonModel : ToggleButton
     {
         get => (double)GetValue(GoalDisplayHeightProperty);
         set => SetValue(GoalDisplayHeightProperty, value);
+    }
+    
+    public int CompletionForecastDays
+    {
+        get => (int)GetValue(CompletionForecastDaysProperty);
+        set => SetValue(CompletionForecastDaysProperty, value);
+    }
+
+    public long CompletionDateTimestamp
+    {
+        get => (long)GetValue(CompletionDateTimestampProperty);
+        set => SetValue(CompletionDateTimestampProperty, value);
     }
 
 

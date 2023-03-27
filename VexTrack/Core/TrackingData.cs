@@ -23,7 +23,7 @@ namespace VexTrack.Core
 
 		public static int GetRemainingDays(string sUuid = "", DateTimeOffset endDate = new(), bool overrideEndDate = false)
 		{
-			if (sUuid == "" && !overrideEndDate) return -1;
+			if (sUuid == "") sUuid = CurrentSeasonData.Uuid;
 
 			if (!overrideEndDate) endDate = DateTimeOffset.FromUnixTimeSeconds(Seasons.Find(s => s.Uuid == sUuid).EndDate).ToLocalTime().Date;
 			DateTimeOffset today = DateTimeOffset.Now.ToLocalTime().Date;
@@ -35,8 +35,10 @@ namespace VexTrack.Core
 			return remainingDays;
 		}
 
-		public static int GetDuration(string sUuid)
+		public static int GetDuration(string sUuid = "")
 		{
+			if (sUuid == "") sUuid = CurrentSeasonData.Uuid;
+			
 			DateTimeOffset endDate = DateTimeOffset.FromUnixTimeSeconds(Seasons.Find(s => s.Uuid == sUuid).EndDate).ToLocalTime().Date;
 			DateTimeOffset startDate = DateTimeOffset.FromUnixTimeSeconds(Seasons.Find(s => s.Uuid == sUuid).History.First().Time).ToLocalTime().Date;
 
@@ -299,6 +301,7 @@ namespace VexTrack.Core
 
 					var total = (int)goal["total"];
 					var collected = (int)goal["collected"];
+					if (collected > total) collected = total;
 
 					goalUuid ??= Guid.NewGuid().ToString();
 					var goalObj = new Goal(goalUuid, goalName, total, collected);
@@ -320,7 +323,7 @@ namespace VexTrack.Core
 				if (loadedGoals.Count < 1) (color, paused) = ("", false);
 				else (color, paused) = ((string)loadedGoals.First()["color"], (bool)loadedGoals.First()["paused"]);
 				
-				contracts.Add(new Contract(uuid, name, color, paused, goals));
+				if(goals.Count > 0) contracts.Add(new Contract(uuid, name, color, paused, goals));
 			}
 
 			return contracts;

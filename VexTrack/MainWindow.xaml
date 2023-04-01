@@ -168,22 +168,22 @@
 				<StackPanel Grid.Row="2"
 							Margin="16, 0">
 
-					<RadioButton Content="Dashboard"
+					<RadioButton Content="Home"
 								 GroupName="Menu"
 								 Height="62"
 								 Margin="0, 0, 0, 16"
 								 FontSize="16"
 								 IsChecked="True"
-								 Tag="{Binding Source={StaticResource DashboardIcon}, Path=Data}"
+								 Tag="{Binding Source={StaticResource HomeIcon}, Path=Data}"
 								 Command="{Binding DashboardViewCommand}"
 								 Style="{DynamicResource MenuButtonTheme}"/>
 
-					<RadioButton Content="Goals"
+					<RadioButton Content="Contracts"
 								 GroupName="Menu"
 								 Height="62"
 								 Margin="0, 0, 0, 16"
 								 FontSize="16"
-								 Tag="{Binding Source={StaticResource GoalIcon}, Path=Data}"
+								 Tag="{Binding Source={StaticResource ContractsIcon}, Path=Data}"
 								 Command="{Binding GoalViewCommand}"
 								 Style="{DynamicResource MenuButtonTheme}"/>
 

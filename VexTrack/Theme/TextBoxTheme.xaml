@@ -57,7 +57,7 @@
 				<Setter Property="Foreground" Value="{DynamicResource AccRed}"/>
 				<Setter Property="BorderThickness" Value="2"/>
 				<Setter Property="ToolTip" Value="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
-				<Setter Property="Tag" Value="{Binding Source={StaticResource BlockIcon}, Path=Data}"/>
+				<Setter Property="Tag" Value="{Binding Source={StaticResource ErrorIcon}, Path=Data}"/>
 			</Trigger>
 		</Style.Triggers>
 	</Style>

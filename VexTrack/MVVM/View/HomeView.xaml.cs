@@ -5,9 +5,9 @@ namespace VexTrack.MVVM.View
 	/// <summary>
 	/// Interaction logic for DashboardView.xaml
 	/// </summary>
-	public partial class DashboardView : UserControl
+	public partial class HomeView : UserControl
 	{
-		public DashboardView()
+		public HomeView()
 		{
 			InitializeComponent();
 		}

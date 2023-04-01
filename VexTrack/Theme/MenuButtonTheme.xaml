@@ -52,16 +52,16 @@
 									</Grid.ColumnDefinitions>
 
 									<Path Width="24" Height="24"
-										  Grid.Column="0"
-										  x:Name="Icon"
-										  Fill="{TemplateBinding Foreground}"
-										  Data="{TemplateBinding Tag}"/>
+									      Grid.Column="0"
+									      x:Name="Icon"
+									      Fill="{TemplateBinding Foreground}"
+									      Data="{TemplateBinding Tag}"/>
 
 									<TextBlock Text="{TemplateBinding Content}"
-											   Grid.Column="1"
-											   Foreground="{TemplateBinding Foreground}"
-											   VerticalAlignment="Center"
-											   Margin="16, 16, 16, 16"/>
+									           Grid.Column="1"
+									           Foreground="{TemplateBinding Foreground}"
+									           VerticalAlignment="Center"
+									           Margin="16, 16, 16, 16"/>
 								</Grid>
 							</Border>
 						</Grid>

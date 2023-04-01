@@ -19,7 +19,7 @@ namespace VexTrack.MVVM.ViewModel
 		public RelayCommand HistoryViewCommand { get; set; }
 		public RelayCommand SettingsViewCommand { get; set; }
 
-		private DashboardViewModel DashboardVm { get; set; }
+		private HomeViewModel HomeVm { get; set; }
 		private ContractViewModel ContractVm { get; set; }
 		private SeasonViewModel SeasonVm { get; set; }
 		private HistoryViewModel HistoryVm { get; set; }
@@ -126,7 +126,7 @@ namespace VexTrack.MVVM.ViewModel
 			ViewModelManager.ViewModels.Add("Main", this);
 			InitPopupViewModels();
 
-			DashboardViewCommand = new RelayCommand(_ => SetView(DashboardVm));
+			DashboardViewCommand = new RelayCommand(_ => SetView(HomeVm));
 			GoalViewCommand = new RelayCommand(_ => SetView(ContractVm));
 			SeasonViewCommand = new RelayCommand(_ => SetView(SeasonVm));
 			HistoryViewCommand = new RelayCommand(_ => SetView(HistoryVm));
@@ -152,19 +152,19 @@ namespace VexTrack.MVVM.ViewModel
 		{
 			if (InterruptUpdate) return;
 
-			DashboardVm = new DashboardViewModel();
+			HomeVm = new HomeViewModel();
 			ContractVm = new ContractViewModel();
 			SeasonVm = new SeasonViewModel();
 			HistoryVm = new HistoryViewModel();
 			SettingsVm = new SettingsViewModel();
 
-			ViewModelManager.ViewModels.Add("Dashboard", DashboardVm);
+			ViewModelManager.ViewModels.Add("Dashboard", HomeVm);
 			ViewModelManager.ViewModels.Add("Goal", ContractVm);
 			ViewModelManager.ViewModels.Add("Season", SeasonVm);
 			ViewModelManager.ViewModels.Add("History", HistoryVm);
 			ViewModelManager.ViewModels.Add("Settings", SettingsVm);
 
-			CurrentView = DashboardVm;
+			CurrentView = HomeVm;
 			_viewModelsInitialized = true;
 		}
 
@@ -241,7 +241,7 @@ namespace VexTrack.MVVM.ViewModel
 			}
 			else EpilogueButtonEnabled = true;
 
-			DashboardVm.Update(Epilogue);
+			HomeVm.Update(Epilogue);
 			ContractVm.Update(Epilogue);
 			SeasonVm.Update(Epilogue);
 

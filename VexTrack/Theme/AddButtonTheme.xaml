@@ -53,7 +53,7 @@
 									IsHitTestVisible="False">
 								<Path Width="24" Height="24"
 									  Fill="{TemplateBinding Foreground}"
-									  Data="{Binding Source={StaticResource PlusIcon}, Path=Data}"/>
+									  Data="{Binding Source={StaticResource AddIcon}, Path=Data}"/>
 							</Border>
 						</Grid>
 					</ControlTemplate>
@@ -177,7 +177,7 @@
 
 								<Path Width="24" Height="24"
 									  Fill="{TemplateBinding Foreground}"
-									  Data="{Binding Source={StaticResource PencilIcon}, Path=Data}"/>
+									  Data="{Binding Source={StaticResource EditIcon}, Path=Data}"/>
 							</Border>
 						</Grid>
 					</ControlTemplate>
@@ -239,7 +239,7 @@
 
 								<Path Width="24" Height="24"
 									  Fill="{TemplateBinding Foreground}"
-									  Data="{Binding Source={StaticResource TrashcanIcon}, Path=Data}"/>
+									  Data="{Binding Source={StaticResource DeleteForeverIcon}, Path=Data}"/>
 							</Border>
 						</Grid>
 					</ControlTemplate>

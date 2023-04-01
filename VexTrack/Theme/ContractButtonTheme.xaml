@@ -212,7 +212,7 @@
                                               Margin="16, 0, 8, 0"
                                               Width="24" Height="24"
                                               Fill="{DynamicResource Foreground}"
-                                              Data="{Binding Source={StaticResource ChevronDownIcon}, Path=Data}">
+                                              Data="{Binding Source={StaticResource ExpandIcon}, Path=Data}">
                                             <Path.RenderTransform>
                                                 <RotateTransform x:Name="ChevronRotateTransform" CenterX="12" CenterY="12" Angle="0"/>
                                             </Path.RenderTransform>

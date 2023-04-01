@@ -224,21 +224,21 @@
 								VerticalAlignment="Center"
 								HorizontalAlignment="Right">
 						<RadioButton Style="{StaticResource RadioThemeSelectorButtonTheme}"
-									 Tag="{Binding Source={StaticResource LightBulbIcon}, Path=Data}"
+									 Tag="{Binding Source={StaticResource AutoModeIcon}, Path=Data}"
 									 Command="{Binding ThemeButtonCommand}"
 									 CommandParameter="Auto"
 									 IsChecked="{Binding Theme, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Auto, Mode=OneWay}"
 									 Margin="0, 0, 4, 0"/>
 
 						<RadioButton Style="{StaticResource RadioThemeSelectorButtonTheme}"
-									 Tag="{Binding Source={StaticResource MoonIcon}, Path=Data}"
+									 Tag="{Binding Source={StaticResource DarkModeIcon}, Path=Data}"
 									 Command="{Binding ThemeButtonCommand}"
 									 CommandParameter="Dark"
 									 IsChecked="{Binding Theme, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Dark, Mode=OneWay}"
 									 Margin="0, 0, 4, 0"/>
 
 						<RadioButton Style="{StaticResource RadioThemeSelectorButtonTheme}"
-									 Tag="{Binding Source={StaticResource SunIcon}, Path=Data}"
+									 Tag="{Binding Source={StaticResource LightModeIcon}, Path=Data}"
 									 Command="{Binding ThemeButtonCommand}"
 									 CommandParameter="Light"
 									 IsChecked="{Binding Theme, Converter={StaticResource DataStringToBoolConv}, ConverterParameter=Light, Mode=OneWay}"

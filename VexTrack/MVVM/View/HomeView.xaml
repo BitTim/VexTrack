@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="VexTrack.MVVM.View.DashboardView"
+﻿<UserControl x:Class="VexTrack.MVVM.View.HomeView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -11,7 +11,7 @@
 			 mc:Ignorable="d" 
              d:DesignHeight="780"
 			 d:DesignWidth="640"
-             d:DataContext="{vm:DashboardViewModel}">
+             d:DataContext="{vm:HomeViewModel}">
 
 	<UserControl.Resources>
 		<conv:NegativeToZeroConverter x:Key="NegativeToZeroConv"/>
@@ -131,7 +131,7 @@
 						
 						<Path Width="16" Height="16"
 							  Fill="{Binding StreakColor}"
-							  Data="{Binding Source={StaticResource FlameIcon}, Path=Data}"/>
+							  Data="{Binding Source={StaticResource StreakIcon}, Path=Data}"/>
 					</StackPanel>
 
 				<model:SegmentedProgressModel x:Name="DailySegmentedProgress"

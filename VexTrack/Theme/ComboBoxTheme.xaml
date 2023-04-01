@@ -28,7 +28,7 @@
 				  HorizontalAlignment="Center"
 				  Stretch="Uniform"
 				  Margin="0, 0, 4, 0"
-				  Data="{Binding Source={StaticResource ChevronDownIcon}, Path=Data}"
+				  Data="{Binding Source={StaticResource ExpandIcon}, Path=Data}"
 				  Fill="{DynamicResource Foreground}"/>
 		</Grid>
 	</ControlTemplate>

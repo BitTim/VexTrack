@@ -12,7 +12,7 @@ using VexTrack.MVVM.ViewModel.Popups;
 
 namespace VexTrack.MVVM.ViewModel
 {
-	internal class DashboardViewModel : ObservableObject
+	internal class HomeViewModel : ObservableObject
 	{
 		public RelayCommand OnAddClicked { get; set; }
 		private EditableHistoryEntryPopupViewModel EditableHePopup { get; set; }
@@ -175,7 +175,7 @@ namespace VexTrack.MVVM.ViewModel
 
 		public List<decimal> Stops => new List<decimal>() { (decimal)0.8, 1 };
 
-		public DashboardViewModel()
+		public HomeViewModel()
 		{
 			Graph = new PlotModel
 			{

@@ -41,8 +41,8 @@
 			
 			<!-- Pages -->
 			
-			<DataTemplate DataType="{x:Type viewModel:DashboardViewModel}">
-				<view:DashboardView/>
+			<DataTemplate DataType="{x:Type viewModel:HomeViewModel}">
+				<view:HomeView/>
 			</DataTemplate>
 
 			<DataTemplate DataType="{x:Type viewModel:ContractViewModel}">

@@ -7,7 +7,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type local:GoalDisplayModel}">
-                        <Grid Margin="8"
+                        <Grid Margin="8, 8, 56, 8"
                               VerticalAlignment="Center"
                               x:Name="Header">
 
@@ -32,7 +32,7 @@
                                                           Value="{TemplateBinding Progress}"
                                                           Color="{TemplateBinding Color}" />
 
-                            <WrapPanel Grid.Row="2" Grid.Column="0">
+                            <UniformGrid Columns="3" Grid.Row="2" Grid.Column="0">
                                 <StackPanel Orientation="Horizontal"
                                             Margin="0, 0, 16, 0">
                                     <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Collected}"
@@ -52,18 +52,12 @@
                                 </StackPanel>
 
 
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Remaining: "
-                                               FontSize="14"
-                                               Foreground="{DynamicResource Foreground}" />
-
-                                    <local:TextWithUnit
-                                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Remaining, Converter={StaticResource NegativeToZeroConverter}}"
-                                        Unit=" XP"
-                                        FontSize="14"
-                                        Foreground="{DynamicResource Foreground}" />
-                                </StackPanel>
-                            </WrapPanel>
+                                <local:TextWithUnit Margin="0, 0, 16, 0"
+                                                    Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Remaining, Converter={StaticResource NegativeToZeroConverter}}"
+                                                    Unit=" XP remaining"
+                                                    FontSize="14"
+                                                    Foreground="{DynamicResource Foreground}" />
+                            </UniformGrid>
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>

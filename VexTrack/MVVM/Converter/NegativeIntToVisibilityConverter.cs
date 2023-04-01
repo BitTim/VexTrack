@@ -11,7 +11,7 @@ namespace VexTrack.MVVM.Converter
 		{
 			var val = (int)value;
 
-			if (val == -1) return Visibility.Hidden;
+			if (val < 0) return Visibility.Hidden;
 			return Visibility.Visible;
 		}
 

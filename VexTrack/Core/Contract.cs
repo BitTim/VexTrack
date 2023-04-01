@@ -45,7 +45,7 @@ public class Contract
     {
         if (GetRemaining() <= 0) return -1;
 
-        var average = CalcUtil.CalcAverage(TrackingData.CurrentSeasonData.ActiveBpLevel, TrackingData.CurrentSeasonData.Cxp, TrackingData.GetDuration(), TrackingData.GetRemainingDays());
+        var average = TrackingData.CurrentSeasonData.Average;
         if (average <= 0) return -2;
         
         return (int)MathF.Ceiling((float)GetRemaining() / average);

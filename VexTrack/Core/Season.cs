@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using OxyPlot;
 
 namespace VexTrack.Core;
 
@@ -12,10 +13,16 @@ public class Season
     public int ActiveBpLevel { get; set; }
     public int Cxp { get; set; }
     public List<HistoryEntry> History { get; set; }
-    
-    
-    
-    public double Progress => GetProgress();
+
+
+    public int Total => CalcUtil.CalcMaxForSeason(true);
+    public int Collected => CalcUtil.CalcTotalCollected(ActiveBpLevel, Cxp);
+    public int Remaining => Total - Collected;
+    public int Average => CalcUtil.CalcAverage(ActiveBpLevel, Cxp, TrackingData.GetDuration(Uuid), TrackingData.GetRemainingDays(Uuid));
+    public double Progress => CalcUtil.CalcProgress(Total, Collected);
+
+    public SeasonExtremes Extremes => GetExtremes();
+    public PlotModel Graph => new();
 
 
     public Season(string uuid, string name, long endDate, int activeBpLevel, int cXp, List<HistoryEntry> history)
@@ -23,20 +30,9 @@ public class Season
         (Uuid, Name, EndDate, ActiveBpLevel, Cxp, History) = (uuid, name, endDate, activeBpLevel, cXp, history);
     }
 
-    public int GetAverage()
+    public SeasonExtremes GetExtremes()
     {
-        var daysPassed = TrackingData.GetDuration(Uuid) - TrackingData.GetRemainingDays(Uuid);
-        return (int)Math.Round((double)CalcUtil.CalcTotalCollected(ActiveBpLevel, Cxp) / (daysPassed + 1));
-    }
-
-    public double GetProgress()
-    {
-        return CalcUtil.CalcProgress(CalcUtil.CalcMaxForSeason(false), CalcUtil.CalcTotalCollected(ActiveBpLevel, Cxp));
-    }
-
-    public (int, long, int, long) GetExtremes()
-    {
-        if (History.Count <= 0) return (0, 0, 0, 0);
+        if (History.Count <= 0) return new SeasonExtremes(0, -1, 0, -1);
         
         var prevDate = DateTimeOffset.FromUnixTimeSeconds(History.First().Time).ToLocalTime().Date;
         
@@ -68,13 +64,12 @@ public class Season
             prevDate = currDate;
         }
         
-        return (weakestAmount, weakestDate.ToUnixTimeSeconds(), strongestAmount, strongestDate.ToUnixTimeSeconds());
+        return new SeasonExtremes(strongestAmount, strongestDate.ToUnixTimeSeconds(), weakestAmount, weakestDate.ToUnixTimeSeconds());
     }
 
     
     
-    private static (int strongestAmount, DateTimeOffset strongestDate, int weakestAmount, DateTimeOffset weakestDate)
-        EvalExtremes(int currAmount, int strongestAmount, DateTime prevDate, DateTimeOffset strongestDate, int weakestAmount, DateTimeOffset weakestDate)
+    private static (int strongestAmount, DateTimeOffset strongestDate, int weakestAmount, DateTimeOffset weakestDate) EvalExtremes(int currAmount, int strongestAmount, DateTime prevDate, DateTimeOffset strongestDate, int weakestAmount, DateTimeOffset weakestDate)
     {
         if (currAmount > strongestAmount)
         {
@@ -88,5 +83,21 @@ public class Season
         weakestDate = prevDate;
 
         return (strongestAmount, strongestDate, weakestAmount, weakestDate);
+    }
+}
+
+public struct SeasonExtremes
+{
+    public int StrongestDayAmount { get; }
+    public long StrongestDayTimestamp { get; }
+    public int WeakestDayAmount { get; }
+    public long WeakestDayTimestamp { get; }
+
+    public SeasonExtremes(int strongestDayAmount, long strongestDayTimestamp, int weakestDayAmount, long weakestDayTimestamp)
+    {
+        StrongestDayAmount = strongestDayAmount;
+        StrongestDayTimestamp = strongestDayTimestamp;
+        WeakestDayAmount = weakestDayAmount;
+        WeakestDayTimestamp = weakestDayTimestamp;
     }
 }

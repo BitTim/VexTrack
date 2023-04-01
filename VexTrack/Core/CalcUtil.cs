@@ -61,6 +61,14 @@ namespace VexTrack.Core
 			return (int)MathF.Round((float)totalCollected / (daysPassed + 1));
 		}
 
+		public static List<int> CalcSeasonSegments()
+		{
+			var seasonMaxEpilogue = CalcMaxForSeason(true);
+			var seasonMaxGeneral = CalcMaxForSeason(false);
+
+			return new List<int> { seasonMaxGeneral, seasonMaxEpilogue - seasonMaxGeneral };
+		}
+
 		
 		
 		// ================================================================

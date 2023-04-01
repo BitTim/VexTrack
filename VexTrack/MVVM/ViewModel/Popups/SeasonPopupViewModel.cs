@@ -160,11 +160,16 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 			Uuid = data.Uuid;
 			Title = data.Name;
-			Progress = data.GetProgress();
-			Average = data.GetAverage();
+			Progress = data.Progress;
+			Average = data.Average;
 			EndDate = data.EndDate;
-			(StrongestAmount, StrongestDate, WeakestAmount, WeakestDate) = data.GetExtremes();
-
+				
+			var extremes = data.Extremes;
+			StrongestAmount = extremes.StrongestDayAmount;
+			StrongestDate = extremes.StrongestDayTimestamp;
+			WeakestAmount = extremes.WeakestDayAmount;
+			WeakestDate = extremes.WeakestDayTimestamp;
+			
 			IsInitialized = true;
 			ApplyAxes();
 			UpdateGraph(epilogue);

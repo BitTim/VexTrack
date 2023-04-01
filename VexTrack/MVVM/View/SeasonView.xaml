@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:VexTrack.MVVM.View"
 			 xmlns:model="clr-namespace:VexTrack.MVVM.Model"
 			 xmlns:conv="clr-namespace:VexTrack.MVVM.Converter"
+			 xmlns:core="clr-namespace:VexTrack.Core"
 			 mc:Ignorable="d" 
              d:DesignHeight="780" d:DesignWidth="640">
 
@@ -16,7 +17,7 @@
     <Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="80"/>
-			<RowDefinition/>
+			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 		
 		<TextBlock Text="Seasons"
@@ -26,26 +27,47 @@
 				   FontWeight="Bold"/>
 
 		<ScrollViewer Grid.Row="1"
+		              HorizontalContentAlignment="Stretch"
 					  Style="{DynamicResource ScrollViewerTheme}"
 					  Margin="16">
 			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+					
 				<ItemsControl x:Name="BuiltinContentContainer"
-							  ItemsSource="{Binding Entries}">
+				              Margin="0, 0, 0, 12"
+				              ItemsSource="{Binding Entries}">
 					<ItemsControl.ItemsPanel>
 						<ItemsPanelTemplate>
-							<WrapPanel/>
+							<model:FlexWrapPanelModel Orientation="Horizontal"
+							                          MinItemWidth="550"
+							                          ItemMargin="8, 4"/>
 						</ItemsPanelTemplate>
 					</ItemsControl.ItemsPanel>
 
 					<ItemsControl.ItemTemplate>
-						<DataTemplate>
-							<model:ProgressButtonModel Title="{Binding Path=Name}"
-													   Value="{Binding Path=Progress}"
-													   Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.SeasonButtonClick}"
-													   CommandParameter="{Binding Path=Uuid}"
-													   BadgeRightData="{Binding Path=Status, Converter={StaticResource StatusToBadgeConv}, ConverterParameter=Data}"
-													   BadgeRightColor="{Binding Path=Status, Converter={StaticResource StatusToBadgeConv}, ConverterParameter=Color}"
-													   Margin="8, 8, 0, 0"/>
+						<DataTemplate DataType="{x:Type core:Season}">
+							<!-- <model:ProgressButtonModel Title="{Binding Path=Name}" -->
+						              <!-- 						   Value="{Binding Path=Progress}" -->
+						              <!-- 						   Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.SeasonButtonClick}" -->
+						              <!-- 						   CommandParameter="{Binding Path=Uuid}" -->
+						              <!-- 						   BadgeRightData="{Binding Path=Status, Converter={StaticResource StatusToBadgeConv}, ConverterParameter=Data}" -->
+						              <!-- 						   BadgeRightColor="{Binding Path=Status, Converter={StaticResource StatusToBadgeConv}, ConverterParameter=Color}" -->
+						              <!-- 						   Margin="8, 8, 0, 0"/> -->
+							
+							<model:SeasonButtonModel Title="{Binding Name}"
+							                         Total="{Binding Total}"
+							                         Collected="{Binding Collected}"
+							                         Remaining="{Binding Remaining}"
+							                         Progress="{Binding Progress}"
+							                         DailyAverage="{Binding Average}"
+							                         EndDateTimestamp="{Binding EndDate}"
+							                         StrongestDayAmount="{Binding Extremes.StrongestDayAmount}"
+							                         StrongestDayTimestamp="{Binding Extremes.StrongestDayTimestamp}"
+							                         WeakestDayAmount="{Binding Extremes.WeakestDayAmount}"
+							                         WeakestDayTimestamp="{Binding Extremes.WeakestDayTimestamp}"
+							                         Graph="{Binding Graph}"/>
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
 				</ItemsControl>

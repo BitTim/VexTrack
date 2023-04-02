@@ -94,6 +94,15 @@
                                                                       VisualSegmentsStops="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=VisualSegmentsStops}"
                                                                       Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Progress}"/>
 
+                                        <Path Grid.Column="1" Grid.RowSpan="2" Grid.Row="0"
+                                              Width="24" Height="24"
+                                              x:Name="StatusIcon"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Bottom"
+                                              Margin="8, 0, 0, 0"
+                                              Fill="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=StatusIconColor}"
+                                              Data="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=StatusIconData}"/>
+                                        
                                         <StackPanel Grid.Row="2" Grid.Column="0">
                                             <UniformGrid Columns="3" Margin="0, 0, 0, 8">
                                                 <StackPanel Orientation="Horizontal"
@@ -233,8 +242,7 @@
                                             </WrapPanel>
                                         </StackPanel>
 
-                                        <Path Grid.Row="0" Grid.Column="1"
-                                              Grid.RowSpan="3"
+                                        <Path Grid.Row="3" Grid.Column="1"
                                               VerticalAlignment="Center"
                                               Margin="16, 0, 8, 0"
                                               Width="24" Height="24"

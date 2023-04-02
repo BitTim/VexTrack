@@ -14,34 +14,36 @@ namespace VexTrack.MVVM.Converter
 			var status = (string)value;
 			var mode = (string)parameter;
 
-			var checkIcon = (Path)Application.Current.FindResource("CheckIcon");
+			var doneIcon = (Path)Application.Current.FindResource("DoneIcon");
+			var doneAllIcon = (Path)Application.Current.FindResource("DoneAllIcon");
+			var warnIcon = (Path)Application.Current.FindResource("WarnIcon");
 			var crossIcon = (Path)Application.Current.FindResource("CrossIcon");
-			var pauseIcon = (Path)Application.Current.FindResource("LockIcon");
-			var linkedIcon = (Path)Application.Current.FindResource("ChainIcon");
 
+			var blue = (Brush)Application.Current.FindResource("AccBlue");
 			var green = (Brush)Application.Current.FindResource("AccGreen");
+			var yellow = (Brush)Application.Current.FindResource("AccYellow");
 			var red = (Brush)Application.Current.FindResource("AccRed");
-			var foreground = (Brush)Application.Current.FindResource("Foreground");
 
-			if (mode == "Data")
+			return mode switch
 			{
-				if (status == "Done") return checkIcon.Data;
-				if (status == "Failed") return crossIcon.Data;
-				if (status == "Paused") return pauseIcon.Data;
-				if (status == "Linked") return linkedIcon.Data;
-				return null;
-			}
-
-			if (mode == "Color")
-			{
-				if (status == "Done") return green;
-				if (status == "Failed") return red;
-				if (status == "Paused") return foreground;
-				if (status == "Linked") return foreground;
-				return null;
-			}
-
-			return null;
+				"Data" => status switch
+				{
+					"DoneAll" => doneAllIcon?.Data,
+					"Done" => doneIcon?.Data,
+					"Warning" => warnIcon?.Data,
+					"Failed" => crossIcon?.Data,
+					_ => null
+				},
+				"Color" => status switch
+				{
+					"DoneAll" => blue,
+					"Done" => green,
+					"Warning" => yellow,
+					"Failed" => red,
+					_ => null
+				},
+				_ => null
+			};
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

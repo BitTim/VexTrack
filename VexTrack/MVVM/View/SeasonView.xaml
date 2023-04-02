@@ -67,6 +67,8 @@
 							                         StrongestDayTimestamp="{Binding Extremes.StrongestDayTimestamp}"
 							                         WeakestDayAmount="{Binding Extremes.WeakestDayAmount}"
 							                         WeakestDayTimestamp="{Binding Extremes.WeakestDayTimestamp}"
+							                         StatusIconData="{Binding Path=Status, Converter={StaticResource StatusToBadgeConv}, ConverterParameter=Data}"
+							                         StatusIconColor="{Binding Path=Status, Converter={StaticResource StatusToBadgeConv}, ConverterParameter=Color}"
 							                         Graph="{Binding Graph}"/>
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>

@@ -21,6 +21,9 @@ public class Season
     public int Average => CalcUtil.CalcAverage(ActiveBpLevel, Cxp, TrackingData.GetDuration(Uuid), TrackingData.GetRemainingDays(Uuid));
     public double Progress => CalcUtil.CalcProgress(Total, Collected);
 
+    public bool IsActive => DateTimeOffset.Now.ToLocalTime().ToUnixTimeSeconds() < EndDate;
+    public String Status => GetStatus();
+
     public SeasonExtremes Extremes => GetExtremes();
     public PlotModel Graph => new();
 
@@ -30,7 +33,14 @@ public class Season
         (Uuid, Name, EndDate, ActiveBpLevel, Cxp, History) = (uuid, name, endDate, activeBpLevel, cXp, history);
     }
 
-    public SeasonExtremes GetExtremes()
+    private string GetStatus()
+    {
+        if (Collected < CalcUtil.CalcMaxForSeason(false)) return IsActive ? "Warning" : "Failed";
+        if (Collected < Total) return "Done";
+        return Collected >= Total ? "DoneAll" : "";
+    }
+    
+    private SeasonExtremes GetExtremes()
     {
         if (History.Count <= 0) return new SeasonExtremes(0, -1, 0, -1);
         

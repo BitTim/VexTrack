@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 using OxyPlot;
 using VexTrack.Core;
 
@@ -30,6 +31,9 @@ public class SeasonButtonModel : ToggleButton
     public static readonly DependencyProperty NextUnlockProgressProperty = DependencyProperty.Register(nameof(NextUnlockProgress), typeof(double), typeof(SeasonButtonModel), new PropertyMetadata(0.0));
     public static readonly DependencyProperty NextUnlockRemainingProperty = DependencyProperty.Register(nameof(NextUnlockRemaining), typeof(int), typeof(SeasonButtonModel), new PropertyMetadata(0));
 
+    public static readonly DependencyProperty StatusIconDataProperty = DependencyProperty.Register(nameof(StatusIconData), typeof(Geometry), typeof(SeasonButtonModel), new PropertyMetadata(null));
+    public static readonly DependencyProperty StatusIconColorProperty = DependencyProperty.Register(nameof(StatusIconColor), typeof(Brush), typeof(SeasonButtonModel), new PropertyMetadata(Application.Current.FindResource("Foreground")));
+    
     public string Title
     {
         get => (string)GetValue(TitleProperty);
@@ -137,6 +141,22 @@ public class SeasonButtonModel : ToggleButton
         get => (int)GetValue(NextUnlockRemainingProperty);
         set => SetValue(NextUnlockRemainingProperty, value);
     }
+
+
+
+    public Geometry StatusIconData
+    {
+        get => (Geometry)GetValue(StatusIconDataProperty);
+        set => SetValue(StatusIconDataProperty, value);
+    }
+
+    public Brush StatusIconColor
+    {
+        get => (Brush)GetValue(StatusIconColorProperty);
+        set => SetValue(StatusIconColorProperty, value);
+    }
+    
+    
 
     public List<decimal> LogicalSegmentsStops => CalcUtil.CalcLogicalStops(CalcUtil.CalcSeasonSegments(), true);
     public List<decimal> VisualSegmentsStops => CalcUtil.CalcVisualStops(CalcUtil.CalcSeasonSegments(), true);

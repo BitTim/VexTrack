@@ -161,4 +161,6 @@ public class SeasonButtonModel : ToggleButton
     public List<decimal> LogicalSegmentsStops => CalcUtil.CalcLogicalStops(CalcUtil.CalcSeasonSegments(), true);
     public List<decimal> VisualSegmentsStops => CalcUtil.CalcVisualStops(CalcUtil.CalcSeasonSegments(), true);
     public int NumGoals => Goals.Count;
+    
+    // TODO: Update Graph in Binding when GraphProperty is changed
 }

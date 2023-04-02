@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using OxyPlot.Legends;
 using VexTrack.Core;
 using VexTrack.MVVM.ViewModel.Popups;
 
@@ -268,10 +269,16 @@ namespace VexTrack.MVVM.ViewModel
 
 				var bufferZone = GraphCalc.CalcBufferZone(TrackingData.CurrentSeasonData.Uuid, epilogue);
 
-				Graph.LegendPosition = LegendPosition.LeftTop;
-				if (background != null) Graph.LegendBackground = OxyColor.FromArgb(background.Color.A, background.Color.R, background.Color.G, background.Color.B);
-				if (foreground != null) Graph.LegendTextColor = OxyColor.FromArgb(foreground.Color.A, foreground.Color.R, foreground.Color.G, foreground.Color.B);
-				if (shade != null) Graph.LegendBorder = OxyColor.FromArgb(shade.Color.A, shade.Color.R, shade.Color.G, shade.Color.B);
+				var legend = new Legend
+				{
+					LegendPosition = LegendPosition.LeftTop
+				};
+				
+				if (background != null) legend.LegendBackground = OxyColor.FromArgb(background.Color.A, background.Color.R, background.Color.G, background.Color.B);
+				if (foreground != null) legend.LegendTextColor = OxyColor.FromArgb(foreground.Color.A, foreground.Color.R, foreground.Color.G, foreground.Color.B);
+				if (shade != null) legend.LegendBorder = OxyColor.FromArgb(shade.Color.A, shade.Color.R, shade.Color.G, shade.Color.B);
+
+				Graph.Legends.Add(legend);
 
 				Graph.Series.Clear();
 				Graph.Axes.Clear();

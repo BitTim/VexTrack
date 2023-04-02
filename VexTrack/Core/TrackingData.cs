@@ -191,7 +191,7 @@ namespace VexTrack.Core
 				sUuid ??= Guid.NewGuid().ToString();
 				seasons.Add(new Season(sUuid, name, DateTimeOffset.Parse(endDate).ToUnixTimeSeconds(), activeBpLevel, cXp, history));
 			}
-
+			
 			return seasons;
 		}
 		
@@ -253,7 +253,7 @@ namespace VexTrack.Core
 				sUuid ??= Guid.NewGuid().ToString();
 				seasons.Add(new Season(sUuid, name, endDate, activeBpLevel, cXp, history));
 			}
-
+			
 			return seasons;
 		}
 

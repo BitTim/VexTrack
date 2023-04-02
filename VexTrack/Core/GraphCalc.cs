@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using OxyPlot.Axes;
+using OxyPlot.Legends;
 
 namespace VexTrack.Core
 {
@@ -146,6 +148,114 @@ namespace VexTrack.Core
 			}
 
 			return ret;
+		}
+		
+		
+		
+		// ================================================================
+		//  PlotModel
+		// ================================================================
+		
+		public static PlotModel UpdateGraph(PlotModel model, bool epilogue, string seasonUuid)
+		{
+			model = ApplyGraphAxes(model, seasonUuid);
+			
+			var graphIdealPoint = (SolidColorBrush)Application.Current.FindResource("GraphIdealPoint") ?? new SolidColorBrush();
+
+			var foreground = (SolidColorBrush)Application.Current.FindResource("Foreground") ?? new SolidColorBrush();
+			var background = (SolidColorBrush)Application.Current.FindResource("Background") ?? new SolidColorBrush();
+			var shade = (SolidColorBrush)Application.Current.FindResource("Shade") ?? new SolidColorBrush();
+
+			var ideal = GraphCalc.CalcIdealGraph(seasonUuid, epilogue);
+			var performance = GraphCalc.CalcPerformanceGraph(seasonUuid);
+			
+			var bufferZone = GraphCalc.CalcBufferZone(seasonUuid, epilogue);
+
+			var legend = new Legend
+			{
+				LegendPosition = LegendPosition.LeftTop,
+				LegendBackground = OxyColor.FromArgb(background.Color.A, background.Color.R, background.Color.G, background.Color.B),
+				LegendTextColor = OxyColor.FromArgb(foreground.Color.A, foreground.Color.R, foreground.Color.G, foreground.Color.B),
+				LegendBorder = OxyColor.FromArgb(shade.Color.A, shade.Color.R, shade.Color.G, shade.Color.B)
+			};
+
+			model.Legends.Add(legend);
+			model.Series.Clear();
+			model.Annotations.Clear();
+
+			model = AddGraphLevels(model, epilogue, seasonUuid);
+			model = UpdateYAxis(model, performance, epilogue);
+
+			model.Series.Add(ideal);
+			model.Series.Add(performance);
+
+			// Only add points to current season
+			if (seasonUuid == TrackingData.CurrentSeasonData.Uuid)
+			{
+				var idealPoint = DashboardDataCalc.CalcGraphPoint(ideal, OxyColor.FromArgb(graphIdealPoint.Color.A, graphIdealPoint.Color.R, graphIdealPoint.Color.G, graphIdealPoint.Color.B));
+				var performancePoint = DashboardDataCalc.CalcGraphPoint(performance, OxyColors.Maroon);
+
+				model.Series.Add(idealPoint);
+				model.Series.Add(performancePoint);
+			}
+
+			model.Annotations.Add(bufferZone);
+			model.InvalidatePlot(true);
+			return model;
+		}
+		
+		private static PlotModel ApplyGraphAxes(PlotModel model, string seasonUuid)
+		{
+			LinearAxis xAxis = new();
+			LinearAxis yAxis = new();
+
+			var foreground = (SolidColorBrush)Application.Current.FindResource("Foreground") ?? new SolidColorBrush();
+			var shade = (SolidColorBrush)Application.Current.FindResource("Shade") ?? new SolidColorBrush();
+
+			xAxis.Position = AxisPosition.Bottom;
+			xAxis.AbsoluteMinimum = 0;
+			xAxis.TickStyle = TickStyle.None;
+			xAxis.MajorStep = 5;
+			xAxis.MajorGridlineStyle = LineStyle.Dot;
+			xAxis.MajorGridlineColor = OxyColor.FromArgb(shade.Color.A, shade.Color.R, shade.Color.G, shade.Color.B);
+			xAxis.MaximumPadding = 0;
+			xAxis.MinimumPadding = 0;
+			xAxis.AbsoluteMaximum = TrackingData.GetDuration(seasonUuid);
+			xAxis.TextColor = OxyColor.FromArgb(foreground.Color.A, foreground.Color.R, foreground.Color.G, foreground.Color.B);
+
+			yAxis.Position = AxisPosition.Left;
+			yAxis.AbsoluteMinimum = 0;
+			yAxis.MinimumPadding = 0;
+			yAxis.TickStyle = TickStyle.None;
+			yAxis.TextColor = OxyColors.Transparent;
+
+			model.Axes.Clear();
+			model.Axes.Add(xAxis);
+			model.Axes.Add(yAxis);
+
+			return model;
+		}
+
+		private static PlotModel AddGraphLevels(PlotModel model, bool epilogue, string seasonUuid)
+		{
+			var levels = CalcBattlepassLevels(seasonUuid);
+			foreach (var ls in levels) model.Series.Add(ls);
+
+			if (!epilogue) return model;
+
+			var epilogueLevels = CalcEpilogueLevels(seasonUuid);
+			foreach (var ls in epilogueLevels) model.Series.Add(ls);
+
+			return model;
+		}
+		
+		private static PlotModel UpdateYAxis(PlotModel model, DataPointSeries performance, bool epilogue)
+		{
+			var maximum = CalcUtil.CalcMaxForSeason(epilogue) * 2;
+			if (performance.Points.Last().Y >= maximum) maximum = (int)performance.Points.Last().Y + 20000;
+
+			model.Axes[1].AbsoluteMaximum = maximum;
+			return model;
 		}
 	}
 }

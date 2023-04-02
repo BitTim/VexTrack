@@ -242,7 +242,7 @@
                                             </WrapPanel>
                                         </StackPanel>
 
-                                        <Path Grid.Row="3" Grid.Column="1"
+                                        <Path Grid.Row="2" Grid.Column="1"
                                               VerticalAlignment="Center"
                                               Margin="16, 0, 8, 0"
                                               Width="24" Height="24"
@@ -255,11 +255,19 @@
                                     </Grid>
                                     
                                     <Border x:Name="ScaleAnimationDummy" Width="0" Height="0"/>
+
+                                    <oxy:PlotView
+                                        Model="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Graph}"
+                                        Background="{DynamicResource Background}"
+                                        Foreground="{DynamicResource Foreground}"
+                                        Margin="8, 4">
+                                        <oxy:PlotView.Height>
+                                            <MultiBinding Converter="{StaticResource MathConv}" ConverterParameter="0.6xy">
+                                                <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="ActualWidth" />
+                                                <Binding ElementName="ScaleAnimationDummy" Path="Width"/>
+                                            </MultiBinding>
+                                        </oxy:PlotView.Height>
                                         
-                                    <oxy:PlotView Model="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Graph}"
-                                                  Background="{DynamicResource Background}"
-                                                  Foreground="{DynamicResource Foreground}"
-                                                  Margin="0, 0, 0, 0">
                                         <oxy:PlotView.DefaultTrackerTemplate>
                                             <ControlTemplate>
                                                 <oxy:TrackerControl Position="{Binding Position}"
@@ -270,13 +278,13 @@
                                                     <oxy:TrackerControl.Content>
                                                         <TextBlock Text="{Binding}"
                                                                    Margin="8"
-                                                                   Foreground="{DynamicResource Foreground}"/>
+                                                                   Foreground="{DynamicResource Foreground}" />
                                                     </oxy:TrackerControl.Content>
                                                 </oxy:TrackerControl>
                                             </ControlTemplate>
                                         </oxy:PlotView.DefaultTrackerTemplate>
                                     </oxy:PlotView>
-                                    
+
                                     <ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Goals}"
                                                   x:Name="Expanded">
                                         <ItemsControl.Height>

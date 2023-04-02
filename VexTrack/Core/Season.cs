@@ -25,14 +25,22 @@ public class Season
     public String Status => GetStatus();
 
     public SeasonExtremes Extremes => GetExtremes();
-    public PlotModel Graph => new();
+    public PlotModel Graph { get; set; }
 
 
     public Season(string uuid, string name, long endDate, int activeBpLevel, int cXp, List<HistoryEntry> history)
     {
         (Uuid, Name, EndDate, ActiveBpLevel, Cxp, History) = (uuid, name, endDate, activeBpLevel, cXp, history);
+        ResetGraph();
     }
 
+    public void UpdateGraph()
+    {
+        ResetGraph();
+        Graph = GraphCalc.UpdateGraph(Graph, false, Uuid);
+    }
+
+    private void ResetGraph() { Graph = new PlotModel { PlotMargins = new OxyThickness(0, 0, 0, 16), PlotAreaBorderColor = OxyColors.Transparent }; }
     private string GetStatus()
     {
         if (Collected < CalcUtil.CalcMaxForSeason(false)) return IsActive ? "Warning" : "Failed";

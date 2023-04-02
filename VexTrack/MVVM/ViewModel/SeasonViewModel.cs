@@ -59,13 +59,11 @@ namespace VexTrack.MVVM.ViewModel
 			else SeasonPopup.Close();
 		}
 
-		public void OnSeasonButtonClick(object parameter)
+		private static void OnSeasonButtonClick(object parameter)
 		{
 			var uuid = (string)parameter;
 
-			SeasonPopup.SetFlags(true, true);
-			SeasonPopup.SetData(Entries.First(e => e.Uuid == uuid), Epilogue);
-			MainVm.QueuePopup(SeasonPopup);
+			TrackingData.Seasons.Find(s => s.Uuid == uuid)?.UpdateGraph();
 		}
 	}
 }

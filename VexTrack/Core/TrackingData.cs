@@ -516,7 +516,7 @@ namespace VexTrack.Core
 		//  Updating
 		// ================================
 		
-		public static void Recalculate()
+		public static void Recalculate() // TODO: Restructure this to have Update() methods in Season and Contracts
 		{
 			List<string> completed = new();
 			List<string> lost = new();

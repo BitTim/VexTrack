@@ -63,6 +63,7 @@
 							                         Remaining="{Binding Remaining}"
 							                         Progress="{Binding Progress}"
 							                         DailyAverage="{Binding Average}"
+							                         Duration="{Binding Duration}"
 							                         EndDateTimestamp="{Binding EndDate}"
 							                         StrongestDayAmount="{Binding Extremes.StrongestDayAmount}"
 							                         StrongestDayTimestamp="{Binding Extremes.StrongestDayTimestamp}"
@@ -70,7 +71,7 @@
 							                         WeakestDayTimestamp="{Binding Extremes.WeakestDayTimestamp}"
 							                         StatusIconData="{Binding Path=Status, Converter={StaticResource StatusToBadgeConv}, ConverterParameter=Data}"
 							                         StatusIconColor="{Binding Path=Status, Converter={StaticResource StatusToBadgeConv}, ConverterParameter=Color}"
-							                         Graph="{Binding Graph}"
+							                         GraphSeriesCollection="{Binding GraphSeriesCollection}"
 							                         Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.(viewModel:SeasonViewModel.SeasonButtonClick)}"
 							                         CommandParameter="{Binding Path=Uuid}"/>
 						</DataTemplate>

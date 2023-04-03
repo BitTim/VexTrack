@@ -47,12 +47,34 @@
 	<Color x:Key="LossColor1">#F05C57</Color>
 	<Color x:Key="LossColor2">#e54c7c</Color>
 
-	<LinearGradientBrush x:Key="WinColor">
+	<LinearGradientBrush x:Key="Win">
 		<GradientStop Color="{StaticResource WinColor1}" Offset="0.0"/>
 		<GradientStop Color="{StaticResource WinColor2}" Offset="1.0"/>
 	</LinearGradientBrush>
 
-	<LinearGradientBrush x:Key="LossColor">
+	<LinearGradientBrush x:Key="Loss">
+		<GradientStop Color="{StaticResource LossColor1}" Offset="0.0"/>
+		<GradientStop Color="{StaticResource LossColor2}" Offset="1.0"/>
+	</LinearGradientBrush>
+
+	<LinearGradientBrush x:Key="WinToTransparent">
+		<GradientStop Color="{StaticResource WinColor1}" Offset="0.0"/>
+		<GradientStop Color="{StaticResource WinColor2}" Offset="0.5"/>
+		<GradientStop Color="Transparent" Offset="1.0"/>
+	</LinearGradientBrush>
+
+	<LinearGradientBrush x:Key="LossToTransparent">
+		<GradientStop Color="{StaticResource LossColor1}" Offset="0.0"/>
+		<GradientStop Color="{StaticResource LossColor2}" Offset="0.5"/>
+		<GradientStop Color="Transparent" Offset="1.0"/>
+	</LinearGradientBrush>
+	
+	<LinearGradientBrush x:Key="WinTranslucent" Opacity="0.4">
+		<GradientStop Color="{StaticResource WinColor1}" Offset="0.0"/>
+		<GradientStop Color="{StaticResource WinColor2}" Offset="1.0"/>
+	</LinearGradientBrush>
+
+	<LinearGradientBrush x:Key="LossTranslucent" Opacity="0.4">
 		<GradientStop Color="{StaticResource LossColor1}" Offset="0.0"/>
 		<GradientStop Color="{StaticResource LossColor2}" Offset="1.0"/>
 	</LinearGradientBrush>

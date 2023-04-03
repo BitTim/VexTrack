@@ -8,8 +8,8 @@ namespace VexTrack.MVVM.Converter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			var timestamp = (long)value;
-			var noTime = (string)parameter;
+			var timestamp = (long?)value ?? 0;
+			var noTime = (string)parameter ?? "";
 
 			switch (timestamp)
 			{

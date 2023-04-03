@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using LiveCharts;
 using OxyPlot;
 using VexTrack.Core;
 
@@ -17,7 +19,8 @@ public class SeasonButtonModel : ToggleButton
     public static readonly DependencyProperty DailyAverageProperty = DependencyProperty.Register(nameof(DailyAverage), typeof(int), typeof(SeasonButtonModel), new PropertyMetadata(0));
     public static readonly DependencyProperty ProgressProperty = DependencyProperty.Register(nameof(Progress), typeof(double), typeof(SeasonButtonModel), new PropertyMetadata(0.0));
     
-    public static readonly DependencyProperty GraphProperty = DependencyProperty.Register(nameof(Graph), typeof(PlotModel), typeof(SeasonButtonModel), new PropertyMetadata(new PlotModel { PlotMargins = new OxyThickness(0, 0, 0, 16), PlotAreaBorderColor = OxyColors.Transparent }));
+    public static readonly DependencyProperty DurationProperty = DependencyProperty.Register(nameof(Duration), typeof(int), typeof(SeasonButtonModel), new PropertyMetadata(0));
+    public static readonly DependencyProperty GraphSeriesCollectionProperty = DependencyProperty.Register(nameof(GraphSeriesCollection), typeof(SeriesCollection), typeof(SeasonButtonModel), new PropertyMetadata(new SeriesCollection()));
     public static readonly DependencyProperty GoalsProperty = DependencyProperty.Register(nameof(Goals), typeof(ObservableCollection<Goal>), typeof(SeasonButtonModel), new PropertyMetadata(new ObservableCollection<Goal>()));
     public static readonly DependencyProperty GoalDisplayHeightProperty = DependencyProperty.Register(nameof(GoalDisplayHeight), typeof(double), typeof(SeasonButtonModel), new PropertyMetadata(72.0));
     public static readonly DependencyProperty EndDateTimestampProperty = DependencyProperty.Register(nameof(EndDateTimestamp), typeof(long), typeof(SeasonButtonModel), new PropertyMetadata((long) 0));
@@ -72,10 +75,16 @@ public class SeasonButtonModel : ToggleButton
 
 
 
-    public PlotModel Graph
+    public int Duration
     {
-        get => (PlotModel)GetValue(GraphProperty);
-        set => SetValue(GraphProperty, value);
+        get => (int)GetValue(DurationProperty);
+        set => SetValue(DurationProperty, value);
+    }
+    
+    public SeriesCollection GraphSeriesCollection
+    {
+        get => (SeriesCollection)GetValue(GraphSeriesCollectionProperty);
+        set => SetValue(GraphSeriesCollectionProperty, value);
     }
     
     public ObservableCollection<Goal> Goals
@@ -161,6 +170,27 @@ public class SeasonButtonModel : ToggleButton
     public List<decimal> LogicalSegmentsStops => CalcUtil.CalcLogicalStops(CalcUtil.CalcSeasonSegments(), true);
     public List<decimal> VisualSegmentsStops => CalcUtil.CalcVisualStops(CalcUtil.CalcSeasonSegments(), true);
     public int NumGoals => Goals.Count;
+    public int BufferDays => SettingsHelper.Data.BufferDays;
+    public int BufferDaysPosition => Duration - BufferDays;
     
-    // TODO: Update Graph in Binding when GraphProperty is changed
+    public Func<double, string> LargeNumberFormatter => value => //TODO Move to own class
+    {
+        if (value == 0) return "0";
+        
+        var mag = (int)(Math.Floor(Math.Log10(value)) / 3); // Truncates to 6, divides to 2
+        var divisor = Math.Pow(10, mag * 3);
+
+        var shortNumber = value / divisor;
+
+        var suffix = mag switch
+        {
+            0 => string.Empty,
+            1 => "k",
+            2 => "M",
+            3 => "B",
+            _ => ""
+        };
+
+        return shortNumber.ToString("N1") + suffix;
+    };
 }

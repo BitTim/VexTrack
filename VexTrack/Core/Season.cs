@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using OxyPlot;
+using LiveCharts;
 
 namespace VexTrack.Core;
 
@@ -23,29 +23,47 @@ public class Season
 
     public bool IsActive => DateTimeOffset.Now.ToLocalTime().ToUnixTimeSeconds() < EndDate;
     public String Status => GetStatus();
+    public int Duration => GetDuration();
+    public int RemainingDays => GetRemainingDays();
+    public SeriesCollection GraphSeriesCollection => GraphCalc.CalcGraphs(Total, History.First().Amount, Duration, RemainingDays, History);
 
     public SeasonExtremes Extremes => GetExtremes();
-    public PlotModel Graph { get; set; }
 
 
     public Season(string uuid, string name, long endDate, int activeBpLevel, int cXp, List<HistoryEntry> history)
     {
         (Uuid, Name, EndDate, ActiveBpLevel, Cxp, History) = (uuid, name, endDate, activeBpLevel, cXp, history);
-        ResetGraph();
     }
 
-    public void UpdateGraph()
-    {
-        ResetGraph();
-        Graph = GraphCalc.UpdateGraph(Graph, false, Uuid);
-    }
-
-    private void ResetGraph() { Graph = new PlotModel { PlotMargins = new OxyThickness(0, 0, 0, 16), PlotAreaBorderColor = OxyColors.Transparent }; }
     private string GetStatus()
     {
         if (Collected < CalcUtil.CalcMaxForSeason(false)) return IsActive ? "Warning" : "Failed";
         if (Collected < Total) return "Done";
         return Collected >= Total ? "DoneAll" : "";
+    }
+    
+    private int GetRemainingDays()
+    {
+        var endDate = DateTimeOffset.FromUnixTimeSeconds(EndDate).ToLocalTime().Date;
+        DateTimeOffset today = DateTimeOffset.Now.ToLocalTime().Date;
+
+        var remainingDays = (endDate - today).Days;
+        if ((endDate - today).Hours > 12) { remainingDays += 1; }
+        if (remainingDays < 0) remainingDays = 0;
+
+        return remainingDays;
+    }
+
+    private int GetDuration()
+    {
+        DateTimeOffset endDate = DateTimeOffset.FromUnixTimeSeconds(EndDate).ToLocalTime().Date;
+        DateTimeOffset startDate = DateTimeOffset.FromUnixTimeSeconds(History.First().Time).ToLocalTime().Date;
+
+        var duration = (endDate - startDate).Days;
+        if ((endDate - startDate).Hours > 12) { duration += 1; }
+        if (duration < 0) duration = 0;
+
+        return duration;
     }
     
     private SeasonExtremes GetExtremes()

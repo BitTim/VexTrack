@@ -26,6 +26,32 @@ namespace VexTrack.Core
 
 			return collected;
 		}
+		
+		public static List<int> CalcCollectedPerDay(List<HistoryEntry> history, int duration)
+		{
+			var dailyAmounts = new List<int>();
+
+			var historyIdx = 0;
+			var startDate = DateTimeOffset.FromUnixTimeSeconds(history.First().Time).ToLocalTime().Date; // TODO: Change with #69
+
+			for (var i = 0; i < duration + 1; i++)
+			{
+				var amount = 0;
+
+				if(historyIdx < history.Count) {
+					var currDate = startDate.AddDays(i).ToLocalTime().Date;
+					while (DateTimeOffset.FromUnixTimeSeconds(history[historyIdx].Time).ToLocalTime().Date == currDate)
+					{
+						amount += history[historyIdx++].Amount;
+						if (historyIdx >= history.Count) break;
+					}
+				}
+
+				dailyAmounts.Add(amount);
+			}
+
+			return dailyAmounts;
+		}
 
 		public static int CalcProgress(double total, double collected)
 		{

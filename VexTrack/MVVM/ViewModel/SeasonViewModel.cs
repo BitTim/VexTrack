@@ -62,8 +62,6 @@ namespace VexTrack.MVVM.ViewModel
 		private static void OnSeasonButtonClick(object parameter)
 		{
 			var uuid = (string)parameter;
-
-			TrackingData.Seasons.Find(s => s.Uuid == uuid)?.UpdateGraph();
 		}
 	}
 }

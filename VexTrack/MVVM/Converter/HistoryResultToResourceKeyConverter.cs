@@ -16,7 +16,7 @@ namespace VexTrack.MVVM.Converter
 			if (result == "Win" || result == "Loss")
 			{
 				if (property == "Foreground") return Application.Current.FindResource("White");
-				if (property == "Background") return Application.Current.FindResource(result + "Color");
+				if (property == "Background") return Application.Current.FindResource(result);
 			}
 
 			if (property == "Foreground") return Application.Current.FindResource("Foreground");

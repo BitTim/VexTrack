@@ -107,10 +107,10 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			var background = (SolidColorBrush)Application.Current.FindResource("Background") ?? new SolidColorBrush();
 			var shade = (SolidColorBrush)Application.Current.FindResource("Shade") ?? new SolidColorBrush();
 
-			var ideal = GraphCalc.CalcIdealGraph(Uuid, epilogue);
-			var performance = GraphCalc.CalcPerformanceGraph(Uuid);
+			var ideal = GraphCalc.CalcIdealGraphOld(Uuid, epilogue);
+			var performance = GraphCalc.CalcPerformanceGraphOld(Uuid);
 			
-			var bufferZone = GraphCalc.CalcBufferZone(Uuid, epilogue);
+			var bufferZone = GraphCalc.CalcBufferZoneOld(Uuid, epilogue);
 
 			var legend = new Legend
 			{
@@ -182,12 +182,12 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 		private void AddGraphLevels(bool epilogue)
 		{
-			var levels = GraphCalc.CalcBattlepassLevels(Uuid);
+			var levels = GraphCalc.CalcBattlepassLevelsOld(Uuid);
 			foreach (var ls in levels) Graph.Series.Add(ls);
 
 			if (!epilogue) return;
 
-			var epilogueLevels = GraphCalc.CalcEpilogueLevels(Uuid);
+			var epilogueLevels = GraphCalc.CalcEpilogueLevelsOld(Uuid);
 			foreach (var ls in epilogueLevels) Graph.Series.Add(ls);
 		}
 

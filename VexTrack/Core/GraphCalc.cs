@@ -1,21 +1,81 @@
 ﻿using OxyPlot;
 using OxyPlot.Annotations;
-using OxyPlot.Series;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using LiveCharts;
+using LiveCharts.Defaults;
+using LiveCharts.Wpf;
 using OxyPlot.Axes;
 using OxyPlot.Legends;
+using AxisPosition = OxyPlot.Axes.AxisPosition;
 
 namespace VexTrack.Core
 {
 	public static class GraphCalc
 	{
-		public static LineSeries CalcIdealGraph(string sUuid, bool epilogue)
+		public static SeriesCollection CalcGraphs(int total, int startXp, int duration, int remainingDays, List<HistoryEntry> history)
 		{
-			LineSeries ret = new();
+			var collection = new SeriesCollection();
+
+			var mono = (Brush)Application.Current.FindResource("AccMono") ?? new SolidColorBrush();
+			var accent = (Brush)Application.Current.FindResource("Accent") ?? new SolidColorBrush();
+
+			var ideal = new LineSeries
+			{
+				Title = "Ideal",
+				Values = new ChartValues<ObservablePoint>(),
+				PointGeometry = null,
+				Stroke = mono,
+				Fill = Brushes.Transparent,
+				LineSmoothness = 0,
+			};
+			
+			var performance = new LineSeries
+			{
+				Title = "Performance",
+				Values = new ChartValues<ObservablePoint>(),
+				PointGeometry = null,
+				Stroke = accent,
+				StrokeThickness = 3,
+				Fill = Brushes.Transparent,
+				LineSmoothness = 0
+			};
+			
+			var startRemaining = total - startXp;
+			var totalDaily = startRemaining / (double)(duration - SettingsHelper.Data.BufferDays);
+			var dailyAmounts = CalcUtil.CalcCollectedPerDay(history, duration);
+
+			var prevPerformanceVal = 0;
+			
+			for (var i = 0; i < duration; i++)
+			{
+				// Ideal
+				var idealVal = (int)Math.Ceiling(i * totalDaily + startXp);
+				if (idealVal > total) idealVal = total;
+
+				ideal.Values.Add(new ObservablePoint(i, idealVal));
+
+				// Performance
+				if(i >= duration - remainingDays) continue;
+				
+				var performanceVal = prevPerformanceVal + dailyAmounts[i];
+				prevPerformanceVal = performanceVal;
+
+				performance.Values.Add(new ObservablePoint(i, performanceVal));
+			}
+
+			collection.Add(ideal);
+			collection.Add(performance);
+			
+			return collection;
+		}
+		
+		public static OxyPlot.Series.LineSeries CalcIdealGraphOld(string sUuid, bool epilogue)
+		{
+			OxyPlot.Series.LineSeries ret = new();
 
 			var foreground = (SolidColorBrush)Application.Current.FindResource("Foreground") ?? new SolidColorBrush();
 
@@ -42,9 +102,9 @@ namespace VexTrack.Core
 			return ret;
 		}
 
-		public static LineSeries CalcPerformanceGraph(string sUuid)
+		public static OxyPlot.Series.LineSeries CalcPerformanceGraphOld(string sUuid)
 		{
-			LineSeries ret = new();
+			OxyPlot.Series.LineSeries ret = new();
 
 			DateTimeOffset prevDate = DateTimeOffset.FromUnixTimeSeconds(TrackingData.GetFirstHistoryEntry(sUuid).Time).ToLocalTime().Date;
 			List<int> dailyAmounts = new();
@@ -87,7 +147,7 @@ namespace VexTrack.Core
 			return ret;
 		}
 
-		public static RectangleAnnotation CalcBufferZone(string sUuid, bool epilogue)
+		public static RectangleAnnotation CalcBufferZoneOld(string sUuid, bool epilogue)
 		{
 			RectangleAnnotation ret = new();
 
@@ -104,13 +164,13 @@ namespace VexTrack.Core
 			return ret;
 		}
 
-		public static List<LineSeries> CalcBattlepassLevels(string sUuid)
+		public static List<OxyPlot.Series.LineSeries> CalcBattlepassLevelsOld(string sUuid)
 		{
-			List<LineSeries> ret = new();
+			List<OxyPlot.Series.LineSeries> ret = new();
 
 			for (var i = 0; i < Constants.BattlepassLevels + 1; i++)
 			{
-				LineSeries ls = new();
+				OxyPlot.Series.LineSeries ls = new();
 				byte alpha = 128;
 				var val = CalcUtil.CalcMaxForSeason(false);
 
@@ -127,13 +187,13 @@ namespace VexTrack.Core
 			return ret;
 		}
 
-		public static List<LineSeries> CalcEpilogueLevels(string sUuid)
+		public static List<OxyPlot.Series.LineSeries> CalcEpilogueLevelsOld(string sUuid)
 		{
-			List<LineSeries> ret = new();
+			List<OxyPlot.Series.LineSeries> ret = new();
 
 			for (var i = 1; i < Constants.EpilogueLevels + 1; i++)
 			{
-				LineSeries ls = new();
+				OxyPlot.Series.LineSeries ls = new();
 				byte alpha = 128;
 				var val = CalcUtil.CalcMaxForSeason(true) + i * Constants.XpPerEpilogueLevel;
 
@@ -166,10 +226,10 @@ namespace VexTrack.Core
 			var background = (SolidColorBrush)Application.Current.FindResource("Background") ?? new SolidColorBrush();
 			var shade = (SolidColorBrush)Application.Current.FindResource("Shade") ?? new SolidColorBrush();
 
-			var ideal = GraphCalc.CalcIdealGraph(seasonUuid, epilogue);
-			var performance = GraphCalc.CalcPerformanceGraph(seasonUuid);
+			var ideal = GraphCalc.CalcIdealGraphOld(seasonUuid, epilogue);
+			var performance = GraphCalc.CalcPerformanceGraphOld(seasonUuid);
 			
-			var bufferZone = GraphCalc.CalcBufferZone(seasonUuid, epilogue);
+			var bufferZone = GraphCalc.CalcBufferZoneOld(seasonUuid, epilogue);
 
 			var legend = new Legend
 			{
@@ -238,18 +298,18 @@ namespace VexTrack.Core
 
 		private static PlotModel AddGraphLevels(PlotModel model, bool epilogue, string seasonUuid)
 		{
-			var levels = CalcBattlepassLevels(seasonUuid);
+			var levels = CalcBattlepassLevelsOld(seasonUuid);
 			foreach (var ls in levels) model.Series.Add(ls);
 
 			if (!epilogue) return model;
 
-			var epilogueLevels = CalcEpilogueLevels(seasonUuid);
+			var epilogueLevels = CalcEpilogueLevelsOld(seasonUuid);
 			foreach (var ls in epilogueLevels) model.Series.Add(ls);
 
 			return model;
 		}
 		
-		private static PlotModel UpdateYAxis(PlotModel model, DataPointSeries performance, bool epilogue)
+		private static PlotModel UpdateYAxis(PlotModel model, OxyPlot.Series.DataPointSeries performance, bool epilogue)
 		{
 			var maximum = CalcUtil.CalcMaxForSeason(epilogue) * 2;
 			if (performance.Points.Last().Y >= maximum) maximum = (int)performance.Points.Last().Y + 20000;

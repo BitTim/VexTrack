@@ -25,7 +25,7 @@ Download the latest VexTrack_vX.X-Setup.exe from the [GitHub releases](https://g
 ## Third Parties
 This Project uses the following third projects:
 - [Newtonsoft Json](https://www.newtonsoft.com/json)
-- [OxyPlot](https://oxyplot.github.io/)
+- [LiveCharts](https://v0.lvcharts.com/)
 - [MathConverter](https://github.com/hexinnovation/MathConverter)
 
 This Project also uses the following third party assets and services:

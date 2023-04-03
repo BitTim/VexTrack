@@ -8,6 +8,7 @@
              xmlns:vm="clr-namespace:VexTrack.MVVM.ViewModel"
              xmlns:conv="clr-namespace:VexTrack.MVVM.Converter"
 			 xmlns:oxy="http://oxyplot.org/wpf"
+			 xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
 			 mc:Ignorable="d" 
              d:DesignHeight="780"
 			 d:DesignWidth="640"
@@ -169,27 +170,51 @@
 							   Foreground="{DynamicResource Foreground}"
 							   Margin="0, 0, 0, 8"/>
 
-				<oxy:PlotView Model="{Binding Graph}"
-							  Background="{DynamicResource Background}"
-							  Foreground="{DynamicResource Foreground}"
-							  Margin="0, 0, 0, 0"
-							  Grid.Row="1">
-					<oxy:PlotView.DefaultTrackerTemplate>
-						<ControlTemplate>
-							<oxy:TrackerControl Position="{Binding Position}"
-												LineExtents="{Binding PlotModel.PlotArea}"
-												Background="{DynamicResource Background}"
-												BorderBrush="{DynamicResource Shade}"
-												LineStroke="{DynamicResource Shade}">
-								<oxy:TrackerControl.Content>
-									<TextBlock Text="{Binding}"
-											   Margin="8"
-											   Foreground="{DynamicResource Foreground}"/>
-								</oxy:TrackerControl.Content>
-							</oxy:TrackerControl>
-						</ControlTemplate>
-					</oxy:PlotView.DefaultTrackerTemplate>
-				</oxy:PlotView>
+				<!-- <oxy:PlotView Model="{Binding Graph}" -->
+				<!-- 			  Background="{DynamicResource Background}" -->
+				<!-- 			  Foreground="{DynamicResource Foreground}" -->
+				<!-- 			  Margin="0, 0, 0, 0" -->
+				<!-- 			  Grid.Row="1"> -->
+				<!-- 	<oxy:PlotView.DefaultTrackerTemplate> -->
+				<!-- 		<ControlTemplate> -->
+				<!-- 			<oxy:TrackerControl Position="{Binding Position}" -->
+				<!-- 								LineExtents="{Binding PlotModel.PlotArea}" -->
+				<!-- 								Background="{DynamicResource Background}" -->
+				<!-- 								BorderBrush="{DynamicResource Shade}" -->
+				<!-- 								LineStroke="{DynamicResource Shade}"> -->
+				<!-- 				<oxy:TrackerControl.Content> -->
+				<!-- 					<TextBlock Text="{Binding}" -->
+				<!-- 							   Margin="8" -->
+				<!-- 							   Foreground="{DynamicResource Foreground}"/> -->
+				<!-- 				</oxy:TrackerControl.Content> -->
+				<!-- 			</oxy:TrackerControl> -->
+				<!-- 		</ControlTemplate> -->
+				<!-- 	</oxy:PlotView.DefaultTrackerTemplate> -->
+				<!-- </oxy:PlotView> -->
+				
+				<lvc:CartesianChart Grid.Row="1"
+				                    Series="{Binding GraphSeriesCollection}"
+				                    LegendLocation="Bottom"
+				                    Zoom="Xy"
+				                    Pan="Xy">
+                    
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Title="Amount in XP" LabelFormatter="{Binding LargeNumberFormatter}"/>
+                    </lvc:CartesianChart.AxisY>
+                    
+                    <lvc:CartesianChart.AxisX>
+                        <lvc:Axis Title="Day in current scope">
+                            <lvc:Axis.Sections>
+                                <lvc:AxisSection Value="{Binding BufferDaysPosition}"
+                                                 SectionWidth="{Binding BufferDays}"
+                                                 Fill="{StaticResource LossTranslucent}"/>
+                            </lvc:Axis.Sections>
+                            <lvc:Axis.Separator>
+                                <lvc:Separator Step="5"/>
+                            </lvc:Axis.Separator>
+                        </lvc:Axis>
+                    </lvc:CartesianChart.AxisX>
+                </lvc:CartesianChart>
 
 				<Grid Grid.Row="2"
 					   Margin="0, 8, 0, 0">

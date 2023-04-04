@@ -131,10 +131,19 @@ public class Season
     private List<Goal> GetGoals()
     {
         var goals = new List<Goal>();
+        var maxLevel = Constants.BattlepassLevels + Constants.EpilogueLevels;
+        var startLevel = ActiveBpLevel - 1;
+        var endLevel = ActiveBpLevel + 2;
 
-        for (var i = ActiveBpLevel - 1; i < ActiveBpLevel + 2; i++)
+        if (ActiveBpLevel > maxLevel - 3)
         {
-            if (i > Constants.BattlepassLevels + Constants.EpilogueLevels) break;
+            startLevel = maxLevel - 2;
+            endLevel = maxLevel + 1;
+        }
+
+        for (var i = startLevel; i < endLevel; i++)
+        {
+            if (i > maxLevel) break;
             var levelTotal = CalcUtil.CalcMaxForLevel(i);
             var goal = new Goal(Guid.NewGuid().ToString(), "Level " + i, levelTotal, ActiveBpLevel <= i ? ActiveBpLevel == i ? Cxp : 0 : levelTotal);
             goals.Add(goal);

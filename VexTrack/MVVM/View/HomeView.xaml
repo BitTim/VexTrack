@@ -16,6 +16,7 @@
 
 	<UserControl.Resources>
 		<conv:NegativeToZeroConverter x:Key="NegativeToZeroConv"/>
+		<conv:StatusToBadgeConverter x:Key="StatusToBadgeConv" />
 	</UserControl.Resources>
 	
     <Grid HorizontalAlignment="Stretch"
@@ -23,7 +24,7 @@
 
 		<Grid.RowDefinitions>
 			<RowDefinition Height="80"/>
-			<RowDefinition Height="152"/>
+			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 
@@ -42,109 +43,79 @@
 				Margin="16, 0, 16, 16">
 
 			<Grid Margin="8">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+                                        
 				<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*"/>
-						<ColumnDefinition Width="*"/>
-						<ColumnDefinition Width="*"/>
-						<ColumnDefinition Width="*"/>
-					</Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
 
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto"/>
-						<RowDefinition Height="Auto"/>
-						<RowDefinition Height="Auto"/>
-						<RowDefinition Height="Auto"/>
-						<RowDefinition Height="Auto"/>
-					</Grid.RowDefinitions>
-
-					<TextBlock Text="Daily Progress"
-							   Grid.Column="0"
-							   Grid.Row="0"
-							   Grid.ColumnSpan="2"
-							   FontSize="20"
-							   FontWeight="Bold"
-							   Foreground="{DynamicResource Foreground}"
-							   Margin="0, 0, 0, 16"/>
-
-					<TextBlock Text="Collected"
-							   Grid.Row="1"
-							   Grid.Column="0"
-							   FontSize="14"
-							   FontWeight="Bold"
-							   VerticalAlignment="Center"
-							   Foreground="{DynamicResource Foreground}"
-							   Margin="0, 0, 0, 4"/>
-
-					<TextBlock Text="Remaining"
-							   Grid.Row="1"
-							   Grid.Column="2"
-							   FontSize="14"
-							   FontWeight="Bold"
-							   VerticalAlignment="Center"
-							   Foreground="{DynamicResource Foreground}"
-							   Margin="0, 0, 0, 4"/>
-
-					<TextBlock Text="Total"
-							   Grid.Row="2"
-							   Grid.Column="0"
-							   FontSize="14"
-							   FontWeight="Bold"
-							   VerticalAlignment="Center"
-							   Foreground="{DynamicResource Foreground}"
-							   Margin="0, 0, 0, 4"/>
-
-					<TextBlock Text="Streak"
-							   Grid.Row="2"
-							   Grid.Column="2"
-							   FontSize="14"
-							   FontWeight="Bold"
-							   VerticalAlignment="Center"
-							   Foreground="{DynamicResource Foreground}"
-							   Margin="0, 8, 0, 4"/>
-
-					<model:TextWithUnit Text="{Binding Collected, Converter={StaticResource NegativeToZeroConv}}"
-										Unit=" XP"
-										Grid.Row="1"
-										Grid.Column="1"
-										Margin="0, 0, 0, 4"/>
-
-					<model:TextWithUnit Text="{Binding Remaining, Converter={StaticResource NegativeToZeroConv}}"
-										Unit=" XP"
-										Grid.Row="1"
-										Grid.Column="3"
-										Margin="0, 0, 0, 4"/>
-
-					<model:TextWithUnit Text="{Binding Total}"
-										Unit=" XP"
-										Grid.Row="2"
-										Grid.Column="1"
-										Margin="0, 0, 0, 4"/>
-
-					<StackPanel Grid.Row="2"
-								Grid.Column="3"
-								Orientation="Horizontal"
-								Margin="0, 0, 0 ,0">
-						<TextBlock Text="{Binding Streak}"
-								   Foreground="{Binding StreakColor}"
-								   VerticalAlignment="Center"
-								   FontSize="14"
-								   Margin="0, 0, 4, 0"/>
-						
-						<Path Width="16" Height="16"
-							  Fill="{Binding StreakColor}"
-							  Data="{Binding Source={StaticResource StreakIcon}, Path=Data}"/>
-					</StackPanel>
-
+				<TextBlock Text="Daily Progress"
+						   Grid.Column="0"
+						   Grid.Row="0"
+						   FontSize="20"
+						   FontWeight="Bold"
+						   Foreground="{DynamicResource Foreground}"
+						   Margin="0, 0, 0, 16"/>
+					
 				<model:SegmentedProgressModel x:Name="DailySegmentedProgress"
 				                              Value="{Binding Progress}"
-				                              LogicalSegmentsStops="{Binding Stops}"
-				                              VisualSegmentsStops="{Binding Stops}"
-				                              Grid.ColumnSpan="4" Grid.Column="0" Grid.Row="3"
-				                              DebugName="Dashboard"/>
-				
-				<!-- <model:ProgressArcModel x:Name="DailyProgressArc" -->
-				<!-- 						Value="{Binding Progress}" -->
-				<!-- 						Grid.Column="1"/> -->
+				                              LogicalSegmentsStops="{Binding LogicalStops}"
+				                              VisualSegmentsStops="{Binding VisualStops}"
+				                              Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1"/>
+
+				<StackPanel Grid.Column="1" Grid.Row="0"
+				            Orientation="Horizontal">
+					<TextBlock Text="{Binding Streak}"
+					           Foreground="{Binding StreakColor}"
+					           VerticalAlignment="Center"
+					           FontSize="16"
+					           Margin="0, 0, 4, 0" />
+
+					<Path Width="24" Height="24"
+					      Fill="{Binding StreakColor}"
+					      Data="{Binding Source={StaticResource StreakIcon}, Path=Data}"
+					      Margin="0, 0, 16, 0"/>
+					
+					<Path Width="24" Height="24"
+					      x:Name="StatusIcon"
+					      Margin="8, 0, 0, 0"
+					      Fill="{Binding Path=Status, Converter={StaticResource StatusToBadgeConv}, ConverterParameter=Color}"
+					      Data="{Binding Path=Status, Converter={StaticResource StatusToBadgeConv}, ConverterParameter=Data}" />
+				</StackPanel>
+					
+				<UniformGrid Grid.Column="0" Grid.Row="2" Columns="2"
+				             Margin="0, 0, 48, 0">
+					<StackPanel Orientation="Horizontal"
+					            Margin="0, 0, 16, 0">
+						<TextBlock Text="{Binding Collected, Converter={StaticResource NegativeToZeroConverter}, StringFormat=N0}"
+						           FontSize="14"
+						           Margin="0, 0, 4, 0"
+						           Foreground="{DynamicResource Foreground}" />
+
+						<TextBlock Text="/"
+						           FontSize="14"
+						           Margin="0, 0, 4, 0"
+						           Foreground="{DynamicResource Foreground}" />
+
+						<model:TextWithUnit Text="{Binding Total, Converter={StaticResource NegativeToZeroConverter}, StringFormat=N0}"
+						                    Unit=" XP"
+						                    FontSize="14"
+						                    Foreground="{DynamicResource Foreground}" />
+					</StackPanel>
+
+
+					<model:TextWithUnit Margin="0, 0, 16, 0"
+					                    Text="{Binding Remaining, Converter={StaticResource NegativeToZeroConverter}, StringFormat=N0}"
+					                    Unit=" XP remaining"
+					                    HorizontalAlignment="Center"
+					                    FontSize="14"
+					                    Foreground="{DynamicResource Foreground}" />
+				</UniformGrid>
 			</Grid>
 		</Border>
 
@@ -169,28 +140,6 @@
 							   FontWeight="Bold"
 							   Foreground="{DynamicResource Foreground}"
 							   Margin="0, 0, 0, 8"/>
-
-				<!-- <oxy:PlotView Model="{Binding Graph}" -->
-				<!-- 			  Background="{DynamicResource Background}" -->
-				<!-- 			  Foreground="{DynamicResource Foreground}" -->
-				<!-- 			  Margin="0, 0, 0, 0" -->
-				<!-- 			  Grid.Row="1"> -->
-				<!-- 	<oxy:PlotView.DefaultTrackerTemplate> -->
-				<!-- 		<ControlTemplate> -->
-				<!-- 			<oxy:TrackerControl Position="{Binding Position}" -->
-				<!-- 								LineExtents="{Binding PlotModel.PlotArea}" -->
-				<!-- 								Background="{DynamicResource Background}" -->
-				<!-- 								BorderBrush="{DynamicResource Shade}" -->
-				<!-- 								LineStroke="{DynamicResource Shade}"> -->
-				<!-- 				<oxy:TrackerControl.Content> -->
-				<!-- 					<TextBlock Text="{Binding}" -->
-				<!-- 							   Margin="8" -->
-				<!-- 							   Foreground="{DynamicResource Foreground}"/> -->
-				<!-- 				</oxy:TrackerControl.Content> -->
-				<!-- 			</oxy:TrackerControl> -->
-				<!-- 		</ControlTemplate> -->
-				<!-- 	</oxy:PlotView.DefaultTrackerTemplate> -->
-				<!-- </oxy:PlotView> -->
 				
 				<lvc:CartesianChart Grid.Row="1"
 				                    Series="{Binding GraphSeriesCollection}"

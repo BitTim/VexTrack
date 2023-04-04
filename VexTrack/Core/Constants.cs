@@ -13,11 +13,9 @@ namespace VexTrack.Core
 		public static readonly string DataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"/VexTrack - Preview";
 		public static readonly string LegacyDataFolder = @"dat";
 		public static readonly string UpdateFolder = DataFolder + @"/Update";
-		public static readonly string LogsFolder = DataFolder + @"/logs";
 
 		public static readonly string SettingsPath = DataFolder + @"/settings.json";
 		public static readonly string DataPath = DataFolder + @"/data.json";
-		public static readonly string LegacyDataPath = DataFolder + @"/config.json";
 		public static readonly string ManifestFile = @"/manifest.json";
 		public static readonly string FileListFile = @"/fileList.txt";
 
@@ -43,7 +41,6 @@ namespace VexTrack.Core
 			250000
 		};
 
-		public static readonly string DefaultGroupUuid = "07a7c1e7-5cfc-40b5-b7a5-7d3aaa7a6352";
 
 		public static readonly List<string> Maps = new()
 		{
@@ -60,7 +57,7 @@ namespace VexTrack.Core
 		public static readonly List<string> Gamemodes = new()
 		{
 			"Unrated",
-			"Competetive",
+			"Competitive",
 			"Spike Rush",
 			"Deathmatch",
 			"Escalation",

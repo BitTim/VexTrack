@@ -1,62 +1,60 @@
-﻿using OxyPlot;
-using OxyPlot.Series;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using LiveCharts;
 using LiveCharts.Defaults;
+using LiveCharts.Wpf;
 
 namespace VexTrack.Core
 {
 	public static class DashboardDataCalc
 	{
-		public static DailyData CalcDailyData(bool epilogue)
+		public static DailyData CalcDailyData()
 		{
 			DailyData ret = new();
+			
+			var currentSeasonData = TrackingData.CurrentSeasonData;
+			
+			var idealRemainingDays = currentSeasonData.RemainingDays - currentSeasonData.BufferDays;
+			if (idealRemainingDays > -currentSeasonData.BufferDays && idealRemainingDays <= 0) idealRemainingDays = 1;
 
-			var normalRemaining = CalcUtil.CalcMaxForSeason(false) - CalcUtil.CalcTotalCollected(TrackingData.CurrentSeasonData.ActiveBpLevel, TrackingData.CurrentSeasonData.Cxp);
-			var epilogueRemaining = CalcUtil.CalcMaxForSeason(true) - CalcUtil.CalcTotalCollected(TrackingData.CurrentSeasonData.ActiveBpLevel, TrackingData.CurrentSeasonData.Cxp);
+			var today = DateTimeOffset.Now.ToLocalTime().Date;
+			var dayIndex = (today - DateTimeOffset.FromUnixTimeSeconds(currentSeasonData.StartDate)).Days + 1;
+			if (dayIndex < 0 || dayIndex >= currentSeasonData.Duration) return ret;
 
-			var remaining = epilogue ? epilogueRemaining : normalRemaining;
+			var collectedPerDay = CalcUtil.CalcCollectedPerDay(currentSeasonData.History, currentSeasonData.Duration);
+			var totalToday = (int)Math.Ceiling(currentSeasonData.Remaining / (double)idealRemainingDays);
+			var totalTodayMin = (int)Math.Ceiling(currentSeasonData.RemainingMin / (double)idealRemainingDays);
+			if (totalToday <= 0) totalToday = 0;
+			if (totalTodayMin <= 0) totalTodayMin = 0;
 
-			var bufferDays = TrackingData.CurrentSeasonData.BufferDays;
-			var idealRemainingDays = TrackingData.GetRemainingDays(TrackingData.CurrentSeasonData.Uuid) - bufferDays;
-
-			if (idealRemainingDays <= -bufferDays && idealRemainingDays <= 0)
-			{
-				TrackingData.CreateSeasonInitPopup();
-				return ret;
-			}
-
-			if (idealRemainingDays > -bufferDays && idealRemainingDays <= 0) idealRemainingDays = 1;
-
-			var dailyCollected = TrackingData.CurrentSeasonData.History.GetRange(1, TrackingData.CurrentSeasonData.History.Count - 1)
-				.Where(h => DateTimeOffset.FromUnixTimeSeconds(h.Time)
-					.ToLocalTime().Date == DateTimeOffset.Now.ToLocalTime().Date).Sum(h => h.Amount);
-
-			var total = (int)Math.Ceiling((remaining + dailyCollected) / (double)idealRemainingDays);
-			if (total <= 0) total = 0;
-
-			ret.Total = total;
-			ret.Collected = dailyCollected;
+			var segments = new List<int> { totalTodayMin, totalToday - totalTodayMin };
+			
+			ret.Total = totalToday;
+			ret.Collected = collectedPerDay[dayIndex];
 			ret.Remaining = ret.Total - ret.Collected;
 			ret.Progress = CalcUtil.CalcProgress(ret.Total, ret.Collected);
+			ret.Segments = segments;
 
-			if (CalcUtil.CalcProgress((int)MathF.Round((epilogueRemaining + dailyCollected) / (float)idealRemainingDays), dailyCollected) >= 100 && dailyCollected > 0) StreakDataCalc.SetStreakEntry(DateTimeOffset.Now.ToLocalTime().Date, Constants.StreakStatusOrder.Keys.ElementAt(2));
-			else if (CalcUtil.CalcProgress((int)MathF.Round((normalRemaining + dailyCollected) / (float)idealRemainingDays), dailyCollected) >= 100 && dailyCollected > 0) StreakDataCalc.SetStreakEntry(DateTimeOffset.Now.ToLocalTime().Date, Constants.StreakStatusOrder.Keys.ElementAt(1));
-			else StreakDataCalc.SetStreakEntry(DateTimeOffset.Now.ToLocalTime().Date, Constants.StreakStatusOrder.Keys.ElementAt(0));
+			if((today - DateTimeOffset.FromUnixTimeSeconds(TrackingData.LastStreakUpdateTimestamp)).Days > 1) TrackingData.Streak = 0;
+			else if (collectedPerDay[dayIndex] > 0 && !DateTimeOffset.FromUnixTimeSeconds(TrackingData.LastStreakUpdateTimestamp).Equals(today))
+			{
+				TrackingData.Streak++;
+				TrackingData.LastStreakUpdateTimestamp = ((DateTimeOffset)today).ToUnixTimeSeconds();
+			}
 
-			ret.Streak = StreakDataCalc.CalcCurrentStreak(epilogue);
+			ret.Streak = TrackingData.Streak;
 			return ret;
 		}
 
-		public static LiveCharts.Wpf.LineSeries CalcDailyIdeal(LiveCharts.Wpf.LineSeries performance) // TODO: Refactor this
+		public static LineSeries CalcDailyIdeal(LineSeries performance) // TODO: Refactor this
 		{
 			var win = (Brush)Application.Current.FindResource("Win") ?? new SolidColorBrush();
 			
-			var ret = new LiveCharts.Wpf.LineSeries()
+			var ret = new LineSeries()
 			{
 				Title = "Daily Ideal",
 				Values = new ChartValues<ObservablePoint>(),
@@ -70,11 +68,11 @@ namespace VexTrack.Core
 			List<int> amounts = new();
 			var total = CalcUtil.CalcMaxForSeason(true);
 			var bufferDays = TrackingData.CurrentSeasonData.BufferDays;
-			var effectiveRemaining = TrackingData.GetRemainingDays(TrackingData.CurrentSeasonData.Uuid) - bufferDays + 1;
-			if (effectiveRemaining <= 0) effectiveRemaining = 1;
+			var remainingDays = TrackingData.CurrentSeasonData.RemainingDays;
+			var duration = TrackingData.CurrentSeasonData.Duration;
 			
-			var remainingDays = TrackingData.GetRemainingDays(TrackingData.CurrentSeasonData.Uuid);
-			var duration = TrackingData.GetDuration(TrackingData.CurrentSeasonData.Uuid);
+			var effectiveRemaining = remainingDays - bufferDays + 1;
+			if (effectiveRemaining <= 0) effectiveRemaining = 1;
 			var graphOffset = duration - remainingDays - 1;
 			
 			var startOffset = 0;
@@ -101,55 +99,12 @@ namespace VexTrack.Core
 
 			return ret;
 		}
-		
-		public static LineSeries CalcDailyIdealOld(LineSeries performance, bool epilogue)
-		{
-			LineSeries ret = new();
 
-			List<int> amounts = new();
-			var total = CalcUtil.CalcMaxForSeason(epilogue);
-			var bufferDays = TrackingData.CurrentSeasonData.BufferDays;
-			var effectiveRemaining = TrackingData.GetRemainingDays(TrackingData.CurrentSeasonData.Uuid) - bufferDays + 1;
-			if (effectiveRemaining <= 0) effectiveRemaining = 1;
-
-			var remainingDays = TrackingData.GetRemainingDays(TrackingData.CurrentSeasonData.Uuid);
-			var duration = TrackingData.GetDuration(TrackingData.CurrentSeasonData.Uuid);
-			var graphOffset = duration - remainingDays - 1;
-
-			var startOffset = 0;
-			DateTimeOffset today = DateTimeOffset.Now.ToLocalTime().Date;
-			DateTimeOffset lastEntryDate = DateTimeOffset.FromUnixTimeSeconds(TrackingData.GetLastHistoryEntry(TrackingData.CurrentSeasonData.Uuid).Time).ToLocalTime().Date;
-			if (lastEntryDate == today) startOffset = 1;
-
-			var initAmount = (int)performance.Points.First().Y;
-			if (performance.Points.Count > 1) initAmount = (int)performance.Points[performance.Points.Count - 1 - startOffset].Y;
-			var dailyTotal = (total - initAmount) / (double)effectiveRemaining;
-			if (dailyTotal <= 0) return ret;
-
-			amounts.Add(initAmount);
-
-			for (var i = 1; i < remainingDays + 2; i++)
-			{
-				var amount = (int)Math.Ceiling(i * dailyTotal + initAmount);
-				if (amount > total) amount = total;
-				amounts.Add(amount);
-			}
-
-			var idx = 0;
-			foreach (var amount in amounts) ret.Points.Add(new DataPoint(graphOffset + idx++, amount));
-
-			ret.Color = OxyColors.SteelBlue;
-			ret.StrokeThickness = 2;
-			ret.LineStyle = LineStyle.Dash;
-			ret.Title = "Daily Ideal";
-			return ret;
-		}
-
-		public static LiveCharts.Wpf.LineSeries CalcAverageGraph(LiveCharts.Wpf.LineSeries performance)
+		public static LineSeries CalcAverageGraph(LineSeries performance)
 		{
 			var loss = (Brush)Application.Current.FindResource("Loss") ?? new SolidColorBrush();
 			
-			var ret = new LiveCharts.Wpf.LineSeries()
+			var ret = new LineSeries()
 			{
 				Title = "Average",
 				Values = new ChartValues<ObservablePoint>(),
@@ -161,8 +116,8 @@ namespace VexTrack.Core
 			};
 
 			var total = CalcUtil.CalcMaxForSeason(true);
-			var duration = TrackingData.GetDuration(TrackingData.CurrentSeasonData.Uuid);
-			var daysPassed = duration - TrackingData.GetRemainingDays(TrackingData.CurrentSeasonData.Uuid);
+			var duration = TrackingData.CurrentSeasonData.Duration;
+			var daysPassed = duration - TrackingData.CurrentSeasonData.RemainingDays;
 			var totalCollected = CalcUtil.CalcTotalCollected(TrackingData.CurrentSeasonData.ActiveBpLevel, TrackingData.CurrentSeasonData.Cxp);
 			var average = (int)MathF.Round((float)totalCollected / (daysPassed + 1));
 
@@ -176,7 +131,7 @@ namespace VexTrack.Core
 				if (amount > total)
 				{
 					var x = (total - ((ObservablePoint)performance.Values[daysPassed - 1]).Y) / average + daysPassed - 1;
-					ret.Values.Add(new DataPoint(x, total));
+					ret.Values.Add(new ObservablePoint(x, total));
 					break;
 				}
 
@@ -185,65 +140,14 @@ namespace VexTrack.Core
 			
 			return ret;
 		}
-		
-		public static LineSeries CalcAverageGraphOld(LineSeries performance, bool epilogue)
-		{
-			LineSeries ret = new();
-
-			var total = CalcUtil.CalcMaxForSeason(epilogue);
-			var duration = TrackingData.GetDuration(TrackingData.CurrentSeasonData.Uuid);
-			var daysPassed = duration - TrackingData.GetRemainingDays(TrackingData.CurrentSeasonData.Uuid);
-			var totalCollected = CalcUtil.CalcTotalCollected(TrackingData.CurrentSeasonData.ActiveBpLevel, TrackingData.CurrentSeasonData.Cxp);
-			var average = (int)MathF.Round((float)totalCollected / (daysPassed + 1));
-
-			if (totalCollected >= total) return ret;
-
-			ret.Points.Add(new DataPoint(daysPassed - 1, performance.Points[daysPassed - 1].Y));
-
-			for (var i = daysPassed; i < duration + 1; i++)
-			{
-				var amount = (int)ret.Points.Last().Y + average;
-				if (amount > total)
-				{
-					var x = (total - performance.Points[daysPassed - 1].Y) / average + daysPassed - 1;
-					ret.Points.Add(new DataPoint(x, total));
-					break;
-				}
-
-				ret.Points.Add(new DataPoint(i, amount));
-			}
-
-			ret.Color = OxyColors.PaleVioletRed;
-			ret.StrokeThickness = 2;
-			ret.LineStyle = LineStyle.Dot;
-			ret.Title = "Average";
-			return ret;
-		}
-
-		public static LineSeries CalcGraphPoint(LineSeries series, OxyColor color)
-		{
-			LineSeries ret = new();
-
-			var remainingDays = TrackingData.GetRemainingDays(TrackingData.CurrentSeasonData.Uuid);
-			var duration = TrackingData.GetDuration(TrackingData.CurrentSeasonData.Uuid);
-			var xPos = duration - remainingDays;
-
-			ret.Points.Add(new DataPoint(xPos, series.Points.Find(p => (int)p.X == xPos).Y));
-
-			ret.MarkerType = MarkerType.Circle;
-			ret.MarkerFill = color;
-			ret.MarkerSize = 4;
-
-			return ret;
-		}
 
 		public static int CalcDaysFinished(bool epilogue)
 		{
 			var daysFinished = 0;
 
 			var total = CalcUtil.CalcMaxForSeason(epilogue);
-			var duration = TrackingData.GetDuration(TrackingData.CurrentSeasonData.Uuid);
-			var remainingDays = TrackingData.GetRemainingDays(TrackingData.CurrentSeasonData.Uuid);
+			var duration = TrackingData.CurrentSeasonData.Duration;
+			var remainingDays = TrackingData.CurrentSeasonData.RemainingDays;
 			var daysPassed = duration - remainingDays;
 			var totalCollected = CalcUtil.CalcTotalCollected(TrackingData.CurrentSeasonData.ActiveBpLevel, TrackingData.CurrentSeasonData.Cxp);
 			var average = (int)MathF.Round((float)totalCollected / (daysPassed + 1));
@@ -269,11 +173,12 @@ namespace VexTrack.Core
 		public int Remaining { get; set; }
 		public int Total { get; set; }
 		public int Streak { get; set; }
+		public List<int> Segments { get; set; }
 
 		public DailyData() { }
-		public DailyData(double progress, int collected, int remaining, int total, int streak)
+		public DailyData(double progress, int collected, int remaining, int total, int streak, List<int> segments)
 		{
-			(Progress, Collected, Remaining, Total, Streak) = (progress, collected, remaining, total, streak);
+			(Progress, Collected, Remaining, Total, Streak, Segments) = (progress, collected, remaining, total, streak, segments);
 		}
 	}
 }

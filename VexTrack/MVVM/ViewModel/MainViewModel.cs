@@ -26,10 +26,7 @@ namespace VexTrack.MVVM.ViewModel
 
 		private HistoryEntryPopupViewModel HePopup { get; set; }
 		private EditableHistoryEntryPopupViewModel EditableHePopup { get; set; }
-		private GoalPopupViewModel GoalPopup { get; set; }
 		private EditableGoalPopupViewModel EditableGoalPopup { get; set; }
-		private SeasonPopupViewModel SeasonPopup { get; set; }
-		private EditableSeasonPopupViewModel EditableSeasonPopup { get; set; }
 		private DataInitPopupViewModel DataInitPopup { get; set; }
 		private ResetDataConfirmationPopupViewModel ResetDataConfirmationPopup { get; set; }
 		private ProgressActivityPopupViewModel PaPopupVm { get; set; }
@@ -37,10 +34,7 @@ namespace VexTrack.MVVM.ViewModel
 		private UpdateAvailablePopupViewModel UpdateAvailablePopup { get; set; }
 		private UpdateDownloadPopupViewModel UpdateDownloadPopup { get; set; }
 		private UpdateFailedPopupViewModel UpdateFailedPopup { get; set; }
-		private EditableGoalGroupPopupViewModel EditableGoalGroupPopup { get; set; }
 		private DeleteGoalConfirmationPopupViewModel DeleteGoalConfirmationPopup { get; set; }
-		private DeleteGoalGroupConfirmationPopupViewModel DeleteGoalGroupConfirmationPopup { get; set; }
-		private SeasonEndConfirmationPopupViewModel SeasonEndConfirmationPopup { get; set; }
 
 		private object _currentView;
 		private bool _epilogue;
@@ -178,20 +172,8 @@ namespace VexTrack.MVVM.ViewModel
 			DeleteGoalConfirmationPopup = new DeleteGoalConfirmationPopupViewModel();
 			ViewModelManager.ViewModels.Add("DeleteGoalConfirmationPopup", DeleteGoalConfirmationPopup);
 
-			DeleteGoalGroupConfirmationPopup = new DeleteGoalGroupConfirmationPopupViewModel();
-			ViewModelManager.ViewModels.Add("DeleteGoalGroupConfirmationPopup", DeleteGoalGroupConfirmationPopup);
-
 			EditableGoalPopup = new EditableGoalPopupViewModel();
 			ViewModelManager.ViewModels.Add("EditableGoalPopup", EditableGoalPopup);
-
-			GoalPopup = new GoalPopupViewModel();
-			ViewModelManager.ViewModels.Add("GoalPopup", GoalPopup);
-
-			EditableSeasonPopup = new EditableSeasonPopupViewModel();
-			ViewModelManager.ViewModels.Add("EditableSeasonPopup", EditableSeasonPopup);
-
-			SeasonPopup = new SeasonPopupViewModel();
-			ViewModelManager.ViewModels.Add("SeasonPopup", SeasonPopup);
 
 			ResetDataConfirmationPopup = new ResetDataConfirmationPopupViewModel();
 			ViewModelManager.ViewModels.Add("ResetDataConfirmationPopup", ResetDataConfirmationPopup);
@@ -210,12 +192,6 @@ namespace VexTrack.MVVM.ViewModel
 
 			UpdateFailedPopup = new UpdateFailedPopupViewModel();
 			ViewModelManager.ViewModels.Add("UpdateFailedPopup", UpdateFailedPopup);
-
-			EditableGoalGroupPopup = new EditableGoalGroupPopupViewModel();
-			ViewModelManager.ViewModels.Add("EditableGoalGroupPopup", EditableGoalGroupPopup);
-
-			SeasonEndConfirmationPopup = new SeasonEndConfirmationPopupViewModel();
-			ViewModelManager.ViewModels.Add("SeasonEndConfirmationPopup", SeasonEndConfirmationPopup);
 		}
 
 		private void SetView(object view)

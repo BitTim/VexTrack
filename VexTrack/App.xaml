@@ -68,20 +68,8 @@
 				<popupView:EditableHistoryEntryPopup/>
 			</DataTemplate>
 
-			<DataTemplate DataType="{x:Type popupViewModel:GoalPopupViewModel}">
-				<popupView:GoalPopup/>
-			</DataTemplate>
-
 			<DataTemplate DataType="{x:Type popupViewModel:EditableGoalPopupViewModel}">
 				<popupView:EditableGoalPopup/>
-			</DataTemplate>
-
-			<DataTemplate DataType="{x:Type popupViewModel:SeasonPopupViewModel}">
-				<popupView:SeasonPopup/>
-			</DataTemplate>
-
-			<DataTemplate DataType="{x:Type popupViewModel:EditableSeasonPopupViewModel}">
-				<popupView:EditableSeasonPopup/>
 			</DataTemplate>
 
 			<DataTemplate DataType="{x:Type popupViewModel:ProgressActivityPopupViewModel}">
@@ -112,20 +100,8 @@
 				<popupView:UpdateFailedPopup/>
 			</DataTemplate>
 
-			<DataTemplate DataType="{x:Type popupViewModel:EditableGoalGroupPopupViewModel}">
-				<popupView:EditableGoalGroupPopup/>
-			</DataTemplate>
-
 			<DataTemplate DataType="{x:Type popupViewModel:DeleteGoalConfirmationPopupViewModel}">
 				<popupView:DeleteGoalConfirmationPopup/>
-			</DataTemplate>
-
-			<DataTemplate DataType="{x:Type popupViewModel:DeleteGoalGroupConfirmationPopupViewModel}">
-				<popupView:DeleteGoalGroupConfirmationPopup/>
-			</DataTemplate>
-
-			<DataTemplate DataType="{x:Type popupViewModel:SeasonEndConfirmationPopupViewModel}">
-				<popupView:SeasonEndConfirmationPopup/>
 			</DataTemplate>
 		</ResourceDictionary>
 	</Application.Resources>

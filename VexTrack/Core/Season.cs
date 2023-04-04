@@ -10,6 +10,7 @@ public class Season
 {
     public string Uuid { get; set; }
     public string Name { get; set; }
+    public long StartDate => History.First().Time; // TODO: Change to API data with #69
     public long EndDate { get; set; }
     public int ActiveBpLevel { get; set; }
     public int Cxp { get; set; }
@@ -17,13 +18,15 @@ public class Season
 
 
     public int Total => CalcUtil.CalcMaxForSeason(true);
+    public int TotalMin => CalcUtil.CalcMaxForSeason(false);
     public int Collected => CalcUtil.CalcTotalCollected(ActiveBpLevel, Cxp);
     public int Remaining => Total - Collected;
-    public int Average => CalcUtil.CalcAverage(ActiveBpLevel, Cxp, TrackingData.GetDuration(Uuid), TrackingData.GetRemainingDays(Uuid));
+    public double RemainingMin => TotalMin - Collected;
+    public int Average => CalcUtil.CalcAverage(ActiveBpLevel, Cxp, Duration, RemainingDays);
     public double Progress => CalcUtil.CalcProgress(Total, Collected);
 
     public bool IsActive => DateTimeOffset.Now.ToLocalTime().ToUnixTimeSeconds() < EndDate;
-    public String Status => GetStatus();
+    public string Status => GetStatus();
     public int Duration => GetDuration();
     public int RemainingDays => GetRemainingDays();
     public SeriesCollection GraphSeriesCollection => GraphCalc.CalcGraphs(Total, History.First().Amount, Duration, BufferDays, RemainingDays, History);
@@ -46,7 +49,7 @@ public class Season
 
     private string GetStatus()
     {
-        if (Collected < CalcUtil.CalcMaxForSeason(false)) return IsActive ? "Warning" : "Failed";
+        if (Collected < TotalMin) return IsActive ? "Warning" : "Failed";
         if (Collected < Total) return "Done";
         return Collected >= Total ? "DoneAll" : "";
     }

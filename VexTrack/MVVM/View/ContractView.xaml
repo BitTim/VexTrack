@@ -12,7 +12,6 @@
 
 	<UserControl.Resources>
 		<conv:StatusToBadgeConverter x:Key="StatusToBadgeConv"/>
-		<conv:IsDefaultGroupToVisibilityConverter x:Key="IsDefaultToVisibleConv"/>
 	</UserControl.Resources>
 
 	<Grid>

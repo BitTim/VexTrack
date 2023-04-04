@@ -84,7 +84,7 @@
                                             <ColumnDefinition Width="48"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <TextBlock Grid.Row="0"
+                                        <TextBlock Grid.Column="0" Grid.Row="0"
                                                    Text="{TemplateBinding Title}"
                                                    Foreground="{DynamicResource Foreground}"
                                                    FontSize="20"
@@ -256,35 +256,6 @@
                                     </Grid>
                                     
                                     <Border x:Name="ScaleAnimationDummy" Width="0" Height="0"/>
-
-                                    <!-- <oxy:PlotView -->
-                                    <!--     Model="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Graph}" -->
-                                    <!--     Background="{DynamicResource Background}" -->
-                                    <!--     Foreground="{DynamicResource Foreground}" -->
-                                    <!--     Margin="8, 4"> -->
-                                    <!--     <oxy:PlotView.Height> -->
-                                    <!--         <MultiBinding Converter="{StaticResource MathConv}" ConverterParameter="0.6xy"> -->
-                                    <!--             <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="ActualWidth" /> -->
-                                    <!--             <Binding ElementName="ScaleAnimationDummy" Path="Width"/> -->
-                                    <!--         </MultiBinding> -->
-                                    <!--     </oxy:PlotView.Height> -->
-                                    <!--      -->
-                                    <!--     <oxy:PlotView.DefaultTrackerTemplate> -->
-                                    <!--         <ControlTemplate> -->
-                                    <!--             <oxy:TrackerControl Position="{Binding Position}" -->
-                                    <!--                                 LineExtents="{Binding PlotModel.PlotArea}" -->
-                                    <!--                                 Background="{DynamicResource Background}" -->
-                                    <!--                                 BorderBrush="{DynamicResource Shade}" -->
-                                    <!--                                 LineStroke="{DynamicResource Shade}"> -->
-                                    <!--                 <oxy:TrackerControl.Content> -->
-                                    <!--                     <TextBlock Text="{Binding}" -->
-                                    <!--                                Margin="8" -->
-                                    <!--                                Foreground="{DynamicResource Foreground}" /> -->
-                                    <!--                 </oxy:TrackerControl.Content> -->
-                                    <!--             </oxy:TrackerControl> -->
-                                    <!--         </ControlTemplate> -->
-                                    <!--     </oxy:PlotView.DefaultTrackerTemplate> -->
-                                    <!-- </oxy:PlotView> -->
 
                                     <Grid>
                                         <Grid.Height>

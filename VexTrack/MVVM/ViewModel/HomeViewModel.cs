@@ -36,8 +36,8 @@ namespace VexTrack.MVVM.ViewModel
 		private int _deviationDaily;
 		private int _daysFinished;
 		private int _daysRemaining;
-		//private readonly PlotModel _graph;
 		private SeriesCollection _graphSeriesCollection;
+		private List<int> _segments;
 
 		public string Title
 		{
@@ -169,16 +169,6 @@ namespace VexTrack.MVVM.ViewModel
 			}
 		}
 
-		// public PlotModel Graph
-		// {
-		// 	get => _graph;
-		// 	init
-		// 	{
-		// 		_graph = value;
-		// 		OnPropertyChanged();
-		// 	}
-		// }
-
 		public SeriesCollection GraphSeriesCollection
 		{
 			get => _graphSeriesCollection;
@@ -189,8 +179,22 @@ namespace VexTrack.MVVM.ViewModel
 			}
 		}
 
-		public List<decimal> Stops => new List<decimal>() { (decimal)0.8, 1 };
+		public List<int> Segments
+		{
+			get => _segments;
+			set
+			{
+				_segments = value;
+				OnPropertyChanged();
+			}
+		}
 
+		public string Status => GetStatus();
+		public List<decimal> LogicalStops => CalcUtil.CalcLogicalStops(Segments, true);
+		public List<decimal> VisualStops => CalcUtil.CalcVisualStops(Segments, true);
+
+		
+		
 		public HomeViewModel()
 		{
 			Update(false);
@@ -204,18 +208,23 @@ namespace VexTrack.MVVM.ViewModel
 			Username = SettingsHelper.Data.Username;
 			Title = Username != "" ? "Welcome back," : "Welcome back";
 
-			var data = DashboardDataCalc.CalcDailyData(epilogue);
+			var data = DashboardDataCalc.CalcDailyData();
 
 			Collected = data.Collected;
 			Remaining = data.Remaining;
 			Total = data.Total;
 			Progress = data.Progress;
 			Streak = data.Streak;
-			StreakColor = StreakDataCalc.GetStreakColor(DateTimeOffset.Now.ToLocalTime().Date, epilogue);
+			Segments = data.Segments;
+
+			StreakColor = TrackingData.LastStreakUpdateTimestamp ==
+			              ((DateTimeOffset)DateTimeOffset.Now.ToLocalTime().Date).ToUnixTimeSeconds()
+				? (Brush)Application.Current.FindResource("Accent")
+				: (Brush)Application.Current.FindResource("Shade");
 
 			SeasonName = TrackingData.CurrentSeasonData.Name;
 			(DeviationIdeal, DeviationDaily) = CalcGraph(epilogue);
-			DaysRemaining = TrackingData.GetRemainingDays(TrackingData.CurrentSeasonData.Uuid);
+			DaysRemaining = TrackingData.CurrentSeasonData.RemainingDays;
 			DaysFinished = DashboardDataCalc.CalcDaysFinished(epilogue);
 
 			OnAddClicked = new RelayCommand(o =>
@@ -248,6 +257,13 @@ namespace VexTrack.MVVM.ViewModel
 			if (dailyIdeal.Values.Count > 0) deviationDaily = (int)((ObservablePoint)performance.Values[t]).Y - (int)((ObservablePoint)dailyIdeal.Values[1]).Y;
 
 			return (deviationIdeal, deviationDaily);
+		}
+		
+		private string GetStatus()
+		{
+			if (Collected < Segments[0]) return "Warning";
+			if (Collected >= Segments[0] && Collected < Total) return "Done";
+			return Collected >= Total ? "DoneAll" : "";
 		}
 		
 		

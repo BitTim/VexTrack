@@ -44,12 +44,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="MVVM\View\Popups\SeasonEndConfirmationPopup.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="MVVM\View\Popups\DeleteGoalGroupConfirmationPopup.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Update="MVVM\View\Popups\DeleteGoalConfirmationPopup.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -72,14 +66,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Page Update="MVVM\View\Popups\SeasonEndConfirmationPopup.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="MVVM\View\Popups\DeleteGoalGroupConfirmationPopup.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Update="MVVM\View\Popups\DeleteGoalConfirmationPopup.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>

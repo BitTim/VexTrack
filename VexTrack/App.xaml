@@ -50,10 +50,6 @@
 				<view:GoalView/>
 			</DataTemplate>
 
-			<DataTemplate DataType="{x:Type viewModel:SeasonViewModel}">
-				<view:SeasonView/>
-			</DataTemplate>
-
 			<DataTemplate DataType="{x:Type viewModel:HistoryViewModel}">
 				<view:HistoryView/>
 			</DataTemplate>

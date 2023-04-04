@@ -46,27 +46,42 @@
 						   Margin="8, 8, 0, 0"
 						   FontWeight="Bold"/>
 
-				<ItemsControl x:Name="BuiltinContentContainer"
-							  Grid.Row="1"
-							  Margin="0, 0, 0, 24"
-							  ItemsSource="{Binding BuiltinEntries}">
+				<ItemsControl Grid.Row="1" x:Name="SeasonsContentContainer"
+				              Margin="0, 0, 0, 12"
+				              ItemsSource="{Binding SeasonEntries}">
 					<ItemsControl.ItemsPanel>
 						<ItemsPanelTemplate>
-							<WrapPanel/>
+							<model:FlexWrapPanelModel Orientation="Horizontal"
+							                          MinItemWidth="550"
+							                          ItemMargin="8, 4"/>
 						</ItemsPanelTemplate>
 					</ItemsControl.ItemsPanel>
 
 					<ItemsControl.ItemTemplate>
-						<DataTemplate>
-							<!-- <model:ProgressButtonModel Title="{Binding Path=Title}" -->
-							<!-- 						   Value="{Binding Path=Progress}" -->
-							<!-- 						   Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.BuiltinGoalButtonClick}" -->
-							<!-- 						   CommandParameter="{Binding Path=Uuid}" -->
-							<!-- 						   BadgeRightData="{Binding Path=Status, Converter={StaticResource StatusToBadgeConv}, ConverterParameter=Data}" -->
-							<!-- 						   BadgeRightColor="{Binding Path=Status, Converter={StaticResource StatusToBadgeConv}, ConverterParameter=Color}" -->
-							<!-- 						   BadgeLeftData="{Binding Path=ActivityStatus, Converter={StaticResource StatusToBadgeConv}, ConverterParameter=Data}" -->
-							<!-- 						   BadgeLeftColor="{Binding Path=ActivityStatus, Converter={StaticResource StatusToBadgeConv}, ConverterParameter=Color}" -->
-							<!-- 						   Margin="8, 8, 0, 0"/> -->
+						<DataTemplate DataType="{x:Type core:Season}">
+							<!-- <model:ProgressButtonModel Title="{Binding Path=Name}" -->
+						              <!-- 						   Value="{Binding Path=Progress}" -->
+						              <!-- 						   Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.SeasonButtonClick}" -->
+						              <!-- 						   CommandParameter="{Binding Path=Uuid}" -->
+						              <!-- 						   BadgeRightData="{Binding Path=Status, Converter={StaticResource StatusToBadgeConv}, ConverterParameter=Data}" -->
+						              <!-- 						   BadgeRightColor="{Binding Path=Status, Converter={StaticResource StatusToBadgeConv}, ConverterParameter=Color}" -->
+						              <!-- 						   Margin="8, 8, 0, 0"/> -->
+							
+							<model:SeasonButtonModel Title="{Binding Name}"
+							                         Total="{Binding Total}"
+							                         Collected="{Binding Collected}"
+							                         Remaining="{Binding Remaining}"
+							                         Progress="{Binding Progress}"
+							                         DailyAverage="{Binding Average}"
+							                         Duration="{Binding Duration}"
+							                         EndDateTimestamp="{Binding EndDate}"
+							                         StrongestDayAmount="{Binding Extremes.StrongestDayAmount}"
+							                         StrongestDayTimestamp="{Binding Extremes.StrongestDayTimestamp}"
+							                         WeakestDayAmount="{Binding Extremes.WeakestDayAmount}"
+							                         WeakestDayTimestamp="{Binding Extremes.WeakestDayTimestamp}"
+							                         StatusIconData="{Binding Path=Status, Converter={StaticResource StatusToBadgeConv}, ConverterParameter=Data}"
+							                         StatusIconColor="{Binding Path=Status, Converter={StaticResource StatusToBadgeConv}, ConverterParameter=Color}"
+							                         GraphSeriesCollection="{Binding GraphSeriesCollection}"/>
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
 				</ItemsControl>
@@ -78,10 +93,10 @@
 						   Margin="8, 8, 0, 0"
 						   FontWeight="Bold"/>
 
-				<ItemsControl x:Name="CustomContentGroupContainer"
+				<ItemsControl x:Name="ContractsContainer"
 							  Grid.Row="3"
 							  Margin="0, 0, 0, 12"
-							  ItemsSource="{Binding Entries}">
+							  ItemsSource="{Binding ContractEntries}">
 					
 					<ItemsControl.ItemsPanel>
 						<ItemsPanelTemplate>
@@ -128,14 +143,14 @@
 				VerticalAlignment="Center"
 				Margin="0, 0, 16, 0"
 				Style="{DynamicResource AddButtonTheme}"
-				Command="{Binding OnAddClicked}"/>
+				Command="{Binding OnHistoryAddClicked}"/>
 
 		<Button Grid.Row="0"
 				Width="48" Height="48"
 				HorizontalAlignment="Right"
 				VerticalAlignment="Center"
 				Margin="0, 0, 72, 0"
-				Style="{DynamicResource GroupAddButtonTheme}"
-				Command="{Binding OnGroupAddClicked}"/>
+				Style="{DynamicResource ContractAddButtonTheme}"
+				Command="{Binding OnContractAddClicked}"/>
 	</Grid>
 </UserControl>

@@ -89,7 +89,7 @@ namespace VexTrack.Core
 
 			amounts.Add(initAmount);
 			
-			for (var i = 1; i < remainingDays + 2; i++)
+			for (var i = 1; i < remainingDays + 1; i++)
 			{
 				var amount = (int)Math.Ceiling(i * dailyTotal + initAmount);
 				if (amount > total) amount = total;
@@ -170,7 +170,7 @@ namespace VexTrack.Core
 
 			ret.Values.Add(new ObservablePoint(daysPassed - 1, ((ObservablePoint)performance.Values[daysPassed - 1]).Y));
 
-			for (var i = daysPassed; i < duration + 1; i++)
+			for (var i = daysPassed; i < duration; i++)
 			{
 				var amount = (int)((ObservablePoint)ret.Values[^1]).Y + average;
 				if (amount > total)

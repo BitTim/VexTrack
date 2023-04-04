@@ -10,28 +10,35 @@ namespace VexTrack.MVVM.ViewModel
 	class ContractViewModel : ObservableObject
 	{
 		public RelayCommand ContractButtonClick { get; set; }
-		public RelayCommand OnAddClicked { get; set; }
-		public RelayCommand OnGroupAddClicked { get; set; }
-		public RelayCommand OnGroupEditClicked { get; set; }
-		public RelayCommand OnGroupDeleteClicked { get; set; }
+		public RelayCommand OnHistoryAddClicked { get; set; }
+		public RelayCommand OnContractAddClicked { get; set; }
 
-		// TODO: Replace Popup with expanding panel
-		public GoalPopupViewModel GoalPopup { get; set; }
-		public EditableGoalPopupViewModel EditableGoalPopup { get; set; }
-		public EditableGoalGroupPopupViewModel EditableGoalGroupPopup { get; set; }
-		public DeleteGoalGroupConfirmationPopupViewModel DeleteGoalGroupConfirmationPopup { get; set; }
+		private EditableHistoryEntryPopupViewModel EditableHePopup { get; set; }
 
 		private MainViewModel MainVm { get; set; }
 
-		private ObservableCollection<Contract> _entries = new();
-		public ObservableCollection<Contract> Entries
+		private ObservableCollection<Season> _seasonEntries = new();
+		private ObservableCollection<Contract> _contractEntries = new();
+		public ObservableCollection<Season> SeasonEntries
 		{
-			get => _entries;
+			get => _seasonEntries;
 			set
 			{
-				if (_entries != value)
+				if (_seasonEntries != value)
 				{
-					_entries = value;
+					_seasonEntries = value;
+					OnPropertyChanged();
+				}
+			}
+		}
+		public ObservableCollection<Contract> ContractEntries
+		{
+			get => _contractEntries;
+			set
+			{
+				if (_contractEntries != value)
+				{
+					_contractEntries = value;
 					OnPropertyChanged();
 				}
 			}
@@ -40,65 +47,36 @@ namespace VexTrack.MVVM.ViewModel
 		public ContractViewModel()
 		{
 			MainVm = (MainViewModel)ViewModelManager.ViewModels["Main"];
-			GoalPopup = (GoalPopupViewModel)ViewModelManager.ViewModels["GoalPopup"];
-			EditableGoalPopup = (EditableGoalPopupViewModel)ViewModelManager.ViewModels["EditableGoalPopup"];
-			EditableGoalGroupPopup = (EditableGoalGroupPopupViewModel)ViewModelManager.ViewModels["EditableGoalGroupPopup"];
-			DeleteGoalGroupConfirmationPopup = (DeleteGoalGroupConfirmationPopupViewModel)ViewModelManager.ViewModels["DeleteGoalGroupConfirmationPopup"];
-
-			ContractButtonClick = new RelayCommand(OnGoalButtonClick);
-			OnAddClicked = new RelayCommand(_ =>
+			EditableHePopup = (EditableHistoryEntryPopupViewModel)ViewModelManager.ViewModels["EditableHEPopup"];
+			
+			OnHistoryAddClicked = new RelayCommand(o =>
 			{
-				EditableGoalPopup.SetParameters("Create Goal", false);
-				MainVm.QueuePopup(EditableGoalPopup);
+				EditableHePopup.SetParameters("Create History Entry", false);
+				MainVm.QueuePopup(EditableHePopup);
 			});
-			OnGroupAddClicked = new RelayCommand(_ =>
+			OnContractAddClicked = new RelayCommand(_ =>
 			{
-				EditableGoalGroupPopup.SetParameters("Create Group", false);
-				MainVm.QueuePopup(EditableGoalGroupPopup);
+				
 			});
-			OnGroupEditClicked = new RelayCommand(o =>
-			{
-				EditableGoalGroupPopup.SetParameters("Edit Group", true);
-				EditableGoalGroupPopup.SetData(Entries.FirstOrDefault(x => x.Uuid == (string)o));
-				MainVm.QueuePopup(EditableGoalGroupPopup);
-			});
-			OnGroupDeleteClicked = new RelayCommand(o =>
-			{
-				DeleteGoalGroupConfirmationPopup.SetData((string)o);
-				MainVm.QueuePopup(DeleteGoalGroupConfirmationPopup);
-			});
-
+			
 			Update(false);
 		}
 
 		public void Update(bool epilogue)
 		{
-			Entries.Clear();
+			SeasonEntries.Clear();
+			ContractEntries.Clear();
+			
+			foreach (var s in TrackingData.Seasons)
+			{
+				SeasonEntries.Add(s);
+			}
 
 			foreach (var contract in TrackingData.Contracts)
 			{
 				var ged = contract.Goals.ToList();
-				Entries.Add(new Contract(contract.Uuid, contract.Name, contract.Color, contract.Paused, ged));
+				ContractEntries.Add(new Contract(contract.Uuid, contract.Name, contract.Color, contract.Paused, ged));
 			}
-
-			if (GoalPopup.IsInitialized)
-			{
-				var goal = (from contract in Entries from g in contract.Goals where g.Uuid == GoalPopup.Uuid select g).FirstOrDefault();
-				GoalPopup.SetData(goal);
-			}
-			else GoalPopup.Close();
-		}
-
-		public void OnGoalButtonClick(object parameter)
-		{
-			var uuid = (string)parameter;
-
-			GoalPopup.SetFlags(true, true);
-			GoalPopup.SetData((from gg in Entries
-							   from g in gg.Goals
-							   where g.Uuid == uuid
-							   select g).FirstOrDefault());
-			MainVm.QueuePopup(GoalPopup);
 		}
 	}
 }

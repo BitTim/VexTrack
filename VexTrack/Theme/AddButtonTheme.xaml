@@ -62,7 +62,7 @@
 		</Style.Setters>
 	</Style>
 
-	<Style x:Key="GroupAddButtonTheme"
+	<Style x:Key="ContractAddButtonTheme"
 		   TargetType="{x:Type Button}"
 		   BasedOn="{StaticResource {x:Type Button}}">
 		<Style.Setters>
@@ -115,7 +115,7 @@
 
 								<Path Width="24" Height="24"
 									  Fill="{TemplateBinding Foreground}"
-									  Data="{Binding Source={StaticResource GroupAddIcon}, Path=Data}"/>
+									  Data="{Binding Source={StaticResource ContractAddIcon}, Path=Data}"/>
 							</Border>
 						</Grid>
 					</ControlTemplate>

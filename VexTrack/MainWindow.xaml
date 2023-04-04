@@ -187,15 +187,6 @@
 								 Command="{Binding GoalViewCommand}"
 								 Style="{DynamicResource MenuButtonTheme}"/>
 
-					<RadioButton Content="Seasons"
-								 GroupName="Menu"
-								 Height="62"
-								 Margin="0, 0, 0, 16"
-								 FontSize="16"
-								 Tag="{Binding Source={StaticResource SeasonIcon}, Path=Data}"
-								 Command="{Binding SeasonViewCommand}"
-								 Style="{DynamicResource MenuButtonTheme}"/>
-
 					<RadioButton Content="History"
 								 GroupName="Menu"
 								 Height="62"

@@ -7,7 +7,7 @@ namespace VexTrack.Core
 	static class Constants
 	{
 		public static readonly string AppName = "VexTrack";
-		public static readonly string Version = "v1.9";
+		public static readonly string Version = "v2.0";
 		public static readonly string DataVersion = "v2";
 
 		public static readonly string DataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"/VexTrack - Preview";

@@ -20,6 +20,7 @@ public class SeasonButtonModel : ToggleButton
     public static readonly DependencyProperty ProgressProperty = DependencyProperty.Register(nameof(Progress), typeof(double), typeof(SeasonButtonModel), new PropertyMetadata(0.0));
     
     public static readonly DependencyProperty DurationProperty = DependencyProperty.Register(nameof(Duration), typeof(int), typeof(SeasonButtonModel), new PropertyMetadata(0));
+    public static readonly DependencyProperty BufferDaysProperty = DependencyProperty.Register(nameof(BufferDays), typeof(int), typeof(SeasonButtonModel), new PropertyMetadata(0));
     public static readonly DependencyProperty GraphSeriesCollectionProperty = DependencyProperty.Register(nameof(GraphSeriesCollection), typeof(SeriesCollection), typeof(SeasonButtonModel), new PropertyMetadata(new SeriesCollection()));
     public static readonly DependencyProperty GoalsProperty = DependencyProperty.Register(nameof(Goals), typeof(ObservableCollection<Goal>), typeof(SeasonButtonModel), new PropertyMetadata(new ObservableCollection<Goal>()));
     public static readonly DependencyProperty GoalDisplayHeightProperty = DependencyProperty.Register(nameof(GoalDisplayHeight), typeof(double), typeof(SeasonButtonModel), new PropertyMetadata(72.0));
@@ -79,6 +80,12 @@ public class SeasonButtonModel : ToggleButton
     {
         get => (int)GetValue(DurationProperty);
         set => SetValue(DurationProperty, value);
+    }
+    
+    public int BufferDays
+    {
+        get => (int)GetValue(BufferDaysProperty);
+        set => SetValue(BufferDaysProperty, value);
     }
     
     public SeriesCollection GraphSeriesCollection
@@ -170,7 +177,6 @@ public class SeasonButtonModel : ToggleButton
     public List<decimal> LogicalSegmentsStops => CalcUtil.CalcLogicalStops(CalcUtil.CalcSeasonSegments(), true);
     public List<decimal> VisualSegmentsStops => CalcUtil.CalcVisualStops(CalcUtil.CalcSeasonSegments(), true);
     public int NumGoals => Goals.Count;
-    public int BufferDays => SettingsHelper.Data.BufferDays;
     public int BufferDaysPosition => Duration - BufferDays;
     
     public Func<double, string> LargeNumberFormatter => value => //TODO Move to own class

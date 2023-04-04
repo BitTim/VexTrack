@@ -21,7 +21,7 @@ namespace VexTrack.Core
 
 			var remaining = epilogue ? epilogueRemaining : normalRemaining;
 
-			var bufferDays = SettingsHelper.Data.BufferDays;
+			var bufferDays = TrackingData.CurrentSeasonData.BufferDays;
 			var idealRemainingDays = TrackingData.GetRemainingDays(TrackingData.CurrentSeasonData.Uuid) - bufferDays;
 
 			if (idealRemainingDays <= -bufferDays && idealRemainingDays <= 0)
@@ -69,7 +69,7 @@ namespace VexTrack.Core
 			
 			List<int> amounts = new();
 			var total = CalcUtil.CalcMaxForSeason(true);
-			var bufferDays = SettingsHelper.Data.BufferDays;
+			var bufferDays = TrackingData.CurrentSeasonData.BufferDays;
 			var effectiveRemaining = TrackingData.GetRemainingDays(TrackingData.CurrentSeasonData.Uuid) - bufferDays + 1;
 			if (effectiveRemaining <= 0) effectiveRemaining = 1;
 			
@@ -108,7 +108,7 @@ namespace VexTrack.Core
 
 			List<int> amounts = new();
 			var total = CalcUtil.CalcMaxForSeason(epilogue);
-			var bufferDays = SettingsHelper.Data.BufferDays;
+			var bufferDays = TrackingData.CurrentSeasonData.BufferDays;
 			var effectiveRemaining = TrackingData.GetRemainingDays(TrackingData.CurrentSeasonData.Uuid) - bufferDays + 1;
 			if (effectiveRemaining <= 0) effectiveRemaining = 1;
 

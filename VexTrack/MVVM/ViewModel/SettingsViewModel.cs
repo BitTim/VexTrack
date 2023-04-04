@@ -1,4 +1,5 @@
-﻿using VexTrack.Core;
+﻿using System;
+using VexTrack.Core;
 using VexTrack.MVVM.ViewModel.Popups;
 
 namespace VexTrack.MVVM.ViewModel
@@ -20,7 +21,7 @@ namespace VexTrack.MVVM.ViewModel
 		private string _accent;
 
 		private string _username;
-		private int _bufferDays;
+		private double _bufferPercentage;
 		private bool _ignoreInactive;
 		private bool _ignoreInit;
 		private bool _ignorePreReleases;
@@ -59,15 +60,15 @@ namespace VexTrack.MVVM.ViewModel
 				if (!_noUpdate) SettingsHelper.CallUpdate();
 			}
 		}
-		public int BufferDays
+		public double BufferPercentage
 		{
-			get => _bufferDays;
+			get => _bufferPercentage;
 			set
 			{
-				if (_bufferDays == value) return;
+				if (Math.Abs(_bufferPercentage - value) < 0.001) return;
 
-				_bufferDays = value;
-				SettingsHelper.Data.BufferDays = value;
+				_bufferPercentage = value;
+				SettingsHelper.Data.BufferPercentage = value;
 				OnPropertyChanged();
 				if (!_noUpdate) SettingsHelper.CallUpdate();
 			}
@@ -172,7 +173,7 @@ namespace VexTrack.MVVM.ViewModel
 			Accent = SettingsHelper.Data.Accent;
 
 			Username = SettingsHelper.Data.Username;
-			BufferDays = SettingsHelper.Data.BufferDays;
+			BufferPercentage = SettingsHelper.Data.BufferPercentage;
 			IgnoreInactive = SettingsHelper.Data.IgnoreInactiveDays;
 			IgnoreInit = SettingsHelper.Data.IgnoreInit;
 			IgnorePreReleases = SettingsHelper.Data.IgnorePreReleases;

@@ -80,7 +80,7 @@
 							</Hyperlink>
 						</TextBlock>
 
-						<TextBlock Text="Created by BitTim, Copyright ©2021 - 2022"
+						<TextBlock Text="Created by BitTim, Copyright ©2021 - 2023"
 								   Grid.Row="3"
 								   FontSize="14"
 								   TextWrapping="Wrap"

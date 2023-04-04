@@ -107,7 +107,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			var background = (SolidColorBrush)Application.Current.FindResource("Background") ?? new SolidColorBrush();
 			var shade = (SolidColorBrush)Application.Current.FindResource("Shade") ?? new SolidColorBrush();
 
-			var ideal = GraphCalc.CalcIdealGraphOld(Uuid, epilogue);
+			//var ideal = GraphCalc.CalcIdealGraphOld(Uuid, epilogue);
 			var performance = GraphCalc.CalcPerformanceGraphOld(Uuid);
 			
 			var bufferZone = GraphCalc.CalcBufferZoneOld(Uuid, epilogue);
@@ -127,16 +127,16 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			AddGraphLevels(epilogue);
 			UpdateYAxis(performance, epilogue);
 
-			Graph.Series.Add(ideal);
+			//Graph.Series.Add(ideal);
 			Graph.Series.Add(performance);
 
 			// Only add points to current season
 			if (Uuid == TrackingData.CurrentSeasonData.Uuid)
 			{
-				var idealPoint = DashboardDataCalc.CalcGraphPoint(ideal, OxyColor.FromArgb(graphIdealPoint.Color.A, graphIdealPoint.Color.R, graphIdealPoint.Color.G, graphIdealPoint.Color.B));
+				//var idealPoint = DashboardDataCalc.CalcGraphPoint(ideal, OxyColor.FromArgb(graphIdealPoint.Color.A, graphIdealPoint.Color.R, graphIdealPoint.Color.G, graphIdealPoint.Color.B));
 				var performancePoint = DashboardDataCalc.CalcGraphPoint(performance, OxyColors.Maroon);
 
-				Graph.Series.Add(idealPoint);
+				//Graph.Series.Add(idealPoint);
 				Graph.Series.Add(performancePoint);
 			}
 

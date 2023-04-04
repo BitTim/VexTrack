@@ -6,8 +6,9 @@
              xmlns:local="clr-namespace:VexTrack.MVVM.View"
 			 xmlns:validation="clr-namespace:VexTrack.MVVM.Validation"
 			 xmlns:conv="clr-namespace:VexTrack.MVVM.Converter"
+			 xmlns:vm="clr-namespace:VexTrack.MVVM.ViewModel"
 			 mc:Ignorable="d" 
-             d:DesignHeight="780" d:DesignWidth="640">
+             d:DesignHeight="780" d:DesignWidth="640" d:DataContext="{vm:SettingsViewModel}">
 
 	<UserControl.Resources>
 		<conv:DataStringToBoolConverter x:Key="DataStringToBoolConv"/>
@@ -70,7 +71,7 @@
 							   Foreground="{DynamicResource Foreground}"
 							   Margin="0, 0, 0, 4"/>
 
-					<TextBlock Text="Buffer Days"
+					<TextBlock Text="Buffer Percentage"
 							   Grid.Row="1"
 							   Grid.Column="0"
 							   FontSize="14"
@@ -141,13 +142,14 @@
 							 Height="22"
 							 Style="{DynamicResource TextBoxTheme}">
 						<TextBox.Text>
-							<Binding Path="BufferDays"
+							<Binding Path="BufferPercentage"
 									 UpdateSourceTrigger="PropertyChanged"
 									 ValidatesOnNotifyDataErrors="True"
 									 ValidatesOnDataErrors="True"
-									 NotifyOnValidationError="True">
+									 NotifyOnValidationError="True"
+									 Delay="500">
 								<Binding.ValidationRules>
-									<validation:NumericValidationRule ValidatesOnTargetUpdated="True"/>
+									<validation:PercentageValidationRule ValidatesOnTargetUpdated="True"/>
 								</Binding.ValidationRules>
 							</Binding>
 						</TextBox.Text>

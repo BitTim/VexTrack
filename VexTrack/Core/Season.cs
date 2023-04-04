@@ -25,9 +25,10 @@ public class Season
     public String Status => GetStatus();
     public int Duration => GetDuration();
     public int RemainingDays => GetRemainingDays();
-    public SeriesCollection GraphSeriesCollection => GraphCalc.CalcGraphs(Total, History.First().Amount, Duration, RemainingDays, History);
+    public SeriesCollection GraphSeriesCollection => GraphCalc.CalcGraphs(Total, History.First().Amount, Duration, BufferDays, RemainingDays, History);
 
     public SeasonExtremes Extremes => GetExtremes();
+    public int BufferDays => (int)Math.Ceiling(Duration * (SettingsHelper.Data.BufferPercentage / 100));
 
 
     public Season(string uuid, string name, long endDate, int activeBpLevel, int cXp, List<HistoryEntry> history)

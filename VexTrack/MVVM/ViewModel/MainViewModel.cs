@@ -277,7 +277,7 @@ namespace VexTrack.MVVM.ViewModel
 
 		public void Destroy()
 		{
-			Watcher.Destroy();
+			ThemeWatcher.Destroy();
 		}
 	}
 }

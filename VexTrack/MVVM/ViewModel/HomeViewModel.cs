@@ -261,7 +261,7 @@ namespace VexTrack.MVVM.ViewModel
 		
 		
 		
-		public int BufferDays => SettingsHelper.Data.BufferDays;
+		public int BufferDays => TrackingData.CurrentSeasonData.BufferDays;
 		public int BufferDaysPosition => TrackingData.CurrentSeasonData.Duration - BufferDays;
 		
 		public Func<double, string> LargeNumberFormatter => value => //TODO Move to own class

@@ -16,7 +16,7 @@ namespace VexTrack.Core
 {
 	public static class GraphCalc
 	{
-		public static SeriesCollection CalcGraphs(int total, int startXp, int duration, int remainingDays, List<HistoryEntry> history)
+		public static SeriesCollection CalcGraphs(int total, int startXp, int duration, int bufferDays, int remainingDays, List<HistoryEntry> history)
 		{
 			var collection = new SeriesCollection();
 
@@ -45,7 +45,7 @@ namespace VexTrack.Core
 			};
 			
 			var startRemaining = total - startXp;
-			var totalDaily = startRemaining / (double)(duration - SettingsHelper.Data.BufferDays);
+			var totalDaily = startRemaining / (double)(duration - bufferDays);
 			var dailyAmounts = CalcUtil.CalcCollectedPerDay(history, duration);
 
 			var prevPerformanceVal = 0;
@@ -80,7 +80,7 @@ namespace VexTrack.Core
 			var foreground = (SolidColorBrush)Application.Current.FindResource("Foreground") ?? new SolidColorBrush();
 
 			var total = CalcUtil.CalcMaxForSeason(epilogue);
-			var bufferDays = SettingsHelper.Data.BufferDays;
+			var bufferDays = TrackingData.GetSeason(sUuid).BufferDays;
 			var duration = TrackingData.GetDuration(sUuid);
 
 			var initCollected = TrackingData.GetFirstHistoryEntry(sUuid).Amount;
@@ -152,10 +152,10 @@ namespace VexTrack.Core
 			RectangleAnnotation ret = new();
 
 			var total = CalcUtil.CalcMaxForSeason(epilogue);
-			var bufferDays = SettingsHelper.Data.BufferDays;
+			//var bufferDays = SettingsHelper.Data.BufferDays;
 			var duration = TrackingData.GetDuration(sUuid);
 
-			ret.MinimumX = duration - bufferDays;
+			ret.MinimumX = duration /*- bufferDays*/;
 			ret.MaximumX = duration;
 			ret.MinimumY = 0;
 			ret.MaximumY = total * 3;
@@ -226,10 +226,10 @@ namespace VexTrack.Core
 			var background = (SolidColorBrush)Application.Current.FindResource("Background") ?? new SolidColorBrush();
 			var shade = (SolidColorBrush)Application.Current.FindResource("Shade") ?? new SolidColorBrush();
 
-			var ideal = GraphCalc.CalcIdealGraphOld(seasonUuid, epilogue);
+			//var ideal = GraphCalc.CalcIdealGraphOld(seasonUuid, epilogue);
 			var performance = GraphCalc.CalcPerformanceGraphOld(seasonUuid);
 			
-			var bufferZone = GraphCalc.CalcBufferZoneOld(seasonUuid, epilogue);
+			//var bufferZone = GraphCalc.CalcBufferZoneOld(seasonUuid, epilogue);
 
 			var legend = new Legend
 			{
@@ -246,20 +246,20 @@ namespace VexTrack.Core
 			model = AddGraphLevels(model, epilogue, seasonUuid);
 			model = UpdateYAxis(model, performance, epilogue);
 
-			model.Series.Add(ideal);
+			//model.Series.Add(ideal);
 			model.Series.Add(performance);
 
 			// Only add points to current season
 			if (seasonUuid == TrackingData.CurrentSeasonData.Uuid)
 			{
-				var idealPoint = DashboardDataCalc.CalcGraphPoint(ideal, OxyColor.FromArgb(graphIdealPoint.Color.A, graphIdealPoint.Color.R, graphIdealPoint.Color.G, graphIdealPoint.Color.B));
+				//var idealPoint = DashboardDataCalc.CalcGraphPoint(ideal, OxyColor.FromArgb(graphIdealPoint.Color.A, graphIdealPoint.Color.R, graphIdealPoint.Color.G, graphIdealPoint.Color.B));
 				var performancePoint = DashboardDataCalc.CalcGraphPoint(performance, OxyColors.Maroon);
 
-				model.Series.Add(idealPoint);
+				//model.Series.Add(idealPoint);
 				model.Series.Add(performancePoint);
 			}
 
-			model.Annotations.Add(bufferZone);
+			//model.Annotations.Add(bufferZone);
 			model.InvalidatePlot(true);
 			return model;
 		}

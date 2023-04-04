@@ -11,22 +11,22 @@ namespace VexTrack.Core
 	public class Settings
 	{
 		public string Username;
-		public int BufferDays;
+		public double BufferPercentage;
 		public bool IgnoreInactiveDays;
 		public bool IgnoreInit;
 		public bool IgnorePreReleases;
 		public bool ForceEpilogue;
 		public bool SingleSeasonHistory;
-
+		
 		public string Theme;
 		public string SystemTheme; //Not part of saved settings file
 		public string Accent;
 
 		public Settings() { }
-		public Settings(string username, int bufferDays, bool ignoreInactiveDays, bool ignoreInit, bool ignorePreReleases, bool forceEpilogue, bool singleSeasonHistory, string theme, string systemTheme, string accent)
+		public Settings(string username, double bufferPercentage, bool ignoreInactiveDays, bool ignoreInit, bool ignorePreReleases, bool forceEpilogue, bool singleSeasonHistory, string theme, string systemTheme, string accent)
 		{
 			Username = username;
-			BufferDays = bufferDays;
+			BufferPercentage = bufferPercentage;
 			IgnoreInactiveDays = ignoreInactiveDays;
 			IgnoreInit = ignoreInit;
 			IgnorePreReleases = ignorePreReleases;
@@ -40,7 +40,7 @@ namespace VexTrack.Core
 		public void SetDefault()
 		{
 			Username = "";
-			BufferDays = 8;
+			BufferPercentage = 7.5;
 			IgnoreInactiveDays = true;
 			IgnoreInit = true;
 			IgnorePreReleases = true;
@@ -54,8 +54,8 @@ namespace VexTrack.Core
 
 	public static class SettingsHelper
 	{
-		public static Settings Data { get; set; }
-		public static Settings Default { get; set; }
+		public static Settings Data { get; private set; }
+		private static Settings Default { get; set; }
 
 		public static void Init()
 		{
@@ -71,7 +71,7 @@ namespace VexTrack.Core
 			SaveSettings();
 		}
 
-		public static void InitSettings()
+		private static void InitSettings()
 		{
 			Data.SetDefault();
 			SaveSettings();
@@ -89,63 +89,63 @@ namespace VexTrack.Core
 			var rawJson = File.ReadAllText(Constants.SettingsPath);
 			var jo = JObject.Parse(rawJson);
 
-			var resave = false;
+			var reSave = false;
 
 			Data.SetDefault();
 
-			if (jo["username"] == null) resave = true;
+			if (jo["username"] == null) reSave = true;
 			else Data.Username = (string)jo["username"];
 
-			if (jo["bufferDays"] == null) resave = true;
-			else Data.BufferDays = (int)jo["bufferDays"];
+			if (jo["bufferPercentage"] == null) reSave = true;
+			else Data.BufferPercentage = (double)jo["bufferPercentage"];
 
-			if (jo["ignoreInactiveDays"] == null) resave = true;
+			if (jo["ignoreInactiveDays"] == null) reSave = true;
 			else Data.IgnoreInactiveDays = (bool)jo["ignoreInactiveDays"];
 
-			if (jo["ignoreInit"] == null) resave = true;
+			if (jo["ignoreInit"] == null) reSave = true;
 			else Data.IgnoreInit = (bool)jo["ignoreInit"];
 
-			if (jo["ignorePreReleases"] == null) resave = true;
+			if (jo["ignorePreReleases"] == null) reSave = true;
 			else Data.IgnorePreReleases = (bool)jo["ignorePreReleases"];
 
-			if (jo["forceEpilogue"] == null) resave = true;
+			if (jo["forceEpilogue"] == null) reSave = true;
 			else Data.ForceEpilogue = (bool)jo["forceEpilogue"];
 
-			if (jo["singleSeasonHistory"] == null) resave = true;
+			if (jo["singleSeasonHistory"] == null) reSave = true;
 			else Data.SingleSeasonHistory = (bool)jo["singleSeasonHistory"];
 
 
 
-			if (jo["theme"] == null) resave = true;
+			if (jo["theme"] == null) reSave = true;
 			else Data.Theme = (string)jo["theme"];
 
-			if (jo["accent"] == null) resave = true;
+			if (jo["accent"] == null) reSave = true;
 			else Data.Accent = (string)jo["accent"];
 
 
 
-			if (resave) SaveSettings();
+			if (reSave) SaveSettings();
 			ApplyVisualSettings();
 		}
 
-		public static void SaveSettings()
+		private static void SaveSettings()
 		{
-			JObject jo = new();
-
-			jo.Add("username", Data.Username);
-			jo.Add("bufferDays", Data.BufferDays);
-			jo.Add("ignoreInactiveDays", Data.IgnoreInactiveDays);
-			jo.Add("ignoreInit", Data.IgnoreInit);
-			jo.Add("ignorePreReleases", Data.IgnorePreReleases);
-			jo.Add("forceEpilogue", Data.ForceEpilogue);
-			jo.Add("singleSeasonHistory", Data.SingleSeasonHistory);
-
-			jo.Add("theme", Data.Theme);
-			jo.Add("accent", Data.Accent);
+			JObject jo = new()
+			{
+				{ "username", Data.Username },
+				{ "bufferPercentage", Data.BufferPercentage },
+				{ "ignoreInactiveDays", Data.IgnoreInactiveDays },
+				{ "ignoreInit", Data.IgnoreInit },
+				{ "ignorePreReleases", Data.IgnorePreReleases },
+				{ "forceEpilogue", Data.ForceEpilogue },
+				{ "singleSeasonHistory", Data.SingleSeasonHistory },
+				{ "theme", Data.Theme },
+				{ "accent", Data.Accent }
+			};
 
 			if (!File.Exists(Constants.SettingsPath))
 			{
-				var sep = Constants.SettingsPath.LastIndexOf("/");
+				var sep = Constants.SettingsPath.LastIndexOf("/", StringComparison.Ordinal);
 
 				Directory.CreateDirectory(Constants.SettingsPath.Substring(0, sep));
 				File.CreateText(Constants.SettingsPath).Close();
@@ -181,18 +181,16 @@ namespace VexTrack.Core
 
 		private static WindowsTheme GetWindowsTheme()
 		{
-			using (var key = Registry.CurrentUser.OpenSubKey(RegistryKeyPath))
+			using var key = Registry.CurrentUser.OpenSubKey(RegistryKeyPath);
+			var registryValueObject = key?.GetValue(RegistryValueName);
+			if (registryValueObject == null)
 			{
-				var registryValueObject = key?.GetValue(RegistryValueName);
-				if (registryValueObject == null)
-				{
-					return WindowsTheme.Light;
-				}
-
-				var registryValue = (int)registryValueObject;
-
-				return registryValue > 0 ? WindowsTheme.Light : WindowsTheme.Dark;
+				return WindowsTheme.Light;
 			}
+
+			var registryValue = (int)registryValueObject;
+
+			return registryValue > 0 ? WindowsTheme.Light : WindowsTheme.Dark;
 		}
 
 		public ThemeWatcher()
@@ -203,12 +201,12 @@ namespace VexTrack.Core
 			SettingsHelper.Data.SystemTheme = theme;
 		}
 
-		public void Destroy()
+		public static void Destroy()
 		{
 			SystemEvents.UserPreferenceChanged -= SystemEvents_UserPreferenceChanged;
 		}
 
-		private void SystemEvents_UserPreferenceChanged(object sender, UserPreferenceChangedEventArgs e)
+		private static void SystemEvents_UserPreferenceChanged(object sender, UserPreferenceChangedEventArgs e)
 		{
 			if (e.Category != UserPreferenceCategory.General) return;
 			var theme = GetWindowsTheme().ToString();

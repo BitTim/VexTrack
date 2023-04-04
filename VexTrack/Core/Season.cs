@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using LiveCharts;
 
@@ -27,13 +28,20 @@ public class Season
     public int RemainingDays => GetRemainingDays();
     public SeriesCollection GraphSeriesCollection => GraphCalc.CalcGraphs(Total, History.First().Amount, Duration, BufferDays, RemainingDays, History);
 
-    public SeasonExtremes Extremes => GetExtremes();
     public int BufferDays => (int)Math.Ceiling(Duration * (SettingsHelper.Data.BufferPercentage / 100));
+    public SeasonExtremes Extremes => GetExtremes();
+    public List<Goal> Goals { get; }
+    public ObservableCollection<Goal> ObservableGoals => new(Goals);
+    
+    public string NextUnlockName => GetNextUnlock()?.Name ?? "None";
+    public double NextUnlockProgress => GetNextUnlock()?.Progress ?? 100;
+    public int NextUnlockRemaining => GetNextUnlock()?.Remaining ?? 0;
 
 
     public Season(string uuid, string name, long endDate, int activeBpLevel, int cXp, List<HistoryEntry> history)
     {
         (Uuid, Name, EndDate, ActiveBpLevel, Cxp, History) = (uuid, name, endDate, activeBpLevel, cXp, history);
+        Goals = GetGoals();
     }
 
     private string GetStatus()
@@ -103,8 +111,6 @@ public class Season
         
         return new SeasonExtremes(strongestAmount, strongestDate.ToUnixTimeSeconds(), weakestAmount, weakestDate.ToUnixTimeSeconds());
     }
-
-    
     
     private static (int strongestAmount, DateTimeOffset strongestDate, int weakestAmount, DateTimeOffset weakestDate) EvalExtremes(int currAmount, int strongestAmount, DateTime prevDate, DateTimeOffset strongestDate, int weakestAmount, DateTimeOffset weakestDate)
     {
@@ -120,6 +126,26 @@ public class Season
         weakestDate = prevDate;
 
         return (strongestAmount, strongestDate, weakestAmount, weakestDate);
+    }
+
+    private List<Goal> GetGoals()
+    {
+        var goals = new List<Goal>();
+
+        for (var i = ActiveBpLevel - 1; i < ActiveBpLevel + 2; i++)
+        {
+            if (i > Constants.BattlepassLevels + Constants.EpilogueLevels) break;
+            var levelTotal = CalcUtil.CalcMaxForLevel(i);
+            var goal = new Goal(Guid.NewGuid().ToString(), "Level " + i, levelTotal, ActiveBpLevel <= i ? ActiveBpLevel == i ? Cxp : 0 : levelTotal);
+            goals.Add(goal);
+        }
+
+        return goals;
+    }
+
+    private Goal GetNextUnlock()
+    {
+        return Goals.FirstOrDefault(goal => !goal.IsCompleted());
     }
 }
 

@@ -63,7 +63,7 @@ namespace VexTrack.Core
 
 		public static int CalcMaxForLevel(int level)
 		{
-			return Constants.Level2Offset + (level * Constants.XpPerLevel);
+			return level <= Constants.BattlepassLevels ? Constants.Level2Offset + (level * Constants.XpPerLevel) : Constants.XpPerEpilogueLevel;
 		}
 
 		public static int CalcMaxForTier(int tier)

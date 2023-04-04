@@ -194,12 +194,12 @@
 				
 				<lvc:CartesianChart Grid.Row="1"
 				                    Series="{Binding GraphSeriesCollection}"
-				                    LegendLocation="Bottom"
-				                    Zoom="Xy"
-				                    Pan="Xy">
+				                    LegendLocation="Bottom">
                     
                     <lvc:CartesianChart.AxisY>
-                        <lvc:Axis Title="Amount in XP" LabelFormatter="{Binding LargeNumberFormatter}"/>
+                        <lvc:Axis Title="Amount in XP"
+                                  LabelFormatter="{Binding LargeNumberFormatter}"
+                                  MinValue="0"/>
                     </lvc:CartesianChart.AxisY>
                     
                     <lvc:CartesianChart.AxisX>

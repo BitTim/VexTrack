@@ -79,9 +79,13 @@
 							                         StrongestDayTimestamp="{Binding Extremes.StrongestDayTimestamp}"
 							                         WeakestDayAmount="{Binding Extremes.WeakestDayAmount}"
 							                         WeakestDayTimestamp="{Binding Extremes.WeakestDayTimestamp}"
+							                         NextUnlockName="{Binding NextUnlockName}"
+							                         NextUnlockProgress="{Binding NextUnlockProgress}"
+							                         NextUnlockRemaining="{Binding NextUnlockRemaining}"
 							                         StatusIconData="{Binding Path=Status, Converter={StaticResource StatusToBadgeConv}, ConverterParameter=Data}"
 							                         StatusIconColor="{Binding Path=Status, Converter={StaticResource StatusToBadgeConv}, ConverterParameter=Color}"
-							                         GraphSeriesCollection="{Binding GraphSeriesCollection}"/>
+							                         GraphSeriesCollection="{Binding GraphSeriesCollection}"
+							                         Goals="{Binding ObservableGoals}"/>
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
 				</ItemsControl>

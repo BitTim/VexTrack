@@ -303,7 +303,8 @@
                                             Margin="0, 0, 48, 0">
                                             <lvc:CartesianChart.AxisY>
                                                 <lvc:Axis Title="Amount in XP"
-                                                          LabelFormatter="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=LargeNumberFormatter}" />
+                                                          LabelFormatter="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=LargeNumberFormatter}"
+                                                          MinValue="0"/>
                                             </lvc:CartesianChart.AxisY>
 
                                             <lvc:CartesianChart.AxisX>

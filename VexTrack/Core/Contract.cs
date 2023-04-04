@@ -24,7 +24,7 @@ public class Contract
     public int NextUnlockRemaining => GetNextUnlock()?.Remaining ?? 0;
     public int CompletionForecastDays => GetCompletionForecastDays();
     public long CompletionDateTimestamp => GetCompletionDateTimestamp();
-    public ObservableCollection<Goal> ObservableGoals => new ObservableCollection<Goal>(Goals);
+    public ObservableCollection<Goal> ObservableGoals => new(Goals);
     
 
 

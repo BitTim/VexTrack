@@ -4,19 +4,18 @@ using System.Windows.Data;
 
 namespace VexTrack.MVVM.Converter
 {
-	class NegativeToZeroConverter : IValueConverter
+	internal class NegativeToZeroConverter : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			var val = (int)value;
+			var val = (int)value!;
 
-			if (val < 0) return 0;
-			return val;
+			return val < 0 ? 0 : val;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			throw new NotImplementedException();
+			return null;
 		}
 	}
 }

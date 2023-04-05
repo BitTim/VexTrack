@@ -5,8 +5,8 @@ namespace VexTrack.MVVM.Model
 {
 	public class HistoryEntryButtonModel : Button
 	{
-		public static DependencyProperty DescriptionProperty = DependencyProperty.Register("Description", typeof(string), typeof(HistoryEntryButtonModel), new PropertyMetadata(""));
-		public static DependencyProperty AmountProperty = DependencyProperty.Register("Amount", typeof(string), typeof(HistoryEntryButtonModel), new PropertyMetadata("0"));
+		public static readonly DependencyProperty DescriptionProperty = DependencyProperty.Register(nameof(Description), typeof(string), typeof(HistoryEntryButtonModel), new PropertyMetadata(""));
+		public static readonly DependencyProperty AmountProperty = DependencyProperty.Register(nameof(Amount), typeof(string), typeof(HistoryEntryButtonModel), new PropertyMetadata("0"));
 
 		public string Description
 		{

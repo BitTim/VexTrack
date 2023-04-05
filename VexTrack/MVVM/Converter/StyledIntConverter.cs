@@ -4,19 +4,16 @@ using System.Windows.Data;
 
 namespace VexTrack.MVVM.Converter
 {
-	class StyledIntConverter : IValueConverter
+	internal class StyledIntConverter : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			var val = value.ToString();
+			var val = value!.ToString();
 			var param = (string)parameter;
 			var str = val + " " + param;
 
-			if (param == "NegativeToNone")
-			{
-				if ((int)value < 0) str = "-";
-				else str = val;
-			}
+			if (param != "NegativeToNone") return str;
+			str = (int)value < 0 ? "-" : val;
 
 			return str;
 		}
@@ -24,7 +21,7 @@ namespace VexTrack.MVVM.Converter
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			var val = (string)value;
-			var num = val.Split(" ")[0];
+			var num = val!.Split(" ")[0];
 			return int.Parse(num);
 		}
 	}

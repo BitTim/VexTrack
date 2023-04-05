@@ -8,14 +8,14 @@ using VexTrack.MVVM.ViewModel.Popups;
 
 namespace VexTrack.Core
 {
-	public class TrackingData
+	public abstract class TrackingData
 	{
 		public static int Streak { get; set; }
 		public static long LastStreakUpdateTimestamp { get; set; }
-		public static List<Contract> Contracts { get; set; }
-		public static List<Season> Seasons { get; set; }
+		public static List<Contract> Contracts { get; private set; }
+		public static List<Season> Seasons { get; private set; }
 
-		public TrackingData(int streak, long lastStreakUpdateTimestamp,List<Contract> contracts, List<Season> seasons)
+		protected TrackingData(int streak, long lastStreakUpdateTimestamp,List<Contract> contracts, List<Season> seasons)
 		{
 			(Streak, LastStreakUpdateTimestamp, Contracts, Seasons) = (streak, lastStreakUpdateTimestamp, contracts, seasons);
 		}
@@ -186,18 +186,16 @@ namespace VexTrack.Core
 			List<LegacyStreakEntry> streakEntries = new();
 			if (jo["streak"] != null)
 			{
-				foreach (var jTokenStreak in jo["streak"])
-				{
-					var streakEntry = (JObject)jTokenStreak;
-					var uuid = (string)streakEntry["uuid"];
-					var date = (long)streakEntry["date"];
-					var status = (string)streakEntry["status"];
-
-					uuid ??= Guid.NewGuid().ToString();
-					streakEntries.Add(new LegacyStreakEntry(uuid, date, status));
-				}
+				streakEntries.AddRange(from JObject streakEntry in jo["streak"]
+					let date = (long)streakEntry["date"]
+					let status = (string)streakEntry["status"]
+					select new LegacyStreakEntry(date, status));
 			}
 			streakEntries = streakEntries.OrderByDescending(t => t.Date).ToList();
+			
+			// Check if current day is already listed and remove it from the list if yes
+			var todayTimestamp = ((DateTimeOffset)DateTimeOffset.Now.ToLocalTime().Date).ToUnixTimeSeconds();
+			if(streakEntries.First().Date == todayTimestamp) streakEntries.RemoveAt(0);
 
 			return (streakEntries.TakeWhile(entry => entry.Status != "None").Count(), streakEntries.First().Date);
 		}
@@ -355,7 +353,7 @@ namespace VexTrack.Core
 		//  Saving
 		// ================================
 
-		public static void SaveData()
+		private static void SaveData()
 		{
 			JObject jo = new()
 			{
@@ -444,8 +442,8 @@ namespace VexTrack.Core
 		// ================================
 		//  Updating
 		// ================================
-		
-		public static void Recalculate() // TODO: Restructure this to have Update() methods in Season and Contracts
+
+		private static void Recalculate() // TODO: Restructure this to have Update() methods in Season and Contracts
 		{
 			List<string> completed = new();
 			List<string> lost = new();
@@ -513,23 +511,23 @@ namespace VexTrack.Core
 			}
 
 			if (completed.Count == 0 && lost.Count == 0) return;
-			var mainVm = (MainViewModel)ViewModelManager.ViewModels["Main"];
-			var paPopupVm = (ProgressActivityPopupViewModel)ViewModelManager.ViewModels["PAPopup"];
+			var mainVm = (MainViewModel)ViewModelManager.ViewModels[nameof(MainViewModel)];
+			var paPopupVm = (ProgressActivityPopupViewModel)ViewModelManager.ViewModels[nameof(ProgressActivityPopupViewModel)];
 
 			paPopupVm.SetData(completed, lost);
 			mainVm.QueuePopup(paPopupVm);
 		}
 
-		public static void CallUpdate()
+		private static void CallUpdate()
 		{
-			for (var i = 0; i < Seasons.Count; i++)
+			foreach (var t in Seasons)
 			{
-				var sortedHistory = Seasons[i].History.OrderBy(h => h.Time).ToList();
-				Seasons[i].History = sortedHistory;
+				var sortedHistory = t.History.OrderBy(h => h.Time).ToList();
+				t.History = sortedHistory;
 			}
 
 			SaveData();
-			var mainVm = (MainViewModel)ViewModelManager.ViewModels["Main"];
+			var mainVm = (MainViewModel)ViewModelManager.ViewModels[nameof(MainViewModel)];
 			mainVm.Update();
 		}
 
@@ -572,7 +570,7 @@ namespace VexTrack.Core
 				.History[Seasons[Seasons.FindIndex(s => s.Uuid == seasonUuid)]
 				.History.FindIndex(he => he.Uuid == uuid)] = data;
 
-			var historyVm = (HistoryViewModel)ViewModelManager.ViewModels["History"];
+			var historyVm = (HistoryViewModel)ViewModelManager.ViewModels[nameof(HistoryViewModel)];
 			historyVm.EditEntry(new HistoryEntry(seasonUuid, uuid, data.Time, data.GameMode, data.Amount, data.Map, data.Description, data.Score, data.EnemyScore, data.SurrenderedWin, data.SurrenderedLoss));
 
 			Recalculate();
@@ -618,14 +616,12 @@ namespace VexTrack.Core
 			Seasons[Seasons.FindIndex(s => s.Uuid == uuid)].EndDate = ((DateTimeOffset)DateTime.Today.ToLocalTime()).ToUnixTimeSeconds();
 			CallUpdate();
 		}
-		
-		
-		
 
-		public static void CreateDataInitPopup()
+
+		private static void CreateDataInitPopup()
 		{
-			var dataInitPopup = (DataInitPopupViewModel)ViewModelManager.ViewModels["DataInitPopup"];
-			var mainVm = (MainViewModel)ViewModelManager.ViewModels["Main"];
+			var dataInitPopup = (DataInitPopupViewModel)ViewModelManager.ViewModels[nameof(DataInitPopupViewModel)];
+			var mainVm = (MainViewModel)ViewModelManager.ViewModels[nameof(MainViewModel)];
 
 			dataInitPopup.InitData();
 			dataInitPopup.CanCancel = false;
@@ -639,13 +635,11 @@ namespace VexTrack.Core
 	
 	public class LegacyStreakEntry
 	{
-		public string Uuid { get; set; }
 		public long Date { get; set; }
 		public string Status { get; set; }
 
-		public LegacyStreakEntry(string uuid, long date, string status)
+		public LegacyStreakEntry(long date, string status)
 		{
-			Uuid = uuid;
 			Date = date;
 			Status = status;
 		}

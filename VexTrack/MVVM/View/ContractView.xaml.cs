@@ -1,17 +1,16 @@
-﻿using System.Windows.Controls;
-using VexTrack.MVVM.ViewModel;
+﻿using VexTrack.MVVM.ViewModel;
 
 namespace VexTrack.MVVM.View
 {
 	/// <summary>
-	/// Interaction logic for GoalView.xaml
+	/// Interaction logic for ContractView.xaml
 	/// </summary>
-	public partial class GoalView : UserControl
+	public partial class ContractView
 	{
-		public GoalView()
+		public ContractView()
 		{
 			InitializeComponent();
-			this.DataContext = ViewModelManager.ViewModels["Goal"];
+			DataContext = ViewModelManager.ViewModels[nameof(ContractViewModel)];
 		}
 	}
 }

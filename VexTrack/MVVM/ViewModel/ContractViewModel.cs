@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
 using VexTrack.Core;
 using VexTrack.MVVM.ViewModel.Popups;
@@ -9,47 +7,22 @@ namespace VexTrack.MVVM.ViewModel
 {
 	class ContractViewModel : ObservableObject
 	{
-		public RelayCommand ContractButtonClick { get; set; }
-		public RelayCommand OnHistoryAddClicked { get; set; }
-		public RelayCommand OnContractAddClicked { get; set; }
+		public RelayCommand OnHistoryAddClicked { get; }
+		public RelayCommand OnContractAddClicked { get; }
 
-		private EditableHistoryEntryPopupViewModel EditableHePopup { get; set; }
+		private EditableHistoryEntryPopupViewModel EditableHePopup { get; }
 
-		private MainViewModel MainVm { get; set; }
+		private MainViewModel MainVm { get; }
 
-		private ObservableCollection<Season> _seasonEntries = new();
-		private ObservableCollection<Contract> _contractEntries = new();
-		public ObservableCollection<Season> SeasonEntries
-		{
-			get => _seasonEntries;
-			set
-			{
-				if (_seasonEntries != value)
-				{
-					_seasonEntries = value;
-					OnPropertyChanged();
-				}
-			}
-		}
-		public ObservableCollection<Contract> ContractEntries
-		{
-			get => _contractEntries;
-			set
-			{
-				if (_contractEntries != value)
-				{
-					_contractEntries = value;
-					OnPropertyChanged();
-				}
-			}
-		}
+		public ObservableCollection<Season> SeasonEntries { get; } = new();
+		public ObservableCollection<Contract> ContractEntries { get; } = new();
 
 		public ContractViewModel()
 		{
-			MainVm = (MainViewModel)ViewModelManager.ViewModels["Main"];
-			EditableHePopup = (EditableHistoryEntryPopupViewModel)ViewModelManager.ViewModels["EditableHEPopup"];
+			MainVm = (MainViewModel)ViewModelManager.ViewModels[nameof(MainViewModel)];
+			EditableHePopup = (EditableHistoryEntryPopupViewModel)ViewModelManager.ViewModels[nameof(EditableHistoryEntryPopupViewModel)];
 			
-			OnHistoryAddClicked = new RelayCommand(o =>
+			OnHistoryAddClicked = new RelayCommand(_ =>
 			{
 				EditableHePopup.SetParameters("Create History Entry", false);
 				MainVm.QueuePopup(EditableHePopup);
@@ -59,10 +32,10 @@ namespace VexTrack.MVVM.ViewModel
 				
 			});
 			
-			Update(false);
+			Update();
 		}
 
-		public void Update(bool epilogue)
+		public void Update()
 		{
 			SeasonEntries.Clear();
 			ContractEntries.Clear();

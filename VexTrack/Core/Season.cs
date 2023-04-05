@@ -17,15 +17,15 @@ public class Season
     public List<HistoryEntry> History { get; set; }
 
 
-    public int Total => CalcUtil.CalcMaxForSeason(true);
-    public int TotalMin => CalcUtil.CalcMaxForSeason(false);
+    public static int Total => CalcUtil.CalcMaxForSeason(true);
+    private static int TotalMin => CalcUtil.CalcMaxForSeason(false);
     public int Collected => CalcUtil.CalcTotalCollected(ActiveBpLevel, Cxp);
     public int Remaining => Total - Collected;
     public double RemainingMin => TotalMin - Collected;
     public int Average => CalcUtil.CalcAverage(ActiveBpLevel, Cxp, Duration, RemainingDays);
     public double Progress => CalcUtil.CalcProgress(Total, Collected);
 
-    public bool IsActive => DateTimeOffset.Now.ToLocalTime().ToUnixTimeSeconds() < EndDate;
+    private bool IsActive => DateTimeOffset.Now.ToLocalTime().ToUnixTimeSeconds() < EndDate;
     public string Status => GetStatus();
     public int Duration => GetDuration();
     public int RemainingDays => GetRemainingDays();
@@ -33,7 +33,7 @@ public class Season
 
     public int BufferDays => (int)Math.Ceiling(Duration * (SettingsHelper.Data.BufferPercentage / 100));
     public SeasonExtremes Extremes => GetExtremes();
-    public List<Goal> Goals { get; }
+    private List<Goal> Goals { get; }
     public ObservableCollection<Goal> ObservableGoals => new(Goals);
     
     public string NextUnlockName => GetNextUnlock()?.Name ?? "None";

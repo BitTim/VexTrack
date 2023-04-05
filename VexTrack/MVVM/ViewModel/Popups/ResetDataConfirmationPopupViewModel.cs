@@ -4,19 +4,19 @@ namespace VexTrack.MVVM.ViewModel.Popups
 {
 	class ResetDataConfirmationPopupViewModel : BasePopupViewModel
 	{
-		public RelayCommand OnYesClicked { get; set; }
-		public RelayCommand OnNoClicked { get; set; }
+		public RelayCommand OnYesClicked { get; }
+		public RelayCommand OnNoClicked { get; }
 
 		public ResetDataConfirmationPopupViewModel()
 		{
 			CanCancel = true;
 
-			OnYesClicked = new RelayCommand(o =>
+			OnYesClicked = new RelayCommand(_ =>
 			{
 				TrackingData.ResetData();
 				Close();
 			});
-			OnNoClicked = new RelayCommand(o => Close());
+			OnNoClicked = new RelayCommand(_ => Close());
 		}
 	}
 }

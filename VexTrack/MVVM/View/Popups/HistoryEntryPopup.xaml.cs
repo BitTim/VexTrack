@@ -1,17 +1,17 @@
-﻿using System.Windows.Controls;
-using VexTrack.MVVM.ViewModel;
+﻿using VexTrack.MVVM.ViewModel;
+using VexTrack.MVVM.ViewModel.Popups;
 
 namespace VexTrack.MVVM.View.Popups
 {
 	/// <summary>
 	/// Interaction logic for HistoryEntryPopup.xaml
 	/// </summary>
-	public partial class HistoryEntryPopup : UserControl
+	public partial class HistoryEntryPopup
 	{
 		public HistoryEntryPopup()
 		{
 			InitializeComponent();
-			this.DataContext = ViewModelManager.ViewModels["HEPopup"];
+			DataContext = ViewModelManager.ViewModels[nameof(HistoryEntryPopupViewModel)];
 		}
 	}
 }

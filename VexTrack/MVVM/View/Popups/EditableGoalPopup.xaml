@@ -3,25 +3,25 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:VexTrack.MVVM.View.Popups"
-             xmlns:conv="clr-namespace:VexTrack.MVVM.Converter"
 			 xmlns:validation="clr-namespace:VexTrack.MVVM.Validation"
 			 xmlns:model="clr-namespace:VexTrack.MVVM.Model"
+			 xmlns:popups="clr-namespace:VexTrack.MVVM.ViewModel.Popups"
+			 xmlns:core="clr-namespace:VexTrack.Core"
 			 mc:Ignorable="d" 
              d:DesignHeight="812" d:DesignWidth="872">
 
-	<UserControl.Resources>
-		<conv:InvertedBooleanToVisibilityConverter x:Key="InvBoolToVisibileConv"/>
-	</UserControl.Resources>
+	<UserControl.DataContext>
+		<popups:EditableGoalPopupViewModel/>
+	</UserControl.DataContext>
 
 	<Grid Height="Auto"
-		  Width="640"
-		  VerticalAlignment="Center">
+	      Width="640"
+	      VerticalAlignment="Center">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 
-		<Border Background="{DynamicResource Background}"
+		<Border Background="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.BackgroundBrush}"
 				CornerRadius="8">
 			<Grid Margin="16">
 				<Grid.RowDefinitions>
@@ -47,8 +47,6 @@
 						<RowDefinition Height="30"/>
 						<RowDefinition Height="30"/>
 						<RowDefinition Height="30"/>
-						<RowDefinition Height="30"/>
-						<RowDefinition Height="30"/>
 						<RowDefinition Height="Auto"/>
 						<RowDefinition Height="Auto"/>
 					</Grid.RowDefinitions>
@@ -58,14 +56,14 @@
 							   FontSize="20"
 							   FontWeight="Bold"
 							   Margin="0, 0, 0, 16"
-							   Foreground="{DynamicResource Foreground}"/>
+							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"/>
 					
-					<TextBlock Text="Title"
+					<TextBlock Text="Name"
 							   Grid.Row="1"
 							   Grid.Column="0"
 							   FontSize="14"
 							   FontWeight="Bold"
-							   Foreground="{DynamicResource Foreground}"
+							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 0, 0, 8"/>
 
 					<TextBlock Text="Collected XP"
@@ -73,7 +71,7 @@
 							   Grid.Column="0"
 							   FontSize="14"
 							   FontWeight="Bold"
-							   Foreground="{DynamicResource Foreground}"
+							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 0, 0, 8"/>
 
 					<TextBlock Text="Total XP"
@@ -81,36 +79,20 @@
 							   Grid.Column="0"
 							   FontSize="14"
 							   FontWeight="Bold"
-							   Foreground="{DynamicResource Foreground}"
+							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 0, 0, 8"/>
 
-					<TextBlock Text="Group"
+					<TextBlock Text="Color"
 							   Grid.Row="4"
 							   Grid.Column="0"
 							   FontSize="14"
 							   FontWeight="Bold"
-							   Foreground="{DynamicResource Foreground}"
-							   Margin="0, 0, 0, 8"/>
-
-					<TextBlock Text="Dependency"
-							   Grid.Row="5"
-							   Grid.Column="0"
-							   FontSize="14"
-							   FontWeight="Bold"
-							   Foreground="{DynamicResource Foreground}"
-							   Margin="0, 0, 0, 8"/>
-
-					<TextBlock Text="Color"
-							   Grid.Row="6"
-							   Grid.Column="0"
-							   FontSize="14"
-							   FontWeight="Bold"
-							   Foreground="{DynamicResource Foreground}"
+							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 0, 0, 8"/>
 
 
 
-					<TextBox Text="{Binding Title}"
+					<TextBox Text="{Binding Name}"
 							   Grid.Row="1"
 							   Grid.Column="1"
 							   FontSize="14"
@@ -120,8 +102,7 @@
 
 
 
-					<TextBox x:Name="PART_CollectedBox"
-							 Grid.Row="2"
+					<TextBox Grid.Row="2"
 							 Grid.Column="1"
 							 FontSize="14"
 							 Margin="0, 0, 0, 8"
@@ -140,8 +121,7 @@
 						</TextBox.Text>
 					</TextBox>
 
-					<TextBox x:Name="PART_TotalBox"
-							 Grid.Row="3"
+					<TextBox Grid.Row="3"
 							 Grid.Column="1"
 							 FontSize="14"
 							 Margin="0, 0, 0, 8"
@@ -160,31 +140,11 @@
 						</TextBox.Text>
 					</TextBox>
 
-					<ComboBox  Grid.Row="4"
-							   Grid.Column="1"
-							   Margin="0, 0, 0, 8"
-							   FontSize="14"
-							   ItemsSource="{Binding AvailableGroups}"
-							   SelectedValuePath="UUID"
-							   DisplayMemberPath="Name"
-							   SelectedIndex="0"
-							   SelectedValue="{Binding Group, UpdateSourceTrigger=PropertyChanged}"/>
-
-					<ComboBox  Grid.Row="5"
-							   Grid.Column="1"
-							   Margin="0, 0, 0, 8"
-							   FontSize="14"
-							   ItemsSource="{Binding AvailableDependencies}"
-							   SelectedValuePath="UUID"
-							   DisplayMemberPath="Name"
-							   SelectedIndex="0"
-							   SelectedValue="{Binding Dependency, UpdateSourceTrigger=PropertyChanged}"/>
-
-					<Grid Grid.Row="6"
+					<Grid Grid.Row="4"
 						  Grid.Column="1">
 
 						<TextBlock Text="Use Accent Color"
-								   Foreground="{DynamicResource Foreground}"
+								   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 								   FontSize="14"
 								   HorizontalAlignment="Left"
 								   VerticalAlignment="Center"
@@ -192,28 +152,27 @@
 								   FontWeight="Bold"/>
 
 						<CheckBox Width="50" Height="30"
-								  x:Name="PART_AccentCheckBox"
-								  HorizontalAlignment="Right"
+						          HorizontalAlignment="Right"
 								  IsChecked="{Binding UseAccentColor}"
 								  Style="{StaticResource CheckBoxTheme}"/>
 					</Grid>
 					
-					<model:ColorPickerModel Grid.Row="7"
+					<model:ColorPickerModel Grid.Row="5"
 											Grid.Column="0"
 											Grid.ColumnSpan="2"
 											Margin="0, 8, 0, 0"
-											Visibility="{Binding UseAccentColor, Converter={StaticResource InvBoolToVisibileConv}, ConverterParameter=true}"
+											Visibility="{Binding UseAccentColor, Converter={StaticResource InvertedBooleanToVisibilityConverter}, ConverterParameter=true}"
 											Hex="{Binding Color, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
 					
 					<model:SegmentedProgressModel Margin="0, 8, 0, 0"
-					                              Grid.Column="0" Grid.Row="8"
+					                              Grid.Column="0" Grid.Row="6"
 					                              Grid.ColumnSpan="2"
 					                              VerticalAlignment="Center"
 					                              Value="{Binding Progress}"
 					                              Color="{Binding Color, UpdateSourceTrigger=PropertyChanged}"/>
 				</Grid>
 
-				<Grid Grid.Row="1"
+				<Grid Grid.Column="0" Grid.Row="1"
 				      Grid.ColumnSpan="2"
 				      Margin="0, 16, 0, 0">
 					<Grid.ColumnDefinitions>
@@ -222,8 +181,6 @@
 					</Grid.ColumnDefinitions>
 
 					<Button Content="Cancel"
-							Background="{DynamicResource Background}"
-							Foreground="{DynamicResource Foreground}"
 							Width="80"
 							Height="30"
 							HorizontalAlignment="Left"
@@ -231,11 +188,8 @@
 							Style="{DynamicResource ButtonTheme}"
 							Command="{Binding OnBackClicked}"/>
 
-					<Button x:Name="PART_DoneButton"
-							Content="Done"
+					<Button Content="Done"
 							Grid.Column="1"
-							Background="{DynamicResource Background}"
-							Foreground="{DynamicResource Foreground}"
 							Width="80"
 							Height="30"
 							HorizontalAlignment="Right"

@@ -20,7 +20,7 @@ public class Goal
         Collected = collected;
     }
 
-    public int GetProgress() { return CalcUtil.CalcProgress(Total, Collected); }
-    public int GetRemaining() { return Total - Collected; }
+    private int GetProgress() { return CalcUtil.CalcProgress(Total, Collected); }
+    private int GetRemaining() { return Total - Collected; }
     public bool IsCompleted() { return Collected >= Total; }
 }

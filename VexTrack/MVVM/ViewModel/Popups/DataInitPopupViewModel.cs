@@ -6,7 +6,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 {
 	class DataInitPopupViewModel : BasePopupViewModel
 	{
-		public RelayCommand OnDoneClicked { get; set; }
+		public RelayCommand OnDoneClicked { get; }
 
 		private string _name;
 		private long _endDate;
@@ -75,7 +75,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		{
 			CanCancel = false;
 
-			OnDoneClicked = new RelayCommand(o =>
+			OnDoneClicked = new RelayCommand(_ =>
 			{
 				CanCancel = true;
 				MainVm.InterruptUpdate = false;
@@ -91,7 +91,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			});
 		}
 
-		public void CalcProgress()
+		private void CalcProgress()
 		{
 			var total = CalcUtil.CumulativeSum(Constants.BattlepassLevels, Constants.Level2Offset, Constants.XpPerLevel);
 			var collected = CalcUtil.CalcTotalCollected(ActiveBpLevel, Collected);

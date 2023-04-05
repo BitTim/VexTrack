@@ -1,8 +1,6 @@
-﻿using System.Windows;
-
-namespace VexTrack
+﻿namespace VexTrack
 {
-	public partial class App : Application
+	public partial class App
 	{
 	}
 }

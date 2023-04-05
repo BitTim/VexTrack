@@ -1,25 +1,17 @@
-﻿using OxyPlot;
-using OxyPlot.Annotations;
-using OxyPlot.Axes;
-using OxyPlot.Series;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
 using System.Windows.Media;
 using LiveCharts;
 using LiveCharts.Defaults;
-using OxyPlot.Legends;
 using VexTrack.Core;
 using VexTrack.MVVM.ViewModel.Popups;
-using AxisPosition = OxyPlot.Axes.AxisPosition;
 using LineSeries = LiveCharts.Wpf.LineSeries;
 
 namespace VexTrack.MVVM.ViewModel
 {
-	internal class HomeViewModel : ObservableObject
+	class HomeViewModel : ObservableObject
 	{
-		public RelayCommand OnAddClicked { get; set; }
+		public RelayCommand OnAddClicked { get; private set; }
 		private EditableHistoryEntryPopupViewModel EditableHePopup { get; set; }
 		private MainViewModel MainVm { get; set; }
 
@@ -42,7 +34,7 @@ namespace VexTrack.MVVM.ViewModel
 		public string Title
 		{
 			get => _title;
-			set
+			private set
 			{
 				_title = value;
 				OnPropertyChanged();
@@ -52,7 +44,7 @@ namespace VexTrack.MVVM.ViewModel
 		public string Username
 		{
 			get => _username;
-			set
+			private set
 			{
 				_username = value;
 				OnPropertyChanged();
@@ -62,7 +54,7 @@ namespace VexTrack.MVVM.ViewModel
 		public int Collected
 		{
 			get => _collected;
-			set
+			private set
 			{
 				_collected = value;
 				OnPropertyChanged();
@@ -92,7 +84,7 @@ namespace VexTrack.MVVM.ViewModel
 		public int Streak
 		{
 			get => _streak;
-			set
+			private set
 			{
 				_streak = value;
 				OnPropertyChanged();
@@ -102,7 +94,7 @@ namespace VexTrack.MVVM.ViewModel
 		public Brush StreakColor
 		{
 			get => _streakColor;
-			set
+			private set
 			{
 				_streakColor = value;
 				OnPropertyChanged();
@@ -122,7 +114,7 @@ namespace VexTrack.MVVM.ViewModel
 		public string SeasonName
 		{
 			get => _seasonName;
-			set
+			private set
 			{
 				_seasonName = value;
 				OnPropertyChanged();
@@ -152,7 +144,7 @@ namespace VexTrack.MVVM.ViewModel
 		public int DaysFinished
 		{
 			get => _daysFinished;
-			set
+			private set
 			{
 				_daysFinished = value;
 				OnPropertyChanged();
@@ -162,7 +154,7 @@ namespace VexTrack.MVVM.ViewModel
 		public int DaysRemaining
 		{
 			get => _daysRemaining;
-			set
+			private set
 			{
 				_daysRemaining = value;
 				OnPropertyChanged();
@@ -179,7 +171,7 @@ namespace VexTrack.MVVM.ViewModel
 			}
 		}
 
-		public List<int> Segments
+		private List<int> Segments
 		{
 			get => _segments;
 			set
@@ -197,18 +189,18 @@ namespace VexTrack.MVVM.ViewModel
 		
 		public HomeViewModel()
 		{
-			Update(false);
+			MainVm = (MainViewModel)ViewModelManager.ViewModels[nameof(MainViewModel)];
+			EditableHePopup = (EditableHistoryEntryPopupViewModel)ViewModelManager.ViewModels[nameof(EditableHistoryEntryPopupViewModel)];
+			
+			Update();
 		}
 
-		public void Update(bool epilogue)
+		public void Update()
 		{
-			MainVm = (MainViewModel)ViewModelManager.ViewModels["Main"];
-			EditableHePopup = (EditableHistoryEntryPopupViewModel)ViewModelManager.ViewModels["EditableHEPopup"];
-
 			Username = SettingsHelper.Data.Username;
 			Title = Username != "" ? "Welcome back," : "Welcome back";
 
-			var data = DashboardDataCalc.CalcDailyData();
+			var data = HomeDataCalc.CalcDailyData();
 
 			Collected = data.Collected;
 			Remaining = data.Remaining;
@@ -217,24 +209,23 @@ namespace VexTrack.MVVM.ViewModel
 			Streak = data.Streak;
 			Segments = data.Segments;
 
-			StreakColor = TrackingData.LastStreakUpdateTimestamp ==
-			              ((DateTimeOffset)DateTimeOffset.Now.ToLocalTime().Date).ToUnixTimeSeconds()
-				? (Brush)Application.Current.FindResource("Accent")
-				: (Brush)Application.Current.FindResource("Shade");
+			StreakColor = TrackingData.LastStreakUpdateTimestamp == ((DateTimeOffset)DateTimeOffset.Now.ToLocalTime().Date).ToUnixTimeSeconds()
+				? SettingsHelper.Data.Theme.AccentBrush
+				: SettingsHelper.Data.Theme.ShadeBrush;
 
 			SeasonName = TrackingData.CurrentSeasonData.Name;
-			(DeviationIdeal, DeviationDaily) = CalcGraph(epilogue);
+			(DeviationIdeal, DeviationDaily) = CalcGraph();
 			DaysRemaining = TrackingData.CurrentSeasonData.RemainingDays;
-			DaysFinished = DashboardDataCalc.CalcDaysFinished(epilogue);
+			DaysFinished = HomeDataCalc.CalcDaysFinished(true);
 
-			OnAddClicked = new RelayCommand(o =>
+			OnAddClicked = new RelayCommand(_ =>
 			{
 				EditableHePopup.SetParameters("Create History Entry", false);
 				MainVm.QueuePopup(EditableHePopup);
 			});
 		}
 
-		private (int, int) CalcGraph(bool epilogue)
+		private (int, int) CalcGraph() // TODO: Refactor this
 		{
 			var currSeason = TrackingData.CurrentSeasonData;
 			var seriesCollection = currSeason.GraphSeriesCollection;
@@ -242,8 +233,8 @@ namespace VexTrack.MVVM.ViewModel
 			var ideal = seriesCollection[0] as LineSeries;
 			var performance = seriesCollection[1] as LineSeries;
 			
-			var dailyIdeal = DashboardDataCalc.CalcDailyIdeal(performance);
-			var average = DashboardDataCalc.CalcAverageGraph(performance);
+			var dailyIdeal = HomeDataCalc.CalcDailyIdeal(performance);
+			var average = HomeDataCalc.CalcAverageGraph(performance);
 			
 			seriesCollection.Add(dailyIdeal);
 			seriesCollection.Add(average);

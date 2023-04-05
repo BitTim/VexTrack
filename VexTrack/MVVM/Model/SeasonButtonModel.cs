@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using LiveCharts;
-using OxyPlot;
 using VexTrack.Core;
 
 namespace VexTrack.MVVM.Model;
@@ -36,7 +35,7 @@ public class SeasonButtonModel : ToggleButton
     public static readonly DependencyProperty NextUnlockRemainingProperty = DependencyProperty.Register(nameof(NextUnlockRemaining), typeof(int), typeof(SeasonButtonModel), new PropertyMetadata(0));
 
     public static readonly DependencyProperty StatusIconDataProperty = DependencyProperty.Register(nameof(StatusIconData), typeof(Geometry), typeof(SeasonButtonModel), new PropertyMetadata(null));
-    public static readonly DependencyProperty StatusIconColorProperty = DependencyProperty.Register(nameof(StatusIconColor), typeof(Brush), typeof(SeasonButtonModel), new PropertyMetadata(Application.Current.FindResource("Foreground")));
+    public static readonly DependencyProperty StatusIconColorProperty = DependencyProperty.Register(nameof(StatusIconColor), typeof(Brush), typeof(SeasonButtonModel), new PropertyMetadata(SettingsHelper.Data.Theme.ForegroundBrush));
     
     public string Title
     {

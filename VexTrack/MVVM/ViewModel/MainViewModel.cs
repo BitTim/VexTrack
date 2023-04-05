@@ -9,15 +9,14 @@ using VexTrack.MVVM.ViewModel.Popups;
 
 namespace VexTrack.MVVM.ViewModel
 {
-	internal class MainViewModel : ObservableObject
+	class MainViewModel : ObservableObject
 	{
 		private ThemeWatcher Watcher { get; set; }
-
-		public RelayCommand DashboardViewCommand { get; set; }
-		public RelayCommand GoalViewCommand { get; set; }
-		public RelayCommand SeasonViewCommand { get; set; }
-		public RelayCommand HistoryViewCommand { get; set; }
-		public RelayCommand SettingsViewCommand { get; set; }
+		
+		public RelayCommand DashboardViewCommand { get; }
+		public RelayCommand GoalViewCommand { get; }
+		public RelayCommand HistoryViewCommand { get; }
+		public RelayCommand SettingsViewCommand { get; }
 
 		private HomeViewModel HomeVm { get; set; }
 		private ContractViewModel ContractVm { get; set; }
@@ -29,7 +28,7 @@ namespace VexTrack.MVVM.ViewModel
 		private EditableGoalPopupViewModel EditableGoalPopup { get; set; }
 		private DataInitPopupViewModel DataInitPopup { get; set; }
 		private ResetDataConfirmationPopupViewModel ResetDataConfirmationPopup { get; set; }
-		private ProgressActivityPopupViewModel PaPopupVm { get; set; }
+		private ProgressActivityPopupViewModel ProgressActivityPopup { get; set; }
 		private AboutPopupViewModel AboutPopup { get; set; }
 		private UpdateAvailablePopupViewModel UpdateAvailablePopup { get; set; }
 		private UpdateDownloadPopupViewModel UpdateDownloadPopup { get; set; }
@@ -41,7 +40,6 @@ namespace VexTrack.MVVM.ViewModel
 		private bool _epilogueButtonEnabled;
 
 		private BasePopupViewModel _currentPopup;
-		private List<BasePopupViewModel> _popupQueue = new();
 
 		private bool _viewModelsInitialized;
 		public bool InterruptUpdate = false;
@@ -66,17 +64,9 @@ namespace VexTrack.MVVM.ViewModel
 			}
 		}
 
-		public List<BasePopupViewModel> PopupQueue
-		{
-			get => _popupQueue;
-			set
-			{
-				_popupQueue = value;
-				OnPropertyChanged();
-			}
-		}
+		public List<BasePopupViewModel> PopupQueue { get; } = new();
 
-		public bool Epilogue
+		private bool Epilogue
 		{
 			get => _epilogue;
 			set
@@ -89,7 +79,6 @@ namespace VexTrack.MVVM.ViewModel
 
 		public bool EpilogueButtonEnabled
 		{
-			get => _epilogueButtonEnabled;
 			set
 			{
 				_epilogueButtonEnabled = value;
@@ -116,7 +105,7 @@ namespace VexTrack.MVVM.ViewModel
 			SettingsHelper.Init();
 			Watcher = new ThemeWatcher();
 
-			ViewModelManager.ViewModels.Add("Main", this);
+			ViewModelManager.ViewModels.Add(nameof(MainViewModel), this);
 			InitPopupViewModels();
 
 			DashboardViewCommand = new RelayCommand(_ => SetView(HomeVm));
@@ -149,10 +138,10 @@ namespace VexTrack.MVVM.ViewModel
 			HistoryVm = new HistoryViewModel();
 			SettingsVm = new SettingsViewModel();
 
-			ViewModelManager.ViewModels.Add("Dashboard", HomeVm);
-			ViewModelManager.ViewModels.Add("Goal", ContractVm);
-			ViewModelManager.ViewModels.Add("History", HistoryVm);
-			ViewModelManager.ViewModels.Add("Settings", SettingsVm);
+			ViewModelManager.ViewModels.Add(nameof(HomeViewModel), HomeVm);
+			ViewModelManager.ViewModels.Add(nameof(ContractViewModel), ContractVm);
+			ViewModelManager.ViewModels.Add(nameof(HistoryViewModel), HistoryVm);
+			ViewModelManager.ViewModels.Add(nameof(SettingsViewModel), SettingsVm);
 
 			CurrentView = HomeVm;
 			_viewModelsInitialized = true;
@@ -161,37 +150,37 @@ namespace VexTrack.MVVM.ViewModel
 		private void InitPopupViewModels()
 		{
 			DataInitPopup = new DataInitPopupViewModel();
-			ViewModelManager.ViewModels.Add("DataInitPopup", DataInitPopup);
-
+			ViewModelManager.ViewModels.Add(nameof(DataInitPopupViewModel), DataInitPopup);
+			
 			EditableHePopup = new EditableHistoryEntryPopupViewModel();
-			ViewModelManager.ViewModels.Add("EditableHEPopup", EditableHePopup);
-
+			ViewModelManager.ViewModels.Add(nameof(EditableHistoryEntryPopupViewModel), EditableHePopup);
+			
 			HePopup = new HistoryEntryPopupViewModel();
-			ViewModelManager.ViewModels.Add("HEPopup", HePopup);
-
+			ViewModelManager.ViewModels.Add(nameof(HistoryEntryPopupViewModel), HePopup);
+			
 			DeleteGoalConfirmationPopup = new DeleteGoalConfirmationPopupViewModel();
-			ViewModelManager.ViewModels.Add("DeleteGoalConfirmationPopup", DeleteGoalConfirmationPopup);
-
+			ViewModelManager.ViewModels.Add(nameof(DeleteGoalConfirmationPopupViewModel), DeleteGoalConfirmationPopup);
+			
 			EditableGoalPopup = new EditableGoalPopupViewModel();
-			ViewModelManager.ViewModels.Add("EditableGoalPopup", EditableGoalPopup);
-
+			ViewModelManager.ViewModels.Add(nameof(EditableGoalPopupViewModel), EditableGoalPopup);
+			
 			ResetDataConfirmationPopup = new ResetDataConfirmationPopupViewModel();
-			ViewModelManager.ViewModels.Add("ResetDataConfirmationPopup", ResetDataConfirmationPopup);
-
-			PaPopupVm = new ProgressActivityPopupViewModel();
-			ViewModelManager.ViewModels.Add("PAPopup", PaPopupVm);
-
+			ViewModelManager.ViewModels.Add(nameof(ResetDataConfirmationPopupViewModel), ResetDataConfirmationPopup);
+			
+			ProgressActivityPopup = new ProgressActivityPopupViewModel();
+			ViewModelManager.ViewModels.Add(nameof(ProgressActivityPopupViewModel), ProgressActivityPopup);
+			
 			AboutPopup = new AboutPopupViewModel();
-			ViewModelManager.ViewModels.Add("AboutPopup", AboutPopup);
-
+			ViewModelManager.ViewModels.Add(nameof(AboutPopupViewModel), AboutPopup);
+			
 			UpdateAvailablePopup = new UpdateAvailablePopupViewModel();
-			ViewModelManager.ViewModels.Add("UpdateAvailablePopup", UpdateAvailablePopup);
-
+			ViewModelManager.ViewModels.Add(nameof(UpdateAvailablePopupViewModel), UpdateAvailablePopup);
+			
 			UpdateDownloadPopup = new UpdateDownloadPopupViewModel();
-			ViewModelManager.ViewModels.Add("UpdateDownloadPopup", UpdateDownloadPopup);
-
+			ViewModelManager.ViewModels.Add(nameof(UpdateDownloadPopupViewModel), UpdateDownloadPopup);
+			
 			UpdateFailedPopup = new UpdateFailedPopupViewModel();
-			ViewModelManager.ViewModels.Add("UpdateFailedPopup", UpdateFailedPopup);
+			ViewModelManager.ViewModels.Add(nameof(UpdateFailedPopupViewModel), UpdateFailedPopup);
 		}
 
 		private void SetView(object view)
@@ -213,8 +202,8 @@ namespace VexTrack.MVVM.ViewModel
 			}
 			else EpilogueButtonEnabled = true;
 
-			HomeVm.Update(Epilogue);
-			ContractVm.Update(Epilogue);
+			HomeVm.Update();
+			ContractVm.Update();
 
 			if (epilogueOnly) return;
 			HistoryVm.Update();
@@ -253,7 +242,7 @@ namespace VexTrack.MVVM.ViewModel
 
 		public void Destroy()
 		{
-			ThemeWatcher.Destroy();
+			Watcher.Destroy();
 		}
 	}
 }

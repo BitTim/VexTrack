@@ -19,11 +19,9 @@ namespace VexTrack.Core
 		public static async Task DownloadUpdate(string packageFile, string updaterFile, string tag, HttpClient client)
 		{
 			var buffer = new byte[1024 * 1024];
-			var i = 0;
-			DateTimeOffset startTime;
 
-			var mainVm = (MainViewModel)ViewModelManager.ViewModels["Main"];
-			var updateDownloadPopup = (UpdateDownloadPopupViewModel)ViewModelManager.ViewModels["UpdateDownloadPopup"];
+			var mainVm = (MainViewModel)ViewModelManager.ViewModels[nameof(MainViewModel)];
+			var updateDownloadPopup = (UpdateDownloadPopupViewModel)ViewModelManager.ViewModels[nameof(UpdateDownloadPopupViewModel)];
 			mainVm.QueuePopup(updateDownloadPopup);
 
 			var packageUrl = Constants.BaseDownloadUrl + "/" + tag + "/UpdatePackage.zip";
@@ -32,23 +30,28 @@ namespace VexTrack.Core
 			var packageResponse = await client.GetAsync(packageUrl, HttpCompletionOption.ResponseHeadersRead);
 			var updaterResponse = await client.GetAsync(updaterUrl, HttpCompletionOption.ResponseHeadersRead);
 
-			var packageContentLength = (long)packageResponse.Content.Headers.ContentLength;
-			var updaterContentLength = (long)updaterResponse.Content.Headers.ContentLength;
+			var packageContentLengthNullable = packageResponse.Content.Headers.ContentLength;
+			var updaterContentLengthNullable = updaterResponse.Content.Headers.ContentLength;
+
+			if (packageContentLengthNullable == null || updaterContentLengthNullable == null) return;
+			
+			var packageContentLength = (long)packageContentLengthNullable;
+			var updaterContentLength = (long)updaterContentLengthNullable;
 
 			updateDownloadPopup.SetPackageData(packageContentLength, 0, 0);
 			updateDownloadPopup.SetUpdaterData(updaterContentLength, 0, 0);
 
 
 
-			// Downlaod Update Package
+			// Download Update Package
 
 			var packageStream = await packageResponse.Content.ReadAsStreamAsync();
 			var packageFileStream = File.Create(packageFile);
 			long packageTotalBytesRead = 0;
-			startTime = DateTimeOffset.Now;
+			var startTime = DateTimeOffset.Now;
 
-			i = 0;
-			for (var len = packageStream.Read(buffer, 0, 1024 * 1024); len != 0; len = packageStream.Read(buffer, 0, 1024 * 1024))
+			var i = 0;
+			for (var len = await packageStream.ReadAsync(buffer.AsMemory(0, 1024 * 1024)); len != 0; len = await packageStream.ReadAsync(buffer.AsMemory(0, 1024 * 1024)))
 			{
 
 				packageTotalBytesRead += len;
@@ -65,8 +68,8 @@ namespace VexTrack.Core
 				i++;
 			}
 
-			packageStream.Dispose();
-			packageFileStream.Dispose();
+			await packageStream.DisposeAsync();
+			await packageFileStream.DisposeAsync();
 
 
 
@@ -78,7 +81,7 @@ namespace VexTrack.Core
 			startTime = DateTimeOffset.Now;
 
 			i = 0;
-			for (var len = updaterStream.Read(buffer, 0, 1024 * 1024); len != 0; len = updaterStream.Read(buffer, 0, 1024 * 1024))
+			for (var len = await updaterStream.ReadAsync(buffer.AsMemory(0, 1024 * 1024)); len != 0; len = await updaterStream.ReadAsync(buffer.AsMemory(0, 1024 * 1024)))
 			{
 
 				updaterTotalBytesRead += len;
@@ -95,16 +98,15 @@ namespace VexTrack.Core
 				i++;
 			}
 
-			updaterStream.Dispose();
-			updaterFileStream.Dispose();
+			await updaterStream.DisposeAsync();
+			await updaterFileStream.DisposeAsync();
 		}
 
 		public static int ExtractUpdate(string sourceFile, string extractTarget)
 		{
 			ZipFile.ExtractToDirectory(sourceFile, extractTarget);
 
-			if (!File.Exists(extractTarget + Constants.ManifestFile)) return 1;
-			return 0;
+			return !File.Exists(extractTarget + Constants.ManifestFile) ? 1 : 0;
 		}
 
 		public static int ApplyUpdate(string applierFile, string extractTarget, string installPath, string newVersionString)
@@ -117,21 +119,19 @@ namespace VexTrack.Core
 			var fetchedVersionString = (string)jo["version"];
 			if (fetchedVersionString != newVersionString) return 1;
 
-			var fileList = "";
-			foreach (JValue file in jo["files"])
-			{
-				fileList += file.ToString() + "\n";
-			}
+			var fileList = jo["files"]!.Cast<JValue>().Aggregate("", (current, file) => current + (file + "\n"));
 
 			if (!File.Exists(extractTarget + Constants.FileListFile)) File.CreateText(extractTarget + Constants.FileListFile).Close();
 			File.WriteAllText(extractTarget + Constants.FileListFile, fileList);
 
-			ProcessStartInfo startInfo = new();
-			startInfo.FileName = applierFile;
-			startInfo.Arguments = "\"" + extractTarget + "\" \"" + installPath + "\" \"" + extractTarget + Constants.FileListFile + "\" \"" + Constants.AppName + ".exe\"";
-			startInfo.WorkingDirectory = Constants.UpdateFolder;
-			startInfo.UseShellExecute = true;
-			startInfo.Verb = "runas";
+			ProcessStartInfo startInfo = new()
+			{
+				FileName = applierFile,
+				Arguments = "\"" + extractTarget + "\" \"" + installPath + "\" \"" + extractTarget + Constants.FileListFile + "\" \"" + Constants.AppName + ".exe\"",
+				WorkingDirectory = Constants.UpdateFolder,
+				UseShellExecute = true,
+				Verb = "runas"
+			};
 
 			Process.Start(startInfo);
 			return 0;
@@ -176,9 +176,9 @@ namespace VexTrack.Core
 		private static readonly HttpClient Client = new HttpClient();
 		private static string _latestVersionTag = "";
 
-		private static readonly string _updaterFile = Constants.UpdateFolder + "/Updater.exe";
-		private static readonly string _sourceFile = Constants.UpdateFolder + "/UpdatePackage.zip";
-		private static readonly string _extractTarget = Constants.UpdateFolder + "/ExtractedPackage";
+		private static readonly string UpdaterFile = Constants.UpdateFolder + "/Updater.exe";
+		private static readonly string SourceFile = Constants.UpdateFolder + "/UpdatePackage.zip";
+		private static readonly string ExtractTarget = Constants.UpdateFolder + "/ExtractedPackage";
 
 		public static async void CheckUpdateAsync(bool forceUpdate = false)
 		{
@@ -198,15 +198,16 @@ namespace VexTrack.Core
 			var forceUpdateSkippedOnce = false;
 
 			var ja = JArray.Parse(res);
-			foreach (JObject release in ja)
+			foreach (var jToken in ja)
 			{
-				var tokenizedName = release["name"].ToString().Split().ToList();
+				var release = (JObject)jToken;
+				var tokenizedName = release["name"]!.ToString().Split().ToList();
 				if (tokenizedName[0] != Constants.AppName) continue;
 
 				var newestVersion = float.Parse(tokenizedName[1].Split("v")[1]);
 				var currentVersion = float.Parse(Constants.Version.Split("v")[1]);
 
-				if (forceUpdateSkippedOnce && forceUpdate) break;
+				if (forceUpdateSkippedOnce) break;
 				if (currentVersion >= newestVersion)
                 {
 					if (!forceUpdate) break;
@@ -218,14 +219,14 @@ namespace VexTrack.Core
 				_latestVersionTag = (string)release["tag_name"];
 
 				var rawDesc = (string)release["body"];
-				var desc = rawDesc.Split("##").ToList();
+				var desc = rawDesc!.Split("##").ToList();
 
 				List<string> requiredVersion = new();
 
 				foreach (var d in desc)
 				{
 					var splitDesc = d.Split("\r\n").ToList();
-					splitDesc.RemoveAll(x => string.IsNullOrWhiteSpace(x));
+					splitDesc.RemoveAll(string.IsNullOrWhiteSpace);
 
 					for (var i = 0; i < splitDesc.Count; i++)
 					{
@@ -248,8 +249,8 @@ namespace VexTrack.Core
 			}
 
 			if (!showDialog) return;
-			var updateAvailablePopup = (UpdateAvailablePopupViewModel)ViewModelManager.ViewModels["UpdateAvailablePopup"];
-			var mainVm = (MainViewModel)ViewModelManager.ViewModels["Main"];
+			var updateAvailablePopup = (UpdateAvailablePopupViewModel)ViewModelManager.ViewModels[nameof(UpdateAvailablePopupViewModel)];
+			var mainVm = (MainViewModel)ViewModelManager.ViewModels[nameof(MainViewModel)];
 
 			updateAvailablePopup.SetData(changelog, warnings, _latestVersionTag);
 			mainVm.QueuePopup(updateAvailablePopup);
@@ -259,36 +260,31 @@ namespace VexTrack.Core
 		{
 			if (!Directory.Exists(Constants.UpdateFolder)) Directory.CreateDirectory(Constants.UpdateFolder);
 
-			await UpdateUtil.DownloadUpdate(_sourceFile, _updaterFile, _latestVersionTag, Client);
-			var extractResult = UpdateUtil.ExtractUpdate(_sourceFile, _extractTarget);
+			await UpdateUtil.DownloadUpdate(SourceFile, UpdaterFile, _latestVersionTag, Client);
+			var extractResult = UpdateUtil.ExtractUpdate(SourceFile, ExtractTarget);
+			
+			var mainVm = (MainViewModel)ViewModelManager.ViewModels[nameof(MainViewModel)];
+			var popup = new UpdateFailedPopupViewModel();
 
 			if (extractResult == 1)
 			{
-				var mainVm = (MainViewModel)ViewModelManager.ViewModels["Main"];
-				var popup = new UpdateFailedPopupViewModel();
-
-				mainVm.PopupQueue.LastOrDefault().CanCancel = true;
-				mainVm.PopupQueue.LastOrDefault().Close();
+				mainVm.PopupQueue.LastOrDefault()!.CanCancel = true;
+				mainVm.PopupQueue.LastOrDefault()!.Close();
 
 				popup.SetData("Invalid Update Package: Manifest file missing or corrupted");
 				mainVm.QueuePopup(popup);
 				return;
 			}
 
-			var applyResult = UpdateUtil.ApplyUpdate(_updaterFile, _extractTarget, Environment.CurrentDirectory, _latestVersionTag);
+			var applyResult = UpdateUtil.ApplyUpdate(UpdaterFile, ExtractTarget, Environment.CurrentDirectory, _latestVersionTag);
 
-			if (applyResult == 1)
-			{
-				var mainVm = (MainViewModel)ViewModelManager.ViewModels["Main"];
-				var popup = new UpdateFailedPopupViewModel();
+			if (applyResult != 1) return;
+			
+			mainVm.PopupQueue.LastOrDefault()!.CanCancel = true;
+			mainVm.PopupQueue.LastOrDefault()!.Close();
 
-				mainVm.PopupQueue.LastOrDefault().CanCancel = true;
-				mainVm.PopupQueue.LastOrDefault().Close();
-
-				popup.SetData("Invalid Update Package: Manifest version and Tag version mismatch");
-				mainVm.QueuePopup(popup);
-				return;
-			}
+			popup.SetData("Invalid Update Package: Manifest version and Tag version mismatch");
+			mainVm.QueuePopup(popup);
 		}
 	}
 }

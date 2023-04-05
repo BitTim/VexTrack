@@ -9,22 +9,13 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="MVVM\View\DashboardView.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Update="MVVM\View\HistoryView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="MVVM\View\Popups\AboutPopup.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="MVVM\View\Popups\EditableGoalGroupPopup.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Update="MVVM\View\Popups\DataInitPopup.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="MVVM\View\Popups\EditableSeasonPopup.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="MVVM\View\Popups\ProgressActivityPopup.xaml.cs">
@@ -33,16 +24,10 @@
     <Compile Update="MVVM\View\Popups\EditableGoalPopup.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="MVVM\View\Popups\GoalPopup.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Update="MVVM\View\Popups\HistoryEntryPopup.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="MVVM\View\Popups\ResetDataConfirmationPopup.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="MVVM\View\Popups\SeasonPopup.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="MVVM\View\Popups\UpdateAvailablePopup.xaml.cs">
@@ -54,9 +39,6 @@
     <Compile Update="MVVM\View\Popups\UpdateFailedPopup.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="MVVM\View\SeasonView.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Update="MVVM\View\SettingsView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -65,37 +47,19 @@
     <Page Update="MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="MVVM\View\DashboardView.xaml">
-      <SubType>Designer</SubType>
-    </Page>
     <Page Update="MVVM\View\HistoryView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MVVM\View\Popups\AboutPopup.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="MVVM\View\Popups\SeasonEndConfirmationPopup.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="MVVM\View\Popups\DeleteGoalGroupConfirmationPopup.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="MVVM\View\Popups\EditableGoalGroupPopup.xaml">
-      <SubType>Designer</SubType>
-    </Page>
     <Page Update="MVVM\View\Popups\DataInitPopup.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="MVVM\View\Popups\EditableSeasonPopup.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MVVM\View\Popups\ProgressActivityPopup.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MVVM\View\Popups\EditableGoalPopup.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="MVVM\View\Popups\GoalPopup.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MVVM\View\Popups\HistoryEntryPopup.xaml">
@@ -107,9 +71,6 @@
     <Page Update="MVVM\View\Popups\ResetDataConfirmationPopup.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="MVVM\View\Popups\SeasonPopup.xaml">
-      <SubType>Designer</SubType>
-    </Page>
     <Page Update="MVVM\View\Popups\UpdateAvailablePopup.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -119,88 +80,7 @@
     <Page Update="MVVM\View\Popups\UpdateFailedPopup.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="MVVM\View\SeasonView.xaml">
-      <SubType>Designer</SubType>
-    </Page>
     <Page Update="MVVM\View\SettingsView.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Theme\AccentColors\Cyberpunk2.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Theme\AccentColors\Chocolate.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Theme\AccentColors\Emerald.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Theme\AccentColors\Nature.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Theme\AccentColors\Blue.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Theme\AccentColors\Aqua.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Theme\AccentColors\Lavender.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Theme\AccentColors\HotCold.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Theme\AddButtonTheme.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Theme\ColorPickerTheme.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Theme\Colors.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Theme\AppTheme\DarkTheme.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Theme\ComboBoxTheme.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Theme\HistoryButtonTheme.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Theme\HueSliderTheme.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Theme\Icons.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Theme\AppTheme\LightTheme.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Theme\ButtonTheme.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Theme\MenuButtonTheme.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Theme\ProgressButtonTheme.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Theme\RadioSelectorButtonTheme.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Theme\ScrollViewerTheme.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Theme\CheckBoxTheme.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Theme\TextBoxTheme.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Theme\TextWithUnitTheme.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Theme\TitleBarButtonTheme.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

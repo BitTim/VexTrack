@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows;
 using System.Windows.Media;
 using LiveCharts;
 using LiveCharts.Defaults;
@@ -14,8 +13,8 @@ namespace VexTrack.Core
 		{
 			var collection = new SeriesCollection();
 
-			var mono = (Brush)Application.Current.FindResource("AccMono") ?? new SolidColorBrush();
-			var accent = (Brush)Application.Current.FindResource("Accent") ?? new SolidColorBrush();
+			var mono = SettingsHelper.Data.Theme.MonoBrush ?? new SolidColorBrush();
+			var accent = SettingsHelper.Data.Theme.AccentBrush ?? new SolidColorBrush();
 
 			var ideal = new LineSeries
 			{
@@ -53,7 +52,7 @@ namespace VexTrack.Core
 				ideal.Values.Add(new ObservablePoint(i, idealVal));
 
 				// Performance
-				if(i >= duration - remainingDays) continue;
+				if(i >= duration - remainingDays + 1) continue;
 				
 				var performanceVal = prevPerformanceVal + dailyAmounts[i];
 				prevPerformanceVal = performanceVal;

@@ -4,7 +4,7 @@ using System.Windows.Data;
 
 namespace VexTrack.MVVM.Converter
 {
-	class DataStringToBoolConverter : IValueConverter
+	internal class DataStringToBoolConverter : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
@@ -16,7 +16,7 @@ namespace VexTrack.MVVM.Converter
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			throw new NotImplementedException();
+			return null;
 		}
 	}
 }

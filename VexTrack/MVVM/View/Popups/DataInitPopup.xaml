@@ -3,16 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:VexTrack.MVVM.View.Popups"
 			 xmlns:validation="clr-namespace:VexTrack.MVVM.Validation"
-			 xmlns:conv="clr-namespace:VexTrack.MVVM.Converter" xmlns:model="clr-namespace:VexTrack.MVVM.Model"
-			 mc:Ignorable="d" 
+			 xmlns:model="clr-namespace:VexTrack.MVVM.Model"
+             xmlns:popups="clr-namespace:VexTrack.MVVM.ViewModel.Popups"
+             xmlns:core="clr-namespace:VexTrack.Core"
+             mc:Ignorable="d" 
              d:DesignHeight="812" d:DesignWidth="872">
 
-	<UserControl.Resources>
-		<BooleanToVisibilityConverter x:Key="BoolToVisibleConv"/>
-		<conv:TimestampToStringConverter x:Key="TimestampConv"/>
-	</UserControl.Resources>
+	<UserControl.DataContext>
+		<popups:DataInitPopupViewModel/>
+	</UserControl.DataContext>
 	
 	<Grid Height="Auto"
 		  Width="640"
@@ -21,7 +21,7 @@
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 
-		<Border Background="{DynamicResource Background}"
+		<Border Background="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.BackgroundBrush}"
 				CornerRadius="8">
 			<Grid Margin="16">
 				<Grid.RowDefinitions>
@@ -51,14 +51,14 @@
 							   FontSize="20"
 							   FontWeight="Bold"
 							   Margin="0, 0, 0, 16"
-							   Foreground="{DynamicResource Foreground}"/>
+							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"/>
 
 					<TextBlock Text="Current Season Name"
 							   Grid.Row="1"
 							   Grid.Column="0"
 							   FontSize="14"
 							   FontWeight="Bold"
-							   Foreground="{DynamicResource Foreground}"
+							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 0, 0, 8"/>
 
 					<TextBlock Text="Season End Date"
@@ -66,7 +66,7 @@
 							   Grid.Column="0"
 							   FontSize="14"
 							   FontWeight="Bold"
-							   Foreground="{DynamicResource Foreground}"
+							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 0, 0, 8"/>
 
 					<TextBlock Text="Remaining Days in Season"
@@ -74,7 +74,7 @@
 							   Grid.Column="0"
 							   FontSize="14"
 							   FontWeight="Bold"
-							   Foreground="{DynamicResource Foreground}"
+							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 0, 0, 8"/>
 
 					<TextBlock Text="Collected XP in Active Level"
@@ -82,7 +82,7 @@
 							   Grid.Column="0"
 							   FontSize="14"
 							   FontWeight="Bold"
-							   Foreground="{DynamicResource Foreground}"
+							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 0, 0, 8"/>
 
 					<TextBlock Text="Active Battlepass Level"
@@ -90,7 +90,7 @@
 							   Grid.Column="0"
 							   FontSize="14"
 							   FontWeight="Bold"
-							   Foreground="{DynamicResource Foreground}"
+							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 0, 0, 8"/>
 
 
@@ -103,8 +103,7 @@
 							 Height="22"
 							 Style="{DynamicResource TextBoxTheme}"/>
 
-					<TextBox x:Name="PART_EndDateBox"
-							 Grid.Row="2"
+					<TextBox Grid.Row="2"
 							 Grid.Column="1"
 							 FontSize="14"
 							 Margin="0, 0, 0, 8"
@@ -112,7 +111,7 @@
 							 Style="{DynamicResource TextBoxTheme}">
 						<TextBox.Text>
 							<Binding Path="EndDate"
-									 Converter="{StaticResource TimestampConv}"
+									 Converter="{StaticResource TimestampToStringConverter}"
 									 ConverterParameter="True"
 									 ValidatesOnNotifyDataErrors="True"
 									 ValidatesOnDataErrors="True"
@@ -128,11 +127,10 @@
 							   Grid.Row="3"
 							   Grid.Column="1"
 							   FontSize="14"
-							   Foreground="{DynamicResource Foreground}"
+							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 0, 0, 4"/>
 					
-					<TextBox x:Name="PART_CollectedBox"
-							 Grid.Row="4"
+					<TextBox Grid.Row="4"
 							 Grid.Column="1"
 							 FontSize="14"
 							 Margin="0, 0, 0, 8"
@@ -151,15 +149,14 @@
 						</TextBox.Text>
 					</TextBox>
 
-					<TextBox x:Name="PART_ActiveBPBox"
-							 Grid.Row="5"
+					<TextBox Grid.Row="5"
 							 Grid.Column="1"
 							 FontSize="14"
 							 Margin="0, 0, 0, 8"
 							 Height="22"
 							 Style="{DynamicResource TextBoxTheme}">
 						<TextBox.Text>
-							<Binding Path="ActiveBPLevel"
+							<Binding Path="ActiveBpLevel"
 									 UpdateSourceTrigger="PropertyChanged"
 									 ValidatesOnNotifyDataErrors="True"
 									 ValidatesOnDataErrors="True"
@@ -177,14 +174,14 @@
 					                              Margin="0, 8, 0, 0"
 					                              Value="{Binding Progress}"/>
 
-					<TextBlock Text="Note: Remaining Days are 1 more than Valorant shows ingame, because of the way Valorant handles the last day"
+					<TextBlock Text="Note: Remaining Days are 1 more than Valorant shows in game, because of the way Valorant handles the last day"
 							   Grid.Row="7"
 							   Grid.ColumnSpan="2"
 							   Grid.Column="0"
 							   TextWrapping="WrapWithOverflow"
 							   FontSize="14"
 							   FontStyle="Italic"
-							   Foreground="{DynamicResource Foreground}"
+							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 8, 0, 4"/>
 				</Grid>
 
@@ -195,11 +192,8 @@
 						<ColumnDefinition Width="*"/>
 					</Grid.ColumnDefinitions>
 
-					<Button x:Name="PART_DoneButton"
-							Content="Done"
+					<Button Content="Done"
 							Grid.Column="1"
-							Background="{DynamicResource Background}"
-							Foreground="{DynamicResource Foreground}"
 							Width="80"
 							Height="30"
 							HorizontalAlignment="Right"

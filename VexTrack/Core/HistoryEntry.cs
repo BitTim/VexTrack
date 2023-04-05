@@ -94,7 +94,7 @@ public class HistoryEntry
 		return score == enemyScore ? "Draw" : "";
 	}
 
-	public static string CalcHistoryResultFromString(string description)
+	private static string CalcHistoryResultFromString(string description)
 	{
 		if (string.IsNullOrEmpty(description)) return "";
 
@@ -124,7 +124,7 @@ public class HistoryEntry
 	{
 		var isCustom = true;
 		var gameMode = "Custom";
-		foreach (var mode in Constants.Gamemodes.Where(description.Contains))
+		foreach (var mode in Constants.GameModes.Where(description.Contains))
 		{
 			isCustom = false;
 			gameMode = mode;
@@ -158,15 +158,11 @@ public class HistoryEntry
 
 public class HistoryGroup
 {
-	private string SeasonUuid { get; set; }
-	private string Uuid { get; set; }
 	public long Date { get; set; }
 	public ObservableCollection<HistoryEntry> Entries { get; set; }
 
-	public HistoryGroup(string seasonUuid, string uuid, long date, ObservableCollection<HistoryEntry> entries)
+	public HistoryGroup(long date, ObservableCollection<HistoryEntry> entries)
 	{
-		SeasonUuid = seasonUuid;
-		Uuid = uuid;
 		Date = date;
 		Entries = entries;
 	}

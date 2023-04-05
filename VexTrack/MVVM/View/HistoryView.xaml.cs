@@ -1,17 +1,16 @@
-﻿using System.Windows.Controls;
-using VexTrack.MVVM.ViewModel;
+﻿using VexTrack.MVVM.ViewModel;
 
 namespace VexTrack.MVVM.View
 {
 	/// <summary>
 	/// Interaction logic for HistoryView.xaml
 	/// </summary>
-	public partial class HistoryView : UserControl
+	public partial class HistoryView
 	{
 		public HistoryView()
 		{
 			InitializeComponent();
-			this.DataContext = ViewModelManager.ViewModels["History"];
+			DataContext = ViewModelManager.ViewModels[nameof(HistoryViewModel)];
 		}
 	}
 }

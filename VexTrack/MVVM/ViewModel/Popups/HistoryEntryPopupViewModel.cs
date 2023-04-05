@@ -4,34 +4,46 @@ namespace VexTrack.MVVM.ViewModel.Popups
 {
 	class HistoryEntryPopupViewModel : BasePopupViewModel
 	{
-		public RelayCommand OnBackClicked { get; set; }
-		public RelayCommand OnEditClicked { get; set; }
-		public RelayCommand OnDeleteClicked { get; set; }
-		private EditableHistoryEntryPopupViewModel EditableHePopup { get; set; }
+		private string _result;
+		public RelayCommand OnBackClicked { get; }
+		public RelayCommand OnEditClicked { get; }
+		public RelayCommand OnDeleteClicked { get; }
+		private EditableHistoryEntryPopupViewModel EditableHePopup { get; }
 
 		private HistoryEntry RawData { get; set; }
-		public string SeasonUuid { get; set; }
-		public string Uuid { get; set; }
-		public string Title { get; set; }
-		public long Time { get; set; }
-		public int Amount { get; set; }
-		public string Map { get; set; }
-		public string Result { get; set; }
+		private string SeasonUuid { get; set; }
+		public string Uuid { get; private set; }
+		public string Title { get; private set; }
+		public long Time { get; private set; }
+		public int Amount { get; private set; }
+		public string Map { get; private set; }
+
+		public string Result
+		{
+			get => _result;
+			private set
+			{
+				if (value == _result) return;
+				_result = value;
+				OnPropertyChanged();
+			}
+		}
+
 		public bool Deletable { get; set; }
 
 		public HistoryEntryPopupViewModel()
 		{
-			EditableHePopup = (EditableHistoryEntryPopupViewModel)ViewModelManager.ViewModels["EditableHEPopup"];
+			EditableHePopup = (EditableHistoryEntryPopupViewModel)ViewModelManager.ViewModels[nameof(EditableHistoryEntryPopupViewModel)];
 			CanCancel = true;
 
-			OnBackClicked = new RelayCommand(o => { Close(); });
-			OnEditClicked = new RelayCommand(o =>
+			OnBackClicked = new RelayCommand(_ => { Close(); });
+			OnEditClicked = new RelayCommand(_ =>
 			{
 				EditableHePopup.SetParameters("Edit History Entry", true);
 				EditableHePopup.SetData(RawData);
 				MainVm.QueuePopup(EditableHePopup);
 			});
-			OnDeleteClicked = new RelayCommand(o =>
+			OnDeleteClicked = new RelayCommand(_ =>
 			{
 				IsInitialized = false;
 				TrackingData.RemoveHistoryEntry(SeasonUuid, Uuid);

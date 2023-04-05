@@ -6,13 +6,13 @@ namespace VexTrack.MVVM.ViewModel.Popups
 {
 	class EditableGoalPopupViewModel : BasePopupViewModel
 	{
-		public RelayCommand OnBackClicked { get; set; }
-		public RelayCommand OnDoneClicked { get; set; }
+		public RelayCommand OnBackClicked { get; }
+		public RelayCommand OnDoneClicked { get; }
 
 		public string PopupTitle { get; set; }
-		public string Uuid { get; set; }
-		public bool EditMode { get; set; }
-		public bool Paused { get; set; }
+		private string Uuid { get; set; }
+		private bool EditMode { get; set; }
+		private bool Paused { get; set; }
 
 
 		private string PrevColor { get; set; }
@@ -22,7 +22,6 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		private int _collected;
 		private string _color;
 		private bool _useAccentColor;
-		private double _progress;
 
 		public string Name
 		{
@@ -39,7 +38,6 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			set
 			{
 				_total = value;
-				RecalcProgress();
 				OnPropertyChanged();
 				OnPropertyChanged(nameof(Progress));
 			}
@@ -50,20 +48,12 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			set
 			{
 				_collected = value;
-				RecalcProgress();
 				OnPropertyChanged();
 				OnPropertyChanged(nameof(Progress));
 			}
 		}
-		public double Progress
-		{
-			get => _progress;
-			set
-			{
-				_progress = value;
-				OnPropertyChanged();
-			}
-		}
+
+		public double Progress => CalcUtil.CalcProgress(Total, Collected);
 		public string Color
 		{
 			get => _color;
@@ -94,20 +84,21 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		{
 			CanCancel = true;
 
-			OnBackClicked = new RelayCommand(o => { if (CanCancel) Close(); });
-			OnDoneClicked = new RelayCommand(o =>
+			OnBackClicked = new RelayCommand(_ => { if (CanCancel) Close(); });
+			OnDoneClicked = new RelayCommand(_ =>
 			{
 				var goals = TrackingData.Contracts[TrackingData.Contracts.FindIndex(contract => contract.Uuid == Uuid)].Goals;
-				
-				// TODO: When creating new Contract, a goal should be initialized as well
-				// TODO: This might require separating "ContractInitPopup" from "ContractEditPopup"
 				
 				if (EditMode) TrackingData.EditContract(Uuid, new Contract(Uuid, Name, Color, Paused, goals));
 				else TrackingData.AddContract(new Contract(Uuid, Name, Color, Paused, new List<Goal>()));
 				Close();
 			});
 		}
-
+		
+		
+		
+		// TODO: These three are currently unused, but will be used again at a later point in time
+		
 		public void SetParameters(string popupTitle, bool editMode)
 		{
 			PopupTitle = popupTitle;
@@ -116,7 +107,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			if (!EditMode) InitData();
 		}
 
-		public void InitData()
+		private void InitData()
 		{
 			Uuid = Guid.NewGuid().ToString();
 			Name = "";
@@ -137,11 +128,6 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			Collected = data.Collected;
 
 			IsInitialized = true;
-		}
-
-		private void RecalcProgress()
-		{
-			Progress = CalcUtil.CalcProgress(Total, Collected);
 		}
 	}
 }

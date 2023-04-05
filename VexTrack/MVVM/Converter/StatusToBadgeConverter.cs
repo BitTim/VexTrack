@@ -7,7 +7,7 @@ using System.Windows.Shapes;
 
 namespace VexTrack.MVVM.Converter
 {
-	class StatusToBadgeConverter : IValueConverter
+	internal class StatusToBadgeConverter : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
@@ -19,10 +19,10 @@ namespace VexTrack.MVVM.Converter
 			var warnIcon = (Path)Application.Current.FindResource("WarnIcon");
 			var crossIcon = (Path)Application.Current.FindResource("CrossIcon");
 
-			var blue = (Brush)Application.Current.FindResource("AccBlue");
-			var green = (Brush)Application.Current.FindResource("AccGreen");
-			var yellow = (Brush)Application.Current.FindResource("AccYellow");
-			var red = (Brush)Application.Current.FindResource("AccRed");
+			var blue = (Brush)Application.Current.FindResource("Blue");
+			var green = (Brush)Application.Current.FindResource("Win");
+			var yellow = (Brush)Application.Current.FindResource("Yellow");
+			var red = (Brush)Application.Current.FindResource("Loss");
 
 			return mode switch
 			{
@@ -48,7 +48,7 @@ namespace VexTrack.MVVM.Converter
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			throw new NotImplementedException();
+			return null;
 		}
 	}
 }

@@ -37,11 +37,11 @@ public class Contract
         Goals = goals;
     }
 
-    public int GetTotal() { return Goals.Sum(goal => goal.Total); }
-    public int GetCollected() { return Goals.Sum(goal => goal.Collected); }
-    public int GetRemaining() { return GetTotal() - GetCollected(); }
+    private int GetTotal() { return Goals.Sum(goal => goal.Total); }
+    private int GetCollected() { return Goals.Sum(goal => goal.Collected); }
+    private int GetRemaining() { return GetTotal() - GetCollected(); }
 
-    public int GetCompletionForecastDays()
+    private int GetCompletionForecastDays()
     {
         if (GetRemaining() <= 0) return -1;
 
@@ -50,13 +50,14 @@ public class Contract
         
         return (int)MathF.Ceiling((float)GetRemaining() / average);
     }
-    public long GetCompletionDateTimestamp()
+
+    private long GetCompletionDateTimestamp()
     {
         var nDays = CompletionForecastDays;
         return nDays < 0 ? nDays : new DateTimeOffset(DateTime.Today.ToLocalTime().Date.AddDays(nDays)).ToUnixTimeSeconds();
     }
 
-    public Goal GetNextUnlock()
+    private Goal GetNextUnlock()
     {
         return Goals.FirstOrDefault(goal => !goal.IsCompleted());
     }

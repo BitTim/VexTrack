@@ -7,37 +7,40 @@ using VexTrack.MVVM.ViewModel;
 
 namespace VexTrack
 {
-	public partial class MainWindow : Window
+	public partial class MainWindow
 	{
 		public MainWindow()
 		{
 			InitializeComponent();
 
-			this.StateChanged += Window_StateChanged;
+			StateChanged += Window_StateChanged;
 			Window_StateChanged(this, null);
 		}
 
 		protected override void OnSourceInitialized(EventArgs e)
 		{
 			base.OnSourceInitialized(e);
-			((HwndSource)PresentationSource.FromVisual(this)).AddHook(HookProc);
+			((HwndSource)PresentationSource.FromVisual(this))!.AddHook(HookProc);
 		}
 
-		public static IntPtr HookProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+		// ReSharper disable once IdentifierTypo
+		private static IntPtr HookProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
 		{
-			if (msg == WmGetminmaxinfo)
+			if (msg == WmGetMinMaxInfo)
 			{
 				// We need to tell the system what our size should be when maximized. Otherwise it will cover the whole screen,
 				// including the task bar.
-				var mmi = (Minmaxinfo)Marshal.PtrToStructure(lParam, typeof(Minmaxinfo));
+				var mmi = (MinMaxInfo)Marshal.PtrToStructure(lParam, typeof(MinMaxInfo))!;
 
 				// Adjust the maximized size and position to fit the work area of the correct monitor
-				var monitor = MonitorFromWindow(hwnd, MonitorDefaulttonearest);
+				var monitor = MonitorFromWindow(hwnd, MonitorDefaultToNearest);
 
 				if (monitor != IntPtr.Zero)
 				{
-					var monitorInfo = new Monitorinfo();
-					monitorInfo.cbSize = Marshal.SizeOf(typeof(Monitorinfo));
+					var monitorInfo = new MonitorInfo
+					{
+						cbSize = Marshal.SizeOf(typeof(MonitorInfo))
+					};
 					GetMonitorInfo(monitor, ref monitorInfo);
 					var rcWorkArea = monitorInfo.rcWork;
 					var rcMonitorArea = monitorInfo.rcMonitor;
@@ -53,15 +56,16 @@ namespace VexTrack
 			return IntPtr.Zero;
 		}
 
-		private const int WmGetminmaxinfo = 0x0024;
+		private const int WmGetMinMaxInfo = 0x0024;
 
-		private const uint MonitorDefaulttonearest = 0x00000002;
+		private const uint MonitorDefaultToNearest = 0x00000002;
 
 		[DllImport("user32.dll")]
 		private static extern IntPtr MonitorFromWindow(IntPtr handle, uint flags);
 
 		[DllImport("user32.dll")]
-		private static extern bool GetMonitorInfo(IntPtr hMonitor, ref Monitorinfo lpmi);
+		// ReSharper disable once IdentifierTypo
+		private static extern bool GetMonitorInfo(IntPtr hMonitor, ref MonitorInfo lpmi);
 
 		[Serializable]
 		[StructLayout(LayoutKind.Sequential)]
@@ -74,20 +78,20 @@ namespace VexTrack
 
 			public Rect(int left, int top, int right, int bottom)
 			{
-				this.Left = left;
-				this.Top = top;
-				this.Right = right;
-				this.Bottom = bottom;
+				Left = left;
+				Top = top;
+				Right = right;
+				Bottom = bottom;
 			}
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		public struct Monitorinfo
+		public struct MonitorInfo
 		{
 			public int cbSize;
 			public Rect rcMonitor;
 			public Rect rcWork;
-			public uint dwFlags;
+			private readonly uint dwFlags;
 		}
 
 		[Serializable]
@@ -99,77 +103,74 @@ namespace VexTrack
 
 			public Point(int x, int y)
 			{
-				this.X = x;
-				this.Y = y;
+				X = x;
+				Y = y;
 			}
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		public struct Minmaxinfo
+		public struct MinMaxInfo
 		{
-			public Point ptReserved;
+			private readonly Point ptReserved;
 			public Point ptMaxSize;
 			public Point ptMaxPosition;
-			public Point ptMinTrackSize;
-			public Point ptMaxTrackSize;
+			private readonly Point ptMinTrackSize;
+			private readonly Point ptMaxTrackSize;
 		}
 
 		private void OnMinimizeButtonClick(object sender, RoutedEventArgs e)
 		{
-			this.WindowState = WindowState.Minimized;
+			WindowState = WindowState.Minimized;
 		}
 
 		private void OnMaximizeRestoreButtonClick(object sender, RoutedEventArgs e)
 		{
-			if (this.WindowState == WindowState.Maximized)
-			{
-				this.WindowState = WindowState.Normal;
-			}
-			else
-			{
-				this.WindowState = WindowState.Maximized;
-			}
+			WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
 		}
 
 		private void OnCloseButtonClick(object sender, RoutedEventArgs e)
 		{
-			var mainVm = (MainViewModel)ViewModelManager.ViewModels["Main"];
+			var mainVm = (MainViewModel)ViewModelManager.ViewModels[nameof(MainViewModel)];
 			mainVm.Destroy();
-
-			this.Close();
+			Close();
 		}
 
 		private void RefreshMaximizeRestoreButton()
 		{
-			if (this.WindowState == WindowState.Maximized)
+			switch (WindowState)
 			{
-				this.maximizeButton.Visibility = Visibility.Collapsed;
-				this.restoreButton.Visibility = Visibility.Visible;
+				case WindowState.Maximized:
+					MaximizeButton.Visibility = Visibility.Collapsed;
+					RestoreButton.Visibility = Visibility.Visible;
 
-				this.MainBorder.CornerRadius = new CornerRadius(0);
-				this.ShadowBorder.CornerRadius = new CornerRadius(0);
-				this.PopupBorder.CornerRadius = new CornerRadius(0);
-				this.MainBorder.Margin = new Thickness(0);
-				this.ShadowBorder.Margin = new Thickness(0);
-				this.PopupBorder.Margin = new Thickness(0);
-			}
-			else if (this.WindowState == WindowState.Normal)
-			{
-				this.maximizeButton.Visibility = Visibility.Visible;
-				this.restoreButton.Visibility = Visibility.Collapsed;
+					MainBorder.CornerRadius = new CornerRadius(0);
+					ShadowBorder.CornerRadius = new CornerRadius(0);
+					PopupBorder.CornerRadius = new CornerRadius(0);
+					MainBorder.Margin = new Thickness(0);
+					ShadowBorder.Margin = new Thickness(0);
+					PopupBorder.Margin = new Thickness(0);
+					break;
+				case WindowState.Normal:
+					MaximizeButton.Visibility = Visibility.Visible;
+					RestoreButton.Visibility = Visibility.Collapsed;
 
-				this.MainBorder.CornerRadius = new CornerRadius(8);
-				this.ShadowBorder.CornerRadius = new CornerRadius(8);
-				this.PopupBorder.CornerRadius = new CornerRadius(8);
-				this.MainBorder.Margin = new Thickness(16);
-				this.ShadowBorder.Margin = new Thickness(16);
-				this.PopupBorder.Margin = new Thickness(16);
+					MainBorder.CornerRadius = new CornerRadius(8);
+					ShadowBorder.CornerRadius = new CornerRadius(8);
+					PopupBorder.CornerRadius = new CornerRadius(8);
+					MainBorder.Margin = new Thickness(16);
+					ShadowBorder.Margin = new Thickness(16);
+					PopupBorder.Margin = new Thickness(16);
+					break;
+				case WindowState.Minimized:
+					break;
+				default:
+					throw new ArgumentOutOfRangeException();
 			}
 		}
 
 		private void Window_StateChanged(object sender, EventArgs e)
 		{
-			this.RefreshMaximizeRestoreButton();
+			RefreshMaximizeRestoreButton();
 		}
 
 		private void PopupBorder_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)

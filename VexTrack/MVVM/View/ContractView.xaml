@@ -1,18 +1,17 @@
-﻿<UserControl x:Class="VexTrack.MVVM.View.GoalView"
+﻿<UserControl x:Class="VexTrack.MVVM.View.ContractView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:VexTrack.MVVM.View"
              xmlns:model="clr-namespace:VexTrack.MVVM.Model"
-			 xmlns:conv="clr-namespace:VexTrack.MVVM.Converter"
 			 xmlns:core="clr-namespace:VexTrack.Core"
+			 xmlns:viewModel="clr-namespace:VexTrack.MVVM.ViewModel"
 			 mc:Ignorable="d" 
-             d:DesignHeight="780" d:DesignWidth="640" d:DataContext="{local:GoalView }">
+             d:DesignHeight="780" d:DesignWidth="640">
 
-	<UserControl.Resources>
-		<conv:StatusToBadgeConverter x:Key="StatusToBadgeConv"/>
-	</UserControl.Resources>
+	<UserControl.DataContext>
+		<viewModel:ContractViewModel/>
+	</UserControl.DataContext>
 
 	<Grid>
 		<Grid.RowDefinitions>
@@ -22,7 +21,7 @@
 
 		<TextBlock Text="Contracts"
 				   Margin="16, 16, 16, 16"
-				   Foreground="{DynamicResource Foreground}"
+				   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 				   FontSize="36"
 				   FontWeight="Bold"/>
 
@@ -40,7 +39,7 @@
 
 				<TextBlock Text="Seasons"
 						   Grid.Row="0"
-						   Foreground="{DynamicResource Foreground}"
+						   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 						   FontSize="20"
 						   Margin="8, 8, 0, 0"
 						   FontWeight="Bold"/>
@@ -58,14 +57,6 @@
 
 					<ItemsControl.ItemTemplate>
 						<DataTemplate DataType="{x:Type core:Season}">
-							<!-- <model:ProgressButtonModel Title="{Binding Path=Name}" -->
-						              <!-- 						   Value="{Binding Path=Progress}" -->
-						              <!-- 						   Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.SeasonButtonClick}" -->
-						              <!-- 						   CommandParameter="{Binding Path=Uuid}" -->
-						              <!-- 						   BadgeRightData="{Binding Path=Status, Converter={StaticResource StatusToBadgeConv}, ConverterParameter=Data}" -->
-						              <!-- 						   BadgeRightColor="{Binding Path=Status, Converter={StaticResource StatusToBadgeConv}, ConverterParameter=Color}" -->
-						              <!-- 						   Margin="8, 8, 0, 0"/> -->
-							
 							<model:SeasonButtonModel Title="{Binding Name}"
 							                         Total="{Binding Total}"
 							                         Collected="{Binding Collected}"
@@ -81,8 +72,8 @@
 							                         NextUnlockName="{Binding NextUnlockName}"
 							                         NextUnlockProgress="{Binding NextUnlockProgress}"
 							                         NextUnlockRemaining="{Binding NextUnlockRemaining}"
-							                         StatusIconData="{Binding Path=Status, Converter={StaticResource StatusToBadgeConv}, ConverterParameter=Data}"
-							                         StatusIconColor="{Binding Path=Status, Converter={StaticResource StatusToBadgeConv}, ConverterParameter=Color}"
+							                         StatusIconData="{Binding Path=Status, Converter={StaticResource StatusToBadgeConverter}, ConverterParameter=Data}"
+							                         StatusIconColor="{Binding Path=Status, Converter={StaticResource StatusToBadgeConverter}, ConverterParameter=Color}"
 							                         GraphSeriesCollection="{Binding GraphSeriesCollection}"
 							                         Goals="{Binding ObservableGoals}"/>
 						</DataTemplate>
@@ -91,7 +82,7 @@
 
 				<TextBlock Text="Contracts"
 						   Grid.Row="2"
-						   Foreground="{DynamicResource Foreground}"
+						   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 						   FontSize="20"
 						   Margin="8, 8, 0, 0"
 						   FontWeight="Bold"/>
@@ -111,17 +102,6 @@
 
 					<ItemsControl.ItemTemplate>
 						<DataTemplate DataType="{x:Type core:Contract}">
-							<!-- <model:ProgressButtonModel Title="{Binding Path=Name}" -->
-							<!-- 			   Value="{Binding Path=Progress}" -->
-							<!-- 			   Color="{Binding RelativeSource={RelativeSource AncestorType={x:Type core:Contract}}, Path=Color}" -->
-							<!-- 			   Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.UserGoalButtonClick}" -->
-							<!-- 			   CommandParameter="{Binding Path=Uuid}" -->
-							<!-- 			   BadgeRightData="{Binding Path=CompletionStatus, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Data}" -->
-							<!-- 			   BadgeRightColor="{Binding Path=CompletionStatus, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Color}" -->
-							<!-- 			   BadgeLeftData="{Binding Path=ActivityStatus, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Data}" -->
-							<!-- 			   BadgeLeftColor="{Binding Path=ActivityStatus, Converter={StaticResource statusToBadgeConv}, ConverterParameter=Color}" -->
-							<!-- 			   Margin="8, 8, 0, 0"/> -->
-							
 							<model:ContractButtonModel Title="{Binding Name}"
 							                           Progress="{Binding Progress}"
 							                           Collected="{Binding Collected}"

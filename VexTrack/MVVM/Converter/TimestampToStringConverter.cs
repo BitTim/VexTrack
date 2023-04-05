@@ -4,7 +4,7 @@ using System.Windows.Data;
 
 namespace VexTrack.MVVM.Converter
 {
-	class TimestampToStringConverter : IValueConverter
+	internal class TimestampToStringConverter : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
@@ -19,12 +19,9 @@ namespace VexTrack.MVVM.Converter
 					return "Never";			// -2 is passed when no timestamp could be calculated because average is 0
 			}
 
-			var str = "";
 			var dt = DateTimeOffset.FromUnixTimeSeconds(timestamp).ToLocalTime();
 
-			if (noTime.ToLower() == "true") str = dt.ToString("d");
-			else str = dt.ToString("g");
-
+			var str = dt.ToString(noTime.ToLower() == "true" ? "d" : "g");
 			if (str == "01.01.0001") str = "-";
 
 			return str;
@@ -34,10 +31,9 @@ namespace VexTrack.MVVM.Converter
 		{
 			var str = value as string;
 
-			DateTimeOffset dto;
-			if (DateTimeOffset.TryParse(str, out dto) == false) return DateTimeOffset.Now.ToUnixTimeSeconds();
-
-			return dto.ToUnixTimeSeconds();
+			return DateTimeOffset.TryParse(str, out var dto) == false
+				? DateTimeOffset.Now.ToUnixTimeSeconds()
+				: dto.ToUnixTimeSeconds();
 		}
 	}
 }

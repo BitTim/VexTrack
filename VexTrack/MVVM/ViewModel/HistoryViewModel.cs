@@ -11,31 +11,18 @@ namespace VexTrack.MVVM.ViewModel
 	{
 		private string _initUuid;
 
-		public RelayCommand HistoryButtonClick { get; set; }
-		public RelayCommand OnAddClicked { get; set; }
-		private HistoryEntryPopupViewModel HePopup { get; set; }
-		private EditableHistoryEntryPopupViewModel EditableHePopup { get; set; }
-		private MainViewModel MainVm { get; set; }
-
-		private ObservableCollection<HistoryGroup> _groups = new();
-		public ObservableCollection<HistoryGroup> Groups
-		{
-			get => _groups;
-			set
-			{
-				if (_groups != value)
-				{
-					_groups = value;
-					OnPropertyChanged();
-				}
-			}
-		}
+		public RelayCommand HistoryButtonClick { get; }
+		public RelayCommand OnAddClicked { get; }
+		private HistoryEntryPopupViewModel HePopup { get; }
+		private EditableHistoryEntryPopupViewModel EditableHePopup { get; }
+		private MainViewModel MainVm { get; }
+		public ObservableCollection<HistoryGroup> Groups { get; } = new();
 
 		public HistoryViewModel()
 		{
-			MainVm = (MainViewModel)ViewModelManager.ViewModels["Main"];
-			HePopup = (HistoryEntryPopupViewModel)ViewModelManager.ViewModels["HEPopup"];
-			EditableHePopup = (EditableHistoryEntryPopupViewModel)ViewModelManager.ViewModels["EditableHEPopup"];
+			MainVm = (MainViewModel)ViewModelManager.ViewModels[nameof(MainViewModel)];
+			HePopup = (HistoryEntryPopupViewModel)ViewModelManager.ViewModels[nameof(HistoryEntryPopupViewModel)];
+			EditableHePopup = (EditableHistoryEntryPopupViewModel)ViewModelManager.ViewModels[nameof(EditableHistoryEntryPopupViewModel)];
 
 			HistoryButtonClick = new RelayCommand(OnHistoryButtonClick);
 			OnAddClicked = new RelayCommand(_ =>
@@ -92,7 +79,7 @@ namespace VexTrack.MVVM.ViewModel
 			else HePopup.Close();
 		}
 
-		public void InsertEntry(HistoryEntry data)
+		private void InsertEntry(HistoryEntry data)
 		{
 			DateTimeOffset date = DateTimeOffset.FromUnixTimeSeconds(data.Time).ToLocalTime().Date;
 
@@ -112,7 +99,7 @@ namespace VexTrack.MVVM.ViewModel
 				ObservableCollection<HistoryEntry> entries = new();
 				entries.Insert(0, data);
 
-				HistoryGroup groupData = new(TrackingData.CurrentSeasonData.Uuid, Guid.NewGuid().ToString(), date.ToUnixTimeSeconds(), entries);
+				HistoryGroup groupData = new(date.ToUnixTimeSeconds(), entries);
 
 				var groups = Groups.ToList();
 				groups.Add(groupData);
@@ -137,7 +124,7 @@ namespace VexTrack.MVVM.ViewModel
 			InsertEntry(data);
 		}
 
-		public void OnHistoryButtonClick(object parameter)
+		private void OnHistoryButtonClick(object parameter)
 		{
 			var hUuid = (string)parameter;
 

@@ -5,19 +5,18 @@ using System.Windows.Data;
 
 namespace VexTrack.MVVM.Converter
 {
-	class NegativeIntToVisibilityConverter : IValueConverter
+	internal class NegativeIntToVisibilityConverter : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			var val = (int)value;
+			var val = (int)value!;
 
-			if (val < 0) return Visibility.Hidden;
-			return Visibility.Visible;
+			return val < 0 ? Visibility.Hidden : Visibility.Visible;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			throw new NotImplementedException();
+			return null;
 		}
 	}
 }

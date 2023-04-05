@@ -10,11 +10,9 @@ namespace VexTrack.MVVM.Validation
 		{
 			var strValue = Convert.ToString(value);
 
-			if (string.IsNullOrEmpty(strValue))
-				return new ValidationResult(false, $"This field cannot be empty, last known value will be used");
-			var canConvert = false;
+			if (string.IsNullOrEmpty(strValue)) return new ValidationResult(false, $"This field cannot be empty, last known value will be used");
 
-			canConvert = double.TryParse(strValue.Replace(',', '.'), CultureInfo.InvariantCulture, out var val);
+			var canConvert = double.TryParse(strValue.Replace(',', '.'), CultureInfo.InvariantCulture, out var val);
 			if (!canConvert) return new ValidationResult(false, $"Input must be a number, last known value will be used");
 
 			return val switch

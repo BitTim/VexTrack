@@ -6,16 +6,16 @@ namespace VexTrack.MVVM.ViewModel
 {
 	class SettingsViewModel : ObservableObject
 	{
-		private readonly bool _noUpdate = true;
+		private readonly bool _doUpdate;
 
-		private ResetDataConfirmationPopupViewModel ResetDataConfirmationPopup { get; set; }
-		private AboutPopupViewModel AboutPopup { get; set; }
-		private MainViewModel MainVm { get; set; }
-		public RelayCommand ThemeButtonCommand { get; set; }
-		public RelayCommand AccentButtonCommand { get; set; }
-		public RelayCommand OnAboutClicked { get; set; }
-		public RelayCommand OnResetClicked { get; set; }
-		public RelayCommand OnDefaultsClicked { get; set; }
+		private ResetDataConfirmationPopupViewModel ResetDataConfirmationPopup { get; }
+		private AboutPopupViewModel AboutPopup { get; }
+		private MainViewModel MainVm { get; }
+		public RelayCommand ThemeButtonCommand { get; }
+		public RelayCommand AccentButtonCommand { get; }
+		public RelayCommand OnAboutClicked { get; }
+		public RelayCommand OnResetClicked { get; }
+		public RelayCommand OnDefaultsClicked { get; }
 
 		private string _theme;
 		private string _accent;
@@ -31,7 +31,7 @@ namespace VexTrack.MVVM.ViewModel
 		public string Theme
 		{
 			get => _theme;
-			set
+			private set
 			{
 				_theme = value;
 				OnPropertyChanged();
@@ -40,7 +40,7 @@ namespace VexTrack.MVVM.ViewModel
 		public string Accent
 		{
 			get => _accent;
-			set
+			private set
 			{
 				_accent = value;
 				OnPropertyChanged();
@@ -57,7 +57,7 @@ namespace VexTrack.MVVM.ViewModel
 				_username = value;
 				SettingsHelper.Data.Username = value;
 				OnPropertyChanged();
-				if (!_noUpdate) SettingsHelper.CallUpdate();
+				if (_doUpdate) SettingsHelper.CallUpdate();
 			}
 		}
 		public double BufferPercentage
@@ -70,7 +70,7 @@ namespace VexTrack.MVVM.ViewModel
 				_bufferPercentage = value;
 				SettingsHelper.Data.BufferPercentage = value;
 				OnPropertyChanged();
-				if (!_noUpdate) SettingsHelper.CallUpdate();
+				if (_doUpdate) SettingsHelper.CallUpdate();
 			}
 		}
 		public bool IgnoreInactive
@@ -83,7 +83,7 @@ namespace VexTrack.MVVM.ViewModel
 				_ignoreInactive = value;
 				SettingsHelper.Data.IgnoreInactiveDays = value;
 				OnPropertyChanged();
-				if (!_noUpdate) SettingsHelper.CallUpdate();
+				if (_doUpdate) SettingsHelper.CallUpdate();
 			}
 		}
 		public bool IgnoreInit
@@ -96,7 +96,7 @@ namespace VexTrack.MVVM.ViewModel
 				_ignoreInit = value;
 				SettingsHelper.Data.IgnoreInit = value;
 				OnPropertyChanged();
-				if (!_noUpdate) SettingsHelper.CallUpdate();
+				if (_doUpdate) SettingsHelper.CallUpdate();
 			}
 		}
 		public bool IgnorePreReleases
@@ -109,7 +109,7 @@ namespace VexTrack.MVVM.ViewModel
 				_ignorePreReleases = value;
 				SettingsHelper.Data.IgnorePreReleases = value;
 				OnPropertyChanged();
-				if (!_noUpdate) SettingsHelper.CallUpdate();
+				if (_doUpdate) SettingsHelper.CallUpdate();
 			}
 		}
 		public bool ForceEpilogue
@@ -122,7 +122,7 @@ namespace VexTrack.MVVM.ViewModel
 				_forceEpilogue = value;
 				SettingsHelper.Data.ForceEpilogue = value;
 				OnPropertyChanged();
-				if (!_noUpdate) SettingsHelper.CallUpdate();
+				if (_doUpdate) SettingsHelper.CallUpdate();
 			}
 		}
 		public bool SingleSeasonHistory
@@ -135,42 +135,42 @@ namespace VexTrack.MVVM.ViewModel
 				_singleSeasonHistory = value;
 				SettingsHelper.Data.SingleSeasonHistory = value;
 				OnPropertyChanged();
-				if (!_noUpdate) SettingsHelper.CallUpdate();
+				if (_doUpdate) SettingsHelper.CallUpdate();
 			}
 		}
 
 		public SettingsViewModel()
 		{
-			MainVm = (MainViewModel)ViewModelManager.ViewModels["Main"];
-			ResetDataConfirmationPopup = (ResetDataConfirmationPopupViewModel)ViewModelManager.ViewModels["ResetDataConfirmationPopup"];
-			AboutPopup = (AboutPopupViewModel)ViewModelManager.ViewModels["AboutPopup"];
+			MainVm = (MainViewModel)ViewModelManager.ViewModels[nameof(MainViewModel)];
+			ResetDataConfirmationPopup = (ResetDataConfirmationPopupViewModel)ViewModelManager.ViewModels[nameof(ResetDataConfirmationPopupViewModel)];
+			AboutPopup = (AboutPopupViewModel)ViewModelManager.ViewModels[nameof(AboutPopupViewModel)];
 
 			ThemeButtonCommand = new RelayCommand(theme => SetTheme((string)theme));
 			AccentButtonCommand = new RelayCommand(accent => SetAccent((string)accent));
 
-			OnDefaultsClicked = new RelayCommand(o =>
+			OnDefaultsClicked = new RelayCommand(_ =>
 			{
-				SettingsHelper.Data.SetDefault();
-				SettingsHelper.ApplyVisualSettings();
+				SettingsHelper.Data.Reset();
+				SettingsHelper.Data.UpdateTheme();
 				SettingsHelper.CallUpdate();
 			});
-			OnResetClicked = new RelayCommand(o =>
+			OnResetClicked = new RelayCommand(_ =>
 			{
 				MainVm.QueuePopup(ResetDataConfirmationPopup);
 			});
-			OnAboutClicked = new RelayCommand(o =>
+			OnAboutClicked = new RelayCommand(_ =>
 			{
 				MainVm.QueuePopup(AboutPopup);
 			});
 
 			Update();
-			_noUpdate = false;
+			_doUpdate = true;
 		}
 
 		public void Update()
 		{
-			Theme = SettingsHelper.Data.Theme;
-			Accent = SettingsHelper.Data.Accent;
+			Theme = SettingsHelper.Data.ThemeString;
+			Accent = SettingsHelper.Data.AccentString;
 
 			Username = SettingsHelper.Data.Username;
 			BufferPercentage = SettingsHelper.Data.BufferPercentage;
@@ -181,17 +181,17 @@ namespace VexTrack.MVVM.ViewModel
 			SingleSeasonHistory = SettingsHelper.Data.SingleSeasonHistory;
 		}
 
-		public void SetTheme(string theme)
+		private static void SetTheme(string theme)
 		{
-			SettingsHelper.Data.Theme = theme;
-			SettingsHelper.ApplyVisualSettings();
+			SettingsHelper.Data.ThemeString = theme;
+			SettingsHelper.Data.UpdateTheme();
 			SettingsHelper.CallUpdate();
 		}
 
-		public void SetAccent(string accent)
+		private static void SetAccent(string accent)
 		{
-			SettingsHelper.Data.Accent = accent;
-			SettingsHelper.ApplyVisualSettings();
+			SettingsHelper.Data.AccentString = accent;
+			SettingsHelper.Data.UpdateTheme();
 			SettingsHelper.CallUpdate();
 		}
 	}

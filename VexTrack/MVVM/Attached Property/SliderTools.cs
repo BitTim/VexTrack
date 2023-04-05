@@ -14,7 +14,7 @@ namespace VexTrack.MVVM.Attached_Property
 			{
 				var slider = (Slider)obj;
 				if ((bool)changeEvent.NewValue)
-					slider.MouseMove += (obj2, mouseEvent) =>
+					slider.MouseMove += (_, mouseEvent) =>
 					{
 						if (mouseEvent.LeftButton == MouseButtonState.Pressed)
 							slider.RaiseEvent(new MouseButtonEventArgs(mouseEvent.MouseDevice, mouseEvent.Timestamp, MouseButton.Left)

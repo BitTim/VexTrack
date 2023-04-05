@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using VexTrack.Core;
 
 namespace VexTrack.MVVM.Model
 {
@@ -12,7 +12,7 @@ namespace VexTrack.MVVM.Model
     {
         public static readonly DependencyProperty BackgroundThicknessProperty = DependencyProperty.Register(nameof(BackgroundThickness), typeof(double), typeof(SegmentedProgressModel), new PropertyMetadata(8.0));
         public static readonly DependencyProperty ForegroundThicknessProperty = DependencyProperty.Register(nameof(ForegroundThickness), typeof(double), typeof(SegmentedProgressModel), new PropertyMetadata(8.0));
-        public static readonly DependencyProperty ForegroundBrushProperty = DependencyProperty.Register(nameof(ForegroundBrush), typeof(Brush), typeof(SegmentedProgressModel), new PropertyMetadata(Application.Current.FindResource("Accent")));
+        public static readonly DependencyProperty ForegroundBrushProperty = DependencyProperty.Register(nameof(ForegroundBrush), typeof(Brush), typeof(SegmentedProgressModel), new PropertyMetadata(SettingsHelper.Data.Theme.AccentBrush));
 
         public static readonly DependencyProperty SpacingProperty = DependencyProperty.Register(nameof(Spacing), typeof(int), typeof(SegmentedProgressModel), new PropertyMetadata(2));
         
@@ -23,7 +23,7 @@ namespace VexTrack.MVVM.Model
         public static readonly DependencyProperty VisualSegmentsStopsProperty = DependencyProperty.Register(nameof(VisualSegmentsStops), typeof(List<decimal>), typeof(SegmentedProgressModel), new PropertyMetadata(new List<decimal> {1}, OnPropertyChanged));
         public static readonly DependencyProperty ColorProperty = DependencyProperty.Register(nameof(Color), typeof(string), typeof(SegmentedProgressModel), new PropertyMetadata("", OnPropertyChanged));
 
-        public static readonly DependencyProperty SegmentedDataProperty = DependencyProperty.Register(nameof(SegmentedData), typeof(List<SegmentData>), typeof(SegmentedProgressModel), new PropertyMetadata(new List<SegmentData>() {new(0, 0, 1.0)}));
+        public static readonly DependencyProperty SegmentedDataProperty = DependencyProperty.Register(nameof(SegmentedData), typeof(List<SegmentData>), typeof(SegmentedProgressModel), new PropertyMetadata(new List<SegmentData>() {new(0, 1.0)}));
         public static readonly DependencyProperty PercentageProperty = DependencyProperty.Register(nameof(Percentage), typeof(string), typeof(SegmentedProgressModel), new PropertyMetadata("0 %"));
         public static readonly DependencyProperty ShowPercentageProperty = DependencyProperty.Register(nameof(ShowPercentage), typeof(bool), typeof(SegmentedProgressModel), new PropertyMetadata(true));
         public static readonly DependencyProperty NumSegmentsProperty = DependencyProperty.Register(nameof(NumSegments), typeof(int), typeof(SegmentedProgressModel), new PropertyMetadata(1));
@@ -159,7 +159,7 @@ namespace VexTrack.MVVM.Model
             var valuePercent = Math.Round((Value - MinValue) / MaxValue - MinValue, 2);
             Percentage = (int)(valuePercent * 100) + " %";
 
-            if (string.IsNullOrEmpty(Color)) ForegroundBrush = (Brush)Application.Current.FindResource("Accent");
+            if (string.IsNullOrEmpty(Color)) ForegroundBrush = SettingsHelper.Data.Theme.AccentBrush;
             else
             {
                 Brush brush = (SolidColorBrush)new BrushConverter().ConvertFrom(Color);
@@ -173,7 +173,7 @@ namespace VexTrack.MVVM.Model
 
         private static List<SegmentData> CalcSegmentedData(IReadOnlyList<decimal> logicalStops, IReadOnlyList<decimal> visualStops, decimal val, double actualWidth, int spacing)
         {
-            if (logicalStops.Count == 0 || visualStops.Count == 0 || logicalStops.Count != visualStops.Count) return new List<SegmentData> { new(1, 0, actualWidth - spacing) };
+            if (logicalStops.Count == 0 || visualStops.Count == 0 || logicalStops.Count != visualStops.Count) return new List<SegmentData> { new(1, actualWidth - spacing) };
             
             var segmentedData = new List<SegmentData>();
             decimal prevLogicalStop = 0;
@@ -191,11 +191,13 @@ namespace VexTrack.MVVM.Model
                 
                 if (logicalStopDiff > val)
                 {
-                    segmentedData.Add(new SegmentData(val / logicalStopDiff, i++, length));
+                    segmentedData.Add(new SegmentData(val / logicalStopDiff, length));
+                    i++;
                     break;
                 }
                 
-                segmentedData.Add(new SegmentData(1, i++, length));
+                segmentedData.Add(new SegmentData(1, length));
+                i++;
                 val -= logicalStopDiff;
             }
 
@@ -205,7 +207,7 @@ namespace VexTrack.MVVM.Model
                 prevVisualStop = visualStops[i++];
                 
                 var length = (double)Math.Ceiling(visualStopDiff * (decimal)actualWidth - spacing);
-                segmentedData.Add(new SegmentData(0, i, length));
+                segmentedData.Add(new SegmentData(0, length));
             }
             return segmentedData;
         }
@@ -217,15 +219,13 @@ namespace VexTrack.MVVM.Model
         public double Length { get; }
         public GridLength Filled { get; }
         public GridLength Space { get; }
-        private int Index { get; }
 
-        public SegmentData(decimal value, int index, double length)
+        public SegmentData(decimal value, double length)
         {
             Visible = value > 0;
             Length = length;
             Filled = new GridLength(decimal.ToDouble(value * 100), GridUnitType.Star);
             Space = new GridLength(decimal.ToDouble(100 - value * 100), GridUnitType.Star);
-            Index = index;
         }
     }
 }

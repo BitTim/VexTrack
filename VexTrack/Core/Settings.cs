@@ -2,13 +2,13 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
-using System.Linq;
 using System.Windows;
+using System.Windows.Media;
 using VexTrack.MVVM.ViewModel;
 
 namespace VexTrack.Core
 {
-	public class Settings
+	public class Settings : ObservableObject
 	{
 		public string Username;
 		public double BufferPercentage;
@@ -18,26 +18,28 @@ namespace VexTrack.Core
 		public bool ForceEpilogue;
 		public bool SingleSeasonHistory;
 		
-		public string Theme;
-		public string SystemTheme; //Not part of saved settings file
-		public string Accent;
+		public string ThemeString;
+		public string SystemThemeString; //Not part of saved settings file
+		public string AccentString;
+		private Theme _theme;
 
-		public Settings() { }
-		public Settings(string username, double bufferPercentage, bool ignoreInactiveDays, bool ignoreInit, bool ignorePreReleases, bool forceEpilogue, bool singleSeasonHistory, string theme, string systemTheme, string accent)
+		public Theme Theme
 		{
-			Username = username;
-			BufferPercentage = bufferPercentage;
-			IgnoreInactiveDays = ignoreInactiveDays;
-			IgnoreInit = ignoreInit;
-			IgnorePreReleases = ignorePreReleases;
-			ForceEpilogue = forceEpilogue;
-			SingleSeasonHistory = singleSeasonHistory;
-
-			Theme = theme;
-			SystemTheme = systemTheme;
-			Accent = accent;
+			get => _theme;
+			private set
+			{
+				if (Equals(value, _theme)) return;
+				_theme = value;
+				OnPropertyChanged();
+			}
 		}
-		public void SetDefault()
+
+		public Settings()
+		{
+			Reset();
+		}
+
+		public void Reset()
 		{
 			Username = "";
 			BufferPercentage = 7.5;
@@ -47,33 +49,47 @@ namespace VexTrack.Core
 			ForceEpilogue = true;
 			SingleSeasonHistory = true;
 
-			Theme = "Auto";
-			Accent = "Blue";
+			ThemeString = "Auto";
+			AccentString = "Blue";
+
+			UpdateTheme();
+		}
+
+		public void UpdateTheme()
+		{
+			Theme = GetTheme();
+		}
+		
+		private Theme GetTheme()
+		{
+			return new Theme
+			(
+				ThemeString,
+				SystemThemeString,
+				AccentString
+			);
 		}
 	}
 
 	public static class SettingsHelper
 	{
-		public static Settings Data { get; private set; }
-		private static Settings Default { get; set; }
+		public static Settings Data { get; set; }
 
 		public static void Init()
 		{
 			Data = new Settings();
-			Default = new Settings();
-			Default.SetDefault();
 		}
 
 		public static void CallUpdate()
 		{
-			var mainVm = (MainViewModel)ViewModelManager.ViewModels["Main"];
+			var mainVm = (MainViewModel)ViewModelManager.ViewModels[nameof(MainViewModel)];
 			mainVm.Update();
 			SaveSettings();
 		}
 
 		private static void InitSettings()
 		{
-			Data.SetDefault();
+			Data.Reset();
 			SaveSettings();
 			LoadSettings();
 		}
@@ -91,7 +107,7 @@ namespace VexTrack.Core
 
 			var reSave = false;
 
-			Data.SetDefault();
+			Data.Reset();
 
 			if (jo["username"] == null) reSave = true;
 			else Data.Username = (string)jo["username"];
@@ -117,15 +133,15 @@ namespace VexTrack.Core
 
 
 			if (jo["theme"] == null) reSave = true;
-			else Data.Theme = (string)jo["theme"];
+			else Data.ThemeString = (string)jo["theme"];
 
 			if (jo["accent"] == null) reSave = true;
-			else Data.Accent = (string)jo["accent"];
+			else Data.AccentString = (string)jo["accent"];
 
 
 
 			if (reSave) SaveSettings();
-			ApplyVisualSettings();
+			Data.UpdateTheme();
 		}
 
 		private static void SaveSettings()
@@ -139,8 +155,8 @@ namespace VexTrack.Core
 				{ "ignorePreReleases", Data.IgnorePreReleases },
 				{ "forceEpilogue", Data.ForceEpilogue },
 				{ "singleSeasonHistory", Data.SingleSeasonHistory },
-				{ "theme", Data.Theme },
-				{ "accent", Data.Accent }
+				{ "theme", Data.ThemeString },
+				{ "accent", Data.AccentString }
 			};
 
 			if (!File.Exists(Constants.SettingsPath))
@@ -153,19 +169,6 @@ namespace VexTrack.Core
 
 			File.WriteAllText(Constants.SettingsPath, jo.ToString());
 		}
-
-		public static void ApplyVisualSettings()
-		{
-			if (!Constants.ThemeUrIs.Keys.Contains(Data.Theme)) Data.Theme = "Auto";
-			if (!Constants.AccentUrIs.Keys.Contains(Data.Accent)) Data.Accent = "Blue";
-
-			var accentString = Data.Accent;
-			var themeString = Data.Theme;
-			if (themeString == "Auto") themeString = Data.SystemTheme;
-
-			Application.Current.Resources.MergedDictionaries[1].Source = new Uri(Constants.ThemeUrIs[themeString], UriKind.Relative);
-			Application.Current.Resources.MergedDictionaries[2].Source = new Uri(Constants.AccentUrIs[accentString], UriKind.Relative);
-		}
 	}
 
 	public class ThemeWatcher
@@ -173,35 +176,30 @@ namespace VexTrack.Core
 		private const string RegistryKeyPath = @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
 		private const string RegistryValueName = "AppsUseLightTheme";
 
-		private enum WindowsTheme
-		{
-			Light,
-			Dark
-		}
-
-		private static WindowsTheme GetWindowsTheme()
+		private static string GetWindowsTheme()
 		{
 			using var key = Registry.CurrentUser.OpenSubKey(RegistryKeyPath);
 			var registryValueObject = key?.GetValue(RegistryValueName);
 			if (registryValueObject == null)
 			{
-				return WindowsTheme.Light;
+				return "Light";
 			}
 
 			var registryValue = (int)registryValueObject;
 
-			return registryValue > 0 ? WindowsTheme.Light : WindowsTheme.Dark;
+			return registryValue > 0 ? "Light" : "Dark";
 		}
 
 		public ThemeWatcher()
 		{
 			SystemEvents.UserPreferenceChanged += SystemEvents_UserPreferenceChanged;
 
-			var theme = GetWindowsTheme().ToString();
-			SettingsHelper.Data.SystemTheme = theme;
+			var theme = GetWindowsTheme();
+			SettingsHelper.Data.SystemThemeString = theme;
+			SettingsHelper.Data.UpdateTheme();
 		}
 
-		public static void Destroy()
+		public void Destroy()
 		{
 			SystemEvents.UserPreferenceChanged -= SystemEvents_UserPreferenceChanged;
 		}
@@ -209,10 +207,35 @@ namespace VexTrack.Core
 		private static void SystemEvents_UserPreferenceChanged(object sender, UserPreferenceChangedEventArgs e)
 		{
 			if (e.Category != UserPreferenceCategory.General) return;
-			var theme = GetWindowsTheme().ToString();
+			var theme = GetWindowsTheme();
 
-			SettingsHelper.Data.SystemTheme = theme;
-			SettingsHelper.ApplyVisualSettings();
+			SettingsHelper.Data.SystemThemeString = theme;
+			SettingsHelper.Data.UpdateTheme();
+		}
+	}
+
+	public class Theme
+	{
+		public Brush BackgroundBrush { get; }
+		public Brush ShadeBrush { get; }
+		public Brush ForegroundBrush { get; }
+		public Brush AccentBrush { get; }
+		public Brush MonoBrush { get; }
+
+		public Theme(string themeString, string systemThemeString, string accentString)
+		{
+			if (string.IsNullOrEmpty(themeString)) themeString = "Light";
+			if (string.IsNullOrEmpty(systemThemeString)) systemThemeString = "Light";
+			if (string.IsNullOrEmpty(accentString)) accentString = "Blue";
+			
+			if (themeString == "Auto") themeString = systemThemeString;
+			if (accentString == "Mono") accentString += themeString;
+
+			BackgroundBrush = (Brush)Application.Current.FindResource(themeString + "Background");
+			ShadeBrush = (Brush)Application.Current.FindResource(themeString + "Shade");
+			ForegroundBrush = (Brush)Application.Current.FindResource(themeString + "Foreground");
+			AccentBrush = (Brush)Application.Current.FindResource(accentString);
+			MonoBrush = (Brush)Application.Current.FindResource("Mono" + themeString);
 		}
 	}
 }

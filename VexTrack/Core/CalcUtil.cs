@@ -26,12 +26,12 @@ namespace VexTrack.Core
 			return collected;
 		}
 		
-		public static List<int> CalcCollectedPerDay(List<HistoryEntry> history, int duration)
+		public static List<int> CalcCollectedPerDay(long startTimestamp, List<HistoryEntry> history, int duration)
 		{
 			var dailyAmounts = new List<int>();
 
 			var historyIdx = 0;
-			var startDate = DateTimeOffset.FromUnixTimeSeconds(history.First().Time).ToLocalTime().Date; // TODO: Change with #69
+			var startDate = DateTimeOffset.FromUnixTimeSeconds(startTimestamp);
 
 			for (var i = 0; i < duration + 1; i++)
 			{
@@ -79,11 +79,10 @@ namespace VexTrack.Core
 			return sum;
 		}
 
-		public static int CalcAverage(int activeLevel, int cxp, int duration, int remainingDays)
+		public static int CalcAverage(int collected, int duration, int remainingDays)
 		{
-			var totalCollected = CalcTotalCollected(activeLevel, cxp);
 			var daysPassed = duration - remainingDays;
-			return (int)MathF.Round((float)totalCollected / (daysPassed + 1));
+			return (int)MathF.Round((float)collected / (daysPassed + 1));
 		}
 
 		public static List<int> CalcSeasonSegments()

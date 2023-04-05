@@ -35,7 +35,7 @@ namespace VexTrack.Core
 
 		private static void InitData()
 		{
-			var todayTimestamp = ((DateTimeOffset)DateTimeOffset.Now.ToLocalTime().Date).ToUnixTimeSeconds();
+			var todayTimestamp = ((DateTimeOffset)DateTimeOffset.Now.Date.ToLocalTime()).ToUnixTimeSeconds();
 			List<Contract> contracts = new();
 			List<Season> seasons = new();
 
@@ -194,7 +194,7 @@ namespace VexTrack.Core
 			streakEntries = streakEntries.OrderByDescending(t => t.Date).ToList();
 			
 			// Check if current day is already listed and remove it from the list if yes
-			var todayTimestamp = ((DateTimeOffset)DateTimeOffset.Now.ToLocalTime().Date).ToUnixTimeSeconds();
+			var todayTimestamp = ((DateTimeOffset)DateTimeOffset.Now.Date.ToLocalTime()).ToUnixTimeSeconds();
 			if(streakEntries.First().Date == todayTimestamp) streakEntries.RemoveAt(0);
 
 			return (streakEntries.TakeWhile(entry => entry.Status != "None").Count(), streakEntries.First().Date);

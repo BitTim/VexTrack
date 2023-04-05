@@ -140,7 +140,7 @@
                     
                     <lvc:CartesianChart.AxisY>
                         <lvc:Axis Title="Amount in XP"
-                                  LabelFormatter="{Binding LargeNumberFormatter}"
+                                  LabelFormatter="{Binding Source={x:Static core:Formatter.LargeNumberFormatter}}"
                                   MinValue="0"/>
                     </lvc:CartesianChart.AxisY>
                     

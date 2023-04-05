@@ -10,49 +10,52 @@ public class Season
 {
     public string Uuid { get; set; }
     public string Name { get; set; }
-    public long StartDate => History.First().Time; // TODO: Change to API data with #69
+    public long StartDate => ((DateTimeOffset)DateTimeOffset.FromUnixTimeSeconds(History.First().Time).Date.ToLocalTime()).ToUnixTimeSeconds(); // TODO: Change to API data with #69
     public long EndDate { get; set; }
+    public int Collected => CalcUtil.CalcTotalCollected(ActiveBpLevel, Cxp); // TODO: Replace ActiveBpLevel and Cxp with #69
     public int ActiveBpLevel { get; set; }
     public int Cxp { get; set; }
+    public int Duration => GetDuration();
+    public int RemainingDays => GetRemainingDays();
     public List<HistoryEntry> History { get; set; }
 
 
-    public static int Total => CalcUtil.CalcMaxForSeason(true);
+    public int Total => CalcUtil.CalcMaxForSeason(true);
     private static int TotalMin => CalcUtil.CalcMaxForSeason(false);
-    public int Collected => CalcUtil.CalcTotalCollected(ActiveBpLevel, Cxp);
     public int Remaining => Total - Collected;
     public double RemainingMin => TotalMin - Collected;
-    public int Average => CalcUtil.CalcAverage(ActiveBpLevel, Cxp, Duration, RemainingDays);
+    public int Average => CalcUtil.CalcAverage(Collected, Duration, RemainingDays);
     public double Progress => CalcUtil.CalcProgress(Total, Collected);
+    public int BufferDays => (int)Math.Ceiling(Duration * (SettingsHelper.Data.BufferPercentage / 100));
 
     private bool IsActive => DateTimeOffset.Now.ToLocalTime().ToUnixTimeSeconds() < EndDate;
     public string Status => GetStatus();
-    public int Duration => GetDuration();
-    public int RemainingDays => GetRemainingDays();
-    public SeriesCollection GraphSeriesCollection => GraphCalc.CalcGraphs(Total, History.First().Amount, Duration, BufferDays, RemainingDays, History);
-
-    public int BufferDays => (int)Math.Ceiling(Duration * (SettingsHelper.Data.BufferPercentage / 100));
-    public SeasonExtremes Extremes => GetExtremes();
+    
     private List<Goal> Goals { get; }
     public ObservableCollection<Goal> ObservableGoals => new(Goals);
+    public SeasonExtremes Extremes => GetExtremes();
+    public SeriesCollection GraphSeriesCollection => GraphCalc.CalcGraphs(Total, History.First().Amount, StartDate, Duration, BufferDays, RemainingDays, History);
+
     
     public string NextUnlockName => GetNextUnlock()?.Name ?? "None";
     public double NextUnlockProgress => GetNextUnlock()?.Progress ?? 100;
     public int NextUnlockRemaining => GetNextUnlock()?.Remaining ?? 0;
 
 
+    
     public Season(string uuid, string name, long endDate, int activeBpLevel, int cXp, List<HistoryEntry> history)
     {
         (Uuid, Name, EndDate, ActiveBpLevel, Cxp, History) = (uuid, name, endDate, activeBpLevel, cXp, history);
         Goals = GetGoals();
     }
 
-    private string GetStatus()
+    public SeriesCollection GetDailyGraphSeriesCollection(int dayIndex, int dailyIdeal)
     {
-        if (Collected < TotalMin) return IsActive ? "Warning" : "Failed";
-        if (Collected < Total) return "Done";
-        return Collected >= Total ? "DoneAll" : "";
+        return GraphCalc.CalcDailyGraphs(Total, dayIndex, StartDate, Duration, dailyIdeal, Average, History);
     }
+
+    
+    
     
     private int GetRemainingDays()
     {
@@ -69,7 +72,7 @@ public class Season
     private int GetDuration()
     {
         DateTimeOffset endDate = DateTimeOffset.FromUnixTimeSeconds(EndDate).ToLocalTime().Date;
-        DateTimeOffset startDate = DateTimeOffset.FromUnixTimeSeconds(History.First().Time).ToLocalTime().Date;
+        var startDate = DateTimeOffset.FromUnixTimeSeconds(StartDate);
 
         var duration = (endDate - startDate).Days;
         if ((endDate - startDate).Hours > 12) { duration += 1; }
@@ -78,59 +81,13 @@ public class Season
         return duration;
     }
     
-    private SeasonExtremes GetExtremes()
+    private string GetStatus()
     {
-        if (History.Count <= 0) return new SeasonExtremes(0, -1, 0, -1);
-        
-        var prevDate = DateTimeOffset.FromUnixTimeSeconds(History.First().Time).ToLocalTime().Date;
-        
-        var weakestAmount = History.First().Amount;
-        DateTimeOffset weakestDate = prevDate;
-        var strongestAmount = History.First().Amount;
-        DateTimeOffset strongestDate = prevDate;
-
-        var currAmount = 0;
-        
-        foreach (var he in History)
-        {
-            var currDate = DateTimeOffset.FromUnixTimeSeconds(he.Time).ToLocalTime().Date;
-            if (currDate == prevDate)
-            {
-                currAmount += he.Amount;
-                continue;
-            }
-
-            (strongestAmount, strongestDate, weakestAmount, weakestDate) = EvalExtremes(currAmount, strongestAmount, prevDate, strongestDate, weakestAmount, weakestDate);
-
-            currAmount = he.Amount;
-            if (!SettingsHelper.Data.IgnoreInactiveDays)
-            {
-                var gapSize = (currDate - prevDate).Days;
-                for(var i = 1; i < gapSize; i++) (strongestAmount, strongestDate, weakestAmount, weakestDate) = EvalExtremes(0, strongestAmount, prevDate.AddDays(1), strongestDate, weakestAmount, weakestDate);
-            }
-
-            prevDate = currDate;
-        }
-        
-        return new SeasonExtremes(strongestAmount, strongestDate.ToUnixTimeSeconds(), weakestAmount, weakestDate.ToUnixTimeSeconds());
+        if (Collected < TotalMin) return IsActive ? "Warning" : "Failed";
+        if (Collected < Total) return "Done";
+        return Collected >= Total ? "DoneAll" : "";
     }
     
-    private static (int strongestAmount, DateTimeOffset strongestDate, int weakestAmount, DateTimeOffset weakestDate) EvalExtremes(int currAmount, int strongestAmount, DateTime prevDate, DateTimeOffset strongestDate, int weakestAmount, DateTimeOffset weakestDate)
-    {
-        if (currAmount > strongestAmount)
-        {
-            strongestAmount = currAmount;
-            strongestDate = prevDate;
-        }
-
-        if (currAmount >= weakestAmount) return (strongestAmount, strongestDate, weakestAmount, weakestDate);
-        
-        weakestAmount = currAmount;
-        weakestDate = prevDate;
-
-        return (strongestAmount, strongestDate, weakestAmount, weakestDate);
-    }
-
     private List<Goal> GetGoals()
     {
         var goals = new List<Goal>();
@@ -159,20 +116,74 @@ public class Season
     {
         return Goals.FirstOrDefault(goal => !goal.IsCompleted());
     }
+    
+    private SeasonExtremes GetExtremes()
+    {
+        var extremes = new SeasonExtremes(0, 0);
+        if (History.Count <= 0) return extremes;
+        
+        var prevDate = (DateTimeOffset) DateTimeOffset.FromUnixTimeSeconds(History.First().Time).ToLocalTime().Date;
+        
+        extremes.StrongestDayAmount = History.First().Amount;
+        extremes.WeakestDayAmount = History.First().Amount;
+        extremes.StrongestDayTimestamp = prevDate.ToUnixTimeSeconds();
+        extremes.WeakestDayTimestamp = prevDate.ToUnixTimeSeconds();
+
+        var currAmount = 0;
+        
+        foreach (var he in History)
+        {
+            var currDate = DateTimeOffset.FromUnixTimeSeconds(he.Time).ToLocalTime().Date;
+            if (currDate == prevDate)
+            {
+                currAmount += he.Amount;
+                continue;
+            }
+
+            extremes.EvalExtremes(currAmount, prevDate);
+
+            currAmount = he.Amount;
+            if (!SettingsHelper.Data.IgnoreInactiveDays)
+            {
+                var gapSize = (currDate - prevDate).Days;
+                for(var i = 1; i < gapSize; i++) extremes.EvalExtremes(0, prevDate.AddDays(1));
+            }
+
+            prevDate = currDate;
+        }
+        
+        return extremes;
+    }
 }
+
+
 
 public struct SeasonExtremes
 {
-    public int StrongestDayAmount { get; }
-    public long StrongestDayTimestamp { get; }
-    public int WeakestDayAmount { get; }
-    public long WeakestDayTimestamp { get; }
+    public int StrongestDayAmount { get; set; }
+    public int WeakestDayAmount { get; set; }
+    public long StrongestDayTimestamp { get; set; }
+    public long WeakestDayTimestamp { get; set; }
 
-    public SeasonExtremes(int strongestDayAmount, long strongestDayTimestamp, int weakestDayAmount, long weakestDayTimestamp)
+    public SeasonExtremes(int strongestDayAmount, int weakestDayAmount, long strongestDayTimestamp = -1, long weakestDayTimestamp = -1)
     {
         StrongestDayAmount = strongestDayAmount;
-        StrongestDayTimestamp = strongestDayTimestamp;
         WeakestDayAmount = weakestDayAmount;
+        StrongestDayTimestamp = strongestDayTimestamp;
         WeakestDayTimestamp = weakestDayTimestamp;
+    }
+    
+    public void EvalExtremes(int currAmount, DateTimeOffset prevDate)
+    {
+        if (currAmount > StrongestDayAmount)
+        {
+            StrongestDayAmount = currAmount;
+            StrongestDayTimestamp = prevDate.ToUnixTimeSeconds();
+        }
+
+        if (currAmount >= WeakestDayAmount && !(WeakestDayAmount == 0 && SettingsHelper.Data.IgnoreInactiveDays)) return;
+        
+        WeakestDayAmount = currAmount;
+        WeakestDayTimestamp = prevDate.ToUnixTimeSeconds();
     }
 }

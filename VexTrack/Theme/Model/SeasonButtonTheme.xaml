@@ -183,7 +183,7 @@
                                             <WrapPanel>
                                                 <StackPanel Orientation="Horizontal"
                                                             Margin="0, 0, 16, 0">
-                                                    <TextBlock Text="Strongest Day: "
+                                                    <TextBlock Text="Strongest: "
                                                                FontSize="14"
                                                                FontWeight="Bold"
                                                                Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}" />
@@ -209,7 +209,7 @@
                                                 
                                                 <StackPanel Orientation="Horizontal"
                                                             Margin="0, 0, 16, 0">
-                                                    <TextBlock Text="Weakest Day: "
+                                                    <TextBlock Text="Weakest: "
                                                                FontSize="14"
                                                                FontWeight="Bold"
                                                                Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}" />
@@ -266,7 +266,7 @@
                                             Margin="0, 0, 48, 0">
                                             <lvc:CartesianChart.AxisY>
                                                 <lvc:Axis Title="Amount in XP"
-                                                          LabelFormatter="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=LargeNumberFormatter}"
+                                                          LabelFormatter="{Binding Source={x:Static core:Formatter.LargeNumberFormatter}}"
                                                           MinValue="0"/>
                                             </lvc:CartesianChart.AxisY>
 

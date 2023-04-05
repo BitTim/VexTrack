@@ -182,6 +182,8 @@ namespace VexTrack.MVVM.ViewModel
 		}
 
 		public string Status => GetStatus();
+		public int BufferDays => TrackingData.CurrentSeasonData.BufferDays;
+		public int BufferDaysPosition => TrackingData.CurrentSeasonData.Duration - BufferDays;
 		public List<decimal> LogicalStops => CalcUtil.CalcLogicalStops(Segments, true);
 		public List<decimal> VisualStops => CalcUtil.CalcVisualStops(Segments, true);
 
@@ -209,7 +211,7 @@ namespace VexTrack.MVVM.ViewModel
 			Streak = data.Streak;
 			Segments = data.Segments;
 
-			StreakColor = TrackingData.LastStreakUpdateTimestamp == ((DateTimeOffset)DateTimeOffset.Now.ToLocalTime().Date).ToUnixTimeSeconds()
+			StreakColor = TrackingData.LastStreakUpdateTimestamp == ((DateTimeOffset)DateTimeOffset.Now.Date.ToLocalTime()).ToUnixTimeSeconds()
 				? SettingsHelper.Data.Theme.AccentBrush
 				: SettingsHelper.Data.Theme.ShadeBrush;
 
@@ -224,31 +226,8 @@ namespace VexTrack.MVVM.ViewModel
 				MainVm.QueuePopup(EditableHePopup);
 			});
 		}
-
-		private (int, int) CalcGraph() // TODO: Refactor this
-		{
-			var currSeason = TrackingData.CurrentSeasonData;
-			var seriesCollection = currSeason.GraphSeriesCollection;
-
-			var ideal = seriesCollection[0] as LineSeries;
-			var performance = seriesCollection[1] as LineSeries;
-			
-			var dailyIdeal = HomeDataCalc.CalcDailyIdeal(performance);
-			var average = HomeDataCalc.CalcAverageGraph(performance);
-			
-			seriesCollection.Add(dailyIdeal);
-			seriesCollection.Add(average);
-
-			GraphSeriesCollection = seriesCollection;
-
-			var t = performance.Values.Count - 1;
-			var deviationIdeal = (int)((ObservablePoint)performance.Values[t]).Y - (int)((ObservablePoint)ideal.Values[t]).Y;
-
-			var deviationDaily = 0;
-			if (dailyIdeal.Values.Count > 0) deviationDaily = (int)((ObservablePoint)performance.Values[t]).Y - (int)((ObservablePoint)dailyIdeal.Values[1]).Y;
-
-			return (deviationIdeal, deviationDaily);
-		}
+		
+		
 		
 		private string GetStatus()
 		{
@@ -256,40 +235,28 @@ namespace VexTrack.MVVM.ViewModel
 			if (Collected >= Segments[0] && Collected < Total) return "Done";
 			return Collected >= Total ? "DoneAll" : "";
 		}
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		public int BufferDays => TrackingData.CurrentSeasonData.BufferDays;
-		public int BufferDaysPosition => TrackingData.CurrentSeasonData.Duration - BufferDays;
-		
-		public Func<double, string> LargeNumberFormatter => value => //TODO Move to own class
+
+		private (int, int) CalcGraph()
 		{
-			if (value == 0) return "0";
-        
-			var mag = (int)(Math.Floor(Math.Log10(value)) / 3); // Truncates to 6, divides to 2
-			var divisor = Math.Pow(10, mag * 3);
+			var currSeason = TrackingData.CurrentSeasonData;
+			var today = DateTimeOffset.Now.ToLocalTime().Date;
+			var dayIndex = (today - DateTimeOffset.FromUnixTimeSeconds(currSeason.StartDate)).Days;
+			
+			var seriesCollection = currSeason.GraphSeriesCollection;
+			var dailySeriesCollection = currSeason.GetDailyGraphSeriesCollection(dayIndex, Total);
 
-			var shortNumber = value / divisor;
+			var ideal = (LineSeries)seriesCollection[0];
+			var performance = (LineSeries)seriesCollection[1];
+			var dailyIdeal = (LineSeries)dailySeriesCollection[0];
+			
+			seriesCollection.AddRange(dailySeriesCollection);
+			GraphSeriesCollection = seriesCollection;
 
-			var suffix = mag switch
-			{
-				0 => string.Empty,
-				1 => "k",
-				2 => "M",
-				3 => "B",
-				_ => ""
-			};
+			var performanceAmount = (int)(performance.Values[dayIndex - 1] as ObservablePoint)!.Y;
+			var deviationIdeal = performanceAmount - (int)(ideal.Values[dayIndex - 1] as ObservablePoint)!.Y;
+			var deviationDaily = dailyIdeal.Values.Count > 0 ? performanceAmount - (int)(dailyIdeal.Values[1] as ObservablePoint)!.Y : 0;
 
-			return shortNumber.ToString("N1") + suffix;
-		};
+			return (deviationIdeal, deviationDaily);
+		}
 	}
 }

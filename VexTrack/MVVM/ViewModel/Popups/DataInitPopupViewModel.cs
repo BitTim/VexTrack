@@ -69,7 +69,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 				OnPropertyChanged(nameof(Progress));
 			}
 		}
-		public int RemainingDays => (DateTimeOffset.FromUnixTimeSeconds(EndDate).ToLocalTime().Date - DateTimeOffset.Now.ToLocalTime().Date).Days;
+		public int RemainingDays => (DateTimeOffset.FromUnixTimeSeconds(EndDate).ToLocalTime().Date - DateTimeOffset.Now.Date.ToLocalTime()).Days;
 
 		public DataInitPopupViewModel()
 		{

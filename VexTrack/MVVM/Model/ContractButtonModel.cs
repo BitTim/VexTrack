@@ -3,7 +3,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
-using VexTrack.Core;
+using VexTrack.Core.Model;
+using VexTrack.Core.Util;
 
 namespace VexTrack.MVVM.Model;
 
@@ -104,7 +105,7 @@ public class ContractButtonModel : ToggleButton
         set => SetValue(NextUnlockRemainingProperty, value);
     }
 
-    public List<decimal> LogicalSegmentsStops => CalcUtil.CalcLogicalStops(Goals.Select(goal => goal.Total).ToList(), true);
-    public List<decimal> VisualSegmentsStops => CalcUtil.CalcVisualStops(Goals.Select(goal => goal.Total).ToList(), true);
+    public List<decimal> LogicalSegmentsStops => CalcHelper.CalcLogicalStops(Goals.Select(goal => goal.Total).ToList(), true);
+    public List<decimal> VisualSegmentsStops => CalcHelper.CalcVisualStops(Goals.Select(goal => goal.Total).ToList(), true);
     public int NumGoals => Goals.Count;
 }

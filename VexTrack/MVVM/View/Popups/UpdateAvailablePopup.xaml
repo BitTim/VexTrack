@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:popups="clr-namespace:VexTrack.MVVM.ViewModel.Popups"
-             xmlns:core="clr-namespace:VexTrack.Core"
+             xmlns:util="clr-namespace:VexTrack.Core.Util"
              mc:Ignorable="d" 
              d:DesignHeight="812" d:DesignWidth="872">
 
@@ -19,7 +19,7 @@
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 
-		<Border Background="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.BackgroundBrush}"
+		<Border Background="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.BackgroundBrush}"
 				CornerRadius="8">
 			<Grid Margin="16">
 				<Grid.RowDefinitions>
@@ -51,7 +51,7 @@
 							   Grid.Row="0"
 							   FontSize="20"
 							   FontWeight="Bold"
-							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+							   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 0, 0, 16"/>
 
 					<TextBlock Text="A new Update is available, do you want to Update?"
@@ -59,7 +59,7 @@
 							   Grid.Column="0"
 							   FontSize="14"
 							   TextWrapping="Wrap"
-							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+							   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 0, 0, 4"/>
 
 					<TextBlock Text="Changelog:"
@@ -67,7 +67,7 @@
 						   FontSize="14"
 						   FontWeight="Bold"
 						   Visibility="{Binding ChangelogVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-						   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+						   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 						   Margin="0, 0, 0, 4"/>
 
 					<ScrollViewer Grid.Row="3"
@@ -81,7 +81,7 @@
 							<ItemsControl.ItemTemplate>
 								<DataTemplate>
 									<TextBlock Text="{Binding}"
-										   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"/>
+										   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"/>
 								</DataTemplate>
 							</ItemsControl.ItemTemplate>
 						</ItemsControl>
@@ -92,7 +92,7 @@
 						   FontSize="14"
 						   FontWeight="Bold"
 						   Visibility="{Binding WarningsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-						   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+						   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 						   Margin="0, 0, 0, 4"/>
 
 					<ScrollViewer Grid.Row="5"
@@ -106,7 +106,7 @@
 							<ItemsControl.ItemTemplate>
 								<DataTemplate>
 									<TextBlock Text="{Binding}"
-										   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"/>
+										   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"/>
 								</DataTemplate>
 							</ItemsControl.ItemTemplate>
 						</ItemsControl>
@@ -124,26 +124,26 @@
 						   Grid.Column="0"
 						   FontSize="14"
 						   FontWeight="Bold"
-						   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+						   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 						   Margin="0, 0, 0, 4"/>
 
 						<TextBlock Text="{Binding CurrentVersion}"
 						   Grid.Column="1"
 						   FontSize="14"
-						   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+						   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 						   Margin="0, 0, 0, 4"/>
 
 						<TextBlock Text="New Version:"
 						   Grid.Column="2"
 						   FontSize="14"
 						   FontWeight="Bold"
-						   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+						   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 						   Margin="0, 0, 0, 4"/>
 
 						<TextBlock Text="{Binding NewVersion}"
 						   Grid.Column="3"
 						   FontSize="14"
-						   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+						   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 						   Margin="0, 0, 0, 4"/>
 					</Grid>
 				</Grid>

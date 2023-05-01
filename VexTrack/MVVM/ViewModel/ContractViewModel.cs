@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
-using VexTrack.Core;
+using VexTrack.Core.Model;
+using VexTrack.Core.Model.WPF;
 using VexTrack.MVVM.ViewModel.Popups;
 
 namespace VexTrack.MVVM.ViewModel
@@ -40,12 +41,12 @@ namespace VexTrack.MVVM.ViewModel
 			SeasonEntries.Clear();
 			ContractEntries.Clear();
 			
-			foreach (var s in TrackingData.Seasons)
+			foreach (var s in Tracking.Seasons)
 			{
 				SeasonEntries.Add(s);
 			}
 
-			foreach (var contract in TrackingData.Contracts)
+			foreach (var contract in Tracking.Contracts)
 			{
 				var ged = contract.Goals.ToList();
 				ContractEntries.Add(new Contract(contract.Uuid, contract.Name, contract.Color, contract.Paused, ged));

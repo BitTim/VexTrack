@@ -1,4 +1,5 @@
-﻿using VexTrack.Core;
+﻿using VexTrack.Core.Model;
+using VexTrack.Core.Model.WPF;
 
 namespace VexTrack.MVVM.ViewModel.Popups
 {
@@ -46,7 +47,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			OnDeleteClicked = new RelayCommand(_ =>
 			{
 				IsInitialized = false;
-				TrackingData.RemoveHistoryEntry(SeasonUuid, Uuid);
+				Tracking.RemoveHistoryEntry(SeasonUuid, Uuid);
 			});
 		}
 
@@ -55,7 +56,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			RawData = data;
 			Deletable = true;
 
-			SeasonUuid = data.SeasonUuid;
+			SeasonUuid = data.GroupUuid;
 			Uuid = data.Uuid;
 			Title = data.GetTitle();
 			Time = data.Time;

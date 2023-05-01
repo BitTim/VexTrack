@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Windows.Media;
 using LiveCharts;
 using LiveCharts.Defaults;
-using VexTrack.Core;
+using VexTrack.Core.Model;
+using VexTrack.Core.Model.WPF;
+using VexTrack.Core.Util;
 using VexTrack.MVVM.ViewModel.Popups;
 using LineSeries = LiveCharts.Wpf.LineSeries;
 
@@ -182,10 +184,10 @@ namespace VexTrack.MVVM.ViewModel
 		}
 
 		public string Status => GetStatus();
-		public int BufferDays => TrackingData.CurrentSeasonData.BufferDays;
-		public int BufferDaysPosition => TrackingData.CurrentSeasonData.Duration - BufferDays;
-		public List<decimal> LogicalStops => CalcUtil.CalcLogicalStops(Segments, true);
-		public List<decimal> VisualStops => CalcUtil.CalcVisualStops(Segments, true);
+		public int BufferDays => Tracking.CurrentSeasonData.BufferDays;
+		public int BufferDaysPosition => Tracking.CurrentSeasonData.Duration - BufferDays;
+		public List<decimal> LogicalStops => CalcHelper.CalcLogicalStops(Segments, true);
+		public List<decimal> VisualStops => CalcHelper.CalcVisualStops(Segments, true);
 
 		
 		
@@ -202,7 +204,7 @@ namespace VexTrack.MVVM.ViewModel
 			Username = SettingsHelper.Data.Username;
 			Title = Username != "" ? "Welcome back," : "Welcome back";
 
-			var data = HomeDataCalc.CalcDailyData();
+			var data = HomeCalcHelper.CalcDailyData();
 
 			Collected = data.Collected;
 			Remaining = data.Remaining;
@@ -211,14 +213,14 @@ namespace VexTrack.MVVM.ViewModel
 			Streak = data.Streak;
 			Segments = data.Segments;
 
-			StreakColor = TrackingData.LastStreakUpdateTimestamp == ((DateTimeOffset)DateTimeOffset.Now.Date.ToLocalTime()).ToUnixTimeSeconds()
+			StreakColor = Tracking.LastStreakUpdateTimestamp == ((DateTimeOffset)DateTimeOffset.Now.Date.ToLocalTime()).ToUnixTimeSeconds()
 				? SettingsHelper.Data.Theme.AccentBrush
 				: SettingsHelper.Data.Theme.ShadeBrush;
 
-			SeasonName = TrackingData.CurrentSeasonData.Name;
+			SeasonName = Tracking.CurrentSeasonData.Name;
 			(DeviationIdeal, DeviationDaily) = CalcGraph();
-			DaysRemaining = TrackingData.CurrentSeasonData.RemainingDays;
-			DaysFinished = HomeDataCalc.CalcDaysFinished(true);
+			DaysRemaining = Tracking.CurrentSeasonData.RemainingDays;
+			DaysFinished = CalcHelper.CalcDaysFinished(true);
 
 			OnAddClicked = new RelayCommand(_ =>
 			{
@@ -238,7 +240,7 @@ namespace VexTrack.MVVM.ViewModel
 
 		private (int, int) CalcGraph()
 		{
-			var currSeason = TrackingData.CurrentSeasonData;
+			var currSeason = Tracking.CurrentSeasonData;
 			var today = DateTimeOffset.Now.ToLocalTime().Date;
 			var dayIndex = (today - DateTimeOffset.FromUnixTimeSeconds(currSeason.StartDate)).Days;
 			

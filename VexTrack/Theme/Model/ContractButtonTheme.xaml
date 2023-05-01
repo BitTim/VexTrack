@@ -3,7 +3,8 @@
                     xmlns:local="clr-namespace:VexTrack.MVVM.Model"
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                    xmlns:core="clr-namespace:VexTrack.Core"
+                    xmlns:util="clr-namespace:VexTrack.Core.Util"
+                    xmlns:models="clr-namespace:VexTrack.Core.Model"
                     mc:Ignorable="d">
     
     <Style TargetType="{x:Type local:ContractButtonModel}"
@@ -21,7 +22,7 @@
                             </Grid.RowDefinitions>
                             
                             <Border x:Name="PART_ShadowBorder"
-                                    Background="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.BackgroundBrush}"
+                                    Background="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.BackgroundBrush}"
                                     CornerRadius="8">
                                 <Border.Effect>
                                     <DropShadowEffect BlurRadius="8"
@@ -32,7 +33,7 @@
                             </Border>
                             
                             <Border x:Name="PART_HoverBorder"
-                                    Background="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+                                    Background="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
                                     Opacity="0"
                                     CornerRadius="8">
                                 <Border.Triggers>
@@ -77,7 +78,7 @@
 
                                         <TextBlock Grid.Row="0"
                                                    Text="{TemplateBinding Title}"
-                                                   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+                                                   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
                                                    FontSize="20"
                                                    FontWeight="Bold" />
 
@@ -95,17 +96,17 @@
                                                     <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Collected, StringFormat=N0}"
                                                                FontSize="14"
                                                                Margin="0, 0, 4, 0"
-                                                               Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}" />
+                                                               Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}" />
 
                                                     <TextBlock Text="/"
                                                                FontSize="14"
                                                                Margin="0, 0, 4, 0"
-                                                               Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}" />
+                                                               Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}" />
 
                                                     <local:TextWithUnit Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Total, StringFormat=N0}"
                                                                         Unit=" XP"
                                                                         FontSize="14"
-                                                                        Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}" />
+                                                                        Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}" />
                                                 </StackPanel>
 
 
@@ -113,7 +114,7 @@
                                                                     Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Remaining, Converter={StaticResource NegativeToZeroConverter}, StringFormat=N0}"
                                                                     Unit=" XP remaining"
                                                                     FontSize="14"
-                                                                    Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}" />
+                                                                    Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}" />
                                             </UniformGrid>
 
                                             <WrapPanel>
@@ -122,25 +123,25 @@
                                                     <TextBlock Text="Next Unlock: "
                                                                FontSize="14"
                                                                FontWeight="Bold"
-                                                               Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}" />
+                                                               Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}" />
 
                                                     <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=NextUnlockName}"
                                                                FontSize="14"
-                                                               Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}" />
+                                                               Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}" />
 
 
                                                     <TextBlock Text=" ("
                                                                FontSize="14"
-                                                               Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}" />
+                                                               Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}" />
 
                                                     <local:TextWithUnit Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=NextUnlockProgress}"
                                                                         Unit=" %"
                                                                         FontSize="14"
-                                                                        Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}" />
+                                                                        Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}" />
 
                                                     <TextBlock Text=")"
                                                                FontSize="14"
-                                                               Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}" />
+                                                               Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}" />
                                                 </StackPanel>
                                             </WrapPanel>
                                             
@@ -150,27 +151,27 @@
                                                     <TextBlock Text="Completion forecast: "
                                                                FontSize="14"
                                                                FontWeight="Bold"
-                                                               Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}" />
+                                                               Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}" />
 
                                                     <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=CompletionDateTimestamp, Converter={StaticResource TimestampToStringConverter}, ConverterParameter=True}"
                                                                FontSize="14"
                                                                Margin="0, 0, 4, 0"
-                                                               Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}" />
+                                                               Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}" />
                                                     
                                                     <TextBlock Text="(In "
                                                                FontSize="14"
-                                                               Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+                                                               Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
                                                                Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=CompletionForecastDays, Converter={StaticResource NegativeIntToVisibilityConverter}}" />
 
                                                     <local:TextWithUnit Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=CompletionForecastDays}"
                                                                         Unit=" days"
                                                                         FontSize="14"
-                                                                        Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+                                                                        Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
                                                                         Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=CompletionForecastDays, Converter={StaticResource NegativeIntToVisibilityConverter}}" />
 
                                                     <TextBlock Text=")"
                                                                FontSize="14"
-                                                               Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+                                                               Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
                                                                Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=CompletionForecastDays, Converter={StaticResource NegativeIntToVisibilityConverter}}" />
                                                 </StackPanel>
                                             </WrapPanel>
@@ -181,7 +182,7 @@
                                               VerticalAlignment="Center"
                                               Margin="16, 0, 8, 0"
                                               Width="24" Height="24"
-                                              Fill="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+                                              Fill="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
                                               Data="{Binding Source={StaticResource ExpandIcon}, Path=Data}">
                                             <Path.RenderTransform>
                                                 <RotateTransform x:Name="ChevronRotateTransform" CenterX="12" CenterY="12" Angle="0"/>
@@ -208,7 +209,7 @@
                                         </ItemsControl.ItemsPanel>
                                         
                                         <ItemsControl.ItemTemplate>
-                                            <DataTemplate DataType="{x:Type core:Goal}">
+                                            <DataTemplate DataType="{x:Type models:Goal}">
                                                 <local:GoalDisplayModel Title="{Binding Name}"
                                                                         Collected="{Binding Collected}"
                                                                         Total="{Binding Total}"

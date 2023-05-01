@@ -6,12 +6,13 @@ using System.Windows.Media;
 using LiveCharts;
 using LiveCharts.Defaults;
 using LiveCharts.Wpf;
+using VexTrack.Core.Model;
 
-namespace VexTrack.Core
+namespace VexTrack.Core.Util
 {
-	public static class GraphCalc
+	public static class GraphCalcHelper
 	{
-		public static SeriesCollection CalcGraphs(int total, int startXp, long startDate,  int duration, int bufferDays, int remainingDays, List<HistoryEntry> history)
+		public static SeriesCollection CalcGraphs(int total, int startXp, long startDate,  int duration, int bufferDays, int remainingDays, string seasonUuid)
 		{
 			var collection = new SeriesCollection();
 
@@ -41,7 +42,7 @@ namespace VexTrack.Core
 			
 			var startRemaining = total - startXp;
 			var totalDaily = startRemaining / (double)(duration - bufferDays);
-			var dailyAmounts = CalcUtil.CalcCollectedPerDay(startDate, history, duration);
+			var dailyAmounts = CalcHelper.CalcCollectedPerDay(startDate, HistoryHelper.GetAllEntriesFromSeason(seasonUuid), duration);
 
 			var prevPerformanceVal = 0;
 			
@@ -68,7 +69,7 @@ namespace VexTrack.Core
 			return collection;
 		}
 
-		public static SeriesCollection CalcDailyGraphs(int total, int dayIndex, long startDate, int duration, int dailyIdeal, int average, List<HistoryEntry> history)
+		public static SeriesCollection CalcDailyGraphs(int total, int dayIndex, long startDate, int duration, int dailyIdeal, int average, string seasonUuid)
 		{
 			var collection = new SeriesCollection();
 
@@ -97,8 +98,8 @@ namespace VexTrack.Core
 				StrokeDashArray = new DoubleCollection { 1, 1 },
 			};
 
-			var dailyAmounts = CalcUtil.CalcCollectedPerDay(startDate, history, duration);
-			var collected = dailyAmounts.GetRange(0, dayIndex).Sum();
+			var dailyAmounts = CalcHelper.CalcCollectedPerDay(startDate, HistoryHelper.GetAllEntriesFromSeason(seasonUuid), duration);
+			var collected = dailyAmounts.GetRange(0, dayIndex).Sum(); //TODO: "Out of Bounds" since no new season is created at the moment. Fix with #69 
 
 			var offset = dayIndex - 1;
 			for (var i = offset; i < duration + 1; i++)

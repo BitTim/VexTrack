@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-					xmlns:core="clr-namespace:VexTrack.Core">
+                    xmlns:util="clr-namespace:VexTrack.Core.Util">
 
 	<Style x:Key="RadioColorSelectorButtonTheme"
 	       TargetType="{x:Type RadioButton}">
@@ -30,7 +30,7 @@
 							</Border>
 
 							<Border x:Name="PART_HoverBorder"
-										Background="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+										Background="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 										Opacity="0"
 										CornerRadius="15">
 								<Border.Triggers>
@@ -98,7 +98,7 @@
 							</Border>
 
 							<Border x:Name="PART_HoverBorder"
-										Background="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+										Background="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 										Opacity="0"
 										CornerRadius="15">
 								<Border.Triggers>
@@ -124,13 +124,13 @@
 				</Setter.Value>
 			</Setter>
 
-			<Setter Property="Background" Value="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.BackgroundBrush}"/>
-			<Setter Property="Foreground" Value="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"/>
+			<Setter Property="Background" Value="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.BackgroundBrush}"/>
+			<Setter Property="Foreground" Value="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"/>
 		</Style.Setters>
 
 		<Style.Triggers>
 			<Trigger Property="IsChecked" Value="True">
-				<Setter Property="Background" Value="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.AccentBrush}"/>
+				<Setter Property="Background" Value="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.AccentBrush}"/>
 				<Setter Property="Foreground" Value="White"/>
 			</Trigger>
 		</Style.Triggers>

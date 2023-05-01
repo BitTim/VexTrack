@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace VexTrack.Core
+namespace VexTrack.Core.Model.WPF
 {
 	public class RelayCommand : ICommand
 	{

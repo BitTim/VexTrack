@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using VexTrack.Core.Util;
 
-namespace VexTrack.Core;
+namespace VexTrack.Core.Model;
 
 public class Contract
 {
@@ -18,7 +19,7 @@ public class Contract
     public int Total => GetTotal();
     public int Collected => GetCollected();
     public int Remaining => GetRemaining();
-    public int Progress => CalcUtil.CalcProgress(Total, Collected);
+    public int Progress => CalcHelper.CalcProgress(Total, Collected);
     public string NextUnlockName => GetNextUnlock()?.Name ?? "None";
     public double NextUnlockProgress => GetNextUnlock()?.Progress ?? 100;
     public int NextUnlockRemaining => GetNextUnlock()?.Remaining ?? 0;
@@ -45,7 +46,7 @@ public class Contract
     {
         if (GetRemaining() <= 0) return -1;
 
-        var average = TrackingData.CurrentSeasonData.Average;
+        var average = Tracking.CurrentSeasonData.Average;
         if (average <= 0) return -2;
         
         return (int)MathF.Ceiling((float)GetRemaining() / average);

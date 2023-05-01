@@ -1,4 +1,5 @@
-﻿using VexTrack.Core;
+﻿using VexTrack.Core.Model;
+using VexTrack.Core.Model.WPF;
 
 namespace VexTrack.MVVM.ViewModel.Popups
 {
@@ -13,7 +14,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 			OnYesClicked = new RelayCommand(_ =>
 			{
-				TrackingData.ResetData();
+				Tracking.ResetData();
 				Close();
 			});
 			OnNoClicked = new RelayCommand(_ => Close());

@@ -1,7 +1,7 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:VexTrack.MVVM.Model"
-                    xmlns:core="clr-namespace:VexTrack.Core">
+                    xmlns:util="clr-namespace:VexTrack.Core.Util">
     
     <Style TargetType="{x:Type local:SegmentedProgressModel}">
         <Style.Setters>
@@ -20,7 +20,7 @@
                                        VerticalAlignment="Center"
                                        HorizontalAlignment="Right"
                                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Percentage}"
-                                       Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+                                       Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
                                        FontSize="14"
                                        Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ShowPercentage, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                         </Grid>
@@ -42,7 +42,7 @@
                                       StrokeThickness="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:SegmentedProgressModel}}, Path=BackgroundThickness}"
                                       StrokeStartLineCap="Round"
                                       StrokeEndLineCap="Round"
-                                      Stroke="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ShadeBrush}"/>
+                                      Stroke="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ShadeBrush}"/>
                             </Border>
                             
                             <Border Padding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:SegmentedProgressModel}}, Path=Spacing}">

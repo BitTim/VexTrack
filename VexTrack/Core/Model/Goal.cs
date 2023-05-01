@@ -1,4 +1,6 @@
-﻿namespace VexTrack.Core;
+﻿using VexTrack.Core.Util;
+
+namespace VexTrack.Core.Model;
 
 public class Goal
 {
@@ -20,7 +22,7 @@ public class Goal
         Collected = collected;
     }
 
-    private int GetProgress() { return CalcUtil.CalcProgress(Total, Collected); }
+    private int GetProgress() { return CalcHelper.CalcProgress(Total, Collected); }
     private int GetRemaining() { return Total - Collected; }
     public bool IsCompleted() { return Collected >= Total; }
 }

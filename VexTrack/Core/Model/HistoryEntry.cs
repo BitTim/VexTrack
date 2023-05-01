@@ -1,11 +1,11 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace VexTrack.Core;
+namespace VexTrack.Core.Model;
 
 public class HistoryEntry
 {
-	public string SeasonUuid { get; set; }
+	public string GroupUuid { get; set; }
     public string Uuid { get; set; }
     public long Time { get; set; }
     public string GameMode { get; set; }
@@ -22,9 +22,9 @@ public class HistoryEntry
     public string Result => GetResult();
     
 
-    public HistoryEntry(string seasonUuid, string uuid, long time, string gamemode, int amount, string map, string desc, int score, int enemyScore, bool surrenderedWin, bool surrenderedLoss)
+    public HistoryEntry(string groupUuid, string uuid, long time, string gamemode, int amount, string map, string desc, int score, int enemyScore, bool surrenderedWin, bool surrenderedLoss)
     {
-	    SeasonUuid = seasonUuid;
+	    GroupUuid = groupUuid;
         Uuid = uuid;
         Time = time;
         GameMode = gamemode;
@@ -153,17 +153,5 @@ public class HistoryEntry
 
 		var desc = isCustom ? description : "";
 		return (gameMode, desc, score, enemyScore);
-	}
-}
-
-public class HistoryGroup
-{
-	public long Date { get; set; }
-	public ObservableCollection<HistoryEntry> Entries { get; set; }
-
-	public HistoryGroup(long date, ObservableCollection<HistoryEntry> entries)
-	{
-		Date = date;
-		Entries = entries;
 	}
 }

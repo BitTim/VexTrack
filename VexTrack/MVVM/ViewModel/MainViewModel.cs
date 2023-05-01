@@ -5,6 +5,9 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using VexTrack.Core;
+using VexTrack.Core.Model;
+using VexTrack.Core.Model.WPF;
+using VexTrack.Core.Util;
 using VexTrack.MVVM.ViewModel.Popups;
 
 namespace VexTrack.MVVM.ViewModel
@@ -37,7 +40,6 @@ namespace VexTrack.MVVM.ViewModel
 
 		private object _currentView;
 		private bool _epilogue;
-		private bool _epilogueButtonEnabled;
 
 		private BasePopupViewModel _currentPopup;
 
@@ -81,7 +83,7 @@ namespace VexTrack.MVVM.ViewModel
 		{
 			set
 			{
-				_epilogueButtonEnabled = value;
+				_epilogue = value;
 				OnPropertyChanged();
 			}
 		}
@@ -113,7 +115,7 @@ namespace VexTrack.MVVM.ViewModel
 			HistoryViewCommand = new RelayCommand(_ => SetView(HistoryVm));
 			SettingsViewCommand = new RelayCommand(_ => SetView(SettingsVm));
 
-			TrackingData.LoadData();
+			Tracking.LoadData();
 			SettingsHelper.LoadSettings();
 
 			UpdateHelper.CheckUpdateAsync();
@@ -195,7 +197,7 @@ namespace VexTrack.MVVM.ViewModel
 
 			if (InterruptUpdate) return;
 
-			if (TrackingData.CurrentSeasonData.ActiveBpLevel > Constants.BattlepassLevels && SettingsHelper.Data.ForceEpilogue)
+			if (Tracking.CurrentSeasonData.ActiveBpLevel > Constants.BattlepassLevels && SettingsHelper.Data.ForceEpilogue)
 			{
 				if (!Epilogue) Epilogue = true;
 				EpilogueButtonEnabled = false;

@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using VexTrack.Core;
+using VexTrack.Core.Util;
 
 namespace VexTrack.MVVM.Model
 {

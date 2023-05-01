@@ -327,8 +327,7 @@
 							HorizontalAlignment="Right"
 							VerticalAlignment="Bottom"
 							Style="{DynamicResource ButtonTheme}"
-							Command="{Binding OnDoneClicked}">
-					</Button>
+							Command="{Binding OnDoneClicked}" />
 				</Grid>
 			</Grid>
 		</Border>

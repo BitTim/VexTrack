@@ -3,7 +3,7 @@
 					xmlns:local="clr-namespace:VexTrack.MVVM.Model"
 					xmlns:ap="clr-namespace:VexTrack.MVVM.Attached_Property"
 					xmlns:validation="clr-namespace:VexTrack.MVVM.Validation"
-					xmlns:core="clr-namespace:VexTrack.Core">
+                    xmlns:util="clr-namespace:VexTrack.Core.Util">
 
 	<Style TargetType="{x:Type local:ColorPickerModel}">
 		<Style.Setters>
@@ -24,7 +24,7 @@
 								</Grid.ColumnDefinitions>
 
 								<Border x:Name="PART_ShadowBorder"
-										Background="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.BackgroundBrush}"
+										Background="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.BackgroundBrush}"
 										CornerRadius="8">
 									<Border.Effect>
 										<DropShadowEffect BlurRadius="8"
@@ -100,7 +100,7 @@
 										   Grid.Column="0"
 										   FontSize="14"
 										   FontWeight="Bold"
-										   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+										   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 										   Margin="0, 0, 0, 4"/>
 
 								<TextBlock Text="Green"
@@ -108,7 +108,7 @@
 										   Grid.Column="0"
 										   FontSize="14"
 										   FontWeight="Bold"
-										   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+										   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 										   Margin="0, 0, 0, 4"/>
 
 								<TextBlock Text="Blue"
@@ -116,7 +116,7 @@
 										   Grid.Column="0"
 										   FontSize="14"
 										   FontWeight="Bold"
-										   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+										   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 										   Margin="0, 0, 0, 4"/>
 
 								<TextBlock Text="Hex"
@@ -124,7 +124,7 @@
 										   Grid.Column="0"
 										   FontSize="14"
 										   FontWeight="Bold"
-										   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+										   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 										   Margin="0, 0, 0, 4"/>
 
 								

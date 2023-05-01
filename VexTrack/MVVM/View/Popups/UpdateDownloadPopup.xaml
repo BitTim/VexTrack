@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:model="clr-namespace:VexTrack.MVVM.Model"
              xmlns:popups="clr-namespace:VexTrack.MVVM.ViewModel.Popups"
-             xmlns:core="clr-namespace:VexTrack.Core"
+             xmlns:util="clr-namespace:VexTrack.Core.Util"
              mc:Ignorable="d" 
              d:DesignHeight="812" d:DesignWidth="872">
 
@@ -20,7 +20,7 @@
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 
-		<Border Background="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.BackgroundBrush}"
+		<Border Background="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.BackgroundBrush}"
 				CornerRadius="8">
 			<Grid Margin="16">
 				<Grid.RowDefinitions>
@@ -48,7 +48,7 @@
 							   Grid.Row="0"
 							   FontSize="20"
 							   FontWeight="Bold"
-							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+							   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 0, 0, 16"/>
 
 					<TextBlock Text="Update Package"
@@ -57,7 +57,7 @@
 							   FontSize="14"
 							   FontWeight="Bold"
 							   HorizontalAlignment="Left"
-							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+							   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 0, 0, 4"/>
 
 					<Grid Grid.Row="2"
@@ -74,7 +74,7 @@
 							   Grid.Row="0"
 							   FontSize="14"
 							   FontWeight="Bold"
-							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+							   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 0, 0, 4"/>
 
 						<model:TextWithUnit Text="{Binding PackageTotalSize}"
@@ -82,7 +82,7 @@
 										Grid.Column="1"
 										Grid.Row="0"
 										FontSize="14"
-										Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+										Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 										Margin="0, 0, 0, 4"/>
 						
 						<TextBlock Text="Size"
@@ -90,7 +90,7 @@
 						           Grid.Row="0"
 						           FontSize="14"
 						           FontWeight="Bold"
-						           Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+						           Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 						           Margin="0, 0, 0, 4"/>
 
 						<model:TextWithUnit Text="{Binding PackageSize}"
@@ -98,7 +98,7 @@
 						                    Grid.Column="3"
 						                    Grid.Row="0"
 						                    FontSize="14"
-						                    Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+						                    Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 						                    Margin="0, 0, 0, 4"/>
 					</Grid>
 
@@ -113,7 +113,7 @@
 					           FontSize="14"
 					           FontWeight="Bold"
 					           HorizontalAlignment="Left"
-					           Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+					           Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 					           Margin="0, 16, 0, 4"/>
 					
 					<Grid Grid.Row="5"
@@ -130,7 +130,7 @@
 							   Grid.Row="0"
 							   FontSize="14"
 							   FontWeight="Bold"
-							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+							   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 0, 0, 4"/>
 
 						<model:TextWithUnit Text="{Binding UpdaterTotalSize}"
@@ -138,7 +138,7 @@
 										Grid.Column="1"
 										Grid.Row="0"
 										FontSize="14"
-										Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+										Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 										Margin="0, 0, 0, 4"/>
 						
 						<TextBlock Text="Size"
@@ -146,7 +146,7 @@
 						           Grid.Row="0"
 						           FontSize="14"
 						           FontWeight="Bold"
-						           Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+						           Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 						           Margin="0, 0, 0, 4"/>
 
 						<model:TextWithUnit Text="{Binding UpdaterSize}"
@@ -154,7 +154,7 @@
 						                    Grid.Column="3"
 						                    Grid.Row="0"
 						                    FontSize="14"
-						                    Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+						                    Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 						                    Margin="0, 0, 0, 4"/>
 					</Grid>
 
@@ -174,7 +174,7 @@
 						           Grid.Row="0"
 						           FontSize="14"
 						           FontWeight="Bold"
-						           Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+						           Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 						           Margin="0, 8, 0, 4"/>
 
 						<model:TextWithUnit Text="{Binding DownloadSpeed}"
@@ -182,7 +182,7 @@
 											Grid.Column="1"
 											Grid.Row="0"
 											FontSize="14"
-											Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+											Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 											Margin="0, 8, 0, 4"/>
 					</Grid>
 
@@ -192,7 +192,7 @@
 							   FontSize="14"
 							   FontStyle="Italic"
 							   TextWrapping="Wrap"
-							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+							   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 8, 0, 4"/>
 				</Grid>
 			</Grid>

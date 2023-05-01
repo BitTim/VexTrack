@@ -1,4 +1,6 @@
 ﻿using VexTrack.Core;
+using VexTrack.Core.Model.WPF;
+using VexTrack.Core.Util;
 
 namespace VexTrack.MVVM.ViewModel.Popups
 {

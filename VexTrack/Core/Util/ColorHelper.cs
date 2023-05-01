@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Drawing;
 
-namespace VexTrack.Core
+namespace VexTrack.Core.Util
 {
-	internal abstract class ColorUtil
+	internal abstract class ColorHelper
 	{
 		public struct Hsv
 		{

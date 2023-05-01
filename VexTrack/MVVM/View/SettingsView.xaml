@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
 			 xmlns:validation="clr-namespace:VexTrack.MVVM.Validation"
 			 xmlns:viewModel="clr-namespace:VexTrack.MVVM.ViewModel"
-			 xmlns:core="clr-namespace:VexTrack.Core"
+             xmlns:util="clr-namespace:VexTrack.Core.Util"
 			 mc:Ignorable="d" 
              d:DesignHeight="780" d:DesignWidth="640">
 
@@ -22,7 +22,7 @@
 
 		<TextBlock Text="Settings"
 				   Margin="16, 16, 16, 16"
-				   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+				   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 				   FontSize="36"
 				   FontWeight="Bold"/>
 
@@ -39,7 +39,7 @@
 
 				<TextBlock Text="General"
 						   Grid.Row="0"
-						   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+						   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 						   FontSize="20"
 						   Margin="8, 8, 0, 0"
 						   FontWeight="Bold"/>
@@ -67,7 +67,7 @@
 							   FontSize="14"
 							   FontWeight="Bold"
 							   VerticalAlignment="Center"
-							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+							   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 0, 0, 4"/>
 
 					<TextBlock Text="Buffer Percentage"
@@ -76,7 +76,7 @@
 							   FontSize="14"
 							   FontWeight="Bold"
 							   VerticalAlignment="Center"
-							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+							   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 0, 0, 4"/>
 
 					<TextBlock Text="Ignore Inactive Days in Stats"
@@ -85,7 +85,7 @@
 							   FontSize="14"
 							   FontWeight="Bold"
 							   VerticalAlignment="Center"
-							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+							   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 0, 0, 4"/>
 
 					<TextBlock Text="Ignore Initialization in Stats"
@@ -94,7 +94,7 @@
 							   FontSize="14"
 							   FontWeight="Bold"
 							   VerticalAlignment="Center"
-							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+							   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 0, 0, 4"/>
 
 					<TextBlock Text="Ignore Pre-Releases"
@@ -103,7 +103,7 @@
 							   FontSize="14"
 							   FontWeight="Bold"
 							   VerticalAlignment="Center"
-							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+							   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 0, 0, 4"/>
 
 					<TextBlock Text="Force Epilogue"
@@ -112,7 +112,7 @@
 							   FontSize="14"
 							   FontWeight="Bold"
 							   VerticalAlignment="Center"
-							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+							   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 0, 0, 4"/>
 
 					<TextBlock Text="Single Season History"
@@ -121,7 +121,7 @@
 							   FontSize="14"
 							   FontWeight="Bold"
 							   VerticalAlignment="Center"
-							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+							   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 0, 0, 4"/>
 
 
@@ -192,7 +192,7 @@
 
 				<TextBlock Text="Customization"
 						   Grid.Row="2"
-						   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+						   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 						   FontSize="20"
 						   Margin="8, 8, 0, 0"
 						   FontWeight="Bold"/>
@@ -216,7 +216,7 @@
 							   FontSize="14"
 							   FontWeight="Bold"
 							   VerticalAlignment="Center"
-							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+							   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 0, 0, 4"/>
 
 					<StackPanel Grid.Row="0"
@@ -252,7 +252,7 @@
 							   FontSize="14"
 							   FontWeight="Bold"
 							   VerticalAlignment="Top"
-							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+							   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 0, 0, 4"/>
 
 					<WrapPanel Grid.Row="1"
@@ -317,7 +317,7 @@
 									 Margin="0, 0, 4, 4"/>
 
 						<RadioButton Style="{StaticResource RadioColorSelectorButtonTheme}"
-									 Background="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.MonoBrush}"
+									 Background="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.MonoBrush}"
 									 Foreground="White"
 									 Command="{Binding AccentButtonCommand}"
 									 CommandParameter="Mono"

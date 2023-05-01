@@ -6,7 +6,7 @@
 			 xmlns:validation="clr-namespace:VexTrack.MVVM.Validation"
 			 xmlns:model="clr-namespace:VexTrack.MVVM.Model"
              xmlns:popups="clr-namespace:VexTrack.MVVM.ViewModel.Popups"
-             xmlns:core="clr-namespace:VexTrack.Core"
+             xmlns:util="clr-namespace:VexTrack.Core.Util"
              mc:Ignorable="d" 
              d:DesignHeight="812" d:DesignWidth="872">
 
@@ -21,7 +21,7 @@
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 
-		<Border Background="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.BackgroundBrush}"
+		<Border Background="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.BackgroundBrush}"
 				CornerRadius="8">
 			<Grid Margin="16">
 				<Grid.RowDefinitions>
@@ -51,14 +51,14 @@
 							   FontSize="20"
 							   FontWeight="Bold"
 							   Margin="0, 0, 0, 16"
-							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"/>
+							   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"/>
 
 					<TextBlock Text="Current Season Name"
 							   Grid.Row="1"
 							   Grid.Column="0"
 							   FontSize="14"
 							   FontWeight="Bold"
-							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+							   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 0, 0, 8"/>
 
 					<TextBlock Text="Season End Date"
@@ -66,7 +66,7 @@
 							   Grid.Column="0"
 							   FontSize="14"
 							   FontWeight="Bold"
-							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+							   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 0, 0, 8"/>
 
 					<TextBlock Text="Remaining Days in Season"
@@ -74,7 +74,7 @@
 							   Grid.Column="0"
 							   FontSize="14"
 							   FontWeight="Bold"
-							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+							   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 0, 0, 8"/>
 
 					<TextBlock Text="Collected XP in Active Level"
@@ -82,7 +82,7 @@
 							   Grid.Column="0"
 							   FontSize="14"
 							   FontWeight="Bold"
-							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+							   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 0, 0, 8"/>
 
 					<TextBlock Text="Active Battlepass Level"
@@ -90,7 +90,7 @@
 							   Grid.Column="0"
 							   FontSize="14"
 							   FontWeight="Bold"
-							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+							   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 0, 0, 8"/>
 
 
@@ -127,7 +127,7 @@
 							   Grid.Row="3"
 							   Grid.Column="1"
 							   FontSize="14"
-							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+							   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 0, 0, 4"/>
 					
 					<TextBox Grid.Row="4"
@@ -181,7 +181,7 @@
 							   TextWrapping="WrapWithOverflow"
 							   FontSize="14"
 							   FontStyle="Italic"
-							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+							   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 8, 0, 4"/>
 				</Grid>
 
@@ -199,8 +199,7 @@
 							HorizontalAlignment="Right"
 							VerticalAlignment="Bottom"
 							Style="{DynamicResource ButtonTheme}"
-							Command="{Binding OnDoneClicked}">
-					</Button>
+							Command="{Binding OnDoneClicked}" />
 				</Grid>
 			</Grid>
 		</Border>

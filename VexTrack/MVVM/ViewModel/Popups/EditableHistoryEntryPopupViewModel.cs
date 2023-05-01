@@ -1,6 +1,7 @@
 using System;
-using System.Collections.Generic;
 using VexTrack.Core;
+using VexTrack.Core.Model;
+using VexTrack.Core.Model.WPF;
 
 namespace VexTrack.MVVM.ViewModel.Popups
 {
@@ -10,8 +11,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public RelayCommand OnDoneClicked { get; }
 
 		public string Title { get; private set; }
-		private string SeasonUuid { get; set; }
 		private string Uuid { get; set; }
+		private string GroupUuid { get; set; }
 		public string ScoreType => GameMode != null ? Constants.ScoreTypes[GameMode] : "";
 		private bool EditMode { get; set; }
 
@@ -137,8 +138,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 				if (ScoreType == "None") Score = -1;
 				if (ScoreType == "Score") Description = "";
 
-				if (EditMode) TrackingData.EditHistoryEntry(SeasonUuid, Uuid, new HistoryEntry(SeasonUuid, Uuid, Time, GameMode, Amount, Map, Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss));
-				else TrackingData.AddHistoryEntry(SeasonUuid, new HistoryEntry(SeasonUuid, Uuid, Time, GameMode, Amount, Map, Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss));
+				if (EditMode) Tracking.EditHistoryEntry(GroupUuid, Uuid, new HistoryEntry(GroupUuid, Uuid, Time, GameMode, Amount, Map, Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss));
+				else Tracking.AddHistoryEntry(new HistoryEntry(GroupUuid, Uuid, Time, GameMode, Amount, Map, Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss));
 				Close();
 			});
 		}
@@ -155,7 +156,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		{
 			Time = DateTimeOffset.Now.ToUnixTimeSeconds();
 
-			SeasonUuid = TrackingData.CurrentSeasonData.Uuid;
+			GroupUuid = "";
 			Uuid = Guid.NewGuid().ToString();
 			Description = "";
 			GameMode = Constants.GameModes[0];
@@ -171,7 +172,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 		public void SetData(HistoryEntry data)
 		{
-			SeasonUuid = data.SeasonUuid;
+			GroupUuid = data.GroupUuid;
 			Uuid = data.Uuid;
 			GameMode = data.GameMode;
 			Score = data.Score;

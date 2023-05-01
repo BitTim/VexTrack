@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using VexTrack.Core;
+using VexTrack.Core.Model;
+using VexTrack.Core.Model.WPF;
+using VexTrack.Core.Util;
 
 namespace VexTrack.MVVM.ViewModel.Popups
 {
@@ -49,7 +52,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			{
 				_collected = value;
 
-				var maxForLevel = CalcUtil.CalcMaxForLevel(ActiveBpLevel);
+				var maxForLevel = CalcHelper.CalcMaxForLevel(ActiveBpLevel);
 				if (_collected >= maxForLevel) _collected = maxForLevel - 1;
 
 				CalcProgress();
@@ -81,11 +84,11 @@ namespace VexTrack.MVVM.ViewModel.Popups
 				MainVm.InterruptUpdate = false;
 
 				List<HistoryEntry> initList = new();
-				var totalCollectedXp = CalcUtil.CalcTotalCollected(ActiveBpLevel, Collected);
+				var totalCollectedXp = CalcHelper.CalcTotalCollected(ActiveBpLevel, Collected);
 				var seasonUuid = Guid.NewGuid().ToString();
 				
-				initList.Add(new HistoryEntry(seasonUuid, Guid.NewGuid().ToString(), DateTimeOffset.Now.AddDays(-1).ToLocalTime().ToUnixTimeSeconds(), "Custom", totalCollectedXp, "", "Initialization", -1, -1, false, false));
-				TrackingData.AddSeason(new Season(seasonUuid, Name, EndDate, ActiveBpLevel, Collected, initList));
+				Tracking.AddSeason(new Season(seasonUuid, Name, EndDate, ActiveBpLevel, Collected));
+				Tracking.AddHistoryEntry(new HistoryEntry("", Guid.NewGuid().ToString(), DateTimeOffset.Now.AddDays(-1).ToLocalTime().ToUnixTimeSeconds(), "Custom", totalCollectedXp, "", "Initialization", -1, -1, false, false));
 
 				Close();
 			});
@@ -93,9 +96,9 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 		private void CalcProgress()
 		{
-			var total = CalcUtil.CumulativeSum(Constants.BattlepassLevels, Constants.Level2Offset, Constants.XpPerLevel);
-			var collected = CalcUtil.CalcTotalCollected(ActiveBpLevel, Collected);
-			Progress = CalcUtil.CalcProgress(total, collected);
+			var total = CalcHelper.CumulativeSum(Constants.BattlepassLevels, Constants.Level2Offset, Constants.XpPerLevel);
+			var collected = CalcHelper.CalcTotalCollected(ActiveBpLevel, Collected);
+			Progress = CalcHelper.CalcProgress(total, collected);
 		}
 
 		public void InitData()

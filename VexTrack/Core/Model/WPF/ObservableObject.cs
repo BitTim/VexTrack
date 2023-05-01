@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace VexTrack.Core
+namespace VexTrack.Core.Model.WPF
 {
 	public class ObservableObject : INotifyPropertyChanged
 	{

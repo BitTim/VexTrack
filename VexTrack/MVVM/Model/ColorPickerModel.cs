@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using VexTrack.Core;
+using VexTrack.Core.Util;
 
 namespace VexTrack.MVVM.Model
 {
@@ -170,7 +170,7 @@ namespace VexTrack.MVVM.Model
 
 			Hue = (int)convertedColor.GetHue();
 			Saturation = convertedColor.GetSaturation();
-			Value = ColorUtil.GetValue(convertedColor);
+			Value = ColorHelper.GetValue(convertedColor);
 
 			if (ClickableBorder != null) HighlightMargin = new Thickness(Saturation * ClickableBorder.ActualWidth, (1f - Value) * ClickableBorder.ActualHeight, 0, 0);
 		}
@@ -200,7 +200,7 @@ namespace VexTrack.MVVM.Model
 					UpdateHex(currentColor);
 					break;
 				case "HSV":
-					currentColor = ColorUtil.ColorFromHsv(new ColorUtil.Hsv(Hue, Saturation, Value)).ToSwmColor();
+					currentColor = ColorHelper.ColorFromHsv(new ColorHelper.Hsv(Hue, Saturation, Value)).ToSwmColor();
 
 					UpdateRgb(currentColor);
 					UpdateHex(currentColor);
@@ -216,7 +216,7 @@ namespace VexTrack.MVVM.Model
 					break;
 			}
 
-			var colorMatrixHueColor = ColorUtil.ColorFromHsv(new ColorUtil.Hsv(Hue, 1, 1)).ToSwmColor();
+			var colorMatrixHueColor = ColorHelper.ColorFromHsv(new ColorHelper.Hsv(Hue, 1, 1)).ToSwmColor();
 			ColorBrush = CreateBrush(Color.FromArgb(255, 255, 255, 255), colorMatrixHueColor, "Horizontal");
 
 			_isUpdating = false;

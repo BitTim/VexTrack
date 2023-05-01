@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:vm="clr-namespace:VexTrack.MVVM.ViewModel"
-		xmlns:core="clr-namespace:VexTrack.Core"
+        xmlns:util="clr-namespace:VexTrack.Core.Util"
 		mc:Ignorable="d"
         Title="VexTrack"
 		Height="812" Width="872"
@@ -22,7 +22,7 @@
 	</WindowChrome.WindowChrome>
 
 	<Grid>
-		<Border Background="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.BackgroundBrush}"
+		<Border Background="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.BackgroundBrush}"
 				CornerRadius="8"
 				x:Name="ShadowBorder"
 				Margin="16">
@@ -105,7 +105,7 @@
 				<!-- Navigation Bar Background -->
 			
 				<Border CornerRadius="8"
-						Background="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ShadeBrush}"
+						Background="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ShadeBrush}"
 						BorderThickness="0"
 						Grid.Row="0" Grid.RowSpan="4" Grid.Column="0">
 					<Border.Effect>
@@ -142,7 +142,7 @@
 					           FontSize="20"
 					           FontWeight="Bold"
 					           Margin="16, 0"
-					           Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"/>
+					           Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"/>
 
 					<TextBlock Grid.Column="1"
 							   Grid.Row="1"
@@ -151,7 +151,7 @@
 							   HorizontalAlignment="Left"
 							   FontSize="14"
 							   Margin="16, 0"
-							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"/>
+							   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"/>
 				</Grid>
 
 				<!-- Upper Navigation Bar -->
@@ -220,8 +220,7 @@
 				Margin="16"
 				Opacity="0.75"
 				Visibility="{Binding CurrentPopup, Converter={StaticResource NullToVisibleConv}}"
-				MouseLeftButtonUp="PopupBorder_MouseLeftButtonUp">
-		</Border>
+				MouseLeftButtonUp="PopupBorder_MouseLeftButtonUp" />
 
 		<ContentControl Content="{Binding CurrentPopup}"/>
 	</Grid>

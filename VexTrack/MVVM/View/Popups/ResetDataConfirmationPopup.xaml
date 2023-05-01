@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:popups="clr-namespace:VexTrack.MVVM.ViewModel.Popups"
-             xmlns:core="clr-namespace:VexTrack.Core"
+             xmlns:util="clr-namespace:VexTrack.Core.Util"
              mc:Ignorable="d" 
              d:DesignHeight="812" d:DesignWidth="872">
 
@@ -19,7 +19,7 @@
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 
-		<Border Background="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.BackgroundBrush}"
+		<Border Background="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.BackgroundBrush}"
 				CornerRadius="8">
 			<Grid Margin="16">
 				<Grid.RowDefinitions>
@@ -46,14 +46,14 @@
 							   Grid.Row="0"
 							   FontSize="20"
 							   FontWeight="Bold"
-							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+							   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 0, 0, 16"/>
 
 					<TextBlock Grid.Row="1"
 							   Grid.Column="0"
 							   FontSize="14"
 							   TextWrapping="Wrap"
-							   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+							   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 							   Margin="0, 0, 0, 4">
 						This operation will delete <Bold>all seasons, all history entries and all goals.</Bold> This operation cannot be reverted. Are you sure you want to continue?
 					</TextBlock>

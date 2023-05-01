@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using VexTrack.Core;
+using VexTrack.Core.Model;
+using VexTrack.Core.Model.WPF;
+using VexTrack.Core.Util;
 
 namespace VexTrack.MVVM.ViewModel.Popups
 {
@@ -53,7 +55,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			}
 		}
 
-		public double Progress => CalcUtil.CalcProgress(Total, Collected);
+		public double Progress => CalcHelper.CalcProgress(Total, Collected);
 		public string Color
 		{
 			get => _color;
@@ -87,10 +89,10 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			OnBackClicked = new RelayCommand(_ => { if (CanCancel) Close(); });
 			OnDoneClicked = new RelayCommand(_ =>
 			{
-				var goals = TrackingData.Contracts[TrackingData.Contracts.FindIndex(contract => contract.Uuid == Uuid)].Goals;
+				var goals = Tracking.Contracts[Tracking.Contracts.FindIndex(contract => contract.Uuid == Uuid)].Goals;
 				
-				if (EditMode) TrackingData.EditContract(Uuid, new Contract(Uuid, Name, Color, Paused, goals));
-				else TrackingData.AddContract(new Contract(Uuid, Name, Color, Paused, new List<Goal>()));
+				if (EditMode) Tracking.EditContract(Uuid, new Contract(Uuid, Name, Color, Paused, goals));
+				else Tracking.AddContract(new Contract(Uuid, Name, Color, Paused, new List<Goal>()));
 				Close();
 			});
 		}

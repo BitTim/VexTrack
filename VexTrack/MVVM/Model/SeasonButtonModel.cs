@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using LiveCharts;
-using VexTrack.Core;
+using VexTrack.Core.Model;
+using VexTrack.Core.Util;
 
 namespace VexTrack.MVVM.Model;
 
@@ -173,8 +173,8 @@ public class SeasonButtonModel : ToggleButton
     
     
 
-    public List<decimal> LogicalSegmentsStops => CalcUtil.CalcLogicalStops(CalcUtil.CalcSeasonSegments(), true);
-    public List<decimal> VisualSegmentsStops => CalcUtil.CalcVisualStops(CalcUtil.CalcSeasonSegments(), true);
+    public List<decimal> LogicalSegmentsStops => CalcHelper.CalcLogicalStops(CalcHelper.CalcSeasonSegments(), true);
+    public List<decimal> VisualSegmentsStops => CalcHelper.CalcVisualStops(CalcHelper.CalcSeasonSegments(), true);
     public int NumGoals => Goals.Count;
     public int BufferDaysPosition => Duration - BufferDays;
 }

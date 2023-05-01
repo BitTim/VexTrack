@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					xmlns:local="clr-namespace:VexTrack.MVVM.Model"
-					xmlns:core="clr-namespace:VexTrack.Core">
+                    xmlns:util="clr-namespace:VexTrack.Core.Util">
 	
 	<Style TargetType="{x:Type local:TextWithUnit}">
 		<Style.Setters>
@@ -16,13 +16,13 @@
 
 							<TextBlock Text="{Binding RelativeSource={x:Static RelativeSource.TemplatedParent}, Path=Text}"
 									   Grid.Column="0"
-									   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+									   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 									   FontWeight="{Binding RelativeSource={x:Static RelativeSource.TemplatedParent}, Path=TextFontWeight}"
 									   FontSize="{Binding RelativeSource={x:Static RelativeSource.TemplatedParent}, Path=TextFontSize}"/>
 
 							<TextBlock Text="{Binding RelativeSource={x:Static RelativeSource.TemplatedParent}, Path=Unit, UpdateSourceTrigger=PropertyChanged}"
 									   Grid.Column="1"
-									   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+									   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 									   FontWeight="{Binding RelativeSource={x:Static RelativeSource.TemplatedParent}, Path=UnitFontWeight}"
 									   FontSize="{Binding RelativeSource={x:Static RelativeSource.TemplatedParent}, Path=UnitFontSize}"/>
 						</Grid>

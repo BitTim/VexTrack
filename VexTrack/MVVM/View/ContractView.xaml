@@ -4,9 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:model="clr-namespace:VexTrack.MVVM.Model"
-			 xmlns:core="clr-namespace:VexTrack.Core"
-			 xmlns:viewModel="clr-namespace:VexTrack.MVVM.ViewModel"
-			 mc:Ignorable="d" 
+             xmlns:viewModel="clr-namespace:VexTrack.MVVM.ViewModel"
+             xmlns:util="clr-namespace:VexTrack.Core.Util"
+             xmlns:models="clr-namespace:VexTrack.Core.Model"
+             mc:Ignorable="d" 
              d:DesignHeight="780" d:DesignWidth="640">
 
 	<UserControl.DataContext>
@@ -21,7 +22,7 @@
 
 		<TextBlock Text="Contracts"
 				   Margin="16, 16, 16, 16"
-				   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+				   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 				   FontSize="36"
 				   FontWeight="Bold"/>
 
@@ -39,7 +40,7 @@
 
 				<TextBlock Text="Seasons"
 						   Grid.Row="0"
-						   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+						   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 						   FontSize="20"
 						   Margin="8, 8, 0, 0"
 						   FontWeight="Bold"/>
@@ -56,7 +57,7 @@
 					</ItemsControl.ItemsPanel>
 
 					<ItemsControl.ItemTemplate>
-						<DataTemplate DataType="{x:Type core:Season}">
+						<DataTemplate DataType="{x:Type models:Season}">
 							<model:SeasonButtonModel Title="{Binding Name}"
 							                         Total="{Binding Total}"
 							                         Collected="{Binding Collected}"
@@ -82,7 +83,7 @@
 
 				<TextBlock Text="Contracts"
 						   Grid.Row="2"
-						   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+						   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 						   FontSize="20"
 						   Margin="8, 8, 0, 0"
 						   FontWeight="Bold"/>
@@ -101,7 +102,7 @@
 					</ItemsControl.ItemsPanel>
 
 					<ItemsControl.ItemTemplate>
-						<DataTemplate DataType="{x:Type core:Contract}">
+						<DataTemplate DataType="{x:Type models:Contract}">
 							<model:ContractButtonModel Title="{Binding Name}"
 							                           Progress="{Binding Progress}"
 							                           Collected="{Binding Collected}"

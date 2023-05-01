@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:popups="clr-namespace:VexTrack.MVVM.ViewModel.Popups"
-             xmlns:core="clr-namespace:VexTrack.Core"
+             xmlns:util="clr-namespace:VexTrack.Core.Util"
              mc:Ignorable="d" 
              d:DesignHeight="812" d:DesignWidth="872">
 
@@ -19,7 +19,7 @@
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 
-		<Border Background="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.BackgroundBrush}"
+		<Border Background="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.BackgroundBrush}"
 				CornerRadius="8">
 			<Grid Margin="16">
 				<Grid.RowDefinitions>
@@ -60,7 +60,7 @@
 						<TextBlock Grid.Row="0"
 								   FontSize="18"
 								   HorizontalAlignment="Center"
-								   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+								   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 								   Margin="0, 0, 0, 8">
 							<Bold>VexTrack</Bold>
 							<TextBlock Text="{Binding Version}"/>
@@ -71,13 +71,13 @@
 								   FontSize="14"
 								   TextWrapping="Wrap"
 								   HorizontalAlignment="Center"
-								   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"/>
+								   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"/>
 
 						<TextBlock Grid.Row="2"
 								   FontSize="14"
 								   TextWrapping="Wrap"
 								   HorizontalAlignment="Center"
-								   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+								   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 								   Margin="0, 0, 0, 8">
 							GitHub:
 							<Hyperlink NavigateUri="https://github.com/BitTim/VexTrack" RequestNavigate="Hyperlink_RequestNavigate">
@@ -90,7 +90,7 @@
 								   FontSize="14"
 								   TextWrapping="Wrap"
 								   HorizontalAlignment="Center"
-								   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+								   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 								   Margin="0, 0, 0, 32"/>
 
 						<!-- TODO: Add random quotes instead of this -->
@@ -100,7 +100,7 @@
                                    FontStyle="Italic"
 								   TextWrapping="Wrap"
 								   HorizontalAlignment="Center"
-								   Foreground="{Binding Source={x:Static core:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+								   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 								   Margin="0, 0, 0, 2"/>
 					</Grid>
 				</Grid>

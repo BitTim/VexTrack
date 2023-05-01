@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace VexTrack.Core.Util;
+namespace VexTrack.Core.Helper;
 
 public static class TimeHelper
 {

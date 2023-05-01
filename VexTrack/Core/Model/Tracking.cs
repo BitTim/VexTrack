@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using Newtonsoft.Json.Linq;
-using VexTrack.Core.Util;
+using VexTrack.Core.Helper;
+using VexTrack.Core.IO;
 using VexTrack.MVVM.ViewModel;
 using VexTrack.MVVM.ViewModel.Popups;
 
@@ -29,13 +28,14 @@ namespace VexTrack.Core.Model
 		// ================================
 		//  Init and Convert
 		// ================================
-		
-		private static void SetData(int streak, long lastStreakUpdateTimestamp, List<Contract> contracts, List<Season> seasons, List<HistoryGroup> history)
+
+		internal static void SetData(int streak, long lastStreakUpdateTimestamp, List<Contract> contracts, List<Season> seasons, List<HistoryGroup> history)
 		{
 			(Streak, LastStreakUpdateTimestamp, Contracts, Seasons, History) = (streak, lastStreakUpdateTimestamp ,contracts, seasons, history);
+			Recalculate();
 		}
 
-		private static void InitData()
+		internal static void InitData()
 		{
 			List<Contract> contracts = new();
 			List<Season> seasons = new();
@@ -46,452 +46,6 @@ namespace VexTrack.Core.Model
 		
 		
 		
-		// ================================
-		//  Loading
-		// ================================
-		
-		// --------------------------------[ History ]--------------------------------
-		
-		private static List<HistoryGroup> LoadHistoryV2(JObject jo)
-		{
-			List<HistoryGroup> history = new();
-			foreach (var jTokenGroup in jo["history"])
-			{
-				var historyGroup = (JObject)jTokenGroup;
-				var sUuid = (string)historyGroup["sUuid"];
-				var gUuid = (string)historyGroup["uuid"];
-				var date = (long)historyGroup["date"];
-
-				List<HistoryEntry> entries = new();
-				foreach (var jTokenEntry in jTokenGroup["entries"])
-				{
-					var historyEntry = (JObject)jTokenEntry;
-					var hUuid = (string)historyEntry["uuid"];
-					var gamemode = (string)historyEntry["gameMode"];
-					var time = (long)historyEntry["time"];
-					var amount = (int)historyEntry["amount"];
-					var map = (string)historyEntry["map"];
-					var description = (string)historyEntry["description"];
-
-					if (string.IsNullOrEmpty(map)) map = Constants.Maps.Last();
-
-					string gameMode, desc;
-					int score, enemyScore;
-					bool surrenderedWin, surrenderedLoss;
-
-					if (gamemode == null)
-					{
-						(gameMode, desc, score, enemyScore) = HistoryEntry.DescriptionToScores(description);
-						surrenderedWin = false;
-						surrenderedLoss = false;
-					}
-					else
-					{
-						gameMode = gamemode;
-						desc = description;
-						score = (int)historyEntry["score"];
-						enemyScore = (int)historyEntry["enemyScore"];
-						surrenderedWin = (bool)historyEntry["surrenderedWin"];
-						surrenderedLoss = (bool)historyEntry["surrenderedLoss"];
-					}
-
-					hUuid ??= Guid.NewGuid().ToString();
-					entries.Add(new HistoryEntry(gUuid, hUuid, time, gameMode, amount, map, desc, score, enemyScore,
-						surrenderedWin, surrenderedLoss));
-				}
-
-				var sortedEntries = entries.OrderByDescending(he => he.Time).ToList();
-				history.Add(new HistoryGroup(sUuid, gUuid, date, sortedEntries));
-			}
-
-			var sortedHistory = history.OrderByDescending(hg => hg.Date).ToList();
-			return sortedHistory;
-		}
-		
-		
-		
-		
-		// --------------------------------[ Season ]--------------------------------
-		
-		private static (List<Season>, List<HistoryGroup>) LoadSeasonsAndHistoryV1(JObject jo)
-		{
-			List<Season> seasons = new();
-			List<HistoryGroup> history = new();
-			
-			foreach (var jTokenSeason in jo["seasons"])
-			{
-				var season = (JObject)jTokenSeason;
-				var sUuid = (string)season["uuid"];
-				var name = (string)season["name"];
-				var endDate = (string)season["endDate"];
-				var activeBpLevel = (int)season["activeBPLevel"];
-				var cXp = (int)season["cXP"];
-
-				var historyKey = "history";
-				if (season["history"] == null)
-				{
-					historyKey = "xpHistory";
-				}
-				
-				foreach (var jTokenEntry in season[historyKey])
-				{
-					var historyEntry = (JObject)jTokenEntry;
-					var hUuid = (string)historyEntry["uuid"];
-					var gamemode = (string)historyEntry["gameMode"];
-					var time = (long)historyEntry["time"];
-					var amount = (int)historyEntry["amount"];
-					var map = (string)historyEntry["map"];
-					var description = (string)historyEntry["description"];
-
-					if (string.IsNullOrEmpty(map)) map = Constants.Maps.Last();
-
-					string gameMode, desc;
-					int score, enemyScore;
-					bool surrenderedWin, surrenderedLoss;
-
-					if (gamemode == null)
-					{
-						(gameMode, desc, score, enemyScore) = HistoryEntry.DescriptionToScores(description);
-						surrenderedWin = false;
-						surrenderedLoss = false;
-					}
-					else
-					{
-						gameMode = gamemode;
-						desc = description;
-						score = (int)historyEntry["score"];
-						enemyScore = (int)historyEntry["enemyScore"];
-						surrenderedWin = (bool)historyEntry["surrenderedWin"];
-						surrenderedLoss = (bool)historyEntry["surrenderedLoss"];
-					}
-
-					// This is because of a typo I did way back in v1.7
-					if (gameMode == "Competetive") gameMode = "Competitive";
-					
-					hUuid ??= Guid.NewGuid().ToString();
-
-					var date = TimeHelper.IsolateTimestampDate(time);
-					var gUuid = history.Find(hg => hg.Date == date && hg.SeasonUuid == sUuid)?.Uuid;
-					
-					if (string.IsNullOrEmpty(gUuid))
-					{
-						gUuid = Guid.NewGuid().ToString();
-						history.Add(new HistoryGroup(sUuid, gUuid, date, new List<HistoryEntry>()));
-					}
-					
-					history.Find(hg => hg.Uuid == gUuid).Entries.Add(new HistoryEntry(gUuid, hUuid, time, gameMode, amount, map, desc, score, enemyScore, surrenderedWin, surrenderedLoss));
-				}
-
-				sUuid ??= Guid.NewGuid().ToString();
-				seasons.Add(new Season(sUuid, name, TimeHelper.StringToTimestamp(endDate), activeBpLevel, cXp));
-			}
-			
-			foreach(var hg in history)
-			{
-				var sortedEntries = hg.Entries.OrderByDescending(he => he.Time).ToList();
-				hg.Entries = sortedEntries;
-			}
-			
-			var sortedHistory = history.OrderByDescending(hg => hg.Date).ToList();
-			return (seasons, sortedHistory);
-		}
-		
-		private static List<Season> LoadSeasonsV2(JObject jo)
-		{
-			List<Season> seasons = new();
-			foreach (var jTokenSeason in jo["seasons"])
-			{
-				var season = (JObject)jTokenSeason;
-				var sUuid = (string)season["uuid"];
-				var name = (string)season["name"];
-				var endDate = (long)season["endDate"];
-				var activeBpLevel = (int)season["activeBPLevel"];
-				var cXp = (int)season["cXP"];
-
-				sUuid ??= Guid.NewGuid().ToString();
-				seasons.Add(new Season(sUuid, name, endDate, activeBpLevel, cXp));
-			}
-			
-			return seasons;
-		}
-
-
-
-
-		// --------------------------------[ Streak ]--------------------------------
-		
-		private static (int, long) LoadStreakV1(JObject jo)
-		{
-			List<LegacyStreakEntry> streakEntries = new();
-			if (jo["streak"] != null)
-			{
-				streakEntries.AddRange(from JObject streakEntry in jo["streak"]
-					let date = (long)streakEntry["date"]
-					let status = (string)streakEntry["status"]
-					select new LegacyStreakEntry(date, status));
-			}
-			streakEntries = streakEntries.OrderByDescending(t => t.Date).ToList();
-			
-			// Check if current day is already listed and remove it from the list if yes
-			if(streakEntries.First().Date == TimeHelper.TodayTimestamp) streakEntries.RemoveAt(0);
-
-			return (streakEntries.TakeWhile(entry => entry.Status != "None").Count(), streakEntries.First().Date);
-		}
-		
-		private static (int, long) LoadStreakV2(JObject jo)
-		{
-			var streak = (int?)jo["streak"] ?? 0;
-			var lastStreakUpdateTimestamp = (long?)jo["lastStreakUpdate"] ?? 0;
-			return (streak, lastStreakUpdateTimestamp);
-		}
-
-		
-		
-		// --------------------------------[ Contracts ]--------------------------------
-		
-		private static List<Contract> LoadContractsV1(JObject jo)
-		{
-			List<Contract> contracts = new();
-			foreach (var jTokenContract in jo["goals"])
-			{
-				var contract = (JObject)jTokenContract;
-				var source = contract["goals"];
-				var convertToGrouped = false;
-				if (contract["goals"] == null)
-				{
-					source = jo["goals"];
-					convertToGrouped = true;
-				}
-
-				List<Goal> goals = new();
-				if (source == null) continue;
-				foreach (var jTokenGoal in source)
-				{
-					var goal = (JObject)jTokenGoal;
-					var goalUuid = (string)goal["uuid"];
-					var goalName = (string)goal["name"];
-
-					var total = (int)goal["total"];
-					var collected = (int)goal["collected"];
-					if (collected > total) collected = total;
-
-					goalUuid ??= Guid.NewGuid().ToString();
-					var goalObj = new Goal(goalUuid, goalName, total, collected);
-					
-					if(!convertToGrouped) goals.Add(goalObj);
-					else contracts.Add(new Contract(Guid.NewGuid().ToString(), goalName,
-							(string)goal["color"], (bool)goal["paused"], new List<Goal> { goalObj }));
-				}
-
-				if (convertToGrouped) return contracts;
-				
-				var uuid = (string)contract["uuid"];
-				var name = (string)contract["name"];
-				var loadedGoals = (JArray)contract["goals"];
-
-				string color;
-				bool paused;
-
-				if (loadedGoals.Count < 1) (color, paused) = ("", false);
-				else (color, paused) = ((string)loadedGoals.First()["color"], (bool)loadedGoals.First()["paused"]);
-				
-				if(goals.Count > 0) contracts.Add(new Contract(uuid, name, color, paused, goals));
-			}
-
-			return contracts;
-		}
-
-		private static List<Contract> LoadContractsV2(JObject jo)
-		{
-			List<Contract> contracts = new();
-			foreach (var jTokenContract in jo["contracts"])
-			{
-				var contract = (JObject)jTokenContract;
-				var source = contract["goals"];
-				List<Goal> goals = new();
-				
-				if(source == null) continue;
-				foreach (var jTokenGoal in source)
-				{
-					var goal = (JObject)jTokenGoal;
-					var goalUuid = (string)goal["uuid"];
-					var goalName = (string)goal["name"];
-
-					var total = (int)goal["total"];
-					var collected = (int)goal["collected"];
-					if (collected > total) collected = total;
-					
-					goalUuid ??= Guid.NewGuid().ToString();
-					goals.Add(new Goal(goalUuid, goalName, total, collected));
-				}
-
-
-				var uuid = (string)contract["uuid"];
-				var name = (string)contract["name"];
-				var color = (string)contract["color"];
-				var paused = (bool)contract["paused"];
-				contracts.Add(new Contract(uuid, name, color, paused, goals));
-			}
-
-			return contracts;
-		}
-		
-		
-		
-		// --------------------------------[ General ]--------------------------------
-		
-		public static void LoadData()
-		{
-			if (!File.Exists(Constants.DataPath) || File.ReadAllText(Constants.DataPath) == "")
-			{
-				InitData();
-				CreateDataInitPopup();
-				return;
-			}
-
-			var rawJson = File.ReadAllText(Constants.DataPath);
-			var jo = JObject.Parse(rawJson);
-
-			var version = (string)jo["version"];
-			if (string.IsNullOrEmpty(version)) version = "v1";
-
-			var reSave = false;
-			
-			var streak = 0;
-			var lastStreakUpdateTimestamp = (long)0;
-			List<HistoryGroup> history = new();
-			List<Season> seasons = new();
-			List<Contract> contracts = new();
-
-			switch (version)
-			{
-				case "v1":
-					(streak, lastStreakUpdateTimestamp) = LoadStreakV1(jo);
-					(seasons, history) = LoadSeasonsAndHistoryV1(jo);
-					contracts = LoadContractsV1(jo);
-					reSave = true;
-					break;
-				
-				case "v2":
-					(streak, lastStreakUpdateTimestamp) = LoadStreakV2(jo);
-					history = LoadHistoryV2(jo);
-					seasons = LoadSeasonsV2(jo);
-					contracts = LoadContractsV2(jo);
-					break;
-			}
-
-			if (seasons.Count == 0) CreateDataInitPopup();
-
-			SetData(streak, lastStreakUpdateTimestamp, contracts, seasons, history);
-			if(reSave) SaveData(); // Save in new format
-			Recalculate();
-		}
-		
-		
-		
-		// ================================
-		//  Saving
-		// ================================
-
-		private static void SaveData()
-		{
-			JObject jo = new()
-			{
-				{ "version", Constants.DataVersion },
-				{ "streak", Streak },
-				{ "lastStreakUpdate", LastStreakUpdateTimestamp }
-			};
-
-			JArray contracts = new();
-			foreach (var contract in Contracts)
-			{
-				JObject contractObj = new()
-				{
-					{ "uuid", contract.Uuid },
-					{ "name", contract.Name },
-					{ "color", contract.Color },
-					{ "paused", contract.Paused }
-				};
-
-				JArray goals = new();
-				foreach (var goalObj in contract.Goals.Select(goal => new JObject()
-				         {
-					         { "uuid", goal.Uuid },
-					         { "name", goal.Name },
-					         { "total", goal.Total },
-					         { "collected", goal.Collected }
-				         }))
-				{
-					goals.Add(goalObj);
-				}
-
-				contractObj.Add("goals", goals);
-				contracts.Add(contractObj);
-			}
-			jo.Add("contracts", contracts);
-
-			JArray seasons = new();
-			foreach (var season in Seasons)
-			{
-				JObject seasonObj = new()
-				{
-					{ "uuid", season.Uuid },
-					{ "name", season.Name },
-					{ "endDate", season.EndTimestamp },
-					{ "activeBPLevel", season.ActiveBpLevel },
-					{ "cXP", season.Cxp }
-				};
-				
-				seasons.Add(seasonObj);
-			}
-			jo.Add("seasons", seasons);
-
-			JArray history = new();
-			foreach (var hg in History)
-			{
-				JObject hgObj = new()
-				{
-					{ "sUuid", hg.SeasonUuid },
-					{ "uuid", hg.Uuid },
-					{ "date", hg.Date }
-				};
-
-				JArray entries = new();
-				foreach (var entryObj in hg.Entries.Select(he => new JObject()
-				         {
-					         { "uuid", he.Uuid },
-			                 { "gameMode", he.GameMode },
-			                 { "time", he.Time },
-			                 { "amount", he.Amount },
-			                 { "map", he.Map },
-			                 { "description", he.Description },
-			                 { "score", he.Score },
-			                 { "enemyScore", he.EnemyScore },
-			                 { "surrenderedWin", he.SurrenderedWin },
-			                 { "surrenderedLoss", he.SurrenderedLoss }
-				         }))
-				{
-					entries.Add(entryObj);
-				}
-
-				hgObj.Add("entries", entries);
-				history.Add(hgObj);
-			}
-			jo.Add("history", history);
-
-			if (!File.Exists(Constants.DataPath))
-			{
-				var sep = Constants.DataPath.LastIndexOf("/", StringComparison.Ordinal);
-
-				Directory.CreateDirectory(Constants.DataPath[..sep]);
-				File.CreateText(Constants.DataPath).Close();
-			}
-
-			File.WriteAllText(Constants.DataPath, jo.ToString());
-		}
-		
-		
-
 		// ================================
 		//  Updating
 		// ================================
@@ -573,7 +127,7 @@ namespace VexTrack.Core.Model
 
 		private static void CallUpdate()
 		{
-			SaveData();
+			Saver.SaveUserData(Streak, LastStreakUpdateTimestamp, Contracts, Seasons, History);
 			var mainVm = (MainViewModel)ViewModelManager.ViewModels[nameof(MainViewModel)];
 			mainVm.Update();
 		}
@@ -581,13 +135,16 @@ namespace VexTrack.Core.Model
 		public static void ResetData()
 		{
 			InitData();
-			SaveData();
-			LoadData();
+			Saver.SaveUserData(Streak, LastStreakUpdateTimestamp, Contracts, Seasons, History);
+			Loader.LoadUserData();
 			CallUpdate();
 		}
 
 		
 		
+		// ================================
+		//  Modifying
+		// ================================
 		
 		public static void AddHistoryEntry(HistoryEntry data)
 		{
@@ -629,13 +186,10 @@ namespace VexTrack.Core.Model
 			CallUpdate();
 		}
 
-		public static void EditHistoryEntry(string groupUuid, string uuid, HistoryEntry data)
+		public static void EditHistoryEntry(string groupUuid, HistoryEntry data)
 		{
-			var hgIdx = History.FindIndex(hg => hg.Uuid == groupUuid);
-			var heIdx = History[hgIdx].Entries.FindIndex(he => he.Uuid == uuid);
-			History[hgIdx].Entries[heIdx] = data;
-			
-			HistoryHelper.SortHistory();
+			RemoveHistoryEntry(groupUuid, data.Uuid);
+			AddHistoryEntry(data);
 			
 			Recalculate();
 			CallUpdate();
@@ -682,7 +236,7 @@ namespace VexTrack.Core.Model
 		}
 
 
-		private static void CreateDataInitPopup()
+		internal static void CreateDataInitPopup()
 		{
 			var dataInitPopup = (DataInitPopupViewModel)ViewModelManager.ViewModels[nameof(DataInitPopupViewModel)];
 			var mainVm = (MainViewModel)ViewModelManager.ViewModels[nameof(MainViewModel)];

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using VexTrack.Core.Model;
 
-namespace VexTrack.Core.Util
+namespace VexTrack.Core.Helper
 {
 	public static class HomeCalcHelper
 	{

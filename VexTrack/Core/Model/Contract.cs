@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using VexTrack.Core.Util;
+using VexTrack.Core.Helper;
 
 namespace VexTrack.Core.Model;
 

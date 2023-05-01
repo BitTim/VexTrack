@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:vm="clr-namespace:VexTrack.MVVM.ViewModel"
-        xmlns:util="clr-namespace:VexTrack.Core.Util"
+		xmlns:util="clr-namespace:VexTrack.Core.Helper"
 		mc:Ignorable="d"
         Title="VexTrack"
 		Height="812" Width="872"

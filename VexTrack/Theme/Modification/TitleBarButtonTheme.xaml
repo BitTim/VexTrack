@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:util="clr-namespace:VexTrack.Core.Util">
+                    xmlns:util="clr-namespace:VexTrack.Core.Helper">
 	
 	<Style x:Key="TitleBarButtonStyle" TargetType="Button">
 		<Setter Property="Foreground" Value="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}" />

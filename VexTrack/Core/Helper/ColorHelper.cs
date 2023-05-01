@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace VexTrack.Core.Util
+namespace VexTrack.Core.Helper
 {
 	internal abstract class ColorHelper
 	{

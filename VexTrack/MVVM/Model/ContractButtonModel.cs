@@ -3,8 +3,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using VexTrack.Core.Helper;
 using VexTrack.Core.Model;
-using VexTrack.Core.Util;
 
 namespace VexTrack.MVVM.Model;
 

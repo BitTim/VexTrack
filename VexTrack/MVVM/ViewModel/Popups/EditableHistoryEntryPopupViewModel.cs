@@ -1,8 +1,8 @@
 using System;
 using VexTrack.Core;
+using VexTrack.Core.Helper;
 using VexTrack.Core.Model;
 using VexTrack.Core.Model.WPF;
-using VexTrack.Core.Util;
 
 namespace VexTrack.MVVM.ViewModel.Popups
 {
@@ -139,7 +139,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 				if (ScoreType == "None") Score = -1;
 				if (ScoreType == "Score") Description = "";
 
-				if (EditMode) Tracking.EditHistoryEntry(GroupUuid, Uuid, new HistoryEntry(GroupUuid, Uuid, Time, GameMode, Amount, Map, Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss));
+				if (EditMode) Tracking.EditHistoryEntry(GroupUuid, new HistoryEntry(GroupUuid, Uuid, Time, GameMode, Amount, Map, Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss));
 				else Tracking.AddHistoryEntry(new HistoryEntry(GroupUuid, Uuid, Time, GameMode, Amount, Map, Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss));
 				Close();
 			});

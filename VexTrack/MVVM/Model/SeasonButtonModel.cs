@@ -4,8 +4,8 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using LiveCharts;
+using VexTrack.Core.Helper;
 using VexTrack.Core.Model;
-using VexTrack.Core.Util;
 
 namespace VexTrack.MVVM.Model;
 

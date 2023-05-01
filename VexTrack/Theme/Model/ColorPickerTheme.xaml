@@ -3,7 +3,7 @@
 					xmlns:local="clr-namespace:VexTrack.MVVM.Model"
 					xmlns:ap="clr-namespace:VexTrack.MVVM.Attached_Property"
 					xmlns:validation="clr-namespace:VexTrack.MVVM.Validation"
-                    xmlns:util="clr-namespace:VexTrack.Core.Util">
+					xmlns:util="clr-namespace:VexTrack.Core.Helper">
 
 	<Style TargetType="{x:Type local:ColorPickerModel}">
 		<Style.Setters>

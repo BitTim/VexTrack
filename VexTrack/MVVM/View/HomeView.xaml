@@ -6,7 +6,7 @@
              xmlns:model="clr-namespace:VexTrack.MVVM.Model"
              xmlns:viewModel="clr-namespace:VexTrack.MVVM.ViewModel"
 			 xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
-             xmlns:util="clr-namespace:VexTrack.Core.Util"
+			 xmlns:util="clr-namespace:VexTrack.Core.Helper"
 			 mc:Ignorable="d" 
              d:DesignHeight="780" d:DesignWidth="640">
 

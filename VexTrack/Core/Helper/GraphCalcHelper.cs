@@ -6,7 +6,7 @@ using LiveCharts;
 using LiveCharts.Defaults;
 using LiveCharts.Wpf;
 
-namespace VexTrack.Core.Util
+namespace VexTrack.Core.Helper
 {
 	public static class GraphCalcHelper
 	{

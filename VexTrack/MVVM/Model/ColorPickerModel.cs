@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using VexTrack.Core.Util;
+using VexTrack.Core.Helper;
 
 namespace VexTrack.MVVM.Model
 {

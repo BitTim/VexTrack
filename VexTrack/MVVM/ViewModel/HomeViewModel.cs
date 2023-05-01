@@ -2,9 +2,9 @@
 using System.Windows.Media;
 using LiveCharts;
 using LiveCharts.Defaults;
+using VexTrack.Core.Helper;
 using VexTrack.Core.Model;
 using VexTrack.Core.Model.WPF;
-using VexTrack.Core.Util;
 using VexTrack.MVVM.ViewModel.Popups;
 using LineSeries = LiveCharts.Wpf.LineSeries;
 

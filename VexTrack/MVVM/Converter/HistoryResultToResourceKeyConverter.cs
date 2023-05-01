@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
-using VexTrack.Core.Util;
+using VexTrack.Core.Helper;
 
 namespace VexTrack.MVVM.Converter
 {

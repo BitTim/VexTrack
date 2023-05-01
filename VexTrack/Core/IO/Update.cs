@@ -7,11 +7,11 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
 using Newtonsoft.Json.Linq;
-using VexTrack.Core.Util;
+using VexTrack.Core.Helper;
 using VexTrack.MVVM.ViewModel;
 using VexTrack.MVVM.ViewModel.Popups;
 
-namespace VexTrack.Core.Model;
+namespace VexTrack.Core.IO;
 
 public static class Update
 {

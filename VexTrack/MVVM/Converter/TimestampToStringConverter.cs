@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
-using VexTrack.Core.Util;
+using VexTrack.Core.Helper;
 
 namespace VexTrack.MVVM.Converter
 {

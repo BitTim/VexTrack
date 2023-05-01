@@ -4,7 +4,7 @@ using Newtonsoft.Json.Linq;
 using VexTrack.Core.Model;
 using VexTrack.MVVM.ViewModel;
 
-namespace VexTrack.Core.Util
+namespace VexTrack.Core.Helper
 {
 	public static class SettingsHelper
 	{

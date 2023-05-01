@@ -4,9 +4,10 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using VexTrack.Core;
+using VexTrack.Core.Helper;
+using VexTrack.Core.IO;
 using VexTrack.Core.Model;
 using VexTrack.Core.Model.WPF;
-using VexTrack.Core.Util;
 using VexTrack.MVVM.ViewModel.Popups;
 
 namespace VexTrack.MVVM.ViewModel
@@ -114,7 +115,7 @@ namespace VexTrack.MVVM.ViewModel
 			HistoryViewCommand = new RelayCommand(_ => SetView(HistoryVm));
 			SettingsViewCommand = new RelayCommand(_ => SetView(SettingsVm));
 
-			Tracking.LoadData();
+			Loader.LoadUserData();
 			SettingsHelper.LoadSettings();
 
 			UpdateHelper.CheckUpdateAsync();

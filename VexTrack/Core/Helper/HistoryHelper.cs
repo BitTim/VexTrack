@@ -2,7 +2,7 @@
 using System.Linq;
 using VexTrack.Core.Model;
 
-namespace VexTrack.Core.Util;
+namespace VexTrack.Core.Helper;
 
 public static class HistoryHelper
 {

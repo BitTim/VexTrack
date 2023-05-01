@@ -5,11 +5,11 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using Newtonsoft.Json.Linq;
-using VexTrack.Core.Model;
+using VexTrack.Core.IO;
 using VexTrack.MVVM.ViewModel;
 using VexTrack.MVVM.ViewModel.Popups;
 
-namespace VexTrack.Core.Util;
+namespace VexTrack.Core.Helper;
 
 
 public static class UpdateHelper

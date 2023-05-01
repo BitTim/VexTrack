@@ -1,15 +1,17 @@
-﻿using System.Windows.Controls;
+﻿using VexTrack.MVVM.ViewModel;
+using VexTrack.MVVM.ViewModel.Popups;
 
 namespace VexTrack.MVVM.View.Popups
 {
 	/// <summary>
-	/// Interaction logic for ResetDataConfirmationDialog.xaml
+	/// Interaction logic for DeleteGoalConfirmationPopup.xaml
 	/// </summary>
-	public partial class DeleteGoalConfirmationPopup : UserControl
+	public partial class DeleteGoalConfirmationPopup
 	{
 		public DeleteGoalConfirmationPopup()
 		{
 			InitializeComponent();
+			DataContext = ViewModelManager.ViewModels[nameof(DeleteGoalConfirmationPopupViewModel)];
 		}
 	}
 }

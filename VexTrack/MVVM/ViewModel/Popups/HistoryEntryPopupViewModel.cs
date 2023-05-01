@@ -1,66 +1,79 @@
-﻿using VexTrack.Core;
+﻿using VexTrack.Core.Model;
+using VexTrack.Core.Model.WPF;
 
 namespace VexTrack.MVVM.ViewModel.Popups
 {
 	class HistoryEntryPopupViewModel : BasePopupViewModel
 	{
-		public RelayCommand OnBackClicked { get; set; }
-		public RelayCommand OnEditClicked { get; set; }
-		public RelayCommand OnDeleteClicked { get; set; }
-		private EditableHistoryEntryPopupViewModel EditableHEPopup { get; set; }
+		private string _result;
+		public RelayCommand OnBackClicked { get; }
+		public RelayCommand OnEditClicked { get; }
+		public RelayCommand OnDeleteClicked { get; }
+		private EditableHistoryEntryPopupViewModel EditableHePopup { get; }
 
-		private HistoryEntryData RawData { get; set; }
-		public string SUUID { get; set; }
-		public string HUUID { get; set; }
-		public string Title { get; set; }
-		public long Time { get; set; }
-		public int Amount { get; set; }
-		public string Map { get; set; }
-		public string Result { get; set; }
+		private HistoryEntry RawData { get; set; }
+		private string SeasonUuid { get; set; }
+		public string Uuid { get; private set; }
+		public string Title { get; private set; }
+		public long Time { get; private set; }
+		public int Amount { get; private set; }
+		public string Map { get; private set; }
+
+		public string Result
+		{
+			get => _result;
+			private set
+			{
+				if (value == _result) return;
+				_result = value;
+				OnPropertyChanged();
+			}
+		}
+
 		public bool Deletable { get; set; }
 
 		public HistoryEntryPopupViewModel()
 		{
-			EditableHEPopup = (EditableHistoryEntryPopupViewModel)ViewModelManager.ViewModels["EditableHEPopup"];
+			EditableHePopup = (EditableHistoryEntryPopupViewModel)ViewModelManager.ViewModels[nameof(EditableHistoryEntryPopupViewModel)];
 			CanCancel = true;
 
-			OnBackClicked = new RelayCommand(o => { Close(); });
-			OnEditClicked = new RelayCommand(o =>
+			OnBackClicked = new RelayCommand(_ => { Close(); });
+			OnEditClicked = new RelayCommand(_ =>
 			{
-				EditableHEPopup.SetParameters("Edit History Entry", true);
-				EditableHEPopup.SetData(RawData);
-				MainVM.QueuePopup(EditableHEPopup);
+				EditableHePopup.SetParameters("Edit History Entry", true);
+				EditableHePopup.SetData(RawData);
+				MainVm.QueuePopup(EditableHePopup);
 			});
-			OnDeleteClicked = new RelayCommand(o =>
+			OnDeleteClicked = new RelayCommand(_ =>
 			{
 				IsInitialized = false;
-				TrackingDataHelper.RemoveHistoryEntry(SUUID, HUUID);
+				Tracking.RemoveHistoryEntry(SeasonUuid, Uuid);
 			});
 		}
 
-		public void SetData(HistoryEntryData data, string initUUID)
+		public void SetData(HistoryEntry data, string initUuid)
 		{
 			RawData = data;
 			Deletable = true;
 
-			SUUID = data.SUUID;
-			HUUID = data.HUUID;
-			Title = data.Title;
+			SeasonUuid = data.GroupUuid;
+			Uuid = data.Uuid;
+			Title = data.GetTitle();
 			Time = data.Time;
 			Amount = data.Amount;
 			Map = data.Map;
-			Result = data.Result;
+			Result = data.GetResult();
 
 			if (Result == "") Result = "-";
-			if (Map == "" || Map == null) Map = "-";
-			if (data.HUUID == initUUID) Deletable = false;
+			if (string.IsNullOrEmpty(Map)) Map = "-";
+			if (data.Uuid == initUuid) Deletable = false;
 
 			IsInitialized = true;
 		}
 
 		public override void Close()
 		{
-			EditableHEPopup.Close();
+			EditableHePopup.Close();
 			base.Close();
 		}
 	}

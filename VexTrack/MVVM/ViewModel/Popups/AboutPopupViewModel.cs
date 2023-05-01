@@ -1,12 +1,14 @@
 ﻿using VexTrack.Core;
+using VexTrack.Core.Helper;
+using VexTrack.Core.Model.WPF;
 
 namespace VexTrack.MVVM.ViewModel.Popups
 {
 	class AboutPopupViewModel : BasePopupViewModel
 	{
-		public RelayCommand OnCheckUpdateClicked { get; set; }
-		public RelayCommand OnForceUpdateClicked { get; set; }
-		public RelayCommand OnCloseClicked { get; set; }
+		public RelayCommand OnCheckUpdateClicked { get; }
+		public RelayCommand OnForceUpdateClicked { get; }
+		public RelayCommand OnCloseClicked { get; }
 
 		public string Version => Constants.Version;
 
@@ -14,9 +16,9 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		{
 			CanCancel = true;
 
-			OnCloseClicked = new RelayCommand(o => Close());
-			OnCheckUpdateClicked = new RelayCommand(o => UpdateHelper.CheckUpdateAsync());
-			OnForceUpdateClicked = new RelayCommand(o => UpdateHelper.CheckUpdateAsync(true));
+			OnCloseClicked = new RelayCommand(_ => Close());
+			OnCheckUpdateClicked = new RelayCommand(_ => UpdateHelper.CheckUpdateAsync());
+			OnForceUpdateClicked = new RelayCommand(_ => UpdateHelper.CheckUpdateAsync(true));
 		}
 	}
 }

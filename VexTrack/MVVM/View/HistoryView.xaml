@@ -3,17 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:VexTrack"
 			 xmlns:model="clr-namespace:VexTrack.MVVM.Model"
-			 xmlns:conv="clr-namespace:VexTrack.MVVM.Converter"
-			 xmlns:vm="clr-namespace:VexTrack.MVVM.ViewModel"
+             xmlns:viewModel="clr-namespace:VexTrack.MVVM.ViewModel"
+             xmlns:models="clr-namespace:VexTrack.Core.Model"
+             xmlns:util="clr-namespace:VexTrack.Core.Helper"
              mc:Ignorable="d" 
              d:DesignHeight="780" d:DesignWidth="640">
 
-	<UserControl.Resources>
-		<conv:HistoryResultToResourceKeyConverter x:Key="historyKeyConv"/>
-		<conv:TimestampToStringConverter x:Key="timestampToStringConv"/>
-	</UserControl.Resources>
+	<UserControl.DataContext>
+		<viewModel:HistoryViewModel/>
+	</UserControl.DataContext>
 
 	<Grid>
 		<Grid.RowDefinitions>
@@ -23,7 +22,7 @@
 
 		<TextBlock Text="History"
 				   Margin="16, 16, 16, 16"
-				   Foreground="{DynamicResource Foreground}"
+				   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 				   FontSize="36"
 				   FontWeight="Bold"/>
 
@@ -34,10 +33,10 @@
 						Margin="8, 0, 16, 8"
 						  ItemsSource="{Binding Groups}">
 				<ItemsControl.ItemTemplate>
-					<DataTemplate>
+					<DataTemplate DataType="{x:Type models:HistoryGroup}">
 						<StackPanel Margin="8, 8, 0, 0">
-							<TextBlock Text="{Binding Date, Converter={StaticResource timestampToStringConv}, ConverterParameter=true}"
-										   Foreground="{DynamicResource Foreground}"
+							<TextBlock Text="{Binding Date, Converter={StaticResource TimestampToStringConverter}, ConverterParameter=true}"
+										   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 										   FontSize="14"
 										   Margin="0, 0, 0, 8"
 										   FontWeight="Bold"/>
@@ -49,10 +48,10 @@
 										<model:HistoryEntryButtonModel Description="{Binding Path=Title}"
 																	   Margin="0, 0, 0, 8"
 																	   Amount="{Binding Path=Amount}"
-																	   Background="{Binding Path=Result, Converter={StaticResource historyKeyConv}, ConverterParameter=Background}"
-																	   Foreground="{Binding Path=Result, Converter={StaticResource historyKeyConv}, ConverterParameter=Foreground}"
-																	   Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.HistoryButtonClick}"
-																	   CommandParameter="{Binding Path=HUUID}"/>
+																	   Background="{Binding Path=Result, Converter={StaticResource HistoryResultToResourceKeyConverter}, ConverterParameter=Background}"
+																	   Foreground="{Binding Path=Result, Converter={StaticResource HistoryResultToResourceKeyConverter}, ConverterParameter=Foreground}"
+																	   Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.HistoryButtonClick}"
+																	   CommandParameter="{Binding Path=Uuid}"/>
 									</DataTemplate>
 								</ItemsControl.ItemTemplate>
 							</ItemsControl>

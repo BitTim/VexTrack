@@ -5,16 +5,16 @@ namespace VexTrack.MVVM.Model
 {
 	public class TextWithUnit : Control
 	{
-		public static DependencyProperty TextProperty = DependencyProperty.Register("Text", typeof(string), typeof(TextWithUnit), new PropertyMetadata(""));
-		public static DependencyProperty UnitProperty = DependencyProperty.Register("Unit", typeof(string), typeof(TextWithUnit), new PropertyMetadata(""));
+		public static readonly DependencyProperty TextProperty = DependencyProperty.Register(nameof(Text), typeof(string), typeof(TextWithUnit), new PropertyMetadata(""));
+		public static readonly DependencyProperty UnitProperty = DependencyProperty.Register(nameof(Unit), typeof(string), typeof(TextWithUnit), new PropertyMetadata(""));
 
-		public static DependencyProperty IsUnitSingularProperty = DependencyProperty.Register("IsUnitSingular", typeof(bool), typeof(TextWithUnit), new PropertyMetadata(false));
+		public static readonly DependencyProperty IsUnitSingularProperty = DependencyProperty.Register(nameof(IsUnitSingular), typeof(bool), typeof(TextWithUnit), new PropertyMetadata(false));
 
-		public static DependencyProperty TextFontSizeProperty = DependencyProperty.Register("TextFontSize", typeof(int), typeof(TextWithUnit), new PropertyMetadata(14));
-		public static DependencyProperty TextFontWeightProperty = DependencyProperty.Register("TextFontWeight", typeof(FontWeight), typeof(TextWithUnit), new PropertyMetadata(FontWeights.Normal));
+		public static readonly DependencyProperty TextFontSizeProperty = DependencyProperty.Register(nameof(TextFontSize), typeof(int), typeof(TextWithUnit), new PropertyMetadata(14));
+		public static readonly DependencyProperty TextFontWeightProperty = DependencyProperty.Register(nameof(TextFontWeight), typeof(FontWeight), typeof(TextWithUnit), new PropertyMetadata(FontWeights.Normal));
 
-		public static DependencyProperty UnitFontSizeProperty = DependencyProperty.Register("UnitFontSize", typeof(int), typeof(TextWithUnit), new PropertyMetadata(14));
-		public static DependencyProperty UnitFontWeightProperty = DependencyProperty.Register("UnitFontWeight", typeof(FontWeight), typeof(TextWithUnit), new PropertyMetadata(FontWeights.Normal));
+		public static readonly DependencyProperty UnitFontSizeProperty = DependencyProperty.Register(nameof(UnitFontSize), typeof(int), typeof(TextWithUnit), new PropertyMetadata(14));
+		public static readonly DependencyProperty UnitFontWeightProperty = DependencyProperty.Register(nameof(UnitFontWeight), typeof(FontWeight), typeof(TextWithUnit), new PropertyMetadata(FontWeights.Normal));
 
 		public string Text
 		{

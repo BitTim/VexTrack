@@ -9,7 +9,7 @@ namespace VexTrack.MVVM.Validation
 	{
 		public override ValidationResult Validate(object value, CultureInfo cultureInfo)
 		{
-			string strValue = Convert.ToString(value);
+			var strValue = Convert.ToString(value);
 
 			if (string.IsNullOrEmpty(strValue))
 				return new ValidationResult(false, $"This field cannot be empty, last known value will be used");
@@ -17,7 +17,7 @@ namespace VexTrack.MVVM.Validation
 
 			try
 			{
-				Brush brush = (SolidColorBrush)new BrushConverter().ConvertFrom(strValue);
+				Brush _ = (SolidColorBrush)new BrushConverter().ConvertFrom(strValue);
 				canConvert = true;
 			}
 			catch

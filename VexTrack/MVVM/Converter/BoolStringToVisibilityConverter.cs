@@ -5,20 +5,19 @@ using System.Windows.Data;
 
 namespace VexTrack.MVVM.Converter
 {
-	class BoolStringToVisibilityConverter : IValueConverter
+	internal class BoolStringToVisibilityConverter : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			string val = value as string;
-			bool convValue = bool.Parse(val);
+			var val = value as string;
+			var convValue = bool.Parse(val!);
 
-			if (convValue) return Visibility.Visible;
-			return Visibility.Hidden;
+			return convValue ? Visibility.Visible : Visibility.Hidden;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			throw new NotImplementedException();
+			return null;
 		}
 	}
 }

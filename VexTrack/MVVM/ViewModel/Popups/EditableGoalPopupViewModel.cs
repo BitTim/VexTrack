@@ -1,39 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
-using VexTrack.Core;
+using VexTrack.Core.Helper;
+using VexTrack.Core.Model;
+using VexTrack.Core.Model.WPF;
 
 namespace VexTrack.MVVM.ViewModel.Popups
 {
 	class EditableGoalPopupViewModel : BasePopupViewModel
 	{
-		public RelayCommand OnBackClicked { get; set; }
-		public RelayCommand OnDoneClicked { get; set; }
+		public RelayCommand OnBackClicked { get; }
+		public RelayCommand OnDoneClicked { get; }
 
 		public string PopupTitle { get; set; }
-		public string UUID { get; set; }
-		public int StartXP { get; set; }
-		public bool EditMode { get; set; }
-		public bool Paused { get; set; }
+		private string Uuid { get; set; }
+		private bool EditMode { get; set; }
+		private bool Paused { get; set; }
 
 
 		private string PrevColor { get; set; }
 
-		private string _title;
+		private string _name;
 		private int _total;
 		private int _collected;
 		private string _color;
 		private bool _useAccentColor;
-		private double _progress;
 
-		private string _group;
-		private string _dependency;
-
-		public string Title
+		public string Name
 		{
-			get => _title;
+			get => _name;
 			set
 			{
-				_title = value;
+				_name = value;
 				OnPropertyChanged();
 			}
 		}
@@ -43,7 +40,6 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			set
 			{
 				_total = value;
-				RecalcProgress();
 				OnPropertyChanged();
 				OnPropertyChanged(nameof(Progress));
 			}
@@ -54,20 +50,12 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			set
 			{
 				_collected = value;
-				RecalcProgress();
 				OnPropertyChanged();
 				OnPropertyChanged(nameof(Progress));
 			}
 		}
-		public double Progress
-		{
-			get => _progress;
-			set
-			{
-				_progress = value;
-				OnPropertyChanged();
-			}
-		}
+
+		public double Progress => CalcHelper.CalcProgress(Total, Collected);
 		public string Color
 		{
 			get => _color;
@@ -79,44 +67,6 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			}
 		}
 
-
-		public List<GoalGroup> AvailableGroups => TrackingDataHelper.Data.Goals;
-		public List<Goal> AvailableDependencies
-		{
-			get
-			{
-				List<Goal> goals;
-				if (Group == null) goals = new();
-
-				goals = new(TrackingDataHelper.Data.Goals[TrackingDataHelper.Data.Goals.FindIndex(gg => gg.UUID == Group)].Goals);
-				goals.Insert(0, new Goal("", "No Dependency", 0, 0, "#000000", "", true));
-
-				int index = goals.FindIndex(gg => gg.UUID == UUID);
-				if (index >= 0) goals.RemoveAt(index);
-				return goals;
-			}
-		}
-		public string Group
-		{
-			get => _group;
-			set
-			{
-				_group = value;
-				OnPropertyChanged();
-				OnPropertyChanged(nameof(AvailableDependencies));
-			}
-		}
-		public string Dependency
-		{
-			get => _dependency;
-			set
-			{
-				_dependency = value;
-				OnPropertyChanged();
-			}
-		}
-
-
 		public bool UseAccentColor
 		{
 			get => _useAccentColor;
@@ -124,7 +74,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			{
 				_useAccentColor = value;
 				if (value) Color = "";
-				else if (PrevColor != null && PrevColor != "") Color = PrevColor;
+				else if (!string.IsNullOrEmpty(PrevColor)) Color = PrevColor;
 				else Color = "#000000";
 
 				OnPropertyChanged();
@@ -136,15 +86,21 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		{
 			CanCancel = true;
 
-			OnBackClicked = new RelayCommand(o => { if (CanCancel) Close(); });
-			OnDoneClicked = new RelayCommand(o =>
+			OnBackClicked = new RelayCommand(_ => { if (CanCancel) Close(); });
+			OnDoneClicked = new RelayCommand(_ =>
 			{
-				if (EditMode) TrackingDataHelper.EditGoal(Group, UUID, new Goal(UUID, Title, Total, Collected, Color, Dependency, Paused));
-				else TrackingDataHelper.AddGoal(Group, new Goal(UUID, Title, Total, Collected, Color, Dependency, Paused));
+				var goals = Tracking.Contracts[Tracking.Contracts.FindIndex(contract => contract.Uuid == Uuid)].Goals;
+				
+				if (EditMode) Tracking.EditContract(Uuid, new Contract(Uuid, Name, Color, Paused, goals));
+				else Tracking.AddContract(new Contract(Uuid, Name, Color, Paused, new List<Goal>()));
 				Close();
 			});
 		}
-
+		
+		
+		
+		// TODO: These three are currently unused, but will be used again at a later point in time
+		
 		public void SetParameters(string popupTitle, bool editMode)
 		{
 			PopupTitle = popupTitle;
@@ -153,50 +109,27 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			if (!EditMode) InitData();
 		}
 
-		public void InitData()
+		private void InitData()
 		{
-			UUID = Guid.NewGuid().ToString();
-			Title = "";
+			Uuid = Guid.NewGuid().ToString();
+			Name = "";
 			Total = 0;
 			Collected = 0;
 			UseAccentColor = false;
 			Color = "#000000";
 			Paused = false;
-
-			if (AvailableGroups.Count == 0)
-			{
-				TrackingDataHelper.AddGoalGroup(new GoalGroup(Constants.DefaultGroupUUID, "No Group", new List<Goal>()));
-				Group = Constants.DefaultGroupUUID;
-			}
-			else Group = AvailableGroups[0].UUID;
-
-			Dependency = "";
+			
 			IsInitialized = true;
 		}
 
-		public void SetData(GoalEntryData data)
+		public void SetData(Goal data)
 		{
-			UUID = data.UUID;
-			Title = data.Title;
+			Uuid = data.Uuid;
+			Name = data.Name;
 			Total = data.Total;
 			Collected = data.Collected;
-			UseAccentColor = data.Color == "" ? true : false;
-			Color = data.Color;
-			StartXP = data.StartXP;
-			Paused = data.Paused;
-
-			if (AvailableGroups.FindIndex(gg => gg.UUID == data.GroupUUID) == -1) Group = Constants.DefaultGroupUUID;
-			else Group = data.GroupUUID;
-
-			if (AvailableDependencies.FindIndex(d => d.UUID == data.DepUUID) == -1) Dependency = "";
-			else Dependency = data.DepUUID;
 
 			IsInitialized = true;
-		}
-
-		private void RecalcProgress()
-		{
-			Progress = CalcUtil.CalcProgress(Total, Collected);
 		}
 	}
 }

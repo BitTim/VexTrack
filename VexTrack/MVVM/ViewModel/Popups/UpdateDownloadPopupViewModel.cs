@@ -1,4 +1,4 @@
-﻿using VexTrack.Core;
+﻿using VexTrack.Core.Helper;
 
 namespace VexTrack.MVVM.ViewModel.Popups
 {
@@ -136,20 +136,20 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 		public void SetDownloadSpeed(double speed)
 		{
-			(DownloadSpeed, DownloadSpeedUnit) = UpdateUtil.FormatSize(speed, true);
+			(DownloadSpeed, DownloadSpeedUnit) = FormatHelper.FormatSize(speed, true);
 		}
 
 		public void SetPackageData(long total, long size, double progress)
 		{
-			(PackageTotalSize, PackageTotalSizeUnit) = UpdateUtil.FormatSize(total);
-			(PackageSize, PackageSizeUnit) = UpdateUtil.FormatSize(size);
+			(PackageTotalSize, PackageTotalSizeUnit) = FormatHelper.FormatSize(total);
+			(PackageSize, PackageSizeUnit) = FormatHelper.FormatSize(size);
 			PackageProgress = progress;
 		}
 
 		public void SetUpdaterData(long total, long size, double progress)
 		{
-			(UpdaterTotalSize, UpdaterTotalSizeUnit) = UpdateUtil.FormatSize(total);
-			(UpdaterSize, UpdaterSizeUnit) = UpdateUtil.FormatSize(size);
+			(UpdaterTotalSize, UpdaterTotalSizeUnit) = FormatHelper.FormatSize(total);
+			(UpdaterSize, UpdaterSizeUnit) = FormatHelper.FormatSize(size);
 			UpdaterProgress = progress;
 		}
 	}

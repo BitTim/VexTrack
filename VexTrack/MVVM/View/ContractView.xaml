@@ -1,0 +1,140 @@
+﻿<UserControl x:Class="VexTrack.MVVM.View.ContractView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:model="clr-namespace:VexTrack.MVVM.Model"
+             xmlns:viewModel="clr-namespace:VexTrack.MVVM.ViewModel"
+             xmlns:models="clr-namespace:VexTrack.Core.Model"
+             xmlns:util="clr-namespace:VexTrack.Core.Helper"
+             mc:Ignorable="d" 
+             d:DesignHeight="780" d:DesignWidth="640">
+
+	<UserControl.DataContext>
+		<viewModel:ContractViewModel/>
+	</UserControl.DataContext>
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="80"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+
+		<TextBlock Text="Contracts"
+				   Margin="16, 16, 16, 16"
+				   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+				   FontSize="36"
+				   FontWeight="Bold"/>
+
+		<ScrollViewer Grid.Row="1"
+		              HorizontalContentAlignment="Stretch"
+					  Style="{DynamicResource ScrollViewerTheme}"
+					  Margin="16">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="40"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="40"/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+
+				<TextBlock Text="Seasons"
+						   Grid.Row="0"
+						   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+						   FontSize="20"
+						   Margin="8, 8, 0, 0"
+						   FontWeight="Bold"/>
+
+				<ItemsControl Grid.Row="1" x:Name="SeasonsContentContainer"
+				              Margin="0, 0, 0, 12"
+				              ItemsSource="{Binding SeasonEntries}">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<model:FlexWrapPanelModel Orientation="Horizontal"
+							                          MinItemWidth="550"
+							                          ItemMargin="8, 4"/>
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+
+					<ItemsControl.ItemTemplate>
+						<DataTemplate DataType="{x:Type models:Season}">
+							<model:SeasonButtonModel Title="{Binding Name}"
+							                         Total="{Binding Total}"
+							                         Collected="{Binding Collected}"
+							                         Remaining="{Binding Remaining}"
+							                         Progress="{Binding Progress}"
+							                         DailyAverage="{Binding Average}"
+							                         Duration="{Binding Duration}"
+							                         EndTimestamp="{Binding EndTimestamp}"
+							                         StrongestDayAmount="{Binding Extremes.StrongestDayAmount}"
+							                         StrongestDayTimestamp="{Binding Extremes.StrongestDayTimestamp}"
+							                         WeakestDayAmount="{Binding Extremes.WeakestDayAmount}"
+							                         WeakestDayTimestamp="{Binding Extremes.WeakestDayTimestamp}"
+							                         NextUnlockName="{Binding NextUnlockName}"
+							                         NextUnlockProgress="{Binding NextUnlockProgress}"
+							                         NextUnlockRemaining="{Binding NextUnlockRemaining}"
+							                         StatusIconData="{Binding Path=Status, Converter={StaticResource StatusToBadgeConverter}, ConverterParameter=Data}"
+							                         StatusIconColor="{Binding Path=Status, Converter={StaticResource StatusToBadgeConverter}, ConverterParameter=Color}"
+							                         GraphSeriesCollection="{Binding GraphSeriesCollection}"
+							                         Goals="{Binding ObservableGoals}"/>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+
+				<TextBlock Text="Contracts"
+						   Grid.Row="2"
+						   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+						   FontSize="20"
+						   Margin="8, 8, 0, 0"
+						   FontWeight="Bold"/>
+
+				<ItemsControl x:Name="ContractsContainer"
+							  Grid.Row="3"
+							  Margin="0, 0, 0, 12"
+							  ItemsSource="{Binding ContractEntries}">
+					
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<model:FlexWrapPanelModel Orientation="Horizontal"
+							                          MinItemWidth="550"
+							                          ItemMargin="8, 4"/>
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+
+					<ItemsControl.ItemTemplate>
+						<DataTemplate DataType="{x:Type models:Contract}">
+							<model:ContractButtonModel Title="{Binding Name}"
+							                           Progress="{Binding Progress}"
+							                           Collected="{Binding Collected}"
+							                           Total="{Binding Total}"
+							                           Remaining="{Binding Remaining}"
+							                           Goals="{Binding ObservableGoals}"
+							                           Color="{Binding Color}"
+							                           CompletionForecastDays="{Binding CompletionForecastDays}"
+							                           CompletionTimestamp="{Binding CompletionTimestamp}"
+							                           NextUnlockName="{Binding NextUnlockName}"
+							                           NextUnlockProgress="{Binding NextUnlockProgress}"
+							                           NextUnlockRemaining="{Binding NextUnlockRemaining}"/>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</Grid>
+		</ScrollViewer>
+
+		<Button Grid.Row="0"
+				Width="48" Height="48"
+				HorizontalAlignment="Right"
+				VerticalAlignment="Center"
+				Margin="0, 0, 16, 0"
+				Style="{DynamicResource AddButtonTheme}"
+				Command="{Binding OnHistoryAddClicked}"/>
+
+		<Button Grid.Row="0"
+				Width="48" Height="48"
+				HorizontalAlignment="Right"
+				VerticalAlignment="Center"
+				Margin="0, 0, 72, 0"
+				Style="{DynamicResource ContractAddButtonTheme}"
+				Command="{Binding OnContractAddClicked}"/>
+	</Grid>
+</UserControl>

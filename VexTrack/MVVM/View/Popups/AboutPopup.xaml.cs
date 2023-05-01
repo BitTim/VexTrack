@@ -1,17 +1,19 @@
 ﻿using System.Diagnostics;
-using System.Windows.Controls;
 using System.Windows.Navigation;
+using VexTrack.MVVM.ViewModel;
+using VexTrack.MVVM.ViewModel.Popups;
 
 namespace VexTrack.MVVM.View.Popups
 {
 	/// <summary>
 	/// Interaction logic for AboutPopup.xaml
 	/// </summary>
-	public partial class AboutPopup : UserControl
+	public partial class AboutPopup
 	{
 		public AboutPopup()
 		{
 			InitializeComponent();
+			DataContext = ViewModelManager.ViewModels[nameof(AboutPopupViewModel)];
 		}
 
 		private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)

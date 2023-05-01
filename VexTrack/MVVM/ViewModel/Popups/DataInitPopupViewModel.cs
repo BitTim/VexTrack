@@ -1,18 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using VexTrack.Core;
+using VexTrack.Core.Helper;
+using VexTrack.Core.Model;
+using VexTrack.Core.Model.WPF;
 
 namespace VexTrack.MVVM.ViewModel.Popups
 {
 	class DataInitPopupViewModel : BasePopupViewModel
 	{
-		public RelayCommand OnDoneClicked { get; set; }
+		public RelayCommand OnDoneClicked { get; }
 
 		private string _name;
-		private long _endDate;
+		private long _endTimestamp;
 		private double _progress;
 		private int _collected;
-		private int _activeBPLevel;
+		private int _activeBpLevel;
 
 		public string Name
 		{
@@ -23,12 +25,12 @@ namespace VexTrack.MVVM.ViewModel.Popups
 				OnPropertyChanged();
 			}
 		}
-		public long EndDate
+		public long EndTimestamp
 		{
-			get => _endDate;
+			get => _endTimestamp;
 			set
 			{
-				_endDate = value;
+				_endTimestamp = value;
 				OnPropertyChanged();
 				OnPropertyChanged(nameof(RemainingDays));
 			}
@@ -49,7 +51,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			{
 				_collected = value;
 
-				int maxForLevel = CalcUtil.CalcMaxForLevel(ActiveBPLevel);
+				var maxForLevel = CalcHelper.CalcMaxForLevel(ActiveBpLevel);
 				if (_collected >= maxForLevel) _collected = maxForLevel - 1;
 
 				CalcProgress();
@@ -58,53 +60,52 @@ namespace VexTrack.MVVM.ViewModel.Popups
 				OnPropertyChanged(nameof(Progress));
 			}
 		}
-		public int ActiveBPLevel
+		public int ActiveBpLevel
 		{
-			get => _activeBPLevel;
+			get => _activeBpLevel;
 			set
 			{
-				_activeBPLevel = value;
+				_activeBpLevel = value;
 				CalcProgress();
 				OnPropertyChanged();
 				OnPropertyChanged(nameof(Progress));
 			}
 		}
-		public int RemainingDays => TrackingDataHelper.GetRemainingDays("", DateTimeOffset.FromUnixTimeSeconds(EndDate).ToLocalTime().Date, true);
+		public int RemainingDays => (TimeHelper.TimestampToDate(EndTimestamp) - TimeHelper.TodayDate).Days;
 
 		public DataInitPopupViewModel()
 		{
 			CanCancel = false;
 
-			OnDoneClicked = new RelayCommand(o =>
+			OnDoneClicked = new RelayCommand(_ =>
 			{
 				CanCancel = true;
-				MainVM.InterruptUpdate = false;
+				MainVm.InterruptUpdate = false;
 
-				string endDate = DateTimeOffset.FromUnixTimeSeconds(EndDate).ToLocalTime().Date.ToString("d");
-				List<HistoryEntry> initList = new();
-				int totalCollectedXP = CalcUtil.CalcTotalCollected(ActiveBPLevel, Collected);
-				initList.Add(new HistoryEntry(Guid.NewGuid().ToString(), DateTimeOffset.Now.AddDays(-1).ToLocalTime().ToUnixTimeSeconds(), "Custom", totalCollectedXP, "", "Initialization", -1, -1, false, false));
-
-				TrackingDataHelper.AddSeason(new Season(Guid.NewGuid().ToString(), Name, endDate, ActiveBPLevel, Collected, initList));
+				var totalCollectedXp = CalcHelper.CalcTotalCollected(ActiveBpLevel, Collected);
+				var seasonUuid = Guid.NewGuid().ToString();
+				
+				Tracking.AddSeason(new Season(seasonUuid, Name, EndTimestamp, ActiveBpLevel, Collected));
+				Tracking.AddHistoryEntry(new HistoryEntry("", Guid.NewGuid().ToString(), TimeHelper.TodayDate.AddDays(-1).ToUnixTimeSeconds(), "Custom", totalCollectedXp, "", "Initialization", -1, -1, false, false));
 
 				Close();
 			});
 		}
 
-		public void CalcProgress()
+		private void CalcProgress()
 		{
-			int total = CalcUtil.CumulativeSum(Constants.BattlepassLevels, Constants.Level2Offset, Constants.XPPerLevel);
-			int collected = CalcUtil.CalcTotalCollected(ActiveBPLevel, Collected);
-			Progress = CalcUtil.CalcProgress(total, collected);
+			var total = CalcHelper.CumulativeSum(Constants.BattlepassLevels, Constants.Level2Offset, Constants.XpPerLevel);
+			var collected = CalcHelper.CalcTotalCollected(ActiveBpLevel, Collected);
+			Progress = CalcHelper.CalcProgress(total, collected);
 		}
 
 		public void InitData()
 		{
-			EndDate = DateTimeOffset.Now.AddDays(61).ToUnixTimeSeconds();
+			EndTimestamp = TimeHelper.TodayDate.AddDays(61).ToUnixTimeSeconds();
 
 			Name = "";
 			Collected = 0;
-			ActiveBPLevel = 2;
+			ActiveBpLevel = 2;
 
 			IsInitialized = true;
 		}

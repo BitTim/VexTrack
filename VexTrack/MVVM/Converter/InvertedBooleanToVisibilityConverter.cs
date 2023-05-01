@@ -5,27 +5,21 @@ using System.Windows.Data;
 
 namespace VexTrack.MVVM.Converter
 {
-	class InvertedBooleanToVisibilityConverter : IValueConverter
+	internal class InvertedBooleanToVisibilityConverter : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			bool val = (bool)value;
+			var val = (bool)value!;
 
-			bool param;
-			if (parameter == null) param = false;
-			else param = bool.Parse((string)parameter);
+			var param = parameter != null && bool.Parse((string)parameter);
 
-			if (val)
-			{
-				if (param) return Visibility.Collapsed;
-				return Visibility.Hidden;
-			}
-			return Visibility.Visible;
+			if (!val) return Visibility.Visible;
+			return param ? Visibility.Collapsed : Visibility.Hidden;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			throw new NotImplementedException();
+			return null;
 		}
 	}
 }

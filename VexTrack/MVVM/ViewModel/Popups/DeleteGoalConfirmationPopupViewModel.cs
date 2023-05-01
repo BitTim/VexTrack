@@ -1,31 +1,22 @@
-﻿using VexTrack.Core;
+﻿using VexTrack.Core.Model.WPF;
 
 namespace VexTrack.MVVM.ViewModel.Popups
 {
 	class DeleteGoalConfirmationPopupViewModel : BasePopupViewModel
 	{
-		public RelayCommand OnYesClicked { get; set; }
-		public RelayCommand OnNoClicked { get; set; }
-
-		private string GroupUUID = "";
-		private string UUID = "";
+		public RelayCommand OnYesClicked { get; }
+		public RelayCommand OnNoClicked { get; }
 
 		public DeleteGoalConfirmationPopupViewModel()
 		{
 			CanCancel = true;
 
-			OnYesClicked = new RelayCommand(o =>
+			OnYesClicked = new RelayCommand(_ =>
 			{
-				TrackingDataHelper.RemoveGoal(GroupUUID, UUID);
+				// Delete here
 				Close();
 			});
-			OnNoClicked = new RelayCommand(o => Close());
-		}
-
-		public void SetData(string groupUUID, string uuid)
-		{
-			GroupUUID = groupUUID;
-			UUID = uuid;
+			OnNoClicked = new RelayCommand(_ => Close());
 		}
 	}
 }

@@ -1,4 +1,4 @@
-﻿using VexTrack.Core;
+﻿using VexTrack.Core.Model.WPF;
 
 namespace VexTrack.MVVM.ViewModel.Popups
 {
@@ -6,19 +6,19 @@ namespace VexTrack.MVVM.ViewModel.Popups
 	{
 		public bool CanCancel { get; set; }
 		public bool IsOpen { get; set; }
-		public bool IsInitialized { get; set; }
+		public bool IsInitialized { get; protected set; }
 
-		protected MainViewModel MainVM { get; set; }
+		protected MainViewModel MainVm { get; }
 
-		public BasePopupViewModel()
+		protected BasePopupViewModel()
 		{
 			IsInitialized = false;
-			MainVM = (MainViewModel)ViewModelManager.ViewModels["Main"];
+			MainVm = (MainViewModel)ViewModelManager.ViewModels[nameof(MainViewModel)];
 		}
 
 		public virtual void Close()
 		{
-			if (IsOpen && CanCancel) MainVM.DequeuePopup(this);
+			if (IsOpen && CanCancel) MainVm.DequeuePopup(this);
 		}
 	}
 }

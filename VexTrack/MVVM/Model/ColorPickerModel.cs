@@ -2,26 +2,26 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using VexTrack.Core;
+using VexTrack.Core.Helper;
 
 namespace VexTrack.MVVM.Model
 {
 	public class ColorPickerModel : Control
 	{
-		public static DependencyProperty HueProperty = DependencyProperty.Register("Hue", typeof(int), typeof(ColorPickerModel), new PropertyMetadata(0, OnHSVChanged));
-		public static DependencyProperty SaturationProperty = DependencyProperty.Register("Saturation", typeof(float), typeof(ColorPickerModel), new PropertyMetadata(0f, OnHSVChanged));
-		public static DependencyProperty ValueProperty = DependencyProperty.Register("Lightness", typeof(float), typeof(ColorPickerModel), new PropertyMetadata(1f, OnHSVChanged));
+		public static readonly DependencyProperty HueProperty = DependencyProperty.Register(nameof(Hue), typeof(int), typeof(ColorPickerModel), new PropertyMetadata(0, OnHSVChanged));
+		public static readonly DependencyProperty SaturationProperty = DependencyProperty.Register(nameof(Saturation), typeof(float), typeof(ColorPickerModel), new PropertyMetadata(0f, OnHSVChanged));
+		public static readonly DependencyProperty ValueProperty = DependencyProperty.Register("Lightness", typeof(float), typeof(ColorPickerModel), new PropertyMetadata(1f, OnHSVChanged));
 
-		public static DependencyProperty RedProperty = DependencyProperty.Register("Red", typeof(byte), typeof(ColorPickerModel), new PropertyMetadata((byte)255, OnRGBChanged));
-		public static DependencyProperty GreenProperty = DependencyProperty.Register("Green", typeof(byte), typeof(ColorPickerModel), new PropertyMetadata((byte)255, OnRGBChanged));
-		public static DependencyProperty BlueProperty = DependencyProperty.Register("Blue", typeof(byte), typeof(ColorPickerModel), new PropertyMetadata((byte)255, OnRGBChanged));
+		public static readonly DependencyProperty RedProperty = DependencyProperty.Register(nameof(Red), typeof(byte), typeof(ColorPickerModel), new PropertyMetadata((byte)255, OnRGBChanged));
+		public static readonly DependencyProperty GreenProperty = DependencyProperty.Register(nameof(Green), typeof(byte), typeof(ColorPickerModel), new PropertyMetadata((byte)255, OnRGBChanged));
+		public static readonly DependencyProperty BlueProperty = DependencyProperty.Register(nameof(Blue), typeof(byte), typeof(ColorPickerModel), new PropertyMetadata((byte)255, OnRGBChanged));
 
-		public static DependencyProperty HexProperty = DependencyProperty.Register("Hex", typeof(string), typeof(ColorPickerModel), new PropertyMetadata("#FFFFFF", OnHexChanged));
+		public static readonly DependencyProperty HexProperty = DependencyProperty.Register(nameof(Hex), typeof(string), typeof(ColorPickerModel), new PropertyMetadata("#FFFFFF", OnHexChanged));
 
-		public static DependencyProperty HighlightMarginProperty = DependencyProperty.Register("HighlightMargin", typeof(Thickness), typeof(ColorPickerModel), new PropertyMetadata(new Thickness(0, 0, 0, 0)));
+		public static readonly DependencyProperty HighlightMarginProperty = DependencyProperty.Register(nameof(HighlightMargin), typeof(Thickness), typeof(ColorPickerModel), new PropertyMetadata(new Thickness(0, 0, 0, 0)));
 
-		public static DependencyProperty ColorBrushProperty = DependencyProperty.Register("ColorBrush", typeof(Brush), typeof(ColorPickerModel), new PropertyMetadata(null));
-		public static DependencyProperty ValueBrushProperty = DependencyProperty.Register("ValueBrush", typeof(Brush), typeof(ColorPickerModel), new PropertyMetadata(null));
+		public static readonly DependencyProperty ColorBrushProperty = DependencyProperty.Register(nameof(ColorBrush), typeof(Brush), typeof(ColorPickerModel), new PropertyMetadata(null));
+		public static readonly DependencyProperty ValueBrushProperty = DependencyProperty.Register(nameof(ValueBrush), typeof(Brush), typeof(ColorPickerModel), new PropertyMetadata(null));
 
 		public int Hue
 		{
@@ -33,7 +33,8 @@ namespace VexTrack.MVVM.Model
 			get => (float)GetValue(SaturationProperty);
 			set => SetValue(SaturationProperty, value);
 		}
-		public float Value
+
+		private float Value
 		{
 			get => (float)GetValue(ValueProperty);
 			set => SetValue(ValueProperty, value);
@@ -76,64 +77,69 @@ namespace VexTrack.MVVM.Model
 		public Brush ValueBrush
 		{
 			get => (Brush)GetValue(ValueBrushProperty);
-			set => SetValue(ValueBrushProperty, value);
+			init => SetValue(ValueBrushProperty, value);
 		}
 
-		private Border clickableBorder { get; set; }
+		private Border ClickableBorder { get; set; }
 
 		private static void OnHSVChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			if (d is ColorPickerModel)
-			{
-				ColorPickerModel p = d as ColorPickerModel;
-				p.Update("HSV");
-			}
+			if (d is not ColorPickerModel model) return;
+			model.Update("HSV");
 		}
 
 		private static void OnRGBChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			if (d is ColorPickerModel)
-			{
-				ColorPickerModel p = d as ColorPickerModel;
-				p.Update("RGB");
-			}
+			if (d is not ColorPickerModel model) return;
+			model.Update("RGB");
 		}
 
 		private static void OnHexChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			if (d is ColorPickerModel)
-			{
-				ColorPickerModel p = d as ColorPickerModel;
-				p.Update("HEX");
-			}
+			if (d is not ColorPickerModel model) return;
+			model.Update("HEX");
 		}
 
-		public Brush CreateBrush(Color startCol, Color endCol, string dir)
+		private static Brush CreateBrush(Color startCol, Color endCol, string dir)
 		{
-			LinearGradientBrush brush = new LinearGradientBrush();
-			brush.StartPoint = new Point(0, 0);
+			var brush = new LinearGradientBrush
+			{
+				StartPoint = new Point(0, 0)
+			};
 
-			if (dir == "Horizontal") brush.EndPoint = new Point(1, 0);
-			if (dir == "Vertical") brush.EndPoint = new Point(0, 1);
+			brush.EndPoint = dir switch
+			{
+				"Horizontal" => new Point(1, 0),
+				"Vertical" => new Point(0, 1),
+				_ => brush.EndPoint
+			};
 
-			GradientStop startBorder = new();
-			startBorder.Color = startCol;
-			startBorder.Offset = 0.0;
+			GradientStop startBorder = new()
+			{
+				Color = startCol,
+				Offset = 0.0
+			};
 			brush.GradientStops.Add(startBorder);
 
-			GradientStop start = new();
-			start.Color = startCol;
-			start.Offset = 0.04;
+			GradientStop start = new()
+			{
+				Color = startCol,
+				Offset = 0.04
+			};
 			brush.GradientStops.Add(start);
 
-			GradientStop end = new();
-			end.Color = endCol;
-			end.Offset = 0.96;
+			GradientStop end = new()
+			{
+				Color = endCol,
+				Offset = 0.96
+			};
 			brush.GradientStops.Add(end);
 
-			GradientStop endBorder = new();
-			endBorder.Color = endCol;
-			endBorder.Offset = 1.0;
+			GradientStop endBorder = new()
+			{
+				Color = endCol,
+				Offset = 1.0
+			};
 			brush.GradientStops.Add(endBorder);
 
 			return brush;
@@ -151,69 +157,66 @@ namespace VexTrack.MVVM.Model
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(ColorPickerModel), new FrameworkPropertyMetadata(typeof(ColorPickerModel)));
 		}
 
-		private void UpdateRGB(Color currentColor)
+		private void UpdateRgb(Color currentColor)
 		{
 			Red = currentColor.R;
 			Green = currentColor.G;
 			Blue = currentColor.B;
 		}
 
-		private void UpdateHSV(Color currentColor)
+		private void UpdateHsv(Color currentColor)
 		{
-			System.Drawing.Color convertedColor = ColorConv.ToSDColor(currentColor);
+			var convertedColor = currentColor.ToSdColor();
 
 			Hue = (int)convertedColor.GetHue();
 			Saturation = convertedColor.GetSaturation();
-			Value = ColorUtil.getValue(convertedColor);
+			Value = ColorHelper.GetValue(convertedColor);
 
-			if (clickableBorder != null) HighlightMargin = new Thickness(Saturation * clickableBorder.ActualWidth, (1f - Value) * clickableBorder.ActualHeight, 0, 0);
+			if (ClickableBorder != null) HighlightMargin = new Thickness(Saturation * ClickableBorder.ActualWidth, (1f - Value) * ClickableBorder.ActualHeight, 0, 0);
 		}
 
 		private void UpdateHex(Color currentColor)
 		{
-			string rawHex = currentColor.ToString();
+			var rawHex = currentColor.ToString();
 			rawHex = rawHex.Remove(1, 2);
 			Hex = rawHex;
 		}
 
-		private static bool _isUpdating = false;
+		private static bool _isUpdating;
 
-		public void Update(string source)
+		private void Update(string source)
 		{
 			if (_isUpdating) return;
 			_isUpdating = true;
 
 			Color currentColor;
 
-			if (source == "RGB")
+			switch (source)
 			{
-				currentColor = Color.FromArgb(255, Red, Green, Blue);
+				case "RGB":
+					currentColor = Color.FromArgb(255, Red, Green, Blue);
 
-				UpdateHSV(currentColor);
-				UpdateHex(currentColor);
-			}
-			else if (source == "HSV")
-			{
-				currentColor = ColorConv.ToSWMColor(ColorUtil.ColorFromHSV(new ColorUtil.HSV(Hue, Saturation, Value)));
+					UpdateHsv(currentColor);
+					UpdateHex(currentColor);
+					break;
+				case "HSV":
+					currentColor = ColorHelper.ColorFromHsv(new ColorHelper.Hsv(Hue, Saturation, Value)).ToSwmColor();
 
-				UpdateRGB(currentColor);
-				UpdateHex(currentColor);
-			}
-			else if (source == "HEX")
-			{
-				if (Hex == "" || Hex == null)
-				{
+					UpdateRgb(currentColor);
+					UpdateHex(currentColor);
+					break;
+				case "HEX" when string.IsNullOrEmpty(Hex):
 					_isUpdating = false;
 					return;
-				}
+				case "HEX":
+					currentColor = (Color)ColorConverter.ConvertFromString(Hex)!;
 
-				currentColor = (Color)ColorConverter.ConvertFromString(Hex);
-
-				UpdateRGB(currentColor);
-				UpdateHSV(currentColor);
+					UpdateRgb(currentColor);
+					UpdateHsv(currentColor);
+					break;
 			}
 
-			Color colorMatrixHueColor = ColorConv.ToSWMColor(ColorUtil.ColorFromHSV(new ColorUtil.HSV(Hue, 1, 1)));
+			var colorMatrixHueColor = ColorHelper.ColorFromHsv(new ColorHelper.Hsv(Hue, 1, 1)).ToSwmColor();
 			ColorBrush = CreateBrush(Color.FromArgb(255, 255, 255, 255), colorMatrixHueColor, "Horizontal");
 
 			_isUpdating = false;
@@ -221,15 +224,15 @@ namespace VexTrack.MVVM.Model
 
 		public override void OnApplyTemplate()
 		{
-			clickableBorder = Template.FindName("PART_ClickableBorder", this) as Border;
-			clickableBorder.MouseLeftButtonDown += new MouseButtonEventHandler(PART_ColorMatrix_MouseLeftButtonDown);
-			clickableBorder.MouseLeftButtonUp += new MouseButtonEventHandler(PART_ColorMatrix_MouseLeftButtonUp);
-			clickableBorder.MouseMove += new MouseEventHandler(PART_ColorMatrix_MouseMove);
+			ClickableBorder = Template.FindName("PART_ClickableBorder", this) as Border;
+			ClickableBorder!.MouseLeftButtonDown += PART_ColorMatrix_MouseLeftButtonDown;
+			ClickableBorder.MouseLeftButtonUp += PART_ColorMatrix_MouseLeftButtonUp;
+			ClickableBorder.MouseMove += PART_ColorMatrix_MouseMove;
 
 			base.OnApplyTemplate();
 		}
 
-		private bool _mouseDown = false;
+		private bool _mouseDown;
 
 		private void PART_ColorMatrix_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
 		{
@@ -239,7 +242,7 @@ namespace VexTrack.MVVM.Model
 		private void PART_ColorMatrix_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 		{
 			_mouseDown = true;
-			Mouse.Capture(clickableBorder);
+			Mouse.Capture(ClickableBorder);
 			UpdateMouse(sender, e);
 		}
 
@@ -250,9 +253,9 @@ namespace VexTrack.MVVM.Model
 		}
 		private void UpdateMouse(object sender, MouseEventArgs e)
 		{
-			Border clickableBorder = sender as Border;
-			Point dimensions = new(clickableBorder.ActualWidth, clickableBorder.ActualHeight);
-			Point mousePos = e.GetPosition(clickableBorder);
+			var clickableBorder = sender as Border;
+			Point dimensions = new(clickableBorder!.ActualWidth, clickableBorder.ActualHeight);
+			var mousePos = e.GetPosition(clickableBorder);
 
 			if (mousePos.X < 0) mousePos.X = 0;
 			if (mousePos.X > dimensions.X) mousePos.X = dimensions.X;

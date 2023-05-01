@@ -1,21 +1,21 @@
 using System;
-using System.Collections.Generic;
 using VexTrack.Core;
+using VexTrack.Core.Helper;
+using VexTrack.Core.Model;
+using VexTrack.Core.Model.WPF;
 
 namespace VexTrack.MVVM.ViewModel.Popups
 {
 	class EditableHistoryEntryPopupViewModel : BasePopupViewModel
 	{
-		public RelayCommand OnBackClicked { get; set; }
-		public RelayCommand OnDoneClicked { get; set; }
+		public RelayCommand OnBackClicked { get; }
+		public RelayCommand OnDoneClicked { get; }
 
-		public string Title { get; set; }
-		public string SUUID { get; set; }
-		public string HUUID { get; set; }
-		public List<string> Maps => Constants.Maps;
-		public List<string> GameModes => Constants.Gamemodes;
-		public string ScoreType => Constants.ScoreTypes[GameMode];
-		public bool EditMode { get; set; }
+		public string Title { get; private set; }
+		private string Uuid { get; set; }
+		private string GroupUuid { get; set; }
+		public string ScoreType => GameMode != null ? Constants.ScoreTypes[GameMode] : "";
+		private bool EditMode { get; set; }
 
 		private string _description;
 		private string _gamemode;
@@ -105,7 +105,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			set
 			{
 				_surrenderedWin = value;
-				if (_surrenderedWin == true) SurrenderedLoss = false;
+				if (_surrenderedWin) SurrenderedLoss = false;
 
 				OnPropertyChanged();
 				OnPropertyChanged(nameof(Result));
@@ -118,7 +118,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			set
 			{
 				_surrenderedLoss = value;
-				if (_surrenderedLoss == true) SurrenderedWin = false;
+				if (_surrenderedLoss) SurrenderedWin = false;
 
 				OnPropertyChanged();
 				OnPropertyChanged(nameof(Result));
@@ -126,21 +126,21 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			}
 		}
 
-		public string Result => HistoryDataCalc.CalcHistoryResultFromScores(ScoreType, Score, EnemyScore, SurrenderedWin, SurrenderedLoss);
+		public string Result => HistoryEntry.CalcHistoryResultFromScores(ScoreType, Score, EnemyScore, SurrenderedWin, SurrenderedLoss);
 
 		public EditableHistoryEntryPopupViewModel()
 		{
 			CanCancel = true;
 
-			OnBackClicked = new RelayCommand(o => { if (CanCancel) Close(); });
-			OnDoneClicked = new RelayCommand(o =>
+			OnBackClicked = new RelayCommand(_ => { if (CanCancel) Close(); });
+			OnDoneClicked = new RelayCommand(_ =>
 			{
-				if (ScoreType == "Placement" || ScoreType == "None") EnemyScore = -1;
+				if (ScoreType is "Placement" or "None") EnemyScore = -1;
 				if (ScoreType == "None") Score = -1;
 				if (ScoreType == "Score") Description = "";
 
-				if (EditMode) TrackingDataHelper.EditHistoryEntry(SUUID, HUUID, new HistoryEntry(HUUID, Time, GameMode, Amount, Map, Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss));
-				else TrackingDataHelper.AddHistoryEntry(SUUID, new HistoryEntry(HUUID, Time, GameMode, Amount, Map, Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss));
+				if (EditMode) Tracking.EditHistoryEntry(GroupUuid, new HistoryEntry(GroupUuid, Uuid, Time, GameMode, Amount, Map, Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss));
+				else Tracking.AddHistoryEntry(new HistoryEntry(GroupUuid, Uuid, Time, GameMode, Amount, Map, Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss));
 				Close();
 			});
 		}
@@ -150,18 +150,17 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			Title = title;
 			EditMode = editMode;
 
-			if (!EditMode)
-				InitData();
+			if (!editMode) InitData();
 		}
 
-		public void InitData()
+		private void InitData()
 		{
-			Time = DateTimeOffset.Now.ToUnixTimeSeconds();
+			Time = TimeHelper.NowTimestamp;
 
-			SUUID = TrackingDataHelper.CurrentSeasonUUID;
-			HUUID = Guid.NewGuid().ToString();
+			GroupUuid = "";
+			Uuid = Guid.NewGuid().ToString();
 			Description = "";
-			GameMode = Constants.Gamemodes[0];
+			GameMode = Constants.GameModes[0];
 			Map = Constants.Maps[0];
 			Amount = 0;
 			Score = 0;
@@ -172,10 +171,10 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			IsInitialized = true;
 		}
 
-		public void SetData(HistoryEntryData data)
+		public void SetData(HistoryEntry data)
 		{
-			SUUID = data.SUUID;
-			HUUID = data.HUUID;
+			GroupUuid = data.GroupUuid;
+			Uuid = data.Uuid;
 			GameMode = data.GameMode;
 			Score = data.Score;
 			EnemyScore = data.EnemyScore;

@@ -1,51 +1,28 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using VexTrack.Core;
+using VexTrack.Core.Helper;
+using VexTrack.Core.Model.WPF;
 
 namespace VexTrack.MVVM.ViewModel.Popups
 {
 	class UpdateAvailablePopupViewModel : BasePopupViewModel
 	{
-		public RelayCommand OnCancelClicked { get; set; }
-		public RelayCommand OnUpdateClicked { get; set; }
-		public bool ChangelogVisible { get => Changelog.Count != 0; }
-		public bool WarningsVisible { get => Warnings.Count != 0; }
+		public RelayCommand OnCancelClicked { get; }
+		public RelayCommand OnUpdateClicked { get; }
+		public bool ChangelogVisible => Changelog.Count != 0;
+		public bool WarningsVisible => Warnings.Count != 0;
 
-		private ObservableCollection<string> _changelog = new();
-		public ObservableCollection<string> Changelog
-		{
-			get => _changelog;
-			set
-			{
-				if (_changelog != value)
-				{
-					_changelog = value;
-					OnPropertyChanged();
-				}
-			}
-		}
-
-		private ObservableCollection<string> _warnings = new();
-		public ObservableCollection<string> Warnings
-		{
-			get => _warnings;
-			set
-			{
-				if (_warnings != value)
-				{
-					_warnings = value;
-					OnPropertyChanged();
-				}
-			}
-		}
+		public ObservableCollection<string> Changelog { get; } = new();
+		public ObservableCollection<string> Warnings { get; } = new();
 
 		private string _currentVersion;
 		private string _newVersion;
 
 		public string CurrentVersion
 		{
-			get { return _currentVersion; }
-			set
+			get => _currentVersion;
+			private set
 			{
 				_currentVersion = value;
 				OnPropertyChanged();
@@ -54,8 +31,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 		public string NewVersion
 		{
-			get { return _newVersion; }
-			set
+			get => _newVersion;
+			private set
 			{
 				_newVersion = value;
 				OnPropertyChanged();
@@ -65,8 +42,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public UpdateAvailablePopupViewModel()
 		{
 			CanCancel = true;
-			OnCancelClicked = new RelayCommand(o => { Close(); });
-			OnUpdateClicked = new RelayCommand(o =>
+			OnCancelClicked = new RelayCommand(_ => { Close(); });
+			OnUpdateClicked = new RelayCommand(_ =>
 			{
 				UpdateHelper.GetUpdate();
 				Close();
@@ -81,8 +58,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			CurrentVersion = Constants.Version;
 			NewVersion = newVersion;
 
-			foreach (string c in changelog) Changelog.Add(c);
-			foreach (string w in warnings) Warnings.Add(w);
+			foreach (var c in changelog) Changelog.Add(c);
+			foreach (var w in warnings) Warnings.Add(w);
 
 			IsInitialized = true;
 		}

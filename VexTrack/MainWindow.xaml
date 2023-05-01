@@ -3,20 +3,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:VexTrack"
 		xmlns:vm="clr-namespace:VexTrack.MVVM.ViewModel"
-		xmlns:conv="clr-namespace:VexTrack.MVVM.Converter"
-        mc:Ignorable="d"
+		xmlns:util="clr-namespace:VexTrack.Core.Helper"
+		mc:Ignorable="d"
         Title="VexTrack"
 		Height="812" Width="872"
 		MinHeight="812" MinWidth="872"
 		WindowStyle="None"
 		Background="Transparent"
 		AllowsTransparency="True">
-
-	<Window.Resources>
-		<conv:NullToVisibilityConverter x:Key="NullToVisibleConv"/>
-	</Window.Resources>
 	
 	<Window.DataContext>
 		<vm:MainViewModel/>
@@ -27,7 +22,7 @@
 	</WindowChrome.WindowChrome>
 
 	<Grid>
-		<Border Background="{DynamicResource Background}"
+		<Border Background="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.BackgroundBrush}"
 				CornerRadius="8"
 				x:Name="ShadowBorder"
 				Margin="16">
@@ -65,8 +60,7 @@
 								Orientation="Horizontal"
 								Height="32">
 					
-						<Button Grid.Column="2"
-								Click="OnMinimizeButtonClick"
+						<Button Click="OnMinimizeButtonClick"
 								RenderOptions.EdgeMode="Unspecified"
 								Style="{DynamicResource TitleBarButtonStyle}">
 							<Path Width="46"
@@ -77,9 +71,8 @@
 								  RenderOptions.EdgeMode="Aliased"/>
 						</Button>
 					
-						<Button Name="maximizeButton"
-								Grid.Column="3"
-								Click="OnMaximizeRestoreButtonClick"
+						<Button Name="MaximizeButton"
+						        Click="OnMaximizeRestoreButtonClick"
 								Style="{DynamicResource TitleBarButtonStyle}">
 							<Path Width="46"
 								  Height="32"
@@ -88,8 +81,7 @@
 								  StrokeThickness="1" />
 						</Button>
 					
-						<Button Name="restoreButton"
-								Grid.Column="3"
+						<Button Name="RestoreButton"
 								Click="OnMaximizeRestoreButtonClick"
 								Style="{DynamicResource TitleBarButtonStyle}">
 							<Path Width="46"
@@ -99,8 +91,7 @@
 								  StrokeThickness="1" />
 						</Button>
 					
-						<Button Grid.Column="4"
-								Click="OnCloseButtonClick"
+						<Button Click="OnCloseButtonClick"
 								Style="{DynamicResource TitleBarCloseButtonStyle}">
 							<Path Width="46"
 								  Height="32"
@@ -111,12 +102,12 @@
 					</StackPanel>
 				</Grid>
 			
-				<!-- Navgation Bar Background -->
+				<!-- Navigation Bar Background -->
 			
 				<Border CornerRadius="8"
-						Background="{DynamicResource Shade}"
+						Background="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ShadeBrush}"
 						BorderThickness="0"
-						Grid.RowSpan="4">
+						Grid.Row="0" Grid.RowSpan="4" Grid.Column="0">
 					<Border.Effect>
 						<DropShadowEffect BlurRadius="16"
 										  ShadowDepth="2"
@@ -128,7 +119,7 @@
 				<!-- Logo -->
 			
 				<Grid Margin="16, 32"
-					  Grid.RowSpan="2">
+				      Grid.Row="0" Grid.RowSpan="2" Grid.Column="0">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="64"/>
 						<ColumnDefinition/>
@@ -140,18 +131,18 @@
 					</Grid.RowDefinitions>
 
 					<Image Grid.RowSpan="2"
-						   Source="/Images/VexTrack_64.png"
+						   Source="Resources/Images/VexTrack_64.png"
 						   Width="64"
 						   Height="64"/>
 
-					<TextBlock Grid.Column="1"
-							   Text="VexTrack"
-							   VerticalAlignment="Bottom"
-							   HorizontalAlignment="Left"
-							   FontSize="20"
-							   FontWeight="Bold"
-							   Margin="16, 0"
-							   Foreground="{DynamicResource Foreground}"/>
+					<TextBlock Grid.Row="0" Grid.Column="1"
+					           Text="VexTrack"
+					           VerticalAlignment="Bottom"
+					           HorizontalAlignment="Left"
+					           FontSize="20"
+					           FontWeight="Bold"
+					           Margin="16, 0"
+					           Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"/>
 
 					<TextBlock Grid.Column="1"
 							   Grid.Row="1"
@@ -160,40 +151,31 @@
 							   HorizontalAlignment="Left"
 							   FontSize="14"
 							   Margin="16, 0"
-							   Foreground="{DynamicResource Foreground}"/>
+							   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"/>
 				</Grid>
 
 				<!-- Upper Navigation Bar -->
 
-				<StackPanel Grid.Row="2"
-							Margin="16, 0">
+				<StackPanel Grid.Row="2" Grid.Column="0"
+				            Margin="16, 0">
 
-					<RadioButton Content="Dashboard"
+					<RadioButton Content="Home"
 								 GroupName="Menu"
 								 Height="62"
 								 Margin="0, 0, 0, 16"
 								 FontSize="16"
 								 IsChecked="True"
-								 Tag="{Binding Source={StaticResource DashboardIcon}, Path=Data}"
+								 Tag="{Binding Source={StaticResource HomeIcon}, Path=Data}"
 								 Command="{Binding DashboardViewCommand}"
 								 Style="{DynamicResource MenuButtonTheme}"/>
 
-					<RadioButton Content="Goals"
+					<RadioButton Content="Contracts"
 								 GroupName="Menu"
 								 Height="62"
 								 Margin="0, 0, 0, 16"
 								 FontSize="16"
-								 Tag="{Binding Source={StaticResource GoalIcon}, Path=Data}"
+								 Tag="{Binding Source={StaticResource ContractsIcon}, Path=Data}"
 								 Command="{Binding GoalViewCommand}"
-								 Style="{DynamicResource MenuButtonTheme}"/>
-
-					<RadioButton Content="Seasons"
-								 GroupName="Menu"
-								 Height="62"
-								 Margin="0, 0, 0, 16"
-								 FontSize="16"
-								 Tag="{Binding Source={StaticResource SeasonIcon}, Path=Data}"
-								 Command="{Binding SeasonViewCommand}"
 								 Style="{DynamicResource MenuButtonTheme}"/>
 
 					<RadioButton Content="History"
@@ -208,60 +190,37 @@
 
 				<!-- Lower Navigation Bar -->
 			
-				<StackPanel Grid.Row="3"
-							Margin="16, 0">
-
-                    <Grid Margin="0, 0, 0, 16">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition/>
-							<ColumnDefinition/>
-						</Grid.ColumnDefinitions>
-					
-						<TextBlock Text="Epilogue"
-								   FontSize="14"
-								   VerticalAlignment="Center"
-								   Foreground="{DynamicResource Foreground}"/>
-
-						<CheckBox Grid.Column="1"
-								  HorizontalAlignment="Right"
-								  VerticalAlignment="Center"
-								  Height="30"
-								  Width="50"
-								  FontSize="14"
-								  IsEnabled="{Binding EpilogueButtonEnabled}"
-								  IsChecked="{Binding Epilogue, UpdateSourceTrigger=PropertyChanged}"
-								  Style="{DynamicResource CheckBoxTheme}"/>
-					</Grid>
+				<StackPanel Grid.Row="3" Grid.Column="0"
+				            Margin="16, 0">
 				
 					<RadioButton Content="Settings"
-								 GroupName="Menu"
-								 Height="62"
-								 Margin="0, 0, 0, 16"
-								 FontSize="16"
-								 Tag="{Binding Source={StaticResource SettingsIcon}, Path=Data}"
-								 Command="{Binding SettingsViewCommand}"
-								 Style="{DynamicResource MenuButtonTheme}"/>
+					             GroupName="Menu"
+					             Height="62"
+					             Margin="0, 0, 0, 16"
+					             FontSize="16"
+					             Tag="{Binding Source={StaticResource SettingsIcon}, Path=Data}"
+					             Command="{Binding SettingsViewCommand}"
+					             Style="{DynamicResource MenuButtonTheme}"/>
 				</StackPanel>
 
 				<!-- Content -->
 
                 <ContentControl Grid.Column="1"
 								Grid.Row="1"
-								Grid.RowSpan="4"
+								Grid.RowSpan="3"
 								Content="{Binding CurrentView}"/>
             </Grid>
 		</Border>
 
 		<!-- Popups -->
 
-		<Border Background="{DynamicResource Black}"
+		<Border Background="Black"
 				CornerRadius="8"
 				x:Name="PopupBorder"
 				Margin="16"
 				Opacity="0.75"
 				Visibility="{Binding CurrentPopup, Converter={StaticResource NullToVisibleConv}}"
-				MouseLeftButtonUp="PopupBorder_MouseLeftButtonUp">
-		</Border>
+				MouseLeftButtonUp="PopupBorder_MouseLeftButtonUp" />
 
 		<ContentControl Content="{Binding CurrentPopup}"/>
 	</Grid>

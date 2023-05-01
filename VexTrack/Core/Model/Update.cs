@@ -47,7 +47,7 @@ public static class Update
 		var packageStream = await packageResponse.Content.ReadAsStreamAsync();
 		var packageFileStream = File.Create(packageFile);
 		long packageTotalBytesRead = 0;
-		var startTime = DateTimeOffset.Now;
+		var startTime = TimeHelper.NowTime;
 
 		var i = 0;
 		for (var len = await packageStream.ReadAsync(buffer.AsMemory(0, 1024 * 1024)); len != 0; len = await packageStream.ReadAsync(buffer.AsMemory(0, 1024 * 1024)))
@@ -61,7 +61,7 @@ public static class Update
 
 			if (i % 15 == 0)
 			{
-				var downloadSpeed = packageTotalBytesRead / (DateTimeOffset.Now - startTime).TotalSeconds;
+				var downloadSpeed = packageTotalBytesRead / (TimeHelper.NowTime - startTime).TotalSeconds;
 				updateDownloadPopup.SetDownloadSpeed(downloadSpeed);
 			}
 			i++;
@@ -77,7 +77,7 @@ public static class Update
 		var updaterStream = await updaterResponse.Content.ReadAsStreamAsync();
 		var updaterFileStream = File.Create(updaterFile);
 		long updaterTotalBytesRead = 0;
-		startTime = DateTimeOffset.Now;
+		startTime = TimeHelper.NowTime;
 
 		i = 0;
 		for (var len = await updaterStream.ReadAsync(buffer.AsMemory(0, 1024 * 1024)); len != 0; len = await updaterStream.ReadAsync(buffer.AsMemory(0, 1024 * 1024)))
@@ -91,7 +91,7 @@ public static class Update
 
 			if (i % 15 == 0)
 			{
-				var downloadSpeed = updaterTotalBytesRead / (DateTimeOffset.Now - startTime).TotalSeconds;
+				var downloadSpeed = updaterTotalBytesRead / (TimeHelper.NowTime - startTime).TotalSeconds;
 				updateDownloadPopup.SetDownloadSpeed(downloadSpeed);
 			}
 			i++;

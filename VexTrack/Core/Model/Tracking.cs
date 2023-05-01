@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json.Linq;
@@ -38,12 +37,11 @@ namespace VexTrack.Core.Model
 
 		private static void InitData()
 		{
-			var todayTimestamp = ((DateTimeOffset)DateTimeOffset.Now.Date.ToLocalTime()).ToUnixTimeSeconds();
 			List<Contract> contracts = new();
 			List<Season> seasons = new();
 			List<HistoryGroup> history = new();
 
-			SetData(0, todayTimestamp, contracts, seasons, history);
+			SetData(0, TimeHelper.TodayTimestamp, contracts, seasons, history);
 		}
 		
 		
@@ -185,7 +183,7 @@ namespace VexTrack.Core.Model
 				}
 
 				sUuid ??= Guid.NewGuid().ToString();
-				seasons.Add(new Season(sUuid, name, DateTimeOffset.Parse(endDate).ToUnixTimeSeconds(), activeBpLevel, cXp));
+				seasons.Add(new Season(sUuid, name, TimeHelper.StringToTimestamp(endDate), activeBpLevel, cXp));
 			}
 			
 			foreach(var hg in history)
@@ -198,7 +196,7 @@ namespace VexTrack.Core.Model
 			return (seasons, sortedHistory);
 		}
 		
-		private static List<Season> LoadSeasonsV2(JObject jo, List<HistoryGroup> history)
+		private static List<Season> LoadSeasonsV2(JObject jo)
 		{
 			List<Season> seasons = new();
 			foreach (var jTokenSeason in jo["seasons"])
@@ -235,8 +233,7 @@ namespace VexTrack.Core.Model
 			streakEntries = streakEntries.OrderByDescending(t => t.Date).ToList();
 			
 			// Check if current day is already listed and remove it from the list if yes
-			var todayTimestamp = ((DateTimeOffset)DateTimeOffset.Now.Date.ToLocalTime()).ToUnixTimeSeconds();
-			if(streakEntries.First().Date == todayTimestamp) streakEntries.RemoveAt(0);
+			if(streakEntries.First().Date == TimeHelper.TodayTimestamp) streakEntries.RemoveAt(0);
 
 			return (streakEntries.TakeWhile(entry => entry.Status != "None").Count(), streakEntries.First().Date);
 		}
@@ -378,7 +375,7 @@ namespace VexTrack.Core.Model
 				case "v2":
 					(streak, lastStreakUpdateTimestamp) = LoadStreakV2(jo);
 					history = LoadHistoryV2(jo);
-					seasons = LoadSeasonsV2(jo, history);
+					seasons = LoadSeasonsV2(jo);
 					contracts = LoadContractsV2(jo);
 					break;
 			}
@@ -440,7 +437,7 @@ namespace VexTrack.Core.Model
 				{
 					{ "uuid", season.Uuid },
 					{ "name", season.Name },
-					{ "endDate", season.EndDate },
+					{ "endDate", season.EndTimestamp },
 					{ "activeBPLevel", season.ActiveBpLevel },
 					{ "cXP", season.Cxp }
 				};
@@ -594,12 +591,12 @@ namespace VexTrack.Core.Model
 		
 		public static void AddHistoryEntry(HistoryEntry data)
 		{
-			var seasonUuid = Seasons.Find(s => data.Time > s.StartDate && data.Time < s.EndDate)?.Uuid;
+			var seasonUuid = Seasons.Find(s => data.Time > s.StartTimestamp && data.Time < s.EndTimestamp)?.Uuid;
 
 			if (string.IsNullOrEmpty(seasonUuid))
 			{
 				seasonUuid = CurrentSeasonData.Uuid;
-				data.Time = DateTimeOffset.Now.ToLocalTime().ToUnixTimeSeconds();
+				data.Time = TimeHelper.NowTimestamp;
 			}
 			
 			var date = TimeHelper.IsolateTimestampDate(data.Time);
@@ -680,7 +677,7 @@ namespace VexTrack.Core.Model
 		public static void EndSeason(string uuid)
 		{
 			// Set end date to today
-			Seasons[Seasons.FindIndex(s => s.Uuid == uuid)].EndDate = ((DateTimeOffset)DateTime.Today.ToLocalTime()).ToUnixTimeSeconds();
+			Seasons[Seasons.FindIndex(s => s.Uuid == uuid)].EndTimestamp = TimeHelper.TodayTimestamp;
 			CallUpdate();
 		}
 

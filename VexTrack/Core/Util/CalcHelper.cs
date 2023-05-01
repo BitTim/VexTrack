@@ -32,7 +32,7 @@ namespace VexTrack.Core.Util
 			var dailyAmounts = new List<int>();
 
 			var historyIdx = 0;
-			var startDate = DateTimeOffset.FromUnixTimeSeconds(startTimestamp);
+			var startDate = TimeHelper.TimestampToDate(startTimestamp);
 
 			for (var i = 0; i < duration + 1; i++)
 			{
@@ -40,7 +40,7 @@ namespace VexTrack.Core.Util
 
 				if(historyIdx < history.Count) {
 					var currDate = startDate.AddDays(i).ToLocalTime().Date;
-					while (DateTimeOffset.FromUnixTimeSeconds(history[historyIdx].Time).ToLocalTime().Date == currDate)
+					while(TimeHelper.TimestampToDate(history[historyIdx].Time) == currDate)
 					{
 						amount += history[historyIdx++].Amount;
 						if (historyIdx >= history.Count) break;

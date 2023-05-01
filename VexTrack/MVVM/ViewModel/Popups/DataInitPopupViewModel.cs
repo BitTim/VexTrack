@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using VexTrack.Core;
 using VexTrack.Core.Model;
 using VexTrack.Core.Model.WPF;
@@ -12,7 +11,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		public RelayCommand OnDoneClicked { get; }
 
 		private string _name;
-		private long _endDate;
+		private long _endTimestamp;
 		private double _progress;
 		private int _collected;
 		private int _activeBpLevel;
@@ -26,12 +25,12 @@ namespace VexTrack.MVVM.ViewModel.Popups
 				OnPropertyChanged();
 			}
 		}
-		public long EndDate
+		public long EndTimestamp
 		{
-			get => _endDate;
+			get => _endTimestamp;
 			set
 			{
-				_endDate = value;
+				_endTimestamp = value;
 				OnPropertyChanged();
 				OnPropertyChanged(nameof(RemainingDays));
 			}
@@ -72,7 +71,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 				OnPropertyChanged(nameof(Progress));
 			}
 		}
-		public int RemainingDays => (DateTimeOffset.FromUnixTimeSeconds(EndDate).ToLocalTime().Date - DateTimeOffset.Now.Date.ToLocalTime()).Days;
+		public int RemainingDays => (TimeHelper.TimestampToDate(EndTimestamp) - TimeHelper.TodayDate).Days;
 
 		public DataInitPopupViewModel()
 		{
@@ -83,12 +82,11 @@ namespace VexTrack.MVVM.ViewModel.Popups
 				CanCancel = true;
 				MainVm.InterruptUpdate = false;
 
-				List<HistoryEntry> initList = new();
 				var totalCollectedXp = CalcHelper.CalcTotalCollected(ActiveBpLevel, Collected);
 				var seasonUuid = Guid.NewGuid().ToString();
 				
-				Tracking.AddSeason(new Season(seasonUuid, Name, EndDate, ActiveBpLevel, Collected));
-				Tracking.AddHistoryEntry(new HistoryEntry("", Guid.NewGuid().ToString(), DateTimeOffset.Now.AddDays(-1).ToLocalTime().ToUnixTimeSeconds(), "Custom", totalCollectedXp, "", "Initialization", -1, -1, false, false));
+				Tracking.AddSeason(new Season(seasonUuid, Name, EndTimestamp, ActiveBpLevel, Collected));
+				Tracking.AddHistoryEntry(new HistoryEntry("", Guid.NewGuid().ToString(), TimeHelper.TodayDate.AddDays(-1).ToUnixTimeSeconds(), "Custom", totalCollectedXp, "", "Initialization", -1, -1, false, false));
 
 				Close();
 			});
@@ -103,7 +101,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 		public void InitData()
 		{
-			EndDate = DateTimeOffset.Now.AddDays(61).ToUnixTimeSeconds();
+			EndTimestamp = TimeHelper.TodayDate.AddDays(61).ToUnixTimeSeconds();
 
 			Name = "";
 			Collected = 0;

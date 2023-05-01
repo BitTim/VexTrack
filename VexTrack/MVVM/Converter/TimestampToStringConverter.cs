@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
+using VexTrack.Core.Util;
 
 namespace VexTrack.MVVM.Converter
 {
@@ -19,7 +20,7 @@ namespace VexTrack.MVVM.Converter
 					return "Never";			// -2 is passed when no timestamp could be calculated because average is 0
 			}
 
-			var dt = DateTimeOffset.FromUnixTimeSeconds(timestamp).ToLocalTime();
+			var dt = TimeHelper.TimestampToTime(timestamp);
 
 			var str = dt.ToString(noTime.ToLower() == "true" ? "d" : "g");
 			if (str == "01.01.0001") str = "-";
@@ -32,8 +33,8 @@ namespace VexTrack.MVVM.Converter
 			var str = value as string;
 
 			return DateTimeOffset.TryParse(str, out var dto) == false
-				? DateTimeOffset.Now.ToUnixTimeSeconds()
-				: dto.ToUnixTimeSeconds();
+				? TimeHelper.NowTimestamp
+				: dto.ToLocalTime().ToUnixTimeSeconds();
 		}
 	}
 }

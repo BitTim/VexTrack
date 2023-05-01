@@ -110,7 +110,7 @@
 							 Height="22"
 							 Style="{DynamicResource TextBoxTheme}">
 						<TextBox.Text>
-							<Binding Path="EndDate"
+							<Binding Path="EndTimestamp"
 									 Converter="{StaticResource TimestampToStringConverter}"
 									 ConverterParameter="True"
 									 ValidatesOnNotifyDataErrors="True"

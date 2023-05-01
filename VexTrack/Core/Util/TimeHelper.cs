@@ -4,14 +4,30 @@ namespace VexTrack.Core.Util;
 
 public static class TimeHelper
 {
-    public static long IsolateTimestampDate(long timestamp)
-    {
-        var dt = DateTimeOffset.FromUnixTimeSeconds(timestamp).ToLocalTime().Date;
-        return ((DateTimeOffset)dt).ToUnixTimeSeconds();
-    }
+    public static long NowTimestamp => DateTimeOffset.Now.ToLocalTime().ToUnixTimeSeconds();
+    public static DateTimeOffset NowTime => DateTimeOffset.Now.ToLocalTime();
+    public static long TodayTimestamp => IsolateTimestampDate(NowTimestamp);
+    public static DateTimeOffset TodayDate => DateTime.Today.ToLocalTime();
+    
+    
 
-    public static DateTimeOffset TimestampToDto(long timestamp)
+    public static DateTimeOffset TimestampToTime(long timestamp)
     {
         return DateTimeOffset.FromUnixTimeSeconds(timestamp).ToLocalTime();
+    }
+    
+    public static DateTimeOffset TimestampToDate(long timestamp)
+    {
+        return TimestampToTime(timestamp).Date;
+    }
+    
+    public static long IsolateTimestampDate(long timestamp)
+    {
+        return TimestampToDate(timestamp).ToUnixTimeSeconds();
+    }
+
+    public static long StringToTimestamp(string str)
+    {
+        return DateTimeOffset.Parse(str).ToLocalTime().ToUnixTimeSeconds();
     }
 }

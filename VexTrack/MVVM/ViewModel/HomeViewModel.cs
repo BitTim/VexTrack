@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Windows.Media;
 using LiveCharts;
 using LiveCharts.Defaults;
@@ -213,7 +212,7 @@ namespace VexTrack.MVVM.ViewModel
 			Streak = data.Streak;
 			Segments = data.Segments;
 
-			StreakColor = Tracking.LastStreakUpdateTimestamp == ((DateTimeOffset)DateTimeOffset.Now.Date.ToLocalTime()).ToUnixTimeSeconds()
+			StreakColor = Tracking.LastStreakUpdateTimestamp == TimeHelper.TodayTimestamp
 				? SettingsHelper.Data.Theme.AccentBrush
 				: SettingsHelper.Data.Theme.ShadeBrush;
 
@@ -241,8 +240,8 @@ namespace VexTrack.MVVM.ViewModel
 		private (int, int) CalcGraph()
 		{
 			var currSeason = Tracking.CurrentSeasonData;
-			var today = DateTimeOffset.Now.ToLocalTime().Date;
-			var dayIndex = (today - DateTimeOffset.FromUnixTimeSeconds(currSeason.StartDate)).Days;
+			var today = TimeHelper.TodayDate;
+			var dayIndex = (today - TimeHelper.TimestampToDate(currSeason.StartTimestamp)).Days;
 			
 			var seriesCollection = currSeason.GraphSeriesCollection;
 			var dailySeriesCollection = currSeason.GetDailyGraphSeriesCollection(dayIndex, Total);

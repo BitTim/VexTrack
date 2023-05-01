@@ -11,8 +11,8 @@ public class Season
 {
     public string Uuid { get; set; }
     public string Name { get; set; }
-    public long StartDate => ((DateTimeOffset)DateTimeOffset.FromUnixTimeSeconds(HistoryHelper.GetLastFromSeason(Uuid).Time).Date.ToLocalTime()).ToUnixTimeSeconds(); // TODO: Change to API data with #69
-    public long EndDate { get; set; }
+    public long StartTimestamp => TimeHelper.IsolateTimestampDate(HistoryHelper.GetFirstFromSeason(Uuid).Time); // TODO: Change to API data with #69
+    public long EndTimestamp { get; set; }
     public int Collected => CalcHelper.CalcTotalCollected(ActiveBpLevel, Cxp); // TODO: Replace ActiveBpLevel and Cxp with #69
     public int ActiveBpLevel { get; set; }
     public int Cxp { get; set; }
@@ -28,13 +28,13 @@ public class Season
     public double Progress => CalcHelper.CalcProgress(Total, Collected);
     public int BufferDays => (int)Math.Ceiling(Duration * (SettingsHelper.Data.BufferPercentage / 100));
 
-    private bool IsActive => DateTimeOffset.Now.ToLocalTime().ToUnixTimeSeconds() < EndDate;
+    private bool IsActive => TimeHelper.NowTimestamp < EndTimestamp;
     public string Status => GetStatus();
     
     private List<Goal> Goals { get; }
     public ObservableCollection<Goal> ObservableGoals => new(Goals);
     public SeasonExtremes Extremes => GetExtremes();
-    public SeriesCollection GraphSeriesCollection => GraphCalcHelper.CalcGraphs(Total, HistoryHelper.GetLastFromSeason(Uuid).Amount, StartDate, Duration, BufferDays, RemainingDays, Uuid);
+    public SeriesCollection GraphSeriesCollection => GraphCalcHelper.CalcGraphs(Total, HistoryHelper.GetFirstFromSeason(Uuid).Amount, StartTimestamp, Duration, BufferDays, RemainingDays, Uuid);
 
     
     public string NextUnlockName => GetNextUnlock()?.Name ?? "None";
@@ -45,13 +45,13 @@ public class Season
     
     public Season(string uuid, string name, long endDate, int activeBpLevel, int cXp)
     {
-        (Uuid, Name, EndDate, ActiveBpLevel, Cxp) = (uuid, name, endDate, activeBpLevel, cXp);
+        (Uuid, Name, EndTimestamp, ActiveBpLevel, Cxp) = (uuid, name, endDate, activeBpLevel, cXp);
         Goals = GetGoals();
     }
 
     public SeriesCollection GetDailyGraphSeriesCollection(int dayIndex, int dailyIdeal)
     {
-        return GraphCalcHelper.CalcDailyGraphs(Total, dayIndex, StartDate, Duration, dailyIdeal, Average, Uuid);
+        return GraphCalcHelper.CalcDailyGraphs(Total, dayIndex, StartTimestamp, Duration, dailyIdeal, Average, Uuid);
     }
 
     
@@ -59,8 +59,8 @@ public class Season
     
     private int GetRemainingDays()
     {
-        var endDate = DateTimeOffset.FromUnixTimeSeconds(EndDate).ToLocalTime().Date;
-        DateTimeOffset today = DateTimeOffset.Now.ToLocalTime().Date;
+        var endDate = TimeHelper.TimestampToDate(EndTimestamp);
+        var today = TimeHelper.TodayDate;
 
         var remainingDays = (endDate - today).Days;
         if ((endDate - today).Hours > 12) { remainingDays += 1; }
@@ -71,8 +71,8 @@ public class Season
 
     private int GetDuration()
     {
-        DateTimeOffset endDate = DateTimeOffset.FromUnixTimeSeconds(EndDate).ToLocalTime().Date;
-        var startDate = DateTimeOffset.FromUnixTimeSeconds(StartDate);
+        var endDate = TimeHelper.TimestampToDate(EndTimestamp);
+        var startDate = TimeHelper.TimestampToDate(StartTimestamp);
 
         var duration = (endDate - startDate).Days;
         if ((endDate - startDate).Hours > 12) { duration += 1; }
@@ -122,10 +122,10 @@ public class Season
         var extremes = new SeasonExtremes(0, 0);
         if (HistoryHelper.GetCountFromSeason(Uuid) <= 0) return extremes;
 
-        var prevDate = (DateTimeOffset) TimeHelper.TimestampToDto(StartDate).Date;
+        var prevDate = TimeHelper.TimestampToDate(StartTimestamp);
         
-        extremes.StrongestDayAmount = HistoryHelper.GetLastFromSeason(Uuid).Amount;
-        extremes.WeakestDayAmount = HistoryHelper.GetLastFromSeason(Uuid).Amount;
+        extremes.StrongestDayAmount = HistoryHelper.GetFirstFromSeason(Uuid).Amount;
+        extremes.WeakestDayAmount = HistoryHelper.GetFirstFromSeason(Uuid).Amount;
         extremes.StrongestDayTimestamp = prevDate.ToUnixTimeSeconds();
         extremes.WeakestDayTimestamp = prevDate.ToUnixTimeSeconds();
 
@@ -135,7 +135,7 @@ public class Season
         {
             foreach (var he in hg.Entries)
             {
-                var currDate = DateTimeOffset.FromUnixTimeSeconds(he.Time).ToLocalTime().Date;
+                var currDate = TimeHelper.TimestampToDate(he.Time);
                 if (currDate == prevDate)
                 {
                     currAmount += he.Amount;

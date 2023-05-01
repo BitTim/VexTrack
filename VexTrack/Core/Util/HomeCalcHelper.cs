@@ -15,11 +15,11 @@ namespace VexTrack.Core.Util
 			var idealRemainingDays = currentSeasonData.RemainingDays - currentSeasonData.BufferDays + 1;
 			if (idealRemainingDays > -currentSeasonData.BufferDays && idealRemainingDays <= 0) idealRemainingDays = 1;
 
-			var today = DateTimeOffset.Now.ToLocalTime().Date;
-			var dayIndex = (today - DateTimeOffset.FromUnixTimeSeconds(currentSeasonData.StartDate)).Days;
+			var today = TimeHelper.TodayDate;
+			var dayIndex = (today - TimeHelper.TimestampToDate(currentSeasonData.StartTimestamp)).Days;
 			if (dayIndex < 0 || dayIndex >= currentSeasonData.Duration) return ret;
 
-			var collectedPerDay = CalcHelper.CalcCollectedPerDay(currentSeasonData.StartDate, HistoryHelper.GetAllEntriesFromSeason(Tracking.CurrentSeasonData.Uuid),
+			var collectedPerDay = CalcHelper.CalcCollectedPerDay(currentSeasonData.StartTimestamp, HistoryHelper.GetAllEntriesFromSeason(Tracking.CurrentSeasonData.Uuid),
 				currentSeasonData.Duration);
 			var totalToday = (int)Math.Ceiling((currentSeasonData.Remaining + collectedPerDay[dayIndex]) /
 			                                   (double)idealRemainingDays);
@@ -36,21 +36,21 @@ namespace VexTrack.Core.Util
 			ret.Progress = CalcHelper.CalcProgress(ret.Total, ret.Collected);
 			ret.Segments = segments;
 
-			if ((today - DateTimeOffset.FromUnixTimeSeconds(Tracking.LastStreakUpdateTimestamp)).Days > 1)
+			if ((today - TimeHelper.TimestampToDate(Tracking.LastStreakUpdateTimestamp)).Days > 1)
 				Tracking.Streak = 0;
 			else if (collectedPerDay[dayIndex] > 0 &&
-			         !DateTimeOffset.FromUnixTimeSeconds(Tracking.LastStreakUpdateTimestamp)
+			         !TimeHelper.TimestampToDate(Tracking.LastStreakUpdateTimestamp)
 				         .Equals(today)) // When streak was not fulfilled today, but is now fulfilled, update
 			{
 				Tracking.Streak++;
-				Tracking.LastStreakUpdateTimestamp = ((DateTimeOffset)today).ToUnixTimeSeconds();
+				Tracking.LastStreakUpdateTimestamp = today.ToUnixTimeSeconds();
 			}
 			else if (collectedPerDay[dayIndex] <= 0 &&
-			         DateTimeOffset.FromUnixTimeSeconds(Tracking.LastStreakUpdateTimestamp)
+			         TimeHelper.TimestampToDate(Tracking.LastStreakUpdateTimestamp)
 				         .Equals(today)) // If streak was fulfilled today, but is no longer, update
 			{
 				Tracking.Streak--;
-				Tracking.LastStreakUpdateTimestamp = ((DateTimeOffset)today.AddDays(-1)).ToUnixTimeSeconds();
+				Tracking.LastStreakUpdateTimestamp = today.AddDays(-1).ToUnixTimeSeconds();
 			}
 
 			ret.Streak = Tracking.Streak;

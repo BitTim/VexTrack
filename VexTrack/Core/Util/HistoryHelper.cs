@@ -16,7 +16,7 @@ public static class HistoryHelper
         return GetFromSeason(seasonUuid).Count;
     }
     
-    public static HistoryEntry GetLastFromSeason(string seasonUuid)
+    public static HistoryEntry GetFirstFromSeason(string seasonUuid)
     {
         return GetFromSeason(seasonUuid).Last().Entries.Last();
     }

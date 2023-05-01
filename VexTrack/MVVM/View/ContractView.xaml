@@ -65,7 +65,7 @@
 							                         Progress="{Binding Progress}"
 							                         DailyAverage="{Binding Average}"
 							                         Duration="{Binding Duration}"
-							                         EndDateTimestamp="{Binding EndDate}"
+							                         EndTimestamp="{Binding EndTimestamp}"
 							                         StrongestDayAmount="{Binding Extremes.StrongestDayAmount}"
 							                         StrongestDayTimestamp="{Binding Extremes.StrongestDayTimestamp}"
 							                         WeakestDayAmount="{Binding Extremes.WeakestDayAmount}"
@@ -111,7 +111,7 @@
 							                           Goals="{Binding ObservableGoals}"
 							                           Color="{Binding Color}"
 							                           CompletionForecastDays="{Binding CompletionForecastDays}"
-							                           CompletionDateTimestamp="{Binding CompletionDateTimestamp}"
+							                           CompletionTimestamp="{Binding CompletionTimestamp}"
 							                           NextUnlockName="{Binding NextUnlockName}"
 							                           NextUnlockProgress="{Binding NextUnlockProgress}"
 							                           NextUnlockRemaining="{Binding NextUnlockRemaining}"/>

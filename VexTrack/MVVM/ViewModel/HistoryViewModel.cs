@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Controls.Primitives;
 using VexTrack.Core.Model;
 using VexTrack.Core.Model.WPF;
 using VexTrack.Core.Util;

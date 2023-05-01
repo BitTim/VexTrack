@@ -19,7 +19,7 @@ public class ContractButtonModel : ToggleButton
     public static readonly DependencyProperty GoalsProperty = DependencyProperty.Register(nameof(Goals), typeof(ObservableCollection<Goal>), typeof(ContractButtonModel), new PropertyMetadata(new ObservableCollection<Goal>()));
     public static readonly DependencyProperty GoalDisplayHeightProperty = DependencyProperty.Register(nameof(GoalDisplayHeight), typeof(double), typeof(ContractButtonModel), new PropertyMetadata(72.0));
     public static readonly DependencyProperty CompletionForecastDaysProperty = DependencyProperty.Register(nameof(CompletionForecastDays), typeof(int), typeof(ContractButtonModel), new PropertyMetadata(0));
-    public static readonly DependencyProperty CompletionDateTimestampProperty = DependencyProperty.Register(nameof(CompletionDateTimestamp), typeof(long), typeof(ContractButtonModel), new PropertyMetadata((long) 0));
+    public static readonly DependencyProperty CompletionTimestampProperty = DependencyProperty.Register(nameof(CompletionTimestamp), typeof(long), typeof(ContractButtonModel), new PropertyMetadata((long) 0));
     
     public static readonly DependencyProperty NextUnlockNameProperty = DependencyProperty.Register(nameof(NextUnlockName), typeof(string), typeof(ContractButtonModel), new PropertyMetadata("None"));
     public static readonly DependencyProperty NextUnlockProgressProperty = DependencyProperty.Register(nameof(NextUnlockProgress), typeof(double), typeof(ContractButtonModel), new PropertyMetadata(0.0));
@@ -79,10 +79,10 @@ public class ContractButtonModel : ToggleButton
         set => SetValue(CompletionForecastDaysProperty, value);
     }
 
-    public long CompletionDateTimestamp
+    public long CompletionTimestamp
     {
-        get => (long)GetValue(CompletionDateTimestampProperty);
-        set => SetValue(CompletionDateTimestampProperty, value);
+        get => (long)GetValue(CompletionTimestampProperty);
+        set => SetValue(CompletionTimestampProperty, value);
     }
 
 

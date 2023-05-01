@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -121,8 +120,8 @@ namespace VexTrack.MVVM.ViewModel
 			UpdateHelper.CheckUpdateAsync();
 
 			Timer updateTimer = new(UpdateTimerCallback);
-			var now = DateTime.Now.ToLocalTime();
-			var midnight = DateTime.Today.ToLocalTime();
+			var now = TimeHelper.NowTime;
+			var midnight = TimeHelper.TodayDate;
 
 			if (now > midnight) midnight = midnight.AddDays(1).ToLocalTime();
 			var msUntilMidnight = (int)(midnight - now).TotalMilliseconds;

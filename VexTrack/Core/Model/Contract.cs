@@ -24,7 +24,7 @@ public class Contract
     public double NextUnlockProgress => GetNextUnlock()?.Progress ?? 100;
     public int NextUnlockRemaining => GetNextUnlock()?.Remaining ?? 0;
     public int CompletionForecastDays => GetCompletionForecastDays();
-    public long CompletionDateTimestamp => GetCompletionDateTimestamp();
+    public long CompletionTimestamp => GetCompletionTimestamp();
     public ObservableCollection<Goal> ObservableGoals => new(Goals);
     
 
@@ -52,10 +52,10 @@ public class Contract
         return (int)MathF.Ceiling((float)GetRemaining() / average);
     }
 
-    private long GetCompletionDateTimestamp()
+    private long GetCompletionTimestamp()
     {
         var nDays = CompletionForecastDays;
-        return nDays < 0 ? nDays : new DateTimeOffset(DateTime.Today.ToLocalTime().Date.AddDays(nDays)).ToUnixTimeSeconds();
+        return nDays < 0 ? nDays : TimeHelper.TodayDate.AddDays(nDays).ToUnixTimeSeconds();
     }
 
     private Goal GetNextUnlock()

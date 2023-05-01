@@ -161,7 +161,7 @@
                                                                FontWeight="Bold"
                                                                Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}" />
 
-                                                    <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=EndDateTimestamp, Converter={StaticResource TimestampToStringConverter}, ConverterParameter=True}"
+                                                    <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=EndTimestamp, Converter={StaticResource TimestampToStringConverter}, ConverterParameter=True}"
                                                                FontSize="14"
                                                                Margin="0, 0, 4, 0"
                                                                Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}" />

@@ -2,6 +2,7 @@ using System;
 using VexTrack.Core;
 using VexTrack.Core.Model;
 using VexTrack.Core.Model.WPF;
+using VexTrack.Core.Util;
 
 namespace VexTrack.MVVM.ViewModel.Popups
 {
@@ -154,7 +155,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 
 		private void InitData()
 		{
-			Time = DateTimeOffset.Now.ToUnixTimeSeconds();
+			Time = TimeHelper.NowTimestamp;
 
 			GroupUuid = "";
 			Uuid = Guid.NewGuid().ToString();

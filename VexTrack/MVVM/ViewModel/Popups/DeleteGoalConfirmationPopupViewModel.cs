@@ -1,22 +1,21 @@
 ﻿using VexTrack.Core.Model.WPF;
 
-namespace VexTrack.MVVM.ViewModel.Popups
+namespace VexTrack.MVVM.ViewModel.Popups;
+
+class DeleteGoalConfirmationPopupViewModel : BasePopupViewModel
 {
-	class DeleteGoalConfirmationPopupViewModel : BasePopupViewModel
+	public RelayCommand OnYesClicked { get; }
+	public RelayCommand OnNoClicked { get; }
+
+	public DeleteGoalConfirmationPopupViewModel()
 	{
-		public RelayCommand OnYesClicked { get; }
-		public RelayCommand OnNoClicked { get; }
+		CanCancel = true;
 
-		public DeleteGoalConfirmationPopupViewModel()
+		OnYesClicked = new RelayCommand(_ =>
 		{
-			CanCancel = true;
-
-			OnYesClicked = new RelayCommand(_ =>
-			{
-				// Delete here
-				Close();
-			});
-			OnNoClicked = new RelayCommand(_ => Close());
-		}
+			// Delete here
+			Close();
+		});
+		OnNoClicked = new RelayCommand(_ => Close());
 	}
 }

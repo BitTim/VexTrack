@@ -4,110 +4,109 @@ using VexTrack.Core.Helper;
 using VexTrack.Core.Model;
 using VexTrack.Core.Model.WPF;
 
-namespace VexTrack.MVVM.ViewModel.Popups
+namespace VexTrack.MVVM.ViewModel.Popups;
+
+class DataInitPopupViewModel : BasePopupViewModel
 {
-	class DataInitPopupViewModel : BasePopupViewModel
+	public RelayCommand OnDoneClicked { get; }
+
+	private string _name;
+	private long _endTimestamp;
+	private double _progress;
+	private int _collected;
+	private int _activeBpLevel;
+
+	public string Name
 	{
-		public RelayCommand OnDoneClicked { get; }
-
-		private string _name;
-		private long _endTimestamp;
-		private double _progress;
-		private int _collected;
-		private int _activeBpLevel;
-
-		public string Name
+		get => _name;
+		set
 		{
-			get => _name;
-			set
-			{
-				_name = value;
-				OnPropertyChanged();
-			}
+			_name = value;
+			OnPropertyChanged();
 		}
-		public long EndTimestamp
+	}
+	public long EndTimestamp
+	{
+		get => _endTimestamp;
+		set
 		{
-			get => _endTimestamp;
-			set
-			{
-				_endTimestamp = value;
-				OnPropertyChanged();
-				OnPropertyChanged(nameof(RemainingDays));
-			}
+			_endTimestamp = value;
+			OnPropertyChanged();
+			OnPropertyChanged(nameof(RemainingDays));
 		}
-		public double Progress
+	}
+	public double Progress
+	{
+		get => _progress;
+		set
 		{
-			get => _progress;
-			set
-			{
-				_progress = value;
-				OnPropertyChanged();
-			}
+			_progress = value;
+			OnPropertyChanged();
 		}
-		public int Collected
+	}
+	public int Collected
+	{
+		get => _collected;
+		set
 		{
-			get => _collected;
-			set
-			{
-				_collected = value;
+			_collected = value;
 
-				var maxForLevel = CalcHelper.CalcMaxForLevel(ActiveBpLevel);
-				if (_collected >= maxForLevel) _collected = maxForLevel - 1;
+			var maxForLevel = CalcHelper.CalcMaxForLevel(ActiveBpLevel);
+			if (_collected >= maxForLevel) _collected = maxForLevel - 1;
 
-				CalcProgress();
+			CalcProgress();
 
-				OnPropertyChanged();
-				OnPropertyChanged(nameof(Progress));
-			}
+			OnPropertyChanged();
+			OnPropertyChanged(nameof(Progress));
 		}
-		public int ActiveBpLevel
+	}
+	public int ActiveBpLevel
+	{
+		get => _activeBpLevel;
+		set
 		{
-			get => _activeBpLevel;
-			set
-			{
-				_activeBpLevel = value;
-				CalcProgress();
-				OnPropertyChanged();
-				OnPropertyChanged(nameof(Progress));
-			}
+			_activeBpLevel = value;
+			CalcProgress();
+			OnPropertyChanged();
+			OnPropertyChanged(nameof(Progress));
 		}
-		public int RemainingDays => (TimeHelper.TimestampToDate(EndTimestamp) - TimeHelper.TodayDate).Days;
+	}
+	public int RemainingDays => (TimeHelper.TimestampToDate(EndTimestamp) - TimeHelper.TodayDate).Days;
 
-		public DataInitPopupViewModel()
+	public DataInitPopupViewModel()
+	{
+		CanCancel = false;
+
+		OnDoneClicked = new RelayCommand(_ =>
 		{
-			CanCancel = false;
+			CanCancel = true;
+			MainVm.InterruptUpdate = false;
 
-			OnDoneClicked = new RelayCommand(_ =>
-			{
-				CanCancel = true;
-				MainVm.InterruptUpdate = false;
-
-				var totalCollectedXp = CalcHelper.CalcTotalCollected(ActiveBpLevel, Collected);
-				var seasonUuid = Guid.NewGuid().ToString();
+			var totalCollectedXp = CalcHelper.CalcTotalCollected(ActiveBpLevel, Collected);
+			var seasonUuid = Guid.NewGuid().ToString();
 				
-				Tracking.AddSeason(new Season(seasonUuid, Name, EndTimestamp, ActiveBpLevel, Collected));
-				Tracking.AddHistoryEntry(new HistoryEntry("", Guid.NewGuid().ToString(), TimeHelper.TodayDate.AddDays(-1).ToUnixTimeSeconds(), "Custom", totalCollectedXp, "", "Initialization", -1, -1, false, false));
+			UserData.AddSeason(new Season(seasonUuid, Name, EndTimestamp, ActiveBpLevel, Collected));
+			UserData.AddHistoryEntry(new HistoryEntry("", Guid.NewGuid().ToString(), TimeHelper.TodayDate.AddDays(-1).ToUnixTimeSeconds(), "Custom", totalCollectedXp, "", "Initialization", -1, -1, false, false));
 
-				Close();
-			});
-		}
+			Close();
+		});
+	}
 
-		private void CalcProgress()
-		{
-			var total = CalcHelper.CumulativeSum(Constants.BattlepassLevels, Constants.Level2Offset, Constants.XpPerLevel);
-			var collected = CalcHelper.CalcTotalCollected(ActiveBpLevel, Collected);
-			Progress = CalcHelper.CalcProgress(total, collected);
-		}
+	private void CalcProgress()
+	{
+		var total = CalcHelper.CumulativeSum(Constants.BattlepassLevels, Constants.Level2Offset, Constants.XpPerLevel);
+		var collected = CalcHelper.CalcTotalCollected(ActiveBpLevel, Collected);
+		Progress = CalcHelper.CalcProgress(total, collected);
+	}
 
-		public void InitData()
-		{
-			EndTimestamp = TimeHelper.TodayDate.AddDays(61).ToUnixTimeSeconds();
+	public void InitData()
+	{
+		EndTimestamp = TimeHelper.TodayDate.AddDays(61).ToUnixTimeSeconds();
 
-			Name = "";
-			Collected = 0;
-			ActiveBpLevel = 2;
+		Name = "";
+		Collected = 0;
+		ActiveBpLevel = 2;
 
-			IsInitialized = true;
-		}
+		IsInitialized = true;
 	}
 }

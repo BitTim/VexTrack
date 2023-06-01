@@ -12,8 +12,8 @@ public static class Loader
     {
         if (!File.Exists(Constants.DataPath) || File.ReadAllText(Constants.DataPath) == "")
         {
-            Tracking.InitData();
-            Tracking.CreateDataInitPopup();
+            UserData.InitData();
+            UserData.CreateDataInitPopup();
             return;
         }
 
@@ -48,9 +48,9 @@ public static class Loader
                 break;
         }
 
-        if (seasons.Count == 0) Tracking.CreateDataInitPopup();
+        if (seasons.Count == 0) UserData.CreateDataInitPopup();
 
-        Tracking.SetData(streak, lastStreakUpdateTimestamp, contracts, seasons, history);
+        UserData.SetData(streak, lastStreakUpdateTimestamp, contracts, seasons, history);
         if(reSave) Saver.SaveUserData(streak, lastStreakUpdateTimestamp, contracts, seasons, history); // Save in new format
     }
 }

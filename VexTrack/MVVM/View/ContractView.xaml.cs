@@ -1,16 +1,15 @@
 ﻿using VexTrack.MVVM.ViewModel;
 
-namespace VexTrack.MVVM.View
+namespace VexTrack.MVVM.View;
+
+/// <summary>
+/// Interaction logic for ContractView.xaml
+/// </summary>
+public partial class ContractView
 {
-	/// <summary>
-	/// Interaction logic for ContractView.xaml
-	/// </summary>
-	public partial class ContractView
+	public ContractView()
 	{
-		public ContractView()
-		{
-			InitializeComponent();
-			DataContext = ViewModelManager.ViewModels[nameof(ContractViewModel)];
-		}
+		InitializeComponent();
+		DataContext = ViewModelManager.ViewModels[nameof(ContractViewModel)];
 	}
 }

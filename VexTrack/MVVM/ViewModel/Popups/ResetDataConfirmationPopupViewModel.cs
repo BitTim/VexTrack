@@ -1,23 +1,22 @@
 ﻿using VexTrack.Core.Model;
 using VexTrack.Core.Model.WPF;
 
-namespace VexTrack.MVVM.ViewModel.Popups
+namespace VexTrack.MVVM.ViewModel.Popups;
+
+class ResetDataConfirmationPopupViewModel : BasePopupViewModel
 {
-	class ResetDataConfirmationPopupViewModel : BasePopupViewModel
+	public RelayCommand OnYesClicked { get; }
+	public RelayCommand OnNoClicked { get; }
+
+	public ResetDataConfirmationPopupViewModel()
 	{
-		public RelayCommand OnYesClicked { get; }
-		public RelayCommand OnNoClicked { get; }
+		CanCancel = true;
 
-		public ResetDataConfirmationPopupViewModel()
+		OnYesClicked = new RelayCommand(_ =>
 		{
-			CanCancel = true;
-
-			OnYesClicked = new RelayCommand(_ =>
-			{
-				Tracking.ResetData();
-				Close();
-			});
-			OnNoClicked = new RelayCommand(_ => Close());
-		}
+			UserData.ResetData();
+			Close();
+		});
+		OnNoClicked = new RelayCommand(_ => Close());
 	}
 }

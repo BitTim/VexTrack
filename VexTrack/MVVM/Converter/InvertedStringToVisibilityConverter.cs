@@ -3,21 +3,20 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace VexTrack.MVVM.Converter
+namespace VexTrack.MVVM.Converter;
+
+internal class InvertedStringToVisibilityConverter : IValueConverter
 {
-	internal class InvertedStringToVisibilityConverter : IValueConverter
+	public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 	{
-		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-		{
-			var val = (string)value;
-			var param = (string)parameter;
+		var val = (string)value;
+		var param = (string)parameter;
 
-			return val == param ? Visibility.Hidden : Visibility.Visible;
-		}
+		return val == param ? Visibility.Hidden : Visibility.Visible;
+	}
 
-		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-		{
-			return null;
-		}
+	public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+	{
+		return null;
 	}
 }

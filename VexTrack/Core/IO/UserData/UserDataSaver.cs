@@ -5,9 +5,9 @@ using System.Linq;
 using Newtonsoft.Json.Linq;
 using VexTrack.Core.Model;
 
-namespace VexTrack.Core.IO;
+namespace VexTrack.Core.IO.UserData;
 
-public static class Saver
+public static class UserDataSaver
 {
     internal static void SaveUserData(int streak, long lastStreakUpdateTimestamp, List<Contract> contracts, List<Season> seasons, List<HistoryGroup> history)
 	{

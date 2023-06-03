@@ -5,7 +5,8 @@ using System.Threading;
 using System.Windows;
 using VexTrack.Core;
 using VexTrack.Core.Helper;
-using VexTrack.Core.IO;
+using VexTrack.Core.IO.ApiData;
+using VexTrack.Core.IO.UserData;
 using VexTrack.Core.Model;
 using VexTrack.Core.Model.WPF;
 using VexTrack.MVVM.ViewModel.Popups;
@@ -115,7 +116,9 @@ class MainViewModel : ObservableObject
 		HistoryViewCommand = new RelayCommand(_ => SetView(HistoryVm));
 		SettingsViewCommand = new RelayCommand(_ => SetView(SettingsVm));
 
-		Loader.LoadUserData();
+		UserDataLoader.LoadUserData();
+		ApiDataLoader.LoadApiData();
+		ApiDataFetcher.FetchApiData();
 		SettingsHelper.LoadSettings();
 
 		UpdateHelper.CheckUpdateAsync();

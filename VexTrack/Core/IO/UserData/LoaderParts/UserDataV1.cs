@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 using VexTrack.Core.Helper;
 using VexTrack.Core.Model;
 
-namespace VexTrack.Core.IO.LoaderParts;
+namespace VexTrack.Core.IO.UserData.LoaderParts;
 
 public static class UserDataV1
 {

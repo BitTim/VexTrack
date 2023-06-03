@@ -7,5 +7,9 @@ public abstract class ApiData
 {
     public static string Version;
     public static List<ContractPreset> Contracts;
-    
+
+    public static void SetData(string version)
+    {
+        Version = version;
+    }
 }

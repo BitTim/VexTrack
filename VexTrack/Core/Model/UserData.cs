@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using VexTrack.Core.Helper;
-using VexTrack.Core.IO;
+using VexTrack.Core.IO.UserData;
 using VexTrack.MVVM.ViewModel;
 using VexTrack.MVVM.ViewModel.Popups;
 
@@ -127,7 +127,7 @@ public abstract class UserData
 
 	private static void CallUpdate()
 	{
-		Saver.SaveUserData(Streak, LastStreakUpdateTimestamp, Contracts, Seasons, History);
+		UserDataSaver.SaveUserData(Streak, LastStreakUpdateTimestamp, Contracts, Seasons, History);
 		var mainVm = (MainViewModel)ViewModelManager.ViewModels[nameof(MainViewModel)];
 		mainVm.Update();
 	}
@@ -135,8 +135,8 @@ public abstract class UserData
 	public static void ResetData()
 	{
 		InitData();
-		Saver.SaveUserData(Streak, LastStreakUpdateTimestamp, Contracts, Seasons, History);
-		Loader.LoadUserData();
+		UserDataSaver.SaveUserData(Streak, LastStreakUpdateTimestamp, Contracts, Seasons, History);
+		UserDataLoader.LoadUserData();
 		CallUpdate();
 	}
 

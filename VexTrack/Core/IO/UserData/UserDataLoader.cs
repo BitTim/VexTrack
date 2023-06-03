@@ -1,19 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json.Linq;
-using VexTrack.Core.IO.LoaderParts;
+using VexTrack.Core.IO.UserData.LoaderParts;
 using VexTrack.Core.Model;
 
-namespace VexTrack.Core.IO;
+namespace VexTrack.Core.IO.UserData;
 
-public static class Loader
+public static class UserDataLoader
 {
     internal static void LoadUserData()
     {
         if (!File.Exists(Constants.DataPath) || File.ReadAllText(Constants.DataPath) == "")
         {
-            UserData.InitData();
-            UserData.CreateDataInitPopup();
+            Model.UserData.InitData();
+            Model.UserData.CreateDataInitPopup();
             return;
         }
 
@@ -48,9 +48,9 @@ public static class Loader
                 break;
         }
 
-        if (seasons.Count == 0) UserData.CreateDataInitPopup();
+        if (seasons.Count == 0) Model.UserData.CreateDataInitPopup();
 
-        UserData.SetData(streak, lastStreakUpdateTimestamp, contracts, seasons, history);
-        if(reSave) Saver.SaveUserData(streak, lastStreakUpdateTimestamp, contracts, seasons, history); // Save in new format
+        Model.UserData.SetData(streak, lastStreakUpdateTimestamp, contracts, seasons, history);
+        if(reSave) UserDataSaver.SaveUserData(streak, lastStreakUpdateTimestamp, contracts, seasons, history); // Save in new format
     }
 }

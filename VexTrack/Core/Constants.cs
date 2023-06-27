@@ -18,6 +18,7 @@ internal static class Constants
 	public static readonly string AssetFolder = DataFolder + @"/Assets";
 	public static readonly string MapListViewImageFolder = AssetFolder + @"/Maps/ListViewImages/";
 	public static readonly string MapSplashImageFolder = AssetFolder + @"/Maps/SplashImages/";
+	public static readonly string GameModeIconFolder = AssetFolder + @"/GameModes/Icons/";
 
 	public static readonly string UpdateFolder = DataFolder + @"/Update";
 	public const string ManifestFile = @"/manifest.json";
@@ -30,6 +31,8 @@ internal static class Constants
 	public const int XpPerEpilogueLevel = 36500;
 	public const int Level2Offset = 500;
 
+	public static readonly string CompetitiveGameModeUuid = "0e82e886-f92c-44d4-a40e-9f849798c000";
+	
 	public static readonly List<int> TierTotals = new()
 	{
 		20000,
@@ -42,30 +45,6 @@ internal static class Constants
 		150000,
 		200000,
 		250000
-	};
-
-	public static readonly List<string> GameModes = new()
-	{
-		"Unrated",
-		"Competitive",
-		"Spike Rush",
-		"Deathmatch",
-		"Escalation",
-		"Replication",
-		"Snowballfight",
-		"Custom"
-	};
-
-	public static readonly Dictionary<string, string> ScoreTypes = new()
-	{
-		[GameModes[0]] = "Score",
-		[GameModes[1]] = "Score",
-		[GameModes[2]] = "Score",
-		[GameModes[3]] = "Placement",
-		[GameModes[4]] = "Score",
-		[GameModes[5]] = "Score",
-		[GameModes[6]] = "Score",
-		[GameModes[7]] = "None"
 	};
 
 	public const string ReleasesUrl = "https://api.github.com/repos/BitTim/VexTrack/releases";

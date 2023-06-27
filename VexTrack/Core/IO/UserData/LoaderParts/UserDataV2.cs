@@ -49,7 +49,7 @@ public static class UserDataV2
     		{
     			var historyEntry = (JObject)jTokenEntry;
     			var hUuid = (string)historyEntry["uuid"];
-    			var gamemode = (string)historyEntry["gameMode"];
+    			var gamemodeUuid = (string)historyEntry["gameMode"];
     			var time = (long)historyEntry["time"];
     			var amount = (int)historyEntry["amount"];
     			var mapUuid = (string)historyEntry["map"];
@@ -57,11 +57,12 @@ public static class UserDataV2
                 
                 var map = Model.ApiData.Maps.Find(m => m.Uuid == mapUuid);
 
-    			string gameMode, desc;
+                GameMode gameMode;
+    			string desc;
     			int score, enemyScore;
     			bool surrenderedWin, surrenderedLoss;
 
-    			if (gamemode == null)
+    			if (gamemodeUuid == null)
     			{
     				(gameMode, desc, score, enemyScore) = HistoryEntry.DescriptionToScores(description);
     				surrenderedWin = false;
@@ -69,7 +70,7 @@ public static class UserDataV2
     			}
     			else
     			{
-    				gameMode = gamemode;
+    				gameMode = Model.ApiData.GameModes.Find(gm => gm.Uuid == gamemodeUuid);
     				desc = description;
     				score = (int)historyEntry["score"];
     				enemyScore = (int)historyEntry["enemyScore"];

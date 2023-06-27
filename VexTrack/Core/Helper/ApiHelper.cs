@@ -21,6 +21,8 @@ public static class ApiHelper
 
     public static string DownloadImage(string url, string destination, string fileName)
     {
+        if (string.IsNullOrEmpty(url)) return "";
+        
         var uri = new Uri(url);
         
         // Get the file extension

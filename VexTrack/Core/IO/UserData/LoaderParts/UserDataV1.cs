@@ -35,7 +35,7 @@ public static class UserDataV1
 			{
 				var historyEntry = (JObject)jTokenEntry;
 				var hUuid = (string)historyEntry["uuid"];
-				var gamemode = (string)historyEntry["gameMode"];
+				var gamemodeUuid = (string)historyEntry["gameMode"];
 				var time = (long)historyEntry["time"];
 				var amount = (int)historyEntry["amount"];
 				var mapUuid = (string)historyEntry["map"];
@@ -44,12 +44,17 @@ public static class UserDataV1
 				mapUuid = !string.IsNullOrEmpty(mapUuid) ? Model.ApiData.Maps.Find(m => m.Name == mapUuid).Uuid : // Convert Map Name to UUID
 					Model.ApiData.Maps.Last().Uuid;
 				var map = Model.ApiData.Maps.Find(m => m.Uuid == mapUuid);
-				
-				string gameMode, desc;
+
+				// These are here because of typos I did way back in v1.7
+				if (gamemodeUuid == "Competetive") gamemodeUuid = "Competitive";
+				if (gamemodeUuid == "Snowballfight") gamemodeUuid = "Snowball Fight";
+
+				GameMode gameMode;
+				string desc;
 				int score, enemyScore;
 				bool surrenderedWin, surrenderedLoss;
 
-				if (gamemode == null)
+				if (gamemodeUuid == null)
 				{
 					(gameMode, desc, score, enemyScore) = HistoryEntry.DescriptionToScores(description);
 					surrenderedWin = false;
@@ -57,16 +62,13 @@ public static class UserDataV1
 				}
 				else
 				{
-					gameMode = gamemode;
+					gameMode = Model.ApiData.GameModes.Find(gm => gm.Name == gamemodeUuid);
 					desc = description;
 					score = (int)historyEntry["score"];
 					enemyScore = (int)historyEntry["enemyScore"];
 					surrenderedWin = (bool)historyEntry["surrenderedWin"];
 					surrenderedLoss = (bool)historyEntry["surrenderedLoss"];
 				}
-
-				// This is because of a typo I did way back in v1.7
-				if (gameMode == "Competetive") gameMode = "Competitive";
 				
 				hUuid ??= Guid.NewGuid().ToString();
 

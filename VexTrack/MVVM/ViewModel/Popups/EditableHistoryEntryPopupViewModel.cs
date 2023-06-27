@@ -15,11 +15,11 @@ class EditableHistoryEntryPopupViewModel : BasePopupViewModel
 	public string Title { get; private set; }
 	private string Uuid { get; set; }
 	private string GroupUuid { get; set; }
-	public string ScoreType => GameMode != null ? Constants.ScoreTypes[GameMode] : "";
+	public string ScoreType => GameMode != null ? GameMode.ScoreType : "";
 	private bool EditMode { get; set; }
 
 	private string _description;
-	private string _gamemode;
+	private GameMode _gamemode;
 	private int _score;
 	private int _enemyScore;
 	private long _time;
@@ -37,15 +37,12 @@ class EditableHistoryEntryPopupViewModel : BasePopupViewModel
 			OnPropertyChanged();
 		}
 	}
-	public string GameMode
+	public GameMode GameMode
 	{
 		get => _gamemode;
 		set
 		{
 			_gamemode = value;
-			Score = 0;
-			EnemyScore = 0;
-			Description = "";
 			OnPropertyChanged();
 			OnPropertyChanged(nameof(Score));
 			OnPropertyChanged(nameof(EnemyScore));
@@ -161,7 +158,7 @@ class EditableHistoryEntryPopupViewModel : BasePopupViewModel
 		GroupUuid = "";
 		Uuid = Guid.NewGuid().ToString();
 		Description = "";
-		GameMode = Constants.GameModes[0];
+		GameMode = ApiData.GameModes.First();
 		Map = ApiData.Maps.First();
 		Amount = 0;
 		Score = 0;

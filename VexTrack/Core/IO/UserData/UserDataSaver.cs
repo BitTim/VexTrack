@@ -76,7 +76,7 @@ public static class UserDataSaver
 			foreach (var entryObj in hg.Entries.Select(he => new JObject()
 			         {
 				         { "uuid", he.Uuid },
-		                 { "gameMode", he.GameMode },
+		                 { "gameMode", he.GameMode.Uuid },
 		                 { "time", he.Time },
 		                 { "amount", he.Amount },
 		                 { "map", he.Map.Uuid },

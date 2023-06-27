@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using VexTrack.Core;
 using VexTrack.Core.Helper;
 using VexTrack.Core.Model;
@@ -23,7 +24,7 @@ class EditableHistoryEntryPopupViewModel : BasePopupViewModel
 	private int _enemyScore;
 	private long _time;
 	private int _amount;
-	private string _map;
+	private Map _map;
 	private bool _surrenderedWin;
 	private bool _surrenderedLoss;
 
@@ -90,7 +91,7 @@ class EditableHistoryEntryPopupViewModel : BasePopupViewModel
 			OnPropertyChanged();
 		}
 	}
-	public string Map
+	public Map Map
 	{
 		get => _map;
 		set
@@ -161,7 +162,7 @@ class EditableHistoryEntryPopupViewModel : BasePopupViewModel
 		Uuid = Guid.NewGuid().ToString();
 		Description = "";
 		GameMode = Constants.GameModes[0];
-		Map = Constants.Maps[0];
+		Map = ApiData.Maps.First();
 		Amount = 0;
 		Score = 0;
 		EnemyScore = 0;

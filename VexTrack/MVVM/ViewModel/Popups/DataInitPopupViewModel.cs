@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using VexTrack.Core;
 using VexTrack.Core.Helper;
 using VexTrack.Core.Model;
@@ -86,7 +87,7 @@ class DataInitPopupViewModel : BasePopupViewModel
 			var seasonUuid = Guid.NewGuid().ToString();
 				
 			UserData.AddSeason(new Season(seasonUuid, Name, EndTimestamp, ActiveBpLevel, Collected));
-			UserData.AddHistoryEntry(new HistoryEntry("", Guid.NewGuid().ToString(), TimeHelper.TodayDate.AddDays(-1).ToUnixTimeSeconds(), "Custom", totalCollectedXp, "", "Initialization", -1, -1, false, false));
+			UserData.AddHistoryEntry(new HistoryEntry("", Guid.NewGuid().ToString(), TimeHelper.TodayDate.AddDays(-1).ToUnixTimeSeconds(), "Custom", totalCollectedXp, ApiData.Maps.Last(), "Initialization", -1, -1, false, false));
 
 			Close();
 		});

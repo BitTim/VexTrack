@@ -11,10 +11,15 @@ internal static class Constants
 
 	public static readonly string DataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"/VexTrack - Preview";
 	public const string LegacyDataFolder = @"dat";
-	public static readonly string UpdateFolder = DataFolder + @"/Update";
-
 	public static readonly string SettingsPath = DataFolder + @"/settings.json";
 	public static readonly string DataPath = DataFolder + @"/data.json";
+	
+	public static readonly string CachePath = DataFolder + @"/cache.json";
+	public static readonly string AssetFolder = DataFolder + @"/Assets";
+	public static readonly string MapListViewImageFolder = AssetFolder + @"/Maps/ListViewImages/";
+	public static readonly string MapSplashImageFolder = AssetFolder + @"/Maps/SplashImages/";
+
+	public static readonly string UpdateFolder = DataFolder + @"/Update";
 	public const string ManifestFile = @"/manifest.json";
 	public const string FileListFile = @"/fileList.txt";
 
@@ -37,19 +42,6 @@ internal static class Constants
 		150000,
 		200000,
 		250000
-	};
-
-
-	public static readonly List<string> Maps = new()
-	{
-		"Ascent",
-		"Bind",
-		"Breeze",
-		"Fracture",
-		"Haven",
-		"Icebox",
-		"Split",
-		"None"
 	};
 
 	public static readonly List<string> GameModes = new()

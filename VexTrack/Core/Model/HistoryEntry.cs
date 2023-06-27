@@ -9,7 +9,7 @@ public class HistoryEntry
     public long Time { get; set; }
     public string GameMode { get; set; }
     public int Amount { get; set; }
-    public string Map { get; set; }
+    public Map Map { get; set; }
     public string Description { get; set; }
     public int Score { get; set; }
     public int EnemyScore { get; set; }
@@ -21,7 +21,7 @@ public class HistoryEntry
     public string Result => GetResult();
     
 
-    public HistoryEntry(string groupUuid, string uuid, long time, string gamemode, int amount, string map, string desc, int score, int enemyScore, bool surrenderedWin, bool surrenderedLoss)
+    public HistoryEntry(string groupUuid, string uuid, long time, string gamemode, int amount, Map map, string desc, int score, int enemyScore, bool surrenderedWin, bool surrenderedLoss)
     {
 	    GroupUuid = groupUuid;
         Uuid = uuid;

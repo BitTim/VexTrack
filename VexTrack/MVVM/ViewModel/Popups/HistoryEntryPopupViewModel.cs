@@ -61,7 +61,7 @@ class HistoryEntryPopupViewModel : BasePopupViewModel
 		Title = data.GetTitle();
 		Time = data.Time;
 		Amount = data.Amount;
-		Map = data.Map;
+		Map = data.Map.Name;
 		Result = data.GetResult();
 
 		if (Result == "") Result = "-";

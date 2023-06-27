@@ -79,7 +79,7 @@ public static class UserDataSaver
 		                 { "gameMode", he.GameMode },
 		                 { "time", he.Time },
 		                 { "amount", he.Amount },
-		                 { "map", he.Map },
+		                 { "map", he.Map.Uuid },
 		                 { "description", he.Description },
 		                 { "score", he.Score },
 		                 { "enemyScore", he.EnemyScore },

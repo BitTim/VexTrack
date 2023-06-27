@@ -38,11 +38,13 @@ public static class UserDataV1
 				var gamemode = (string)historyEntry["gameMode"];
 				var time = (long)historyEntry["time"];
 				var amount = (int)historyEntry["amount"];
-				var map = (string)historyEntry["map"];
+				var mapUuid = (string)historyEntry["map"];
 				var description = (string)historyEntry["description"];
 
-				if (string.IsNullOrEmpty(map)) map = Constants.Maps.Last();
-
+				mapUuid = !string.IsNullOrEmpty(mapUuid) ? Model.ApiData.Maps.Find(m => m.Name == mapUuid).Uuid : // Convert Map Name to UUID
+					Model.ApiData.Maps.Last().Uuid;
+				var map = Model.ApiData.Maps.Find(m => m.Uuid == mapUuid);
+				
 				string gameMode, desc;
 				int score, enemyScore;
 				bool surrenderedWin, surrenderedLoss;

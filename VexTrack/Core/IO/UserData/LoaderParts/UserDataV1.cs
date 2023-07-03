@@ -139,6 +139,7 @@ public static class UserDataV1
 				convertToGrouped = true;
 			}
 
+			List<GoalTemplate> goalTemplates = new();
 			List<Goal> goals = new();
 			if (source == null) continue;
 			foreach (var jTokenGoal in source)
@@ -152,11 +153,16 @@ public static class UserDataV1
 				if (collected > total) collected = total;
 
 				goalUuid ??= Guid.NewGuid().ToString();
-				var goalObj = new Goal(goalUuid, goalName, total, collected);
-				
-				if(!convertToGrouped) goals.Add(goalObj);
-				else contracts.Add(new Contract(Guid.NewGuid().ToString(), goalName,
-						(string)goal["color"], (bool)goal["paused"], new List<Goal> { goalObj }));
+				var goalTemplate = new GoalTemplate(goalUuid, goalName, total);
+				var goalObj = new Goal(goalTemplate, collected);
+
+				if (!convertToGrouped)
+				{
+					goalTemplates.Add(goalTemplate);
+					goals.Add(goalObj);
+				}
+				else contracts.Add(new Contract(new ContractTemplate(Guid.NewGuid().ToString(), goalName,
+						"", 0, 0, new List<GoalTemplate> { goalTemplate }), new List<Goal> { goalObj }));
 			}
 
 			if (convertToGrouped) return contracts;
@@ -171,7 +177,7 @@ public static class UserDataV1
 			if (loadedGoals.Count < 1) (color, paused) = ("", false);
 			else (color, paused) = ((string)loadedGoals.First()["color"], (bool)loadedGoals.First()["paused"]);
 			
-			if(goals.Count > 0) contracts.Add(new Contract(uuid, name, color, paused, goals));
+			if(goals.Count > 0) contracts.Add(new Contract(new ContractTemplate(uuid, name, "", 0, 0, goalTemplates), goals));
 		}
 
 		return contracts;

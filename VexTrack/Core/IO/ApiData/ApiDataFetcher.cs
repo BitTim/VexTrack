@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Windows.Documents;
 using Newtonsoft.Json.Linq;
 using VexTrack.Core.Helper;
 using VexTrack.Core.Model;
@@ -32,6 +31,12 @@ public static class ApiDataFetcher
         return 0;
     }
 
+    
+    
+    // ================================
+    //  Version
+    // ================================
+    
     private static string FetchVersion()
     {
         var versionResponse = ApiHelper.Request("https://valorant-api.com/v1/version");
@@ -43,6 +48,12 @@ public static class ApiDataFetcher
         return version;
     }
 
+    
+    
+    // ================================
+    //  Maps
+    // ================================
+    
     private static List<Map> FetchMaps()
     {
         List<Map> maps = new();
@@ -69,6 +80,12 @@ public static class ApiDataFetcher
         return maps;
     }
 
+    
+    
+    // ================================
+    //  GameModes
+    // ================================
+    
     private static List<GameMode> FetchGameModes()
     {
         List<GameMode> gameModes = new();
@@ -105,5 +122,16 @@ public static class ApiDataFetcher
         // Add custom GameMode as option
         gameModes.Add(new GameMode("", "Custom", "None", ""));
         return gameModes;
+    }
+
+    
+    
+    // ================================
+    //  Contracts
+    // ================================
+
+    private static List<ContractTemplate> FetchContracts()
+    {
+        return new List<ContractTemplate>();
     }
 }

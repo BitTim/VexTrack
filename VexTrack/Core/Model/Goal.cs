@@ -4,25 +4,26 @@ namespace VexTrack.Core.Model;
 
 public class Goal
 {
-    public string Uuid { get; set; }
-    public string Name { get; set; }
-    public int Total { get; set; }
+    public GoalTemplate Template { get; set; }
     public int Collected { get; set; }
 
 
+    public string Uuid => Template.Uuid;
+    public string Name => Template.Name;
+    public int Total => Template.Total;
+    
+
     public int Progress => GetProgress();
     public int Remaining => GetRemaining();
-    
-    
-    public Goal(string uuid, string name, int total, int collected)
+
+
+    public Goal(GoalTemplate template, int collected)
     {
-        Uuid = uuid;
-        Name = name;
-        Total = total;
+        Template = template;
         Collected = collected;
     }
 
-    private int GetProgress() { return CalcHelper.CalcProgress(Total, Collected); }
-    private int GetRemaining() { return Total - Collected; }
-    public bool IsCompleted() { return Collected >= Total; }
+    private int GetProgress() { return CalcHelper.CalcProgress(Template.Total, Collected); }
+    private int GetRemaining() { return Template.Total - Collected; }
+    public bool IsCompleted() { return Collected >= Template.Total; }
 }

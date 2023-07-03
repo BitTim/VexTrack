@@ -96,7 +96,6 @@ public abstract class UserData
 			
 		foreach (var contract in Contracts) // TODO: Move contents to update() function within contracts
 		{
-			if (contract.Paused) continue;
 			var xpPool = Math.Abs(deltaXp);
 				
 			foreach (var goal in contract.Goals)

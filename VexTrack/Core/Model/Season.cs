@@ -105,7 +105,7 @@ public class Season
         {
             if (i > maxLevel) break;
             var levelTotal = CalcHelper.CalcMaxForLevel(i);
-            var goal = new Goal(Guid.NewGuid().ToString(), "Level " + i, levelTotal, ActiveBpLevel <= i ? ActiveBpLevel == i ? Cxp : 0 : levelTotal);
+            var goal = new Goal(new GoalTemplate(Guid.NewGuid().ToString(), "Level " + i, levelTotal), ActiveBpLevel <= i ? ActiveBpLevel == i ? Cxp : 0 : levelTotal);
             goals.Add(goal);
         }
 

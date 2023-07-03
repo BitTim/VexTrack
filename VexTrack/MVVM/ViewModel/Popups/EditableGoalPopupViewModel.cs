@@ -91,8 +91,9 @@ class EditableGoalPopupViewModel : BasePopupViewModel
 		{
 			var goals = UserData.Contracts[UserData.Contracts.FindIndex(contract => contract.Uuid == Uuid)].Goals;
 				
-			if (EditMode) UserData.EditContract(Uuid, new Contract(Uuid, Name, Color, Paused, goals));
-			else UserData.AddContract(new Contract(Uuid, Name, Color, Paused, new List<Goal>()));
+			// TODO: Make only Contract instance editable, not the template
+			//if (EditMode) UserData.EditContract(Uuid, new Contract(Uuid, Name, Color, Paused, goals));
+			//else UserData.AddContract(new Contract(Uuid, Name, Color, Paused, new List<Goal>()));
 			Close();
 		});
 	}

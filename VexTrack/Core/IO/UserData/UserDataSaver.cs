@@ -25,8 +25,6 @@ public static class UserDataSaver
 			{
 				{ "uuid", contract.Uuid },
 				{ "name", contract.Name },
-				{ "color", contract.Color },
-				{ "paused", contract.Paused }
 			};
 
 			JArray goals = new();

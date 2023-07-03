@@ -48,8 +48,9 @@ class ContractViewModel : ObservableObject
 
 		foreach (var contract in UserData.Contracts)
 		{
-			var ged = contract.Goals.ToList();
-			ContractEntries.Add(new Contract(contract.Uuid, contract.Name, contract.Color, contract.Paused, ged));
+			// Dont know why this was here
+			//var ged = contract.Goals.ToList();
+			ContractEntries.Add(contract);
 		}
 	}
 }

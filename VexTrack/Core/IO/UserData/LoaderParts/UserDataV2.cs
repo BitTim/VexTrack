@@ -115,6 +115,7 @@ public static class UserDataV2
 	    {
 		    var contract = (JObject)jTokenContract;
 		    var source = contract["goals"];
+		    List<GoalTemplate> goalTemplates = new();
 		    List<Goal> goals = new();
 			
 		    if(source == null) continue;
@@ -129,7 +130,10 @@ public static class UserDataV2
 			    if (collected > total) collected = total;
 				
 			    goalUuid ??= Guid.NewGuid().ToString();
-			    goals.Add(new Goal(goalUuid, goalName, total, collected));
+
+			    var goalTemplate = new GoalTemplate(goalUuid, goalName, total);
+			    goalTemplates.Add(goalTemplate);
+			    goals.Add(new Goal(goalTemplate, collected));
 		    }
 
 
@@ -137,7 +141,7 @@ public static class UserDataV2
 		    var name = (string)contract["name"];
 		    var color = (string)contract["color"];
 		    var paused = (bool)contract["paused"];
-		    contracts.Add(new Contract(uuid, name, color, paused, goals));
+		    contracts.Add(new Contract(new ContractTemplate(uuid, name, "", 0, 0, goalTemplates), goals));
 	    }
 
 	    return contracts;

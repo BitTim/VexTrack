@@ -8,14 +8,16 @@ namespace VexTrack.Core.Model;
 
 public class Contract
 {
-    public string Uuid { get; set; }
-    public string Type { get; set; }
-    public string Name { get; set; }
-    public long StartTimestamp { get; set; }
-    public long EndTimestamp { get; set; }
-    public string Color { get; set; }
-    public bool Paused { get; set; }
+    public ContractTemplate Template { get; set; }
     public List<Goal> Goals { get; set; }
+
+
+    public string Uuid => Template.Uuid;
+    public string Name => Template.Name;
+    public string Type => Template.Type;
+    public long StartTimestamp => Template.StartTimestamp;
+    public long EndTimestamp => Template.EndTimestamp;
+    
     
     public int Total => GetTotal();
     public int Collected => GetCollected();
@@ -32,23 +34,20 @@ public class Contract
     public long CompletionTimestamp => GetCompletionTimestamp();
     public int BufferDays => (int)Math.Ceiling(Duration * (SettingsHelper.Data.BufferPercentage / 100));
 
-    private bool IsActive => TimeHelper.NowTimestamp < EndTimestamp;
+    private bool IsActive => TimeHelper.NowTimestamp < Template.EndTimestamp;
     public string Status => GetStatus();
     public ObservableCollection<Goal> ObservableGoals => new(Goals);
     
 
 
-    public Contract(string uuid, string name, string color, bool paused, List<Goal> goals)
+    public Contract(ContractTemplate template, List<Goal> goals)
     {
-        Uuid = uuid;
-        Name = name;
-        Color = color;
-        Paused = paused;
+        Template = template;
         Goals = goals;
     }
 
-    private int GetTotal() { return Goals.Sum(goal => goal.Total); }
-    private int GetCollected() { return Goals.Sum(goal => goal.Collected); }
+    private int GetTotal() { return Template.Goals.Sum(goal => goal.Total); }
+    private int GetCollected() { return Goals.Sum(goalInstance => goalInstance.Collected); }
     private int GetRemaining() { return GetTotal() - GetCollected(); }
 
     
@@ -70,14 +69,14 @@ public class Contract
 
     private Goal GetNextUnlock()
     {
-        return Goals.FirstOrDefault(goal => !goal.IsCompleted());
+        return Goals.FirstOrDefault(goalInstance => !goalInstance.IsCompleted());
     }
     
     
     
     private int GetRemainingDays()
     {
-        var endDate = TimeHelper.TimestampToDate(EndTimestamp);
+        var endDate = TimeHelper.TimestampToDate(Template.EndTimestamp);
         var today = TimeHelper.TodayDate;
 
         var remainingDays = (endDate - today).Days;
@@ -89,8 +88,8 @@ public class Contract
 
     private int GetDuration()
     {
-        var endDate = TimeHelper.TimestampToDate(EndTimestamp);
-        var startDate = TimeHelper.TimestampToDate(StartTimestamp);
+        var endDate = TimeHelper.TimestampToDate(Template.EndTimestamp);
+        var startDate = TimeHelper.TimestampToDate(Template.StartTimestamp);
 
         var duration = (endDate - startDate).Days;
         if ((endDate - startDate).Hours > 12) { duration += 1; }

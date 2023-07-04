@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using VexTrack.Core.Model;
+using VexTrack.Core.Model.Templates;
 
 namespace VexTrack.Core.IO.UserData.LoaderParts;
 
@@ -131,9 +132,9 @@ public static class UserDataV2
 				
 			    goalUuid ??= Guid.NewGuid().ToString();
 
-			    var goalTemplate = new GoalTemplate(goalUuid, goalName, total);
+			    var goalTemplate = new GoalTemplate( new List<Reward> {new("", "", 0, false)}, false, 0, total, false, 0);
 			    goalTemplates.Add(goalTemplate);
-			    goals.Add(new Goal(goalTemplate, collected));
+			    goals.Add(new Goal(goalTemplate, goalUuid, collected));
 		    }
 
 
@@ -141,7 +142,7 @@ public static class UserDataV2
 		    var name = (string)contract["name"];
 		    var color = (string)contract["color"];
 		    var paused = (bool)contract["paused"];
-		    contracts.Add(new Contract(new ContractTemplate(uuid, name, "", 0, 0, goalTemplates), goals));
+		    contracts.Add(new Contract(new ContractTemplate(uuid, name, "", "", goalTemplates), goals));
 	    }
 
 	    return contracts;

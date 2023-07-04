@@ -4,6 +4,7 @@ using System.Linq;
 using Newtonsoft.Json.Linq;
 using VexTrack.Core.Helper;
 using VexTrack.Core.Model;
+using VexTrack.Core.Model.Templates;
 
 namespace VexTrack.Core.IO.UserData.LoaderParts;
 
@@ -153,8 +154,8 @@ public static class UserDataV1
 				if (collected > total) collected = total;
 
 				goalUuid ??= Guid.NewGuid().ToString();
-				var goalTemplate = new GoalTemplate(goalUuid, goalName, total);
-				var goalObj = new Goal(goalTemplate, collected);
+				var goalTemplate = new GoalTemplate(new List<Reward>{new("", "", 0, false)}, false, 0, total, false, 0);
+				var goalObj = new Goal(goalTemplate, goalUuid, collected);
 
 				if (!convertToGrouped)
 				{
@@ -162,7 +163,7 @@ public static class UserDataV1
 					goals.Add(goalObj);
 				}
 				else contracts.Add(new Contract(new ContractTemplate(Guid.NewGuid().ToString(), goalName,
-						"", 0, 0, new List<GoalTemplate> { goalTemplate }), new List<Goal> { goalObj }));
+						"", "", new List<GoalTemplate> { goalTemplate }), new List<Goal> { goalObj }));
 			}
 
 			if (convertToGrouped) return contracts;
@@ -177,7 +178,7 @@ public static class UserDataV1
 			if (loadedGoals.Count < 1) (color, paused) = ("", false);
 			else (color, paused) = ((string)loadedGoals.First()["color"], (bool)loadedGoals.First()["paused"]);
 			
-			if(goals.Count > 0) contracts.Add(new Contract(new ContractTemplate(uuid, name, "", 0, 0, goalTemplates), goals));
+			if(goals.Count > 0) contracts.Add(new Contract(new ContractTemplate(uuid, name, "", "", goalTemplates), goals));
 		}
 
 		return contracts;

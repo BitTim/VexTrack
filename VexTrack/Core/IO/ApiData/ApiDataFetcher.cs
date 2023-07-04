@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Documents;
 using Newtonsoft.Json.Linq;
 using VexTrack.Core.Helper;
 using VexTrack.Core.Model;
+using VexTrack.Core.Model.Templates;
 
 namespace VexTrack.Core.IO.ApiData;
 
@@ -24,9 +27,18 @@ public static class ApiDataFetcher
         var gameModes = FetchGameModes();
         if (gameModes.Count == 0) return -2;
 
+        // Fetch Contracts and Gears
+
+        var (contracts, gears) = FetchContractsAndGears();
+        if (contracts.Count == 0 || gears.Count == 0) return -3;
+        
+        // Fetch Cosmetics
+
+        var cosmetics = FetchCosmetics();
+        
         // Apply fetched data
         
-        Model.ApiData.SetData(version, maps, gameModes);
+        Model.ApiData.SetData(version, maps, gameModes, contracts, gears, cosmetics);
         ApiDataSaver.SaveApiData();
         return 0;
     }
@@ -130,8 +142,93 @@ public static class ApiDataFetcher
     //  Contracts
     // ================================
 
-    private static List<ContractTemplate> FetchContracts()
+    private static (List<ContractTemplate>, List<ContractTemplate>) FetchContractsAndGears() // TODO: Fetch stuff from related seasons / events
     {
-        return new List<ContractTemplate>();
+        List<ContractTemplate> contracts = new();
+        List<ContractTemplate> gears = new();
+        
+        var contractsResponse = ApiHelper.Request("https://valorant-api.com/v1/contracts");
+        if (contractsResponse.Count == 0) return (contracts, gears);
+
+        var contractsData = contractsResponse.Value<JArray>("data");
+        
+        foreach (var jTokenContract in contractsData)
+        {
+            var contract = (JObject)jTokenContract;
+            var uuid = (string)contract["uuid"];
+            var name = (string)contract["displayName"];
+
+            var content = (JObject)contract["content"];
+            if(content == null) continue;
+            
+            var type = (string)content["relationType"];
+            var relUuid = (string)content["relationUuid"];
+
+            var chapters = content["chapters"];
+            if (chapters == null) continue;
+
+            List<GoalTemplate> goals = new();
+
+            foreach (var jTokenChapter in (JArray)chapters)
+            {
+                var chapter = (JObject)jTokenChapter;
+                var isEpilogue = (bool)chapter["isEpilogue"];
+                var levels = chapter["levels"];
+                if (levels == null) continue;
+
+                foreach (var jTokenLevel in (JArray)levels)
+                {
+                    var level = (JObject)jTokenLevel;
+                    var xp = (int)level["xp"];
+                    var doughCost = (int)level["doughCost"];
+                    var canBuyDough = (bool)level["isPurchasableWithDough"];
+                    var vpCost = (int)level["vpCost"];
+                    var canBuyVp = (bool)level["isPurchasableWithVP"];
+                    
+                    var reward = (JObject)level["reward"];
+                    if(reward == null) continue;
+
+                    var rewardUuid = (string)reward["uuid"];
+                    var rewardType = (string)reward["type"];
+                    var rewardAmount = (int)reward["amount"];
+
+                    var rewardObj = new Reward(rewardUuid, rewardType, rewardAmount, true);
+                    goals.Add(new GoalTemplate(new List<Reward> {rewardObj}, canBuyDough, doughCost, xp, canBuyVp, vpCost, isEpilogue));
+                }
+                
+                var freeRewards = chapter["freeRewards"];
+                if (freeRewards != null && freeRewards.Type != JTokenType.Null)
+                {
+                    foreach (var jTokenReward in (JArray)freeRewards)
+                    {
+                        var reward = (JObject)jTokenReward;
+                        var rewardUuid = (string)reward["uuid"];
+                        var rewardType = (string)reward["type"];
+                        var rewardAmount = (int)reward["amount"];
+
+                        var rewardObj = new Reward(rewardUuid, rewardType, rewardAmount, false);
+                        goals.Last().Rewards.Add(rewardObj); // Free Rewards are always added to the last level of chapter
+                    }
+                }
+            }
+
+            var contractObj = new ContractTemplate(uuid, name, type, relUuid, goals);
+            if(type == "Agent") gears.Add(contractObj);
+            else contracts.Add(contractObj);
+        }
+
+        return (contracts, gears);
+    }
+
+    
+    
+    // ================================
+    //  Cosmetics
+    // ================================
+
+    private static List<Cosmetic> FetchCosmetics()
+    {
+        List<Cosmetic> cosmetics = new();
+        return cosmetics;
     }
 }

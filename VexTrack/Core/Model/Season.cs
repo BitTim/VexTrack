@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using LiveCharts;
 using VexTrack.Core.Helper;
+using VexTrack.Core.Model.Templates;
 
 namespace VexTrack.Core.Model;
 
@@ -105,7 +106,7 @@ public class Season
         {
             if (i > maxLevel) break;
             var levelTotal = CalcHelper.CalcMaxForLevel(i);
-            var goal = new Goal(new GoalTemplate(Guid.NewGuid().ToString(), "Level " + i, levelTotal), ActiveBpLevel <= i ? ActiveBpLevel == i ? Cxp : 0 : levelTotal);
+            var goal = new Goal(new GoalTemplate(new List<Reward> {new("", "", 0, true)}, false, 0, levelTotal, true, 300), Guid.NewGuid().ToString(), ActiveBpLevel <= i ? ActiveBpLevel == i ? Cxp : 0 : levelTotal);
             goals.Add(goal);
         }
 

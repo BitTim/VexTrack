@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using VexTrack.Core.Helper;
+using VexTrack.Core.Model.Templates;
 
 namespace VexTrack.Core.Model;
 
@@ -46,7 +47,7 @@ public class Contract
         Goals = goals;
     }
 
-    private int GetTotal() { return Template.Goals.Sum(goal => goal.Total); }
+    private int GetTotal() { return Template.Goals.Sum(goal => goal.XpTotal); }
     private int GetCollected() { return Goals.Sum(goalInstance => goalInstance.Collected); }
     private int GetRemaining() { return GetTotal() - GetCollected(); }
 

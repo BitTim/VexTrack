@@ -163,7 +163,7 @@ public static class UserDataV1
 					goals.Add(goalObj);
 				}
 				else contracts.Add(new Contract(new ContractTemplate(Guid.NewGuid().ToString(), goalName,
-						"", "", new List<GoalTemplate> { goalTemplate }), new List<Goal> { goalObj }));
+						"", -1, -1, new List<GoalTemplate> { goalTemplate }), new List<Goal> { goalObj }));
 			}
 
 			if (convertToGrouped) return contracts;
@@ -178,7 +178,7 @@ public static class UserDataV1
 			if (loadedGoals.Count < 1) (color, paused) = ("", false);
 			else (color, paused) = ((string)loadedGoals.First()["color"], (bool)loadedGoals.First()["paused"]);
 			
-			if(goals.Count > 0) contracts.Add(new Contract(new ContractTemplate(uuid, name, "", "", goalTemplates), goals));
+			if(goals.Count > 0) contracts.Add(new Contract(new ContractTemplate(uuid, name, "", -1, -1, goalTemplates), goals));
 		}
 
 		return contracts;

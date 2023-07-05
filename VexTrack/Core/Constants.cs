@@ -9,21 +9,31 @@ internal static class Constants
 	public const string Version = "v2.0";
 	public const string DataVersion = "v2";
 
+	// User Data
 	public static readonly string DataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"/VexTrack - Preview";
 	public const string LegacyDataFolder = @"dat";
 	public static readonly string SettingsPath = DataFolder + @"/settings.json";
 	public static readonly string DataPath = DataFolder + @"/data.json";
 	
+	// Api Data
 	public static readonly string CachePath = DataFolder + @"/cache.json";
 	public static readonly string AssetFolder = DataFolder + @"/Assets";
 	public static readonly string MapListViewImageFolder = AssetFolder + @"/Maps/ListViewImages/";
 	public static readonly string MapSplashImageFolder = AssetFolder + @"/Maps/SplashImages/";
 	public static readonly string GameModeIconFolder = AssetFolder + @"/GameModes/Icons/";
+	public static readonly string AgentsIconFolder = AssetFolder + @"/Agents/Icons/";
+	public static readonly string AgentsPortraitFolder = AssetFolder + @"/Agents/Portraits/";
+	public static readonly string AgentsKillFeedPortraitFolder = AssetFolder + @"/Agents/KillFeedPortraits/";
+	public static readonly string AgentsBackgroundFolder = AssetFolder + @"/Agents/Backgournds/";
+	public static readonly string AgentRolesIconFolder = AssetFolder + @"/Agents/Icons/Roles";
+	public static readonly string AgentAbilitiesIconFolder = AssetFolder + @"/Agents/Icons/Abilities";
 
+	// Update
 	public static readonly string UpdateFolder = DataFolder + @"/Update";
 	public const string ManifestFile = @"/manifest.json";
 	public const string FileListFile = @"/fileList.txt";
 
+	// Misc
 	public const int BattlepassLevels = 50;
 	public const int EpilogueLevels = 5;
 

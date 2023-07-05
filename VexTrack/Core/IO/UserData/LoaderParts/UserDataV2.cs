@@ -142,7 +142,7 @@ public static class UserDataV2
 		    var name = (string)contract["name"];
 		    var color = (string)contract["color"];
 		    var paused = (bool)contract["paused"];
-		    contracts.Add(new Contract(new ContractTemplate(uuid, name, "", "", goalTemplates), goals));
+		    contracts.Add(new Contract(new ContractTemplate(uuid, name, "", -1, -1, goalTemplates), goals));
 	    }
 
 	    return contracts;

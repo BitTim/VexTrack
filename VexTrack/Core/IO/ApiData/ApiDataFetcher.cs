@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Documents;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using VexTrack.Core.Helper;
 using VexTrack.Core.Model;
 using VexTrack.Core.Model.Templates;
+using VexTrack.Core.Model.WPF;
 
 namespace VexTrack.Core.IO.ApiData;
 
@@ -27,10 +31,15 @@ public static class ApiDataFetcher
         var gameModes = FetchGameModes();
         if (gameModes.Count == 0) return -2;
 
+        // Fetch Agents and AgentRoles
+
+        var (agents, agentRoles) = FetchAgentsAndRoles();
+        if (agents.Count == 0 || agentRoles.Count == 0) return -3;
+        
         // Fetch Contracts and Gears
 
         var (contracts, gears) = FetchContractsAndGears();
-        if (contracts.Count == 0 || gears.Count == 0) return -3;
+        if (contracts.Count == 0 || gears.Count == 0) return -4;
         
         // Fetch Cosmetics
 
@@ -38,7 +47,7 @@ public static class ApiDataFetcher
         
         // Apply fetched data
         
-        Model.ApiData.SetData(version, maps, gameModes, contracts, gears, cosmetics);
+        Model.ApiData.SetData(version, maps, gameModes, agents, agentRoles, contracts, gears, cosmetics);
         ApiDataSaver.SaveApiData();
         return 0;
     }
@@ -139,13 +148,92 @@ public static class ApiDataFetcher
     
     
     // ================================
+    //  Agents
+    // ================================
+
+    private static (List<Agent>, List<AgentRole>) FetchAgentsAndRoles()
+    {
+        List<Agent> agents = new();
+        List<AgentRole> agentRoles = new();
+
+        var agentsResponse = ApiHelper.Request("https://valorant-api.com/v1/agents?isPlayableCharacter=true");
+        if (agentsResponse.Count == 0) return (agents, agentRoles);
+
+        var agentsData = agentsResponse.Value<JArray>("data");
+
+        foreach (var jTokenAgent in agentsData)
+        {
+            var agent = (JObject)jTokenAgent;
+            var uuid = (string)agent["uuid"];
+            var name = (string)agent["displayName"];
+            var description = (string)agent["description"];
+
+            var iconPath = ApiHelper.DownloadImage((string)agent["displayIcon"], Constants.AgentsIconFolder, uuid);
+            var portraitPath = ApiHelper.DownloadImage((string)agent["fullPortrait"], Constants.AgentsPortraitFolder, uuid);
+            var killFeedPortraitPath = ApiHelper.DownloadImage((string)agent["killfeedPortrait"], Constants.AgentsKillFeedPortraitFolder, uuid);
+            var backgroundPath = ApiHelper.DownloadImage((string)agent["background"], Constants.AgentsBackgroundFolder, uuid);
+
+            var isBaseContent = (bool)agent["isBaseContent"];
+
+            // Gradient colors
+            var gradientColorsToken = agent["backgroundGradientColors"];
+            if (gradientColorsToken == null) continue;
+
+            List<string> gradientColors = new();
+
+            foreach (var jTokenGradientColor in (JArray)gradientColorsToken)
+            {
+                gradientColors.Add((string)jTokenGradientColor);
+            }
+            
+            // Role
+            var role = (JObject)agent["role"];
+            if (role == null) return (agents, agentRoles);
+            
+            var roleUuid = (string)role["uuid"];
+            if (!agentRoles.Exists(ar => ar.Uuid == roleUuid))
+            {
+                var roleName = (string)role["displayName"];
+                var roleDescription = (string)role["description"];
+                var roleIconPath = ApiHelper.DownloadImage((string)role["displayIcon"], Constants.AgentRolesIconFolder, roleUuid);
+                
+                agentRoles.Add(new AgentRole(roleUuid, roleName, roleDescription, roleIconPath));
+            }
+
+            // Abilities
+            var abilitiesToken = agent["abilities"];
+            if (abilitiesToken == null) continue;
+
+            List<AgentAbility> abilities = new();
+
+            foreach (var jTokenAbility in (JArray)abilitiesToken)
+            {
+                var ability = (JObject)jTokenAbility;
+                var abilityName = (string)ability["displayName"];
+                var abilityDescription = (string)ability["description"];
+                var abilitySlot = (string)ability["slot"];
+                
+                var abilityIconPath = ApiHelper.DownloadImage((string)ability["displayIcon"], Constants.AgentAbilitiesIconFolder, uuid + "-" + abilitySlot);
+                abilities.Add(new AgentAbility(abilityName, abilityDescription, abilitySlot, abilityIconPath));
+            }
+            
+            // Add agent to list
+            agents.Add(new Agent(uuid, name, description, iconPath, portraitPath, killFeedPortraitPath, backgroundPath, gradientColors, isBaseContent, roleUuid, abilities));
+        }
+
+        return (agents, agentRoles);
+    }
+
+    
+    
+    // ================================
     //  Contracts
     // ================================
 
-    private static (List<ContractTemplate>, List<ContractTemplate>) FetchContractsAndGears() // TODO: Fetch stuff from related seasons / events
+    private static (List<ContractTemplate>, List<GearTemplate>) FetchContractsAndGears()
     {
         List<ContractTemplate> contracts = new();
-        List<ContractTemplate> gears = new();
+        List<GearTemplate> gears = new();
         
         var contractsResponse = ApiHelper.Request("https://valorant-api.com/v1/contracts");
         if (contractsResponse.Count == 0) return (contracts, gears);
@@ -157,6 +245,11 @@ public static class ApiDataFetcher
             var contract = (JObject)jTokenContract;
             var uuid = (string)contract["uuid"];
             var name = (string)contract["displayName"];
+
+            // Fix names being in FULL CAPS and inconsistent spaces
+            name = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(name.ToLower());
+            name = name.Replace(" : ", ": ");
+            name = name.Replace("Riotx", "Riot x");
 
             var content = (JObject)contract["content"];
             if(content == null) continue;
@@ -212,9 +305,34 @@ public static class ApiDataFetcher
                 }
             }
 
-            var contractObj = new ContractTemplate(uuid, name, type, relUuid, goals);
-            if(type == "Agent") gears.Add(contractObj);
-            else contracts.Add(contractObj);
+            if (string.IsNullOrEmpty(type)) // Edge case for "PLAY TO UNLOCK AGENTS"
+            {
+                contracts.Add(new ContractTemplate(uuid, name, "Event", -1, -1, goals));
+                continue;
+            }
+            
+            if (type == "Agent") // Agents
+            {
+                gears.Add(new GearTemplate(uuid, name, relUuid, goals));
+            }
+            else // Seasons and Events
+            {
+                var baseUrl = type == "Season" ? "https://valorant-api.com/v1/seasons/" : type == "Event" ? "https://valorant-api.com/v1/events/" : "";
+                if(baseUrl == "") continue;
+
+                var relationResponse = ApiHelper.Request(baseUrl + relUuid);
+                if (relationResponse.Count == 0) continue;
+
+                var relationData = relationResponse.Value<JObject>("data");
+
+                var startTime = (DateTimeOffset)relationData["startTime"];
+                var endTime = (DateTimeOffset)relationData["endTime"];
+
+                var startTimestamp = startTime.ToUnixTimeSeconds();
+                var endTimestamp = endTime.ToUnixTimeSeconds();
+                    
+                contracts.Add(new ContractTemplate(uuid, name, type, startTimestamp, endTimestamp, goals));
+            }
         }
 
         return (contracts, gears);

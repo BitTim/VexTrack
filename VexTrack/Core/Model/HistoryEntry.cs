@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using VexTrack.Core.Model.Game;
 
 namespace VexTrack.Core.Model;
 

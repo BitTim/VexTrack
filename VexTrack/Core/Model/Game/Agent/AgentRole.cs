@@ -1,4 +1,4 @@
-﻿namespace VexTrack.Core.Model.WPF;
+﻿namespace VexTrack.Core.Model.Game.Agent;
 
 public class AgentRole
 {

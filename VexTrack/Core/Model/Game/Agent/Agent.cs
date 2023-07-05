@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using VexTrack.Core.Model.WPF;
 
-namespace VexTrack.Core.Model;
+namespace VexTrack.Core.Model.Game.Agent;
 
 public class Agent
 {

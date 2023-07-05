@@ -1,4 +1,4 @@
-﻿namespace VexTrack.Core.Model;
+﻿namespace VexTrack.Core.Model.Game;
 
 public class Map
 {

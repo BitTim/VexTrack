@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using VexTrack.Core.Model.Game;
 
 namespace VexTrack.Core.Model.Templates;
 

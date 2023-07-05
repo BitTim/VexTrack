@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using VexTrack.Core.Model;
+using VexTrack.Core.Model.Game;
 using VexTrack.Core.Model.Templates;
 
 namespace VexTrack.Core.IO.UserData.LoaderParts;

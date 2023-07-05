@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using LiveCharts;
 using VexTrack.Core.Helper;
+using VexTrack.Core.Model.Game;
 using VexTrack.Core.Model.Templates;
 
 namespace VexTrack.Core.Model;

@@ -7,6 +7,11 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using VexTrack.Core.Helper;
 using VexTrack.Core.Model;
+using VexTrack.Core.Model.Game;
+using VexTrack.Core.Model.Game.Agent;
+using VexTrack.Core.Model.Game.Cosmetic;
+using VexTrack.Core.Model.Game.Cosmetic.Weapon;
+using VexTrack.Core.Model.Game.Weapon;
 using VexTrack.Core.Model.Templates;
 using VexTrack.Core.Model.WPF;
 
@@ -41,19 +46,44 @@ public static class ApiDataFetcher
         var (contracts, gears) = FetchContractsAndGears();
         if (contracts.Count == 0 || gears.Count == 0) return -4;
         
-        // Fetch Cosmetics
+        // Fetch Buddies
 
-        var cosmetics = FetchCosmetics();
+        var buddies = FetchBuddies();
+        if (buddies.Count == 0) return -5;
+        
+        // Fetch Currencies
+
+        var currencies = FetchCurrencies();
+        if (currencies.Count == 0) return -6;
+        
+        // Fetch Player Cards
+
+        var playerCards = FetchPlayerCards();
+        if (playerCards.Count == 0) return -7;
+        
+        // Fetch Player Titles
+
+        var playerTitles = FetchPlayerTitles();
+        if (playerTitles.Count == 0) return -8;
+        
+        // Fetch Sprays
+
+        var sprays = FetchSprays();
+        if (sprays.Count == 0) return -9;
+        
+        // Fetch Weapons, Weapon Skins, Weapon Skin Chromas and Weapon Skin Levels
+
+        var (weapons, weaponSkins, weaponSkinChromas, weaponSkinLevels) = FetchWeaponsAndSkins();
+        if (weapons.Count == 0 || weaponSkins.Count == 0 || weaponSkinChromas.Count == 0 || weaponSkinLevels.Count == 0) return -5;
         
         // Apply fetched data
         
-        Model.ApiData.SetData(version, maps, gameModes, agents, agentRoles, contracts, gears, cosmetics);
+        Model.ApiData.SetData(version, maps, gameModes, agents, agentRoles, contracts, gears, weapons, buddies, currencies, playerCards, playerTitles, sprays, weaponSkins, weaponSkinChromas, weaponSkinLevels);
         ApiDataSaver.SaveApiData();
         return 0;
     }
 
-    
-    
+
     // ================================
     //  Version
     // ================================
@@ -168,10 +198,10 @@ public static class ApiDataFetcher
             var name = (string)agent["displayName"];
             var description = (string)agent["description"];
 
-            var iconPath = ApiHelper.DownloadImage((string)agent["displayIcon"], Constants.AgentsIconFolder, uuid);
-            var portraitPath = ApiHelper.DownloadImage((string)agent["fullPortrait"], Constants.AgentsPortraitFolder, uuid);
-            var killFeedPortraitPath = ApiHelper.DownloadImage((string)agent["killfeedPortrait"], Constants.AgentsKillFeedPortraitFolder, uuid);
-            var backgroundPath = ApiHelper.DownloadImage((string)agent["background"], Constants.AgentsBackgroundFolder, uuid);
+            var iconPath = ApiHelper.DownloadImage((string)agent["displayIcon"], Constants.AgentIconFolder, uuid);
+            var portraitPath = ApiHelper.DownloadImage((string)agent["fullPortrait"], Constants.AgentPortraitFolder, uuid);
+            var killFeedPortraitPath = ApiHelper.DownloadImage((string)agent["killfeedPortrait"], Constants.AgentKillFeedPortraitFolder, uuid);
+            var backgroundPath = ApiHelper.DownloadImage((string)agent["background"], Constants.AgentBackgroundFolder, uuid);
 
             var isBaseContent = (bool)agent["isBaseContent"];
 
@@ -195,7 +225,7 @@ public static class ApiDataFetcher
             {
                 var roleName = (string)role["displayName"];
                 var roleDescription = (string)role["description"];
-                var roleIconPath = ApiHelper.DownloadImage((string)role["displayIcon"], Constants.AgentRolesIconFolder, roleUuid);
+                var roleIconPath = ApiHelper.DownloadImage((string)role["displayIcon"], Constants.AgentRoleIconFolder, roleUuid);
                 
                 agentRoles.Add(new AgentRole(roleUuid, roleName, roleDescription, roleIconPath));
             }
@@ -213,7 +243,7 @@ public static class ApiDataFetcher
                 var abilityDescription = (string)ability["description"];
                 var abilitySlot = (string)ability["slot"];
                 
-                var abilityIconPath = ApiHelper.DownloadImage((string)ability["displayIcon"], Constants.AgentAbilitiesIconFolder, uuid + "-" + abilitySlot);
+                var abilityIconPath = ApiHelper.DownloadImage((string)ability["displayIcon"], Constants.AgentAbilityIconFolder, uuid + "-" + abilitySlot);
                 abilities.Add(new AgentAbility(abilityName, abilityDescription, abilitySlot, abilityIconPath));
             }
             
@@ -341,12 +371,75 @@ public static class ApiDataFetcher
     
     
     // ================================
-    //  Cosmetics
+    //  Buddies
     // ================================
 
-    private static List<Cosmetic> FetchCosmetics()
+    private static List<Buddy> FetchBuddies()
     {
-        List<Cosmetic> cosmetics = new();
-        return cosmetics;
+        List<Buddy> buddies = new();
+        return buddies;
+    }
+
+    
+    
+    // ================================
+    //  Currencies
+    // ================================
+    
+    private static List<Currency> FetchCurrencies()
+    {
+        List<Currency> currencies = new();
+        return currencies;
+    }
+
+    
+    
+    // ================================
+    //  Player Cards
+    // ================================
+
+    private static List<PlayerCard> FetchPlayerCards()
+    {
+        List<PlayerCard> playerCards = new();
+        return playerCards;
+    }
+
+    
+    
+    // ================================
+    //  Player Titles
+    // ================================
+
+    private static List<PlayerTitle> FetchPlayerTitles()
+    {
+        List<PlayerTitle> playerTitles = new();
+        return playerTitles;
+    }
+
+    
+    
+    // ================================
+    //  Sprays
+    // ================================
+
+    private static List<Spray> FetchSprays()
+    {
+        List<Spray> sprays = new();
+        return sprays;
+    }
+
+    
+    
+    // ================================
+    //  Weapons and Skins
+    // ================================
+    
+    private static (List<Weapon> weapons, List<WeaponSkin> weaponSkins, List<WeaponSkinChroma> weaponSkinChromas, List<WeaponSkinLevel> weaponSkinLevels) FetchWeaponsAndSkins()
+    {
+        List<Weapon> weapons = new();
+        List<WeaponSkin> weaponSkins = new();
+        List<WeaponSkinChroma> weaponSkinChromas = new();
+        List<WeaponSkinLevel> weaponSkinLevels = new();
+        return (weapons, weaponSkins, weaponSkinChromas, weaponSkinLevels);
     }
 }

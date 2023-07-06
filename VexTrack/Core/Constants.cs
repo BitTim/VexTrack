@@ -23,6 +23,7 @@ internal static class Constants
 	// Api Data
 	public static readonly string CachePath = DataFolder + @"/cache.json";
 	public static readonly string AssetFolder = DataFolder + @"/Assets";
+	public static readonly string AssetBackupFolder = DataFolder + @"/AssetsBackup";
 	
 	public static readonly string MapListViewImageFolder = AssetFolder + @"/Maps/ListViewImages/";
 	public static readonly string MapSplashImageFolder = AssetFolder + @"/Maps/SplashImages/";

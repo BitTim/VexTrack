@@ -2,13 +2,13 @@
 
 public class WeaponAdsStats
 {
-    public double ZoomMultiplier { get; set; }
-    public double FireRate { get; set; }
-    public double RunSpeedModifier { get; set; }
+    public float ZoomMultiplier { get; set; }
+    public float FireRate { get; set; }
+    public float RunSpeedModifier { get; set; }
     public int BurstCount { get; set; }
-    public double FirstBulletAccuracy { get; set; }
+    public float FirstBulletAccuracy { get; set; }
 
-    public WeaponAdsStats(double zoomMultiplier, double fireRate, double runSpeedModifier, int burstCount, double firstBulletAccuracy)
+    public WeaponAdsStats(float zoomMultiplier, float fireRate, float runSpeedModifier, int burstCount, float firstBulletAccuracy)
     {
         ZoomMultiplier = zoomMultiplier;
         FireRate = fireRate;

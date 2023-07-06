@@ -4,11 +4,11 @@ public class WeaponDamageRange
 {
     public int RangeStartMeters { get; set; }
     public int RangeEndMeters { get; set; }
-    public double HeadDamage { get; set; }
-    public double BodyDamage { get; set; }
-    public double LegDamage { get; set; }
+    public float HeadDamage { get; set; }
+    public float BodyDamage { get; set; }
+    public float LegDamage { get; set; }
 
-    public WeaponDamageRange(int rangeStartMeters, int rangeEndMeters, double headDamage, double bodyDamage, double legDamage)
+    public WeaponDamageRange(int rangeStartMeters, int rangeEndMeters, float headDamage, float bodyDamage, float legDamage)
     {
         RangeStartMeters = rangeStartMeters;
         RangeEndMeters = rangeEndMeters;

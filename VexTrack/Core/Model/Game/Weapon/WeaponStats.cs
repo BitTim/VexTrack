@@ -5,15 +5,17 @@ namespace VexTrack.Core.Model.Game.Weapon;
 
 public class WeaponStats
 {
-    public double FireRate { get; set; }
+    public float FireRate { get; set; }
     public int MagazineSize { get; set; }
-    public double RunSpeedMultiplier { get; set; }
-    public double EquipTimeSeconds { get; set; }
-    public double ReloadTimeSeconds { get; set; }
-    public double FirstBulletAccuracy { get; set; }
+    public float RunSpeedMultiplier { get; set; }
+    public float EquipTimeSeconds { get; set; }
+    public float ReloadTimeSeconds { get; set; }
+    public float FirstBulletAccuracy { get; set; }
     public int ShotgunPelletCount { get; set; }
     
     public string WallPenetration { get; set; }
+    public string Feature { get; set; }
+    public string FireMode { get; set; }
     public string AltFireMode { get; set; }
 
     public WeaponAdsStats AdsStats { get; set; }
@@ -21,10 +23,10 @@ public class WeaponStats
     public WeaponAirBurstStats AirBurstStats { get; set; }
     public List<WeaponDamageRange> DamageRanges { get; set; }
 
-    public WeaponStats(double fireRate, int magazineSize, double runSpeedMultiplier, double equipTimeSeconds,
-        double reloadTimeSeconds, double firstBulletAccuracy, int shotgunPelletCount, string wallPenetration,
-        string altFireMode, WeaponAdsStats adsStats, WeaponAltShotgunStats altShotgunStats,
-        WeaponAirBurstStats airBurstStats, List<WeaponDamageRange> damageRanges)
+    public WeaponStats(float fireRate, int magazineSize, float runSpeedMultiplier, float equipTimeSeconds,
+        float reloadTimeSeconds, float firstBulletAccuracy, int shotgunPelletCount, string wallPenetration,
+        string feature, string fireMode, string altFireMode, WeaponAdsStats adsStats,
+        WeaponAltShotgunStats altShotgunStats, WeaponAirBurstStats airBurstStats, List<WeaponDamageRange> damageRanges)
     {
         FireRate = fireRate;
         MagazineSize = magazineSize;
@@ -35,6 +37,8 @@ public class WeaponStats
         ShotgunPelletCount = shotgunPelletCount;
 
         WallPenetration = wallPenetration;
+        Feature = feature;
+        FireMode = fireMode;
         AltFireMode = altFireMode;
 
         AdsStats = adsStats;

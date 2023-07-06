@@ -3,9 +3,9 @@
 public class WeaponAirBurstStats
 {
     public int ShotgunPelletCount { get; set; }
-    public double BurstDistance { get; set; }
+    public float BurstDistance { get; set; }
 
-    public WeaponAirBurstStats(int shotgunPelletCount, double burstDistance)
+    public WeaponAirBurstStats(int shotgunPelletCount, float burstDistance)
     {
         ShotgunPelletCount = shotgunPelletCount;
         BurstDistance = burstDistance;

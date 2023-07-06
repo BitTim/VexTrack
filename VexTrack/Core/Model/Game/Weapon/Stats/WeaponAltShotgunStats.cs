@@ -3,9 +3,9 @@
 public class WeaponAltShotgunStats
 {
     public int ShotgunPelletCount { get; set; }
-    public double BurstRate { get; set; }
+    public float BurstRate { get; set; }
 
-    public WeaponAltShotgunStats(int shotgunPelletCount, double burstRate)
+    public WeaponAltShotgunStats(int shotgunPelletCount, float burstRate)
     {
         ShotgunPelletCount = shotgunPelletCount;
         BurstRate = burstRate;

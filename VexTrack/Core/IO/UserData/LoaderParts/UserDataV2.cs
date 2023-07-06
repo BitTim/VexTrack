@@ -18,11 +18,11 @@ public static class UserDataV2
 	    foreach (var jTokenSeason in jo["seasons"])
 	    {
 		    var season = (JObject)jTokenSeason;
-		    var sUuid = (string)season["uuid"];
-		    var name = (string)season["name"];
-		    var endDate = (long)season["endDate"];
-		    var activeBpLevel = (int)season["activeBPLevel"];
-		    var cXp = (int)season["cXP"];
+		    var sUuid = season.Value<string>("uuid");
+		    var name = season.Value<string>("name");
+		    var endDate = season.Value<long>("endDate");
+		    var activeBpLevel = season.Value<int>("activeBPLevel");
+		    var cXp = season.Value<int>("cXP");
 
 		    sUuid ??= Guid.NewGuid().ToString();
 		    seasons.Add(new Season(sUuid, name, endDate, activeBpLevel, cXp));
@@ -42,20 +42,20 @@ public static class UserDataV2
     	foreach (var jTokenGroup in jo["history"])
     	{
     		var historyGroup = (JObject)jTokenGroup;
-    		var sUuid = (string)historyGroup["sUuid"];
-    		var gUuid = (string)historyGroup["uuid"];
-    		var date = (long)historyGroup["date"];
+    		var sUuid = historyGroup.Value<string>("sUuid");
+    		var gUuid = historyGroup.Value<string>("uuid");
+    		var date = historyGroup.Value<long>("date");
 
     		List<HistoryEntry> entries = new();
     		foreach (var jTokenEntry in jTokenGroup["entries"])
     		{
     			var historyEntry = (JObject)jTokenEntry;
-    			var hUuid = (string)historyEntry["uuid"];
-    			var gamemodeUuid = (string)historyEntry["gameMode"];
-    			var time = (long)historyEntry["time"];
-    			var amount = (int)historyEntry["amount"];
-    			var mapUuid = (string)historyEntry["map"];
-    			var description = (string)historyEntry["description"];
+    			var hUuid = historyEntry.Value<string>("uuid");
+    			var gamemodeUuid = historyEntry.Value<string>("gameMode");
+    			var time = historyEntry.Value<long>("time");
+    			var amount = historyEntry.Value<int>("amount");
+    			var mapUuid = historyEntry.Value<string>("map");
+    			var description = historyEntry.Value<string>("description");
                 
                 var map = Model.ApiData.Maps.Find(m => m.Uuid == mapUuid);
 
@@ -74,10 +74,10 @@ public static class UserDataV2
     			{
     				gameMode = Model.ApiData.GameModes.Find(gm => gm.Uuid == gamemodeUuid);
     				desc = description;
-    				score = (int)historyEntry["score"];
-    				enemyScore = (int)historyEntry["enemyScore"];
-    				surrenderedWin = (bool)historyEntry["surrenderedWin"];
-    				surrenderedLoss = (bool)historyEntry["surrenderedLoss"];
+    				score = historyEntry.Value<int>("score");
+    				enemyScore = historyEntry.Value<int>("enemyScore");
+    				surrenderedWin = historyEntry.Value<bool>("surrenderedWin");
+    				surrenderedLoss = historyEntry.Value<bool>("surrenderedLoss");
     			}
 
     			hUuid ??= Guid.NewGuid().ToString();
@@ -124,11 +124,11 @@ public static class UserDataV2
 		    foreach (var jTokenGoal in source)
 		    {
 			    var goal = (JObject)jTokenGoal;
-			    var goalUuid = (string)goal["uuid"];
-			    var goalName = (string)goal["name"];
+			    var goalUuid = goal.Value<string>("uuid");
+			    var goalName = goal.Value<string>("name");
 
-			    var total = (int)goal["total"];
-			    var collected = (int)goal["collected"];
+			    var total = goal.Value<int>("total");
+			    var collected = goal.Value<int>("collected");
 			    if (collected > total) collected = total;
 				
 			    goalUuid ??= Guid.NewGuid().ToString();
@@ -139,10 +139,10 @@ public static class UserDataV2
 		    }
 
 
-		    var uuid = (string)contract["uuid"];
-		    var name = (string)contract["name"];
-		    var color = (string)contract["color"];
-		    var paused = (bool)contract["paused"];
+		    var uuid = contract.Value<string>("uuid");
+		    var name = contract.Value<string>("name");
+		    var color = contract.Value<string>("color");
+		    var paused = contract.Value<bool>("paused");
 		    contracts.Add(new Contract(new ContractTemplate(uuid, name, "", -1, -1, goalTemplates), goals));
 	    }
 

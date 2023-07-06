@@ -20,7 +20,7 @@ public static class UserDataLoader
         var rawJson = File.ReadAllText(Constants.DataPath);
         var jo = JObject.Parse(rawJson);
 
-        var version = (string)jo["version"];
+        var version = jo.Value<string>("version");
         if (string.IsNullOrEmpty(version)) version = "v1";
 
         var reSave = false;

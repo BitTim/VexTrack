@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Net.Http;
-using System.Net.Http.Json;
 using Newtonsoft.Json.Linq;
 
 namespace VexTrack.Core.Helper;

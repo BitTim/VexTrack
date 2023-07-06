@@ -111,8 +111,8 @@ public static class UserDataV1
 		if (jo["streak"] != null)
 		{
 			streakEntries.AddRange(from JObject streakEntry in jo["streak"]
-				let date = (long)streakEntry["date"]
-				let status = (string)streakEntry["status"]
+				let date = streakEntry.Value<long>("date")
+				let status = streakEntry.Value<string>("status")
 				select new LegacyStreakEntry(date, status));
 		}
 		streakEntries = streakEntries.OrderByDescending(t => t.Date).ToList();
@@ -147,11 +147,11 @@ public static class UserDataV1
 			foreach (var jTokenGoal in source)
 			{
 				var goal = (JObject)jTokenGoal;
-				var goalUuid = (string)goal["uuid"];
-				var goalName = (string)goal["name"];
+				var goalUuid = goal.Value<string>("uuid");
+				var goalName = goal.Value<string>("name");
 
-				var total = (int)goal["total"];
-				var collected = (int)goal["collected"];
+				var total = goal.Value<int>("total");
+				var collected = goal.Value<int>("collected");
 				if (collected > total) collected = total;
 
 				goalUuid ??= Guid.NewGuid().ToString();
@@ -169,9 +169,9 @@ public static class UserDataV1
 
 			if (convertToGrouped) return contracts;
 			
-			var uuid = (string)contract["uuid"];
-			var name = (string)contract["name"];
-			var loadedGoals = (JArray)contract["goals"];
+			var uuid = contract.Value<string>("uuid");
+			var name = contract.Value<string>("name");
+			var loadedGoals = contract.Value<JArray>("goals");
 
 			string color;
 			bool paused;

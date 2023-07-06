@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using VexTrack.Core;
 using VexTrack.Core.Helper;
 using VexTrack.Core.Model;
 using VexTrack.Core.Model.Game;

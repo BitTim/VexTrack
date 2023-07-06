@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using VexTrack.Core.Helper;
 using VexTrack.Core.Model;
 using VexTrack.Core.Model.WPF;

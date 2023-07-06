@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Linq;
 using VexTrack.Core.Model;
 using VexTrack.Core.Model.WPF;
 using VexTrack.MVVM.ViewModel.Popups;

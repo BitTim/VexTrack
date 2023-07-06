@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using VexTrack.Core.Model.Game;
 using VexTrack.Core.Model.Game.Agent;
 using VexTrack.Core.Model.Game.Cosmetic;
 using VexTrack.Core.Model.Game.Cosmetic.Weapon;
 using VexTrack.Core.Model.Game.Weapon;
 using VexTrack.Core.Model.Templates;
-using VexTrack.Core.Model.WPF;
 
 namespace VexTrack.Core.Model;
 

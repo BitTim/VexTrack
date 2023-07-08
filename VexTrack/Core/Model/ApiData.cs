@@ -27,7 +27,7 @@ public static class ApiData
     public static List<WeaponSkin> WeaponSkins;
     public static List<WeaponSkinChroma> WeaponSkinChromas;
     public static List<WeaponSkinLevel> WeaponSkinLevels;
-
+    
     public static void SetData(string version, List<Map> maps, List<GameMode> gameModes, List<Agent> agents,
         List<AgentRole> agentRoles, List<ContractTemplate> contractTemplates, List<GearTemplate> gearTemplates,
         List<Weapon> weapons, List<Buddy> buddies, List<Currency> currencies, List<PlayerCard> playerCards,

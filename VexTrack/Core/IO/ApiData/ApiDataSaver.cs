@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System;
+using System.IO;
+using Newtonsoft.Json.Linq;
 using VexTrack.Core.Model.Game;
 
 namespace VexTrack.Core.IO.ApiData;
@@ -13,6 +15,8 @@ public static class ApiDataSaver
         
         //  --------------------------------
         //  Maps
+        //  --------------------------------
+        
         JArray maps = new();
         foreach (var map in Model.ApiData.Maps)
         {
@@ -32,6 +36,8 @@ public static class ApiDataSaver
         
         //  --------------------------------
         //  GameModes
+        //  --------------------------------
+        
         JArray gameModes = new();
         foreach (var gameMode in Model.ApiData.GameModes)
         {
@@ -51,6 +57,8 @@ public static class ApiDataSaver
         
         //  --------------------------------
         //  Agents
+        //  --------------------------------
+        
         JObject agentData = new();
         
         JArray agentRoles = new();
@@ -116,6 +124,8 @@ public static class ApiDataSaver
         
         //  --------------------------------
         //  Contracts
+        //  --------------------------------
+        
         JArray contracts = new();
         foreach (var contract in Model.ApiData.ContractTemplates)
         {
@@ -154,7 +164,7 @@ public static class ApiDataSaver
                         { "isPremium", reward.IsPremium }
                     };
                     
-                    rewards.Add(reward);
+                    rewards.Add(rewardsObj);
                 }
                 goalObj.Add("rewards", rewards);
                 goals.Add(goalObj);
@@ -168,6 +178,8 @@ public static class ApiDataSaver
         
         //  --------------------------------
         //  Gears
+        //  --------------------------------
+        
         JArray gears = new();
         foreach (var gear in Model.ApiData.GearTemplates)
         {
@@ -204,7 +216,7 @@ public static class ApiDataSaver
                         { "isPremium", reward.IsPremium }
                     };
                     
-                    rewards.Add(reward);
+                    rewards.Add(rewardsObj);
                 }
                 goalObj.Add("rewards", rewards);
                 goals.Add(goalObj);
@@ -218,6 +230,8 @@ public static class ApiDataSaver
         
         //  --------------------------------
         //  Buddies
+        //  --------------------------------
+        
         JArray buddies = new();
         foreach (var buddy in Model.ApiData.Buddies)
         {
@@ -236,6 +250,8 @@ public static class ApiDataSaver
         
         //  --------------------------------
         //  Currencies
+        //  --------------------------------
+        
         JArray currencies = new();
         foreach (var currency in Model.ApiData.Currencies)
         {
@@ -255,6 +271,8 @@ public static class ApiDataSaver
         
         //  --------------------------------
         //  Player Cards
+        //  --------------------------------
+        
         JArray playerCards = new();
         foreach (var playerCard in Model.ApiData.PlayerCards)
         {
@@ -276,6 +294,8 @@ public static class ApiDataSaver
         
         //  --------------------------------
         //  Player Titles
+        //  --------------------------------
+        
         JArray playerTitles = new();
         foreach (var playerTitle in Model.ApiData.PlayerTitles)
         {
@@ -294,6 +314,8 @@ public static class ApiDataSaver
         
         //  --------------------------------
         //  Sprays
+        //  --------------------------------
+        
         JArray sprays = new();
         foreach (var spray in Model.ApiData.Sprays)
         {
@@ -303,7 +325,7 @@ public static class ApiDataSaver
                 { "name", spray.Name },
                 { "iconPath", spray.IconPath },
                 { "fullIconPath", spray.FullIconPath },
-                { "animationPath", spray.AnimationPath },
+                { "animationPath", spray.AnimationPath }
             };
             
             sprays.Add(sprayObj);
@@ -314,8 +336,189 @@ public static class ApiDataSaver
         
         //  --------------------------------
         //  Weapons and Skins
+        //  --------------------------------
+        
         JObject weaponData = new();
+
+        // Chromas
+        JArray chromas = new();
+        foreach (var chroma in Model.ApiData.WeaponSkinChromas)
+        {
+            JObject chromaObj = new()
+            {
+                { "uuid", chroma.Uuid },
+                { "name", chroma.Name },
+                { "parentUuid", chroma.ParentUuid },
+                { "iconPath", chroma.IconPath },
+                { "fullRenderPath", chroma.FullRenderPath },
+                { "swatchPath", chroma.SwatchPath }
+            };
+            
+            chromas.Add(chromaObj);
+        }
+        weaponData.Add("chromas", chromas);
+        
+        // Levels
+        JArray levels = new();
+        foreach (var level in Model.ApiData.WeaponSkinLevels)
+        {
+            JObject levelObj = new()
+            {
+                { "uuid", level.Uuid },
+                { "name", level.Name },
+                { "parentUuid", level.ParentUuid },
+                { "levelItem", level.LevelItem },
+                { "iconPath", level.IconPath }
+            };
+            
+            levels.Add(levelObj);
+        }
+        weaponData.Add("levels", levels);
+        
+        // Skins
+        JArray skins = new();
+        foreach (var skin in Model.ApiData.WeaponSkins)
+        {
+            JObject skinObj = new()
+            {
+                { "uuid", skin.Uuid },
+                { "name", skin.Name },
+                { "parentUuid", skin.ParentUuid },
+                { "iconPath", skin.IconPath },
+                { "wallpaperPath", skin.WallpaperPath }
+            };
+
+            JArray chromaUuids = new();
+            foreach (var chromaUuid in skin.ChromaUuids)
+            {
+                chromaUuids.Add(chromaUuid);
+            }
+            skinObj.Add("chromaUuids", chromaUuids);
+
+            JArray levelUuids = new();
+            foreach (var levelUuid in skin.LevelUuids)
+            {
+                levelUuids.Add(levelUuid);
+            }
+            skinObj.Add("levelUuids", levelUuids);
+            
+            skins.Add(skinObj);
+        }
+        weaponData.Add("skins", skins);
+        
+        // Weapons
+        JArray weapons = new();
+        foreach (var weapon in Model.ApiData.Weapons)
+        {
+            JObject weaponObj = new()
+            {
+                { "uuid", weapon.Uuid },
+                { "name", weapon.Name },
+                { "category", weapon.Category },
+                { "defaultSkinUuid", weapon.DefaultSkinUuid },
+                { "iconPath", weapon.IconPath },
+                { "killStreamIconPath", weapon.KillStreamIconPath },
+                { "shopCost", weapon.ShopCost }
+            };
+
+            JObject stats = null;
+            if (weapon.Stats != null)
+            {
+                stats = new JObject
+                {
+                    { "fireRate", weapon.Stats.FireRate },
+                    { "magazineSize", weapon.Stats.MagazineSize },
+                    { "runSpeedMultiplier", weapon.Stats.RunSpeedMultiplier },
+                    { "equipTimeSeconds", weapon.Stats.EquipTimeSeconds },
+                    { "reloadTimeSeconds", weapon.Stats.ReloadTimeSeconds },
+                    { "firstBulletAccuracy", weapon.Stats.FirstBulletAccuracy },
+                    { "shotgunPelletCount", weapon.Stats.ShotgunPelletCount },
+                    { "wallPenetration", weapon.Stats.WallPenetration },
+                    { "feature", weapon.Stats.Feature },
+                    { "fireMode", weapon.Stats.FireMode },
+                    { "altFireMode", weapon.Stats.AltFireMode }
+                };
+
+                JObject adsStats = null;
+                if (weapon.Stats.AdsStats != null)
+                {
+                    adsStats = new JObject
+                    {
+                        { "zoomMultiplier", weapon.Stats.AdsStats?.ZoomMultiplier },
+                        { "fireRate", weapon.Stats.AdsStats?.FireRate },
+                        { "runSpeedMultiplier", weapon.Stats.AdsStats?.RunSpeedMultiplier },
+                        { "burstCount", weapon.Stats.AdsStats?.BurstCount },
+                        { "firstBulletAccuracy", weapon.Stats.AdsStats?.FirstBulletAccuracy }
+                    };
+                }
+                stats.Add("adsStats", adsStats);
+
+                JObject altShotgunStats = null;
+                if (weapon.Stats.AltShotgunStats != null)
+                {
+                    altShotgunStats = new JObject
+                    {
+                        { "shotgunPelletCount", weapon.Stats.AltShotgunStats?.ShotgunPelletCount },
+                        { "burstRate", weapon.Stats.AltShotgunStats?.BurstRate }
+                    };
+                }
+                stats.Add("altShotgunStats", altShotgunStats);
+
+                JObject airBurstStats = null;
+                if (weapon.Stats.AirBurstStats != null)
+                {
+                    airBurstStats = new JObject
+                    {
+                        { "shotgunPelletCount", weapon.Stats.AirBurstStats?.ShotgunPelletCount },
+                        { "burstDistance", weapon.Stats.AirBurstStats?.BurstDistance }
+                    };
+                }
+                stats.Add("airBurstStats", airBurstStats);
+                
+                JArray damageRanges = new();
+                foreach (var damageRange in weapon.Stats.DamageRanges)
+                {
+                    JObject damageRangeObj = new()
+                    {
+                        { "rangeStartMeters", damageRange.RangeStartMeters },
+                        { "rangeEndMeters", damageRange.RangeEndMeters },
+                        { "headDamage", damageRange.HeadDamage },
+                        { "bodyDamage", damageRange.BodyDamage },
+                        { "legDamage", damageRange.LegDamage }
+                    };
+                
+                    damageRanges.Add(damageRangeObj);
+                }
+                stats.Add("damageRanges", damageRanges);
+            }
+            weaponObj.Add("stats", stats);
+
+            JArray skinUuids = new();
+            foreach (var skinUuid in weapon.SkinUuids)
+            {
+                skinUuids.Add(skinUuid);
+            }
+            weaponObj.Add("skinUuids", skinUuids);
+            
+            weapons.Add(weaponObj);
+        }
+        weaponData.Add("weapons", weapons);
+        cache.Add("weaponData", weaponData);
         
         
+        
+        //  --------------------------------
+        //  Saving to File
+        //  --------------------------------
+        
+        if (!File.Exists(Constants.CachePath))
+        {
+            var sep = Constants.CachePath.LastIndexOf("/", StringComparison.Ordinal);
+
+            Directory.CreateDirectory(Constants.CachePath[..sep]);
+            File.CreateText(Constants.CachePath).Close();
+        }
+
+        File.WriteAllText(Constants.CachePath, cache.ToString());
     }
 }

@@ -15,9 +15,8 @@ public static class UserDataV2
     internal static List<Season> LoadSeasons(JObject jo)
     {
 	    List<Season> seasons = new();
-	    foreach (var jTokenSeason in jo["seasons"])
+	    foreach (var season in jo["seasons"])
 	    {
-		    var season = (JObject)jTokenSeason;
 		    var sUuid = season.Value<string>("uuid");
 		    var name = season.Value<string>("name");
 		    var endDate = season.Value<long>("endDate");
@@ -39,17 +38,15 @@ public static class UserDataV2
     internal static List<HistoryGroup> LoadHistory(JObject jo)
     {
     	List<HistoryGroup> history = new();
-    	foreach (var jTokenGroup in jo["history"])
+    	foreach (var historyGroup in jo["history"])
     	{
-    		var historyGroup = (JObject)jTokenGroup;
     		var sUuid = historyGroup.Value<string>("sUuid");
     		var gUuid = historyGroup.Value<string>("uuid");
     		var date = historyGroup.Value<long>("date");
 
     		List<HistoryEntry> entries = new();
-    		foreach (var jTokenEntry in jTokenGroup["entries"])
+    		foreach (var historyEntry in historyGroup.Value<JArray>("entries"))
     		{
-    			var historyEntry = (JObject)jTokenEntry;
     			var hUuid = historyEntry.Value<string>("uuid");
     			var gamemodeUuid = historyEntry.Value<string>("gameMode");
     			var time = historyEntry.Value<long>("time");
@@ -113,17 +110,15 @@ public static class UserDataV2
     internal static List<Contract> LoadContracts(JObject jo)
     {
 	    List<Contract> contracts = new();
-	    foreach (var jTokenContract in jo["contracts"])
+	    foreach (var contract in jo["contracts"])
 	    {
-		    var contract = (JObject)jTokenContract;
 		    var source = contract["goals"];
 		    List<GoalTemplate> goalTemplates = new();
 		    List<Goal> goals = new();
 			
 		    if(source == null) continue;
-		    foreach (var jTokenGoal in source)
+		    foreach (var goal in source)
 		    {
-			    var goal = (JObject)jTokenGoal;
 			    var goalUuid = goal.Value<string>("uuid");
 			    var goalName = goal.Value<string>("name");
 

@@ -14,10 +14,10 @@ public class Weapon
     public int ShopCost { get; set; }
     
     public WeaponStats Stats { get; set; }
-    public List<WeaponSkin> Skins { get; set; }
+    public List<string> SkinUuids { get; set; }
 
     public Weapon(string uuid, string name, string category, string defaultSkinUuid, string iconPath,
-        string killStreamIconPath, int shopCost, WeaponStats stats, List<WeaponSkin> skins)
+        string killStreamIconPath, int shopCost, WeaponStats stats, List<string> skinUuids)
     {
         Uuid = uuid;
         Name = name;
@@ -28,6 +28,6 @@ public class Weapon
         ShopCost = shopCost;
         
         Stats = stats;
-        Skins = skins;
+        SkinUuids = skinUuids;
     }
 }

@@ -154,7 +154,7 @@ public static class ApiDataFetcher
     //  Version
     // ================================
     
-    private static string FetchVersion()
+    public static string FetchVersion()
     {
         var versionResponse = ApiHelper.Request("https://valorant-api.com/v1/version");
         if (versionResponse.Count == 0) return "";
@@ -670,7 +670,7 @@ public static class ApiDataFetcher
             }
 
             // Weapon Skins
-            List<WeaponSkin> skins = new();
+            List<string> skinUuids = new();
             var rawSkins = weapon.Value<JArray>("skins");
             foreach (var rawSkin in rawSkins)
             {
@@ -680,7 +680,7 @@ public static class ApiDataFetcher
                 var skinWallpaperPath = ApiHelper.DownloadImage(rawSkin.Value<string>("wallpaper"), Constants.WeaponSkinWallpaperPath, skinUuid);
                 
                 // Skin Chromas
-                List<WeaponSkinChroma> chromas = new();
+                List<string> chromaUuids = new();
                 var rawChromas = rawSkin.Value<JArray>("chromas");
                 foreach (var rawChroma in rawChromas)
                 {
@@ -691,12 +691,12 @@ public static class ApiDataFetcher
                     var chromaSwatchPath = ApiHelper.DownloadImage(rawChroma.Value<string>("swatch"), Constants.WeaponSkinChromaSwatchPath, chromaUuid);
                     
                     var chroma = new WeaponSkinChroma(chromaUuid, chromaName, skinUuid, chromaIconPath, chromaFullRenderPath, chromaSwatchPath);
-                    chromas.Add(chroma);
+                    chromaUuids.Add(chroma.Uuid);
                     allChromas.Add(chroma);
                 }
                 
                 // Skin Levels
-                List<WeaponSkinLevel> levels = new();
+                List<string> levelUuids = new();
                 var rawLevels = rawSkin.Value<JArray>("levels");
                 foreach (var rawLevel in rawLevels)
                 {
@@ -706,16 +706,16 @@ public static class ApiDataFetcher
                     var levelIconPath = ApiHelper.DownloadImage(rawLevel.Value<string>("displayIcon"), Constants.WeaponSkinLevelIconPath, levelUuid);
 
                     var level = new WeaponSkinLevel(levelUuid, levelName, skinUuid, levelLevelItem, levelIconPath);
-                    levels.Add(level);
+                    levelUuids.Add(level.Uuid);
                     allLevels.Add(level);
                 }
 
-                var skin = new WeaponSkin(skinUuid, skinName, uuid, skinIconPath, skinWallpaperPath, chromas, levels);
-                skins.Add(skin);
+                var skin = new WeaponSkin(skinUuid, skinName, uuid, skinIconPath, skinWallpaperPath, chromaUuids, levelUuids);
+                skinUuids.Add(skin.Uuid);
                 allSkins.Add(skin);
             }
             
-            weapons.Add(new Weapon(uuid, name, category, defaultSkinUuid, iconPath, killStreamIconPath, shopCost, stats, skins));
+            weapons.Add(new Weapon(uuid, name, category, defaultSkinUuid, iconPath, killStreamIconPath, shopCost, stats, skinUuids));
         }
         
         return (weapons, allSkins, allChromas, allLevels);

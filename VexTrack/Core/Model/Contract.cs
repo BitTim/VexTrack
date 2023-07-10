@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using VexTrack.Core.Helper;
-using VexTrack.Core.Model.Templates;
+using VexTrack.Core.Model.Game.Templates;
 
 namespace VexTrack.Core.Model;
 

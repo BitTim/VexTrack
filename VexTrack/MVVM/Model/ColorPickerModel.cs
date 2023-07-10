@@ -263,7 +263,7 @@ public class ColorPickerModel : Control
 		if (mousePos.Y > dimensions.Y) mousePos.Y = dimensions.Y;
 
 		Saturation = (float)mousePos.X / (float)dimensions.X;
-		Value = 1f - ((float)mousePos.Y / (float)dimensions.Y);
+		Value = 1f - (float)mousePos.Y / (float)dimensions.Y;
 
 		HighlightMargin = new Thickness(mousePos.X, mousePos.Y, 0, 0);
 	}

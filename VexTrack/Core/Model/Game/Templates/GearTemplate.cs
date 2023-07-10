@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace VexTrack.Core.Model.Templates;
+namespace VexTrack.Core.Model.Game.Templates;
 
 public class GearTemplate
 {

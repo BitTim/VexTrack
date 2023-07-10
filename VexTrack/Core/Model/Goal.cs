@@ -1,5 +1,5 @@
 ﻿using VexTrack.Core.Helper;
-using VexTrack.Core.Model.Templates;
+using VexTrack.Core.Model.Game.Templates;
 
 namespace VexTrack.Core.Model;
 

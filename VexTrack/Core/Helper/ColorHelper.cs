@@ -17,7 +17,7 @@ internal abstract class ColorHelper
 	public static Color ColorFromHsv(Hsv hsv)
 	{
 		var c = hsv.V * hsv.S;
-		var x = c * (1 - MathF.Abs((hsv.H / 60 % 2) - 1));
+		var x = c * (1 - MathF.Abs(hsv.H / 60 % 2 - 1));
 		var m = hsv.V - c;
 
 		float r = 0, g = 0, b = 0;

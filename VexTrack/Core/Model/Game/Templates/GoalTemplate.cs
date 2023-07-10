@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using VexTrack.Core.Model.Game;
 
-namespace VexTrack.Core.Model.Templates;
+namespace VexTrack.Core.Model.Game.Templates;
 
 public class GoalTemplate
 {
@@ -11,12 +10,11 @@ public class GoalTemplate
     public int XpTotal { get; set; }
     public int VpCost { get; set; }
     public bool CanBuyDough { get; set; }
-    public bool CanUseXp { get; set; }
     public bool CanBuyVp { get; set; }
-    
     public bool IsEpilogue { get; set; }
 
     public string Name => ""; // TODO: Fetch name from reward cosmetic
+    public bool CanUseXp => !CanBuyDough;
     
     public GoalTemplate(List<Reward> rewards, bool canBuyDough, int doughCost, int xpTotal, bool canBuyVp, int vpCost, bool isEpilogue = false)
     {
@@ -24,7 +22,6 @@ public class GoalTemplate
         
         CanBuyDough = canBuyDough;
         DoughCost = doughCost;
-        CanUseXp = !canBuyDough;
         XpTotal = xpTotal;
         CanBuyVp = canBuyVp;
         VpCost = vpCost;

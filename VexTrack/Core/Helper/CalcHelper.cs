@@ -12,7 +12,7 @@ public static class CalcHelper
 		var ret = 0;
 		for (var i = 2; i <= index; i++)
 		{
-			ret += (amount * i) + offset;
+			ret += amount * i + offset;
 		}
 
 		return ret;
@@ -87,7 +87,7 @@ public static class CalcHelper
 
 	public static int CalcMaxForLevel(int level)
 	{
-		return level <= Constants.BattlepassLevels ? Constants.Level2Offset + (level * Constants.XpPerLevel) : Constants.XpPerEpilogueLevel;
+		return level <= Constants.BattlepassLevels ? Constants.Level2Offset + level * Constants.XpPerLevel : Constants.XpPerEpilogueLevel;
 	}
 
 	public static int CalcMaxForTier(int tier)

@@ -66,7 +66,7 @@ public abstract class UserData
 
 		while (cxp >= 0) // TODO: Find better way to figure out what battlepass level were gained / lost
 		{
-			if (iter <= Constants.BattlepassLevels) cxp -= Constants.Level2Offset + (iter * Constants.XpPerLevel);
+			if (iter <= Constants.BattlepassLevels) cxp -= Constants.Level2Offset + iter * Constants.XpPerLevel;
 			else if (iter < Constants.BattlepassLevels + Constants.EpilogueLevels + 2) cxp -= Constants.XpPerEpilogueLevel;
 			else break;
 				
@@ -83,7 +83,7 @@ public abstract class UserData
 		CurrentSeasonData.ActiveBpLevel = iter;
 
 		if (iter < Constants.BattlepassLevels)
-			cxp += Constants.Level2Offset + (iter * Constants.XpPerLevel);
+			cxp += Constants.Level2Offset + iter * Constants.XpPerLevel;
 		else if (iter < Constants.BattlepassLevels + Constants.EpilogueLevels + 2)
 			cxp += Constants.XpPerEpilogueLevel;
 

@@ -9,9 +9,9 @@ using VexTrack.Core.Model.Game;
 using VexTrack.Core.Model.Game.Agent;
 using VexTrack.Core.Model.Game.Cosmetic;
 using VexTrack.Core.Model.Game.Cosmetic.Weapon;
+using VexTrack.Core.Model.Game.Templates;
 using VexTrack.Core.Model.Game.Weapon;
 using VexTrack.Core.Model.Game.Weapon.Stats;
-using VexTrack.Core.Model.Templates;
 
 namespace VexTrack.Core.IO.ApiData;
 
@@ -48,7 +48,7 @@ public static class ApiDataFetcher
 
         // Fetch Agents and AgentRoles
 
-        var (agents, agentRoles) = FetchAgentsAndRoles();
+        var (agents, agentRoles) = FetchAgentData();
         if (agents.Count == 0 || agentRoles.Count == 0)
         {
             RestoreAssetsBackup();
@@ -111,7 +111,7 @@ public static class ApiDataFetcher
 
         // Fetch Weapons, Weapon Skins, Weapon Skin Chromas and Weapon Skin Levels
 
-        var (weapons, weaponSkins, weaponSkinChromas, weaponSkinLevels) = FetchWeaponsAndSkins();
+        var (weapons, weaponSkins, weaponSkinChromas, weaponSkinLevels) = FetchWeaponData();
         if (weapons.Count == 0 || weaponSkins.Count == 0 || weaponSkinChromas.Count == 0 || weaponSkinLevels.Count == 0)
         {
             RestoreAssetsBackup();
@@ -245,7 +245,7 @@ public static class ApiDataFetcher
     //  Agents
     // ================================
 
-    private static (List<Agent>, List<AgentRole>) FetchAgentsAndRoles()
+    private static (List<Agent>, List<AgentRole>) FetchAgentData()
     {
         List<Agent> agents = new();
         List<AgentRole> agentRoles = new();
@@ -319,7 +319,7 @@ public static class ApiDataFetcher
     
     
     // ================================
-    //  Contracts
+    //  Contracts and Gears
     // ================================
 
     private static (List<ContractTemplate>, List<GearTemplate>) FetchContractsAndGears()
@@ -573,7 +573,7 @@ public static class ApiDataFetcher
     //  Weapons and Skins
     // ================================
     
-    private static (List<Weapon> weapons, List<WeaponSkin> weaponSkins, List<WeaponSkinChroma> weaponSkinChromas, List<WeaponSkinLevel> weaponSkinLevels) FetchWeaponsAndSkins()
+    private static (List<Weapon> weapons, List<WeaponSkin> weaponSkins, List<WeaponSkinChroma> weaponSkinChromas, List<WeaponSkinLevel> weaponSkinLevels) FetchWeaponData()
     {
         List<Weapon> weapons = new();
         List<WeaponSkin> allSkins = new();

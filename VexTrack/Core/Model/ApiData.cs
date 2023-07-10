@@ -3,8 +3,8 @@ using VexTrack.Core.Model.Game;
 using VexTrack.Core.Model.Game.Agent;
 using VexTrack.Core.Model.Game.Cosmetic;
 using VexTrack.Core.Model.Game.Cosmetic.Weapon;
+using VexTrack.Core.Model.Game.Templates;
 using VexTrack.Core.Model.Game.Weapon;
-using VexTrack.Core.Model.Templates;
 
 namespace VexTrack.Core.Model;
 

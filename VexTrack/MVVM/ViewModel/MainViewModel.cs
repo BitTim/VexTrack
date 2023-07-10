@@ -116,8 +116,8 @@ class MainViewModel : ObservableObject
 		HistoryViewCommand = new RelayCommand(_ => SetView(HistoryVm));
 		SettingsViewCommand = new RelayCommand(_ => SetView(SettingsVm));
 
-		ApiDataLoader.LoadApiData();
-		ApiDataFetcher.FetchApiData();
+		var loadError = ApiDataLoader.LoadApiData();
+		var fetchError = ApiDataFetcher.FetchApiData();
 		UserDataLoader.LoadUserData();
 		SettingsHelper.LoadSettings();
 

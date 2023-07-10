@@ -14,7 +14,7 @@
 	</UserControl.DataContext>
 
 	<Grid Height="Auto"
-		  Width="360"
+		  Width="640"
 		  VerticalAlignment="Center">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
@@ -24,177 +24,168 @@
 				CornerRadius="8">
 			<Grid Margin="16">
 				<Grid.RowDefinitions>
-					<RowDefinition Height="*"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
 
-				<Grid Grid.Row="0"
-					  Grid.Column="0"
-					  Margin="0, 4, 0, 0">
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto"/>
-						<RowDefinition Height="Auto"/>
-						<RowDefinition Height="Auto"/>
-						<RowDefinition Height="Auto"/>
-						<RowDefinition Height="Auto"/>
-						<RowDefinition Height="Auto"/>
-						<RowDefinition Height="Auto"/>
-						<RowDefinition Height="Auto"/>
-						<RowDefinition Height="Auto"/>
-					</Grid.RowDefinitions>
+				<TextBlock Text="Downloading Update"
+				           Grid.Column="0"
+				           Grid.Row="0"
+				           FontSize="20"
+				           FontWeight="Bold"
+				           Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+				           Margin="0, 0, 0, 16"/>
 
-					<TextBlock Text="Downloading Update"
-							   Grid.Column="0"
-							   Grid.Row="0"
-							   FontSize="20"
-							   FontWeight="Bold"
-							   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
-							   Margin="0, 0, 0, 16"/>
+				<TextBlock Text="Update Package"
+				           Grid.Column="0"
+				           Grid.Row="1"
+				           FontSize="14"
+				           FontWeight="Bold"
+				           HorizontalAlignment="Left"
+				           Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+				           Margin="0, 0, 0, 4"/>
 
-					<TextBlock Text="Update Package"
-							   Grid.Column="0"
-							   Grid.Row="1"
-							   FontSize="14"
-							   FontWeight="Bold"
-							   HorizontalAlignment="Left"
-							   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
-							   Margin="0, 0, 0, 4"/>
+				<Grid Grid.Row="2"
+				      Grid.Column="0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
 
-					<Grid Grid.Row="2"
-						  Grid.Column="0">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="*"/>
-							<ColumnDefinition Width="*"/>
-							<ColumnDefinition Width="*"/>
-							<ColumnDefinition Width="*"/>
-						</Grid.ColumnDefinitions>
-
-						<TextBlock Text="Total"
-							   Grid.Column="0"
-							   Grid.Row="0"
-							   FontSize="14"
-							   FontWeight="Bold"
-							   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
-							   Margin="0, 0, 0, 4"/>
-
-						<model:TextWithUnit Text="{Binding PackageTotalSize}"
-										Unit="{Binding PackageTotalSizeUnit}"
-										Grid.Column="1"
-										Grid.Row="0"
-										FontSize="14"
-										Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
-										Margin="0, 0, 0, 4"/>
-						
-						<TextBlock Text="Size"
-						           Grid.Column="2"
-						           Grid.Row="0"
-						           FontSize="14"
-						           FontWeight="Bold"
-						           Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
-						           Margin="0, 0, 0, 4"/>
-
-						<model:TextWithUnit Text="{Binding PackageSize}"
-						                    Unit="{Binding PackageSizeUnit}"
-						                    Grid.Column="3"
-						                    Grid.Row="0"
-						                    FontSize="14"
-						                    Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
-						                    Margin="0, 0, 0, 4"/>
-					</Grid>
-
-					<model:SegmentedProgressModel Grid.Column="0" Grid.Row="3"
-					                              HorizontalAlignment="Center"
-					                              Margin="0, 0, 0, 8"
-					                              Value="{Binding PackageProgress}"/>
-
-					<TextBlock Text="Updater Tool"
+					<TextBlock Text="Total"
 					           Grid.Column="0"
-					           Grid.Row="4"
+					           Grid.Row="0"
 					           FontSize="14"
 					           FontWeight="Bold"
-					           HorizontalAlignment="Left"
 					           Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
-					           Margin="0, 16, 0, 4"/>
-					
-					<Grid Grid.Row="5"
-						  Grid.Column="0">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="*"/>
-							<ColumnDefinition Width="*"/>
-							<ColumnDefinition Width="*"/>
-							<ColumnDefinition Width="*"/>
-						</Grid.ColumnDefinitions>
+					           Margin="0, 0, 0, 4"/>
 
-						<TextBlock Text="Total"
-							   Grid.Column="0"
-							   Grid.Row="0"
-							   FontSize="14"
-							   FontWeight="Bold"
-							   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
-							   Margin="0, 0, 0, 4"/>
-
-						<model:TextWithUnit Text="{Binding UpdaterTotalSize}"
-										Unit="{Binding UpdaterTotalSizeUnit}"
-										Grid.Column="1"
-										Grid.Row="0"
-										FontSize="14"
-										Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
-										Margin="0, 0, 0, 4"/>
+					<model:TextWithUnit Text="{Binding PackageTotalSize}"
+					                    Unit="{Binding PackageTotalSizeUnit}"
+					                    Grid.Column="1"
+					                    Grid.Row="0"
+					                    FontSize="14"
+					                    Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+					                    Margin="0, 0, 0, 4"/>
 						
-						<TextBlock Text="Size"
-						           Grid.Column="2"
-						           Grid.Row="0"
-						           FontSize="14"
-						           FontWeight="Bold"
-						           Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
-						           Margin="0, 0, 0, 4"/>
+					<TextBlock Text="Size"
+					           Grid.Column="2"
+					           Grid.Row="0"
+					           FontSize="14"
+					           FontWeight="Bold"
+					           Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+					           Margin="0, 0, 0, 4"/>
 
-						<model:TextWithUnit Text="{Binding UpdaterSize}"
-						                    Unit="{Binding UpdaterSizeUnit}"
-						                    Grid.Column="3"
-						                    Grid.Row="0"
-						                    FontSize="14"
-						                    Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
-						                    Margin="0, 0, 0, 4"/>
-					</Grid>
-
-					<model:SegmentedProgressModel Grid.Column="0" Grid.Row="6"
-					                              HorizontalAlignment="Center"
-					                              Margin="0, 0, 0, 8"
-					                              Value="{Binding UpdaterProgress}"/>
-
-					<Grid Grid.Column="0" Grid.Row="7">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="*"/>
-							<ColumnDefinition Width="*"/>
-						</Grid.ColumnDefinitions>
-						
-						<TextBlock Text="Download Speed"
-						           Grid.Column="0"
-						           Grid.Row="0"
-						           FontSize="14"
-						           FontWeight="Bold"
-						           Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
-						           Margin="0, 8, 0, 4"/>
-
-						<model:TextWithUnit Text="{Binding DownloadSpeed}"
-											Unit="{Binding DownloadSpeedUnit}"
-											Grid.Column="1"
-											Grid.Row="0"
-											FontSize="14"
-											Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
-											Margin="0, 8, 0, 4"/>
-					</Grid>
-
-					<TextBlock Text="Note: VexTrack will restart after the download is completed. Make sure to not have any other programs open within the VexTrack installation folder"
-							   Grid.Column="0"
-							   Grid.Row="8"
-							   FontSize="14"
-							   FontStyle="Italic"
-							   TextWrapping="Wrap"
-							   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
-							   Margin="0, 8, 0, 4"/>
+					<model:TextWithUnit Text="{Binding PackageSize}"
+					                    Unit="{Binding PackageSizeUnit}"
+					                    Grid.Column="3"
+					                    Grid.Row="0"
+					                    FontSize="14"
+					                    Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+					                    Margin="0, 0, 0, 4"/>
 				</Grid>
+
+				<model:SegmentedProgressModel Grid.Column="0" Grid.Row="3"
+				                              HorizontalAlignment="Center"
+				                              Margin="0, 0, 0, 8"
+				                              Value="{Binding PackageProgress}"/>
+
+				<TextBlock Text="Updater Tool"
+				           Grid.Column="0"
+				           Grid.Row="4"
+				           FontSize="14"
+				           FontWeight="Bold"
+				           HorizontalAlignment="Left"
+				           Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+				           Margin="0, 16, 0, 4"/>
+					
+				<Grid Grid.Row="5"
+				      Grid.Column="0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+
+					<TextBlock Text="Total"
+					           Grid.Column="0"
+					           Grid.Row="0"
+					           FontSize="14"
+					           FontWeight="Bold"
+					           Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+					           Margin="0, 0, 0, 4"/>
+
+					<model:TextWithUnit Text="{Binding UpdaterTotalSize}"
+					                    Unit="{Binding UpdaterTotalSizeUnit}"
+					                    Grid.Column="1"
+					                    Grid.Row="0"
+					                    FontSize="14"
+					                    Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+					                    Margin="0, 0, 0, 4"/>
+						
+					<TextBlock Text="Size"
+					           Grid.Column="2"
+					           Grid.Row="0"
+					           FontSize="14"
+					           FontWeight="Bold"
+					           Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+					           Margin="0, 0, 0, 4"/>
+
+					<model:TextWithUnit Text="{Binding UpdaterSize}"
+					                    Unit="{Binding UpdaterSizeUnit}"
+					                    Grid.Column="3"
+					                    Grid.Row="0"
+					                    FontSize="14"
+					                    Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+					                    Margin="0, 0, 0, 4"/>
+				</Grid>
+
+				<model:SegmentedProgressModel Grid.Column="0" Grid.Row="6"
+				                              HorizontalAlignment="Center"
+				                              Margin="0, 0, 0, 8"
+				                              Value="{Binding UpdaterProgress}"/>
+
+				<Grid Grid.Column="0" Grid.Row="7">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+						
+					<TextBlock Text="Download Speed"
+					           Grid.Column="0"
+					           Grid.Row="0"
+					           FontSize="14"
+					           FontWeight="Bold"
+					           Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+					           Margin="0, 8, 0, 4"/>
+
+					<model:TextWithUnit Text="{Binding DownloadSpeed}"
+					                    Unit="{Binding DownloadSpeedUnit}"
+					                    Grid.Column="1"
+					                    Grid.Row="0"
+					                    FontSize="14"
+					                    Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+					                    Margin="0, 8, 0, 4"/>
+				</Grid>
+
+				<TextBlock Text="Note: VexTrack will restart after the download is completed. Make sure to not have any other programs open within the VexTrack installation folder"
+				           Grid.Column="0"
+				           Grid.Row="8"
+				           FontSize="14"
+				           FontStyle="Italic"
+				           TextWrapping="Wrap"
+				           Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+				           Margin="0, 8, 0, 4"/>
 			</Grid>
 		</Border>
 	</Grid>

@@ -38,6 +38,7 @@ class MainViewModel : ObservableObject
 	private UpdateDownloadPopupViewModel UpdateDownloadPopup { get; set; }
 	private UpdateFailedPopupViewModel UpdateFailedPopup { get; set; }
 	private DeleteGoalConfirmationPopupViewModel DeleteGoalConfirmationPopup { get; set; }
+	private ApiFetchPopupViewModel ApiFetchPopup { get; set; }
 
 	private object _currentView;
 	private bool _epilogue;
@@ -116,11 +117,7 @@ class MainViewModel : ObservableObject
 		HistoryViewCommand = new RelayCommand(_ => SetView(HistoryVm));
 		SettingsViewCommand = new RelayCommand(_ => SetView(SettingsVm));
 
-		var loadError = ApiDataLoader.LoadApiData();
-		var fetchError = ApiDataFetcher.FetchApiData();
-		UserDataLoader.LoadUserData();
-		SettingsHelper.LoadSettings();
-
+		LoadDataAsync();
 		UpdateHelper.CheckUpdateAsync();
 
 		Timer updateTimer = new(UpdateTimerCallback);
@@ -130,7 +127,18 @@ class MainViewModel : ObservableObject
 		if (now > midnight) midnight = midnight.AddDays(1).ToLocalTime();
 		var msUntilMidnight = (int)(midnight - now).TotalMilliseconds;
 		updateTimer.Change(msUntilMidnight, Timeout.Infinite);
+		
+		Update();
+	}
 
+	private async void LoadDataAsync()
+	{
+		SettingsHelper.LoadSettings();
+		
+		var loadError = ApiDataLoader.LoadApiData();
+		var fetchError = await ApiDataFetcher.FetchApiDataAsync();
+		
+		UserDataLoader.LoadUserData();
 		Update();
 	}
 
@@ -186,6 +194,9 @@ class MainViewModel : ObservableObject
 			
 		UpdateFailedPopup = new UpdateFailedPopupViewModel();
 		ViewModelManager.ViewModels.Add(nameof(UpdateFailedPopupViewModel), UpdateFailedPopup);
+
+		ApiFetchPopup = new ApiFetchPopupViewModel();
+		ViewModelManager.ViewModels.Add(nameof(ApiFetchPopupViewModel), ApiFetchPopup);
 	}
 
 	private void SetView(object view)

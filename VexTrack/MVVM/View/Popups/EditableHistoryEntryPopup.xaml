@@ -5,8 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
 			 xmlns:validation="clr-namespace:VexTrack.MVVM.Validation"
 			 xmlns:popups="clr-namespace:VexTrack.MVVM.ViewModel.Popups"
-			 xmlns:core="clr-namespace:VexTrack.Core"
-			 xmlns:model="clr-namespace:VexTrack.Core.Model"
+             xmlns:model="clr-namespace:VexTrack.Core.Model"
 			 mc:Ignorable="d" 
              d:DesignHeight="812" d:DesignWidth="872">
 

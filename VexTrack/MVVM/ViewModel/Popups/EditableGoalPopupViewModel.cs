@@ -88,7 +88,7 @@ class EditableGoalPopupViewModel : BasePopupViewModel
 		OnBackClicked = new RelayCommand(_ => { if (CanCancel) Close(); });
 		OnDoneClicked = new RelayCommand(_ =>
 		{
-			var goals = UserData.Contracts[UserData.Contracts.FindIndex(contract => contract.Uuid == Uuid)].Goals;
+			//var goals = UserData.Contracts[UserData.Contracts.FindIndex(contract => contract.Uuid == Uuid)].Goals;
 				
 			// TODO: Make only Contract instance editable, not the template
 			//if (EditMode) UserData.EditContract(Uuid, new Contract(Uuid, Name, Color, Paused, goals));

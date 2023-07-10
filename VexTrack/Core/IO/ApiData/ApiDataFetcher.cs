@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using VexTrack.Core.Helper;
 using VexTrack.Core.Model.Game;
@@ -12,17 +13,29 @@ using VexTrack.Core.Model.Game.Cosmetic.Weapon;
 using VexTrack.Core.Model.Game.Templates;
 using VexTrack.Core.Model.Game.Weapon;
 using VexTrack.Core.Model.Game.Weapon.Stats;
+using VexTrack.MVVM.ViewModel;
+using VexTrack.MVVM.ViewModel.Popups;
 
 namespace VexTrack.Core.IO.ApiData;
 
 public static class ApiDataFetcher
 {
-    internal static int FetchApiData()
+    private static ApiFetchPopupViewModel _popup;
+    
+    internal static async Task<int> FetchApiDataAsync()
     {
+        _popup = CreateApiFetchPopup();
+        _popup.TotalFetchSteps = 11; // Update when more fetch steps are added
+        
         // Version checking
 
-        var version = FetchVersion();
-        if (string.IsNullOrEmpty(version)) return 0;
+        var version = FetchVersion(1);
+        if (string.IsNullOrEmpty(version))
+        {
+            DestroyApiFetchPopup();
+            return 0;
+        }
+        _popup.CurrentFetchVersion = version;
         
         // Backup and Clear Assets Folder
         
@@ -30,91 +43,101 @@ public static class ApiDataFetcher
         
         // Fetch Maps
 
-        var maps = FetchMaps();
+        var maps = await FetchMaps(2);
         if (maps.Count == 0)
         {
             RestoreAssetsBackup();
+            DestroyApiFetchPopup();
             return -1;
         }
 
         // Fetch GameModes
 
-        var gameModes = FetchGameModes();
+        var gameModes = await FetchGameModes(3);
         if (gameModes.Count == 0)
         {
             RestoreAssetsBackup();
+            DestroyApiFetchPopup();
             return -2;
         }
 
         // Fetch Agents and AgentRoles
 
-        var (agents, agentRoles) = FetchAgentData();
+        var (agents, agentRoles) = await FetchAgentData(4);
         if (agents.Count == 0 || agentRoles.Count == 0)
         {
             RestoreAssetsBackup();
+            DestroyApiFetchPopup();
             return -3;
         }
 
         // Fetch Contracts and Gears
 
-        var (contracts, gears) = FetchContractsAndGears();
+        var (contracts, gears) = FetchContractsAndGears(5);
         if (contracts.Count == 0 || gears.Count == 0)
         {
             RestoreAssetsBackup();
+            DestroyApiFetchPopup();
             return -4;
         }
 
         // Fetch Buddies
 
-        var buddies = FetchBuddies();
+        var buddies = await FetchBuddies(6);
         if (buddies.Count == 0)
         {
             RestoreAssetsBackup();
+            DestroyApiFetchPopup();
             return -5;
         }
 
         // Fetch Currencies
 
-        var currencies = FetchCurrencies();
+        var currencies = await FetchCurrencies(7);
         if (currencies.Count == 0)
         {
             RestoreAssetsBackup();
+            DestroyApiFetchPopup();
             return -6;
         }
 
         // Fetch Player Cards
 
-        var playerCards = FetchPlayerCards();
+        var playerCards = await FetchPlayerCards(8);
         if (playerCards.Count == 0)
         {
             RestoreAssetsBackup();
+            DestroyApiFetchPopup();
             return -7;
         }
 
         // Fetch Player Titles
 
-        var playerTitles = FetchPlayerTitles();
+        var playerTitles = FetchPlayerTitles(9);
         if (playerTitles.Count == 0)
         {
             RestoreAssetsBackup();
+            DestroyApiFetchPopup();
             return -8;
         }
 
         // Fetch Sprays
 
-        var sprays = FetchSprays();
+        var sprays = await FetchSprays(10);
         if (sprays.Count == 0)
         {
             RestoreAssetsBackup();
+            DestroyApiFetchPopup();
             return -9;
         }
 
         // Fetch Weapons, Weapon Skins, Weapon Skin Chromas and Weapon Skin Levels
 
-        var (weapons, weaponSkins, weaponSkinChromas, weaponSkinLevels) = FetchWeaponData();
+        var (weapons, weaponSkins, weaponSkinChromas, weaponSkinLevels) = await FetchWeaponData(11);
         if (weapons.Count == 0 || weaponSkins.Count == 0 || weaponSkinChromas.Count == 0 || weaponSkinLevels.Count == 0)
         {
             RestoreAssetsBackup();
+            DestroyApiFetchPopup();
             return -10;
         }
 
@@ -122,6 +145,7 @@ public static class ApiDataFetcher
         
         Model.ApiData.SetData(version, maps, gameModes, agents, agentRoles, contracts, gears, weapons, buddies, currencies, playerCards, playerTitles, sprays, weaponSkins, weaponSkinChromas, weaponSkinLevels);
         ApiDataSaver.SaveApiData();
+        DestroyApiFetchPopup();
         DeleteAssetsBackup(); // Delete Backup since new data was downloaded successfully
         return 0;
     }
@@ -139,7 +163,7 @@ public static class ApiDataFetcher
     private static void BackupAndClearAssets()
     {
         DeleteAssetsBackup();
-        Directory.Move(Constants.AssetFolder, Constants.AssetBackupFolder);
+        if(Directory.Exists(Constants.AssetFolder)) Directory.Move(Constants.AssetFolder, Constants.AssetBackupFolder);
         if(Directory.Exists(Constants.AssetFolder)) Directory.Delete(Constants.AssetFolder, true);
     }
 
@@ -154,39 +178,51 @@ public static class ApiDataFetcher
     //  Version
     // ================================
     
-    public static string FetchVersion()
+    public static string FetchVersion(int idx = 0)
     {
+        if (idx != 0) SetNewFetchStep("Version", idx);
+        
         var versionResponse = ApiHelper.Request("https://valorant-api.com/v1/version");
         if (versionResponse.Count == 0) return "";
+
+        if (idx != 0)
+        {
+            SetTotalStepItems(1);
+            _popup.CurrentStepItemLabel = "Version";
+        }
         
         var version = versionResponse.Value<JObject>("data").Value<string>("version");
         if (Model.ApiData.Version == version) return "";
-
+        
         return version;
     }
 
-    
-    
+
     // ================================
     //  Maps
     // ================================
     
-    private static List<Map> FetchMaps()
+    private static async Task<List<Map>> FetchMaps(int idx)
     {
+        SetNewFetchStep("Maps", idx);
         List<Map> maps = new();
 
         var mapsResponse = ApiHelper.Request("https://valorant-api.com/v1/maps");
         if (mapsResponse.Count == 0) return maps;
 
         var mapsData = mapsResponse.Value<JArray>("data");
+        SetTotalStepItems(mapsData.Count);
 
         foreach (var map in mapsData)
         {
             var uuid = map.Value<string>("uuid");
             var name = map.Value<string>("displayName");
 
-            var listViewImagePath = ApiHelper.DownloadImage(map.Value<string>("listViewIcon"), Constants.MapListViewImageFolder, uuid);
-            var splashImagePath = ApiHelper.DownloadImage(map.Value<string>("splash"), Constants.MapSplashImageFolder, uuid);
+            ++_popup.CurrentStepItem;
+            _popup.CurrentStepItemLabel = name;
+
+            var listViewImagePath = await ApiHelper.DownloadImage(map.Value<string>("listViewIcon"), Constants.MapListViewImageFolder, uuid);
+            var splashImagePath = await ApiHelper.DownloadImage(map.Value<string>("splash"), Constants.MapSplashImageFolder, uuid);
             
             maps.Add(new Map(uuid, name, listViewImagePath, splashImagePath));
         }
@@ -202,21 +238,26 @@ public static class ApiDataFetcher
     //  GameModes
     // ================================
     
-    private static List<GameMode> FetchGameModes()
+    private static async Task<List<GameMode>> FetchGameModes(int idx)
     {
+        SetNewFetchStep("Game modes", idx);
         List<GameMode> gameModes = new();
 
         var gameModesResponse = ApiHelper.Request("https://valorant-api.com/v1/gamemodes");
         if (gameModesResponse.Count == 0) return gameModes;
         
         var gameModesData = gameModesResponse.Value<JArray>("data");
+        SetTotalStepItems(gameModesData.Count);
 
         foreach (var gameMode in gameModesData)
         {
             var uuid = gameMode.Value<string>("uuid");
             var name = gameMode.Value<string>("displayName");
             
-            var iconPath = ApiHelper.DownloadImage(gameMode.Value<string>("displayIcon"), Constants.GameModeIconFolder, uuid);
+            ++_popup.CurrentStepItem;
+            _popup.CurrentStepItemLabel = name;
+            
+            var iconPath = await ApiHelper.DownloadImage(gameMode.Value<string>("displayIcon"), Constants.GameModeIconFolder, uuid);
             
             gameModes.Add(new GameMode(uuid, name, name == "Deathmatch" ? "Placement" : "Score", iconPath));
         }
@@ -245,8 +286,9 @@ public static class ApiDataFetcher
     //  Agents
     // ================================
 
-    private static (List<Agent>, List<AgentRole>) FetchAgentData()
+    private static async Task<(List<Agent>, List<AgentRole>)> FetchAgentData(int idx)
     {
+        SetNewFetchStep("Agents", idx);
         List<Agent> agents = new();
         List<AgentRole> agentRoles = new();
 
@@ -254,17 +296,21 @@ public static class ApiDataFetcher
         if (agentsResponse.Count == 0) return (agents, agentRoles);
 
         var agentsData = agentsResponse.Value<JArray>("data");
+        SetTotalStepItems(agentsData.Count);
 
         foreach (var agent in agentsData)
         {
             var uuid = agent.Value<string>("uuid");
             var name = agent.Value<string>("displayName");
             var description = agent.Value<string>("description");
-
-            var iconPath = ApiHelper.DownloadImage(agent.Value<string>("displayIcon"), Constants.AgentIconFolder, uuid);
-            var portraitPath = ApiHelper.DownloadImage(agent.Value<string>("fullPortrait"), Constants.AgentPortraitFolder, uuid);
-            var killFeedPortraitPath = ApiHelper.DownloadImage(agent.Value<string>("killfeedPortrait"), Constants.AgentKillFeedPortraitFolder, uuid);
-            var backgroundPath = ApiHelper.DownloadImage(agent.Value<string>("background"), Constants.AgentBackgroundFolder, uuid);
+            
+            ++_popup.CurrentStepItem;
+            _popup.CurrentStepItemLabel = name;
+            
+            var iconPath = await ApiHelper.DownloadImage(agent.Value<string>("displayIcon"), Constants.AgentIconFolder, uuid);
+            var portraitPath = await ApiHelper.DownloadImage(agent.Value<string>("fullPortrait"), Constants.AgentPortraitFolder, uuid);
+            var killFeedPortraitPath = await ApiHelper.DownloadImage(agent.Value<string>("killfeedPortrait"), Constants.AgentKillFeedPortraitFolder, uuid);
+            var backgroundPath = await ApiHelper.DownloadImage(agent.Value<string>("background"), Constants.AgentBackgroundFolder, uuid);
 
             var isBaseContent = agent.Value<bool>("isBaseContent");
 
@@ -288,7 +334,7 @@ public static class ApiDataFetcher
             {
                 var roleName = role.Value<string>("displayName");
                 var roleDescription = role.Value<string>("description");
-                var roleIconPath = ApiHelper.DownloadImage(role.Value<string>("displayIcon"), Constants.AgentRoleIconFolder, roleUuid);
+                var roleIconPath = await ApiHelper.DownloadImage(role.Value<string>("displayIcon"), Constants.AgentRoleIconFolder, roleUuid);
                 
                 agentRoles.Add(new AgentRole(roleUuid, roleName, roleDescription, roleIconPath));
             }
@@ -305,7 +351,7 @@ public static class ApiDataFetcher
                 var abilityDescription = ability.Value<string>("description");
                 var abilitySlot = ability.Value<string>("slot");
                 
-                var abilityIconPath = ApiHelper.DownloadImage(ability.Value<string>("displayIcon"), Constants.AgentAbilityIconFolder, uuid + "-" + abilitySlot);
+                var abilityIconPath = await ApiHelper.DownloadImage(ability.Value<string>("displayIcon"), Constants.AgentAbilityIconFolder, uuid + "-" + abilitySlot);
                 abilities.Add(new AgentAbility(abilityName, abilityDescription, abilitySlot, abilityIconPath));
             }
             
@@ -322,8 +368,9 @@ public static class ApiDataFetcher
     //  Contracts and Gears
     // ================================
 
-    private static (List<ContractTemplate>, List<GearTemplate>) FetchContractsAndGears()
+    private static (List<ContractTemplate>, List<GearTemplate>) FetchContractsAndGears(int idx)
     {
+        SetNewFetchStep("Contracts / Gears", idx);
         List<ContractTemplate> contracts = new();
         List<GearTemplate> gears = new();
         
@@ -331,11 +378,15 @@ public static class ApiDataFetcher
         if (contractsResponse.Count == 0) return (contracts, gears);
 
         var contractsData = contractsResponse.Value<JArray>("data");
+        SetTotalStepItems(contractsData.Count);
         
         foreach (var contract in contractsData)
         {
             var uuid = contract.Value<string>("uuid");
             var name = contract.Value<string>("displayName");
+            
+            ++_popup.CurrentStepItem;
+            _popup.CurrentStepItemLabel = name;
 
             // Fix names being in FULL CAPS and inconsistent spaces
             name = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(name.ToLower());
@@ -432,21 +483,26 @@ public static class ApiDataFetcher
     //  Buddies
     // ================================
 
-    private static List<Buddy> FetchBuddies()
+    private static async Task<List<Buddy>> FetchBuddies(int idx)
     {
+        SetNewFetchStep("Buddies", idx);
         List<Buddy> buddies = new();
 
         var buddiesResponse = ApiHelper.Request("https://valorant-api.com/v1/buddies");
         if(buddiesResponse.Count == 0) return buddies;
 
         var buddiesData = buddiesResponse.Value<JArray>("data");
+        SetTotalStepItems(buddiesData.Count);
 
         foreach (var buddy in buddiesData)
         {
             var uuid = buddy.Value<string>("uuid");
             var name = buddy.Value<string>("displayName");
-            var iconPath = ApiHelper.DownloadImage(buddy.Value<string>("displayIcon"), Constants.BuddyIconFolder, uuid);
-
+            
+            ++_popup.CurrentStepItem;
+            _popup.CurrentStepItemLabel = name;
+            
+            var iconPath = await ApiHelper.DownloadImage(buddy.Value<string>("displayIcon"), Constants.BuddyIconFolder, uuid);
             buddies.Add(new Buddy(uuid, name, iconPath));
         }
 
@@ -459,21 +515,27 @@ public static class ApiDataFetcher
     //  Currencies
     // ================================
     
-    private static List<Currency> FetchCurrencies()
+    private static async Task<List<Currency>> FetchCurrencies(int idx)
     {
+        SetNewFetchStep("Currencies", idx);
         List<Currency> currencies = new();
 
         var currenciesResponse = ApiHelper.Request("https://valorant-api.com/v1/currencies");
         if (currenciesResponse.Count == 0) return currencies;
 
         var currenciesData = currenciesResponse.Value<JArray>("data");
+        SetTotalStepItems(currenciesData.Count);
 
         foreach (var currency in currenciesData)
         {
             var uuid = currency.Value<string>("uuid");
             var name = currency.Value<string>("displayName");
-            var iconPath = ApiHelper.DownloadImage(currency.Value<string>("displayIcon"), Constants.CurrencyIconFolder, uuid);
-            var largeIconPath = ApiHelper.DownloadImage(currency.Value<string>("largeIcon"), Constants.CurrencyLargeIconFolder, uuid);
+            
+            ++_popup.CurrentStepItem;
+            _popup.CurrentStepItemLabel = name;
+            
+            var iconPath = await ApiHelper.DownloadImage(currency.Value<string>("displayIcon"), Constants.CurrencyIconFolder, uuid);
+            var largeIconPath = await ApiHelper.DownloadImage(currency.Value<string>("largeIcon"), Constants.CurrencyLargeIconFolder, uuid);
             
             currencies.Add(new Currency(uuid, name, iconPath, largeIconPath));
         }
@@ -487,23 +549,29 @@ public static class ApiDataFetcher
     //  Player Cards
     // ================================
 
-    private static List<PlayerCard> FetchPlayerCards()
+    private static async Task<List<PlayerCard>> FetchPlayerCards(int idx)
     {
+        SetNewFetchStep("Player Cards", idx);
         List<PlayerCard> playerCards = new();
 
         var playerCardsResponse = ApiHelper.Request("https://valorant-api.com/v1/playercards");
         if (playerCardsResponse.Count == 0) return playerCards;
 
         var playerCardsData = playerCardsResponse.Value<JArray>("data");
+        SetTotalStepItems(playerCardsData.Count);
 
         foreach (var playerCard in playerCardsData)
         {
             var uuid = playerCard.Value<string>("uuid");
             var name = playerCard.Value<string>("displayName");
-            var iconPath = ApiHelper.DownloadImage(playerCard.Value<string>("displayIcon"), Constants.PlayerCardIconFolder, uuid);
-            var smallArtPath = ApiHelper.DownloadImage(playerCard.Value<string>("smallArt"), Constants.PlayerCardSmallArtFolder, uuid);
-            var wideArtPath = ApiHelper.DownloadImage(playerCard.Value<string>("wideArt"), Constants.PlayerCardWideArtFolder, uuid);
-            var largeArtPath = ApiHelper.DownloadImage(playerCard.Value<string>("largeArt"), Constants.PlayerCardLargeArtFolder, uuid);
+            
+            ++_popup.CurrentStepItem;
+            _popup.CurrentStepItemLabel = name;
+            
+            var iconPath = await ApiHelper.DownloadImage(playerCard.Value<string>("displayIcon"), Constants.PlayerCardIconFolder, uuid);
+            var smallArtPath = await ApiHelper.DownloadImage(playerCard.Value<string>("smallArt"), Constants.PlayerCardSmallArtFolder, uuid);
+            var wideArtPath = await ApiHelper.DownloadImage(playerCard.Value<string>("wideArt"), Constants.PlayerCardWideArtFolder, uuid);
+            var largeArtPath = await ApiHelper.DownloadImage(playerCard.Value<string>("largeArt"), Constants.PlayerCardLargeArtFolder, uuid);
             
             playerCards.Add(new PlayerCard(uuid, name, iconPath, smallArtPath, wideArtPath, largeArtPath));
         }
@@ -517,21 +585,26 @@ public static class ApiDataFetcher
     //  Player Titles
     // ================================
 
-    private static List<PlayerTitle> FetchPlayerTitles()
+    private static List<PlayerTitle> FetchPlayerTitles(int idx)
     {
+        SetNewFetchStep("PLayer Titles", idx);
         List<PlayerTitle> playerTitles = new();
 
         var playerTitlesResponse = ApiHelper.Request("https://valorant-api.com/v1/playertitles");
         if (playerTitlesResponse.Count == 0) return playerTitles;
 
         var playerTitlesData = playerTitlesResponse.Value<JArray>("data");
+        SetTotalStepItems(playerTitlesData.Count);
 
         foreach (var playerTitle in playerTitlesData)
         {
             var uuid = playerTitle.Value<string>("uuid");
             var name = playerTitle.Value<string>("displayName");
-            var titleText = playerTitle.Value<string>("titleText");
             
+            ++_popup.CurrentStepItem;
+            _popup.CurrentStepItemLabel = name;
+            
+            var titleText = playerTitle.Value<string>("titleText");
             playerTitles.Add(new PlayerTitle(uuid, name, titleText));
         }
         
@@ -544,22 +617,28 @@ public static class ApiDataFetcher
     //  Sprays
     // ================================
 
-    private static List<Spray> FetchSprays()
+    private static async Task<List<Spray>> FetchSprays(int idx)
     {
+        SetNewFetchStep("Sprays", idx);
         List<Spray> sprays = new();
 
         var spraysResponse = ApiHelper.Request("https://valorant-api.com/v1/sprays");
         if (spraysResponse.Count == 0) return sprays;
 
         var spraysData = spraysResponse.Value<JArray>("data");
+        SetTotalStepItems(spraysData.Count);
 
         foreach (var spray in spraysData)
         {
             var uuid = spray.Value<string>("uuid");
             var name = spray.Value<string>("displayName");
-            var iconPath = ApiHelper.DownloadImage(spray.Value<string>("displayIcon"), Constants.SprayIconFolder, uuid);
-            var fullIconPath = ApiHelper.DownloadImage(spray.Value<string>("fullTransparentIcon"), Constants.SprayFullIconFolder, uuid);
-            var animationPath = ApiHelper.DownloadImage(spray.Value<string>("animationGif"), Constants.SprayAnimationFolder, uuid);
+            
+            ++_popup.CurrentStepItem;
+            _popup.CurrentStepItemLabel = name;
+            
+            var iconPath = await ApiHelper.DownloadImage(spray.Value<string>("displayIcon"), Constants.SprayIconFolder, uuid);
+            var fullIconPath = await ApiHelper.DownloadImage(spray.Value<string>("fullTransparentIcon"), Constants.SprayFullIconFolder, uuid);
+            var animationPath = await ApiHelper.DownloadImage(spray.Value<string>("animationGif"), Constants.SprayAnimationFolder, uuid);
             
             sprays.Add(new Spray(uuid, name, iconPath, fullIconPath, animationPath));
         }
@@ -573,8 +652,9 @@ public static class ApiDataFetcher
     //  Weapons and Skins
     // ================================
     
-    private static (List<Weapon> weapons, List<WeaponSkin> weaponSkins, List<WeaponSkinChroma> weaponSkinChromas, List<WeaponSkinLevel> weaponSkinLevels) FetchWeaponData()
+    private static async Task<(List<Weapon> weapons, List<WeaponSkin> weaponSkins, List<WeaponSkinChroma> weaponSkinChromas, List<WeaponSkinLevel> weaponSkinLevels)> FetchWeaponData(int idx)
     {
+        SetNewFetchStep("Weapons", idx);
         List<Weapon> weapons = new();
         List<WeaponSkin> allSkins = new();
         List<WeaponSkinChroma> allChromas = new();
@@ -584,16 +664,21 @@ public static class ApiDataFetcher
         if (weaponsResponse.Count == 0) return (weapons, allSkins, allChromas, allLevels);
 
         var weaponsData = weaponsResponse.Value<JArray>("data");
+        SetTotalStepItems(weaponsData.Count);
 
         foreach (var weapon in weaponsData)
         {
             // General Weapon data
             var uuid = weapon.Value<string>("uuid");
             var name = weapon.Value<string>("displayName");
+            
+            ++_popup.CurrentStepItem;
+            _popup.CurrentStepItemLabel = name;
+            
             var category = weapon.Value<string>("category").Replace("EEquippableCategory::", ""); // Convert class names to readable names
             var defaultSkinUuid = weapon.Value<string>("defaultSkinUuid");
-            var iconPath = ApiHelper.DownloadImage(weapon.Value<string>("displayIcon"), Constants.WeaponIconPath, uuid);
-            var killStreamIconPath = ApiHelper.DownloadImage(weapon.Value<string>("killStreamIcon"), Constants.WeaponKillStreamIconPath, uuid);
+            var iconPath = await ApiHelper.DownloadImage(weapon.Value<string>("displayIcon"), Constants.WeaponIconPath, uuid);
+            var killStreamIconPath = await ApiHelper.DownloadImage(weapon.Value<string>("killStreamIcon"), Constants.WeaponKillStreamIconPath, uuid);
 
             var shopCost = -1;
             var shopData = weapon.Value<JObject>("shopData");
@@ -676,8 +761,10 @@ public static class ApiDataFetcher
             {
                 var skinUuid = rawSkin.Value<string>("uuid");
                 var skinName = rawSkin.Value<string>("displayName");
-                var skinIconPath = ApiHelper.DownloadImage(rawSkin.Value<string>("displayIcon"), Constants.WeaponSkinIconPath, skinUuid);
-                var skinWallpaperPath = ApiHelper.DownloadImage(rawSkin.Value<string>("wallpaper"), Constants.WeaponSkinWallpaperPath, skinUuid);
+                _popup.CurrentStepItemLabel = name + " / " + skinName;
+                
+                var skinIconPath = await ApiHelper.DownloadImage(rawSkin.Value<string>("displayIcon"), Constants.WeaponSkinIconPath, skinUuid);
+                var skinWallpaperPath = await ApiHelper.DownloadImage(rawSkin.Value<string>("wallpaper"), Constants.WeaponSkinWallpaperPath, skinUuid);
                 
                 // Skin Chromas
                 List<string> chromaUuids = new();
@@ -686,9 +773,9 @@ public static class ApiDataFetcher
                 {
                     var chromaUuid = rawChroma.Value<string>("uuid");
                     var chromaName = rawChroma.Value<string>("displayName");
-                    var chromaIconPath = ApiHelper.DownloadImage(rawChroma.Value<string>("displayIcon"), Constants.WeaponSkinChromaIconPath, chromaUuid);
-                    var chromaFullRenderPath = ApiHelper.DownloadImage(rawChroma.Value<string>("fullRender"), Constants.WeaponSkinChromaFullRenderPath, chromaUuid);
-                    var chromaSwatchPath = ApiHelper.DownloadImage(rawChroma.Value<string>("swatch"), Constants.WeaponSkinChromaSwatchPath, chromaUuid);
+                    var chromaIconPath = await ApiHelper.DownloadImage(rawChroma.Value<string>("displayIcon"), Constants.WeaponSkinChromaIconPath, chromaUuid);
+                    var chromaFullRenderPath = await ApiHelper.DownloadImage(rawChroma.Value<string>("fullRender"), Constants.WeaponSkinChromaFullRenderPath, chromaUuid);
+                    var chromaSwatchPath = await ApiHelper.DownloadImage(rawChroma.Value<string>("swatch"), Constants.WeaponSkinChromaSwatchPath, chromaUuid);
                     
                     var chroma = new WeaponSkinChroma(chromaUuid, chromaName, skinUuid, chromaIconPath, chromaFullRenderPath, chromaSwatchPath);
                     chromaUuids.Add(chroma.Uuid);
@@ -703,7 +790,7 @@ public static class ApiDataFetcher
                     var levelUuid = rawLevel.Value<string>("uuid");
                     var levelName = rawLevel.Value<string>("displayName");
                     var levelLevelItem = (rawLevel.Value<string>("levelItem") ?? "").Replace("EEquippableSkinLevelItem::", ""); // Convert class names to readable names
-                    var levelIconPath = ApiHelper.DownloadImage(rawLevel.Value<string>("displayIcon"), Constants.WeaponSkinLevelIconPath, levelUuid);
+                    var levelIconPath = await ApiHelper.DownloadImage(rawLevel.Value<string>("displayIcon"), Constants.WeaponSkinLevelIconPath, levelUuid);
 
                     var level = new WeaponSkinLevel(levelUuid, levelName, skinUuid, levelLevelItem, levelIconPath);
                     levelUuids.Add(level.Uuid);
@@ -719,5 +806,51 @@ public static class ApiDataFetcher
         }
         
         return (weapons, allSkins, allChromas, allLevels);
+    }
+    
+    
+    
+    // ================================
+    //  Step tracking
+    // ================================
+
+    private static void SetNewFetchStep(string category, int index)
+    {
+        _popup.CurrentFetchCategory = category;
+        _popup.CurrentFetchStep = index;
+    }
+
+    private static void SetTotalStepItems(int total)
+    {
+        _popup.TotalStepItems = total;
+        _popup.CurrentStepItem = 0;
+        _popup.CurrentStepItemLabel = "";
+    }
+
+
+    
+    // ================================
+    //  Popup
+    // ================================
+    
+    private static ApiFetchPopupViewModel CreateApiFetchPopup()
+    {
+        var apiFetchPopupViewModel = (ApiFetchPopupViewModel)ViewModelManager.ViewModels[nameof(ApiFetchPopupViewModel)];
+        var mainVm = (MainViewModel)ViewModelManager.ViewModels[nameof(MainViewModel)];
+        
+        apiFetchPopupViewModel.InitData();
+        apiFetchPopupViewModel.CanCancel = false;
+        
+        mainVm.InterruptUpdate = true;
+        mainVm.QueuePopup(apiFetchPopupViewModel);
+
+        return apiFetchPopupViewModel;
+    }
+    
+    private static void DestroyApiFetchPopup()
+    {
+        var mainVm = (MainViewModel)ViewModelManager.ViewModels[nameof(MainViewModel)];
+        mainVm.InterruptUpdate = false;
+        mainVm.DequeuePopup(_popup);
     }
 }

@@ -136,6 +136,10 @@
 					<DataTemplate DataType="{x:Type popupViewModel:DeleteGoalConfirmationPopupViewModel}">
 						<popupView:DeleteGoalConfirmationPopup/>
 					</DataTemplate>
+
+					<DataTemplate DataType="{x:Type popupViewModel:ApiFetchPopupViewModel}">
+						<popupView:ApiFetchPopup/>
+					</DataTemplate>
 				</ResourceDictionary>
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>

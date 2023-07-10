@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using Newtonsoft.Json.Linq;
-using VexTrack.Core.Model.Game;
 
 namespace VexTrack.Core.IO.ApiData;
 

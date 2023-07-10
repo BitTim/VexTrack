@@ -109,7 +109,7 @@
 							                           Total="{Binding Total}"
 							                           Remaining="{Binding Remaining}"
 							                           Goals="{Binding ObservableGoals}"
-							                           Color="{Binding Color}"
+							                           Color=""
 							                           CompletionForecastDays="{Binding CompletionForecastDays}"
 							                           CompletionTimestamp="{Binding CompletionTimestamp}"
 							                           NextUnlockName="{Binding NextUnlockName}"

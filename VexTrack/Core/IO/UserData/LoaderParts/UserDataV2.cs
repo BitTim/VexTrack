@@ -120,7 +120,6 @@ public static class UserDataV2
 		    foreach (var goal in source)
 		    {
 			    var goalUuid = goal.Value<string>("uuid");
-			    var goalName = goal.Value<string>("name");
 
 			    var total = goal.Value<int>("total");
 			    var collected = goal.Value<int>("collected");
@@ -136,8 +135,6 @@ public static class UserDataV2
 
 		    var uuid = contract.Value<string>("uuid");
 		    var name = contract.Value<string>("name");
-		    var color = contract.Value<string>("color");
-		    var paused = contract.Value<bool>("paused");
 		    contracts.Add(new Contract(new ContractTemplate(uuid, name, "", -1, -1, goalTemplates), goals));
 	    }
 

@@ -170,15 +170,8 @@ public static class UserDataV1
 			if (convertToGrouped) return contracts;
 			
 			var uuid = contract.Value<string>("uuid");
-			var name = contract.Value<string>("name");
-			var loadedGoals = contract.Value<JArray>("goals");
+			var name = contract.Value<string>("name"); 
 
-			string color;
-			bool paused;
-
-			if (loadedGoals.Count < 1) (color, paused) = ("", false);
-			else (color, paused) = ((string)loadedGoals.First()["color"], (bool)loadedGoals.First()["paused"]);
-			
 			if(goals.Count > 0) contracts.Add(new Contract(new ContractTemplate(uuid, name, "", -1, -1, goalTemplates), goals));
 		}
 

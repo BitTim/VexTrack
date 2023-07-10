@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net.Http;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace VexTrack.Core.Helper;
@@ -18,7 +19,7 @@ public static class ApiHelper
         return JObject.Parse(result);
     }
 
-    public static string DownloadImage(string url, string destination, string fileName)
+    public static async Task<string> DownloadImage(string url, string destination, string fileName)
     {
         if (string.IsNullOrEmpty(url)) return "";
         
@@ -33,8 +34,8 @@ public static class ApiHelper
         Directory.CreateDirectory(destination);
 
         // Download the image and write to the file
-        var imageBytes = Client.GetByteArrayAsync(uri).Result;
-        File.WriteAllBytes(path, imageBytes);
+        var imageBytes = await Client.GetByteArrayAsync(uri);
+        await File.WriteAllBytesAsync(path, imageBytes);
 
         return path;
     }

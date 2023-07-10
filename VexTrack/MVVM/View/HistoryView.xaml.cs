@@ -1,16 +1,15 @@
 ﻿using VexTrack.MVVM.ViewModel;
 
-namespace VexTrack.MVVM.View
+namespace VexTrack.MVVM.View;
+
+/// <summary>
+/// Interaction logic for HistoryView.xaml
+/// </summary>
+public partial class HistoryView
 {
-	/// <summary>
-	/// Interaction logic for HistoryView.xaml
-	/// </summary>
-	public partial class HistoryView
+	public HistoryView()
 	{
-		public HistoryView()
-		{
-			InitializeComponent();
-			DataContext = ViewModelManager.ViewModels[nameof(HistoryViewModel)];
-		}
+		InitializeComponent();
+		DataContext = ViewModelManager.ViewModels[nameof(HistoryViewModel)];
 	}
 }

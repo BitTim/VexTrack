@@ -2,20 +2,19 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace VexTrack.MVVM.Converter
+namespace VexTrack.MVVM.Converter;
+
+internal class NegativeToZeroConverter : IValueConverter
 {
-	internal class NegativeToZeroConverter : IValueConverter
+	public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 	{
-		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-		{
-			var val = (int)value!;
+		var val = (int)value!;
 
-			return val < 0 ? 0 : val;
-		}
+		return val < 0 ? 0 : val;
+	}
 
-		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-		{
-			return null;
-		}
+	public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+	{
+		return null;
 	}
 }

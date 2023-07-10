@@ -6,7 +6,7 @@
 [![Language badge](https://img.shields.io/badge/Language-C%23_.NET_7.0-blueviolet?logo=visual-studio&logoColor=ffffff)](https://dotnet.microsoft.com/download/dotnet/7.0 "Language") 
 ![GitHub License](https://img.shields.io/github/license/BitTim/VexTrack?label=License&logo=github "License")
 ![GitHub Issues](https://img.shields.io/github/issues/BitTim/VexTrack?label=Issues&logo=github "Issues")
-![GitHub last commit (branch)](https://img.shields.io/github/last-commit/BitTim/VexTrack/67-rework-goals-and-seasons?label=Last%20Commit&logo=github "Last commit")
+![GitHub last commit (branch)](https://img.shields.io/github/last-commit/BitTim/VexTrack/69-add-system-to-manage-selectable-maps-and-game-modes?label=Last%20Commit&logo=github "Last commit")
 
 ## Features
 - Easy tracking of gained XP in Valorant

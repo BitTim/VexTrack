@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
 			 xmlns:validation="clr-namespace:VexTrack.MVVM.Validation"
 			 xmlns:popups="clr-namespace:VexTrack.MVVM.ViewModel.Popups"
-			 xmlns:core="clr-namespace:VexTrack.Core"
+             xmlns:model="clr-namespace:VexTrack.Core.Model"
 			 mc:Ignorable="d" 
              d:DesignHeight="812" d:DesignWidth="872">
 
@@ -142,7 +142,9 @@
 							   Grid.Column="1"
 							   Margin="0, 0, 0, 8"
 							   FontSize="14"
-							   ItemsSource="{Binding Source={x:Static core:Constants.GameModes}}"
+							   ItemsSource="{Binding Source={x:Static model:ApiData.GameModes}}"
+							   SelectedValuePath="Uuid"
+							   DisplayMemberPath="Name"
 							   SelectedIndex="0"
 							   SelectedItem="{Binding GameMode, UpdateSourceTrigger=PropertyChanged}"/>
 
@@ -252,7 +254,9 @@
 							   Grid.Column="1"
 							   Margin="0, 0, 0, 8"
 							   FontSize="14"
-							   ItemsSource="{Binding Source={x:Static core:Constants.Maps}}"
+							   ItemsSource="{Binding Source={x:Static model:ApiData.Maps}}"
+							   SelectedValuePath="Uuid"
+							   DisplayMemberPath="Name"
 							   SelectedIndex="0"
 							   SelectedItem="{Binding Map, UpdateSourceTrigger=PropertyChanged}"/>
 

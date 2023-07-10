@@ -4,64 +4,63 @@ using VexTrack.Core;
 using VexTrack.Core.Helper;
 using VexTrack.Core.Model.WPF;
 
-namespace VexTrack.MVVM.ViewModel.Popups
+namespace VexTrack.MVVM.ViewModel.Popups;
+
+class UpdateAvailablePopupViewModel : BasePopupViewModel
 {
-	class UpdateAvailablePopupViewModel : BasePopupViewModel
+	public RelayCommand OnCancelClicked { get; }
+	public RelayCommand OnUpdateClicked { get; }
+	public bool ChangelogVisible => Changelog.Count != 0;
+	public bool WarningsVisible => Warnings.Count != 0;
+
+	public ObservableCollection<string> Changelog { get; } = new();
+	public ObservableCollection<string> Warnings { get; } = new();
+
+	private string _currentVersion;
+	private string _newVersion;
+
+	public string CurrentVersion
 	{
-		public RelayCommand OnCancelClicked { get; }
-		public RelayCommand OnUpdateClicked { get; }
-		public bool ChangelogVisible => Changelog.Count != 0;
-		public bool WarningsVisible => Warnings.Count != 0;
-
-		public ObservableCollection<string> Changelog { get; } = new();
-		public ObservableCollection<string> Warnings { get; } = new();
-
-		private string _currentVersion;
-		private string _newVersion;
-
-		public string CurrentVersion
+		get => _currentVersion;
+		private set
 		{
-			get => _currentVersion;
-			private set
-			{
-				_currentVersion = value;
-				OnPropertyChanged();
-			}
+			_currentVersion = value;
+			OnPropertyChanged();
 		}
+	}
 
-		public string NewVersion
+	public string NewVersion
+	{
+		get => _newVersion;
+		private set
 		{
-			get => _newVersion;
-			private set
-			{
-				_newVersion = value;
-				OnPropertyChanged();
-			}
+			_newVersion = value;
+			OnPropertyChanged();
 		}
+	}
 
-		public UpdateAvailablePopupViewModel()
+	public UpdateAvailablePopupViewModel()
+	{
+		CanCancel = true;
+		OnCancelClicked = new RelayCommand(_ => { Close(); });
+		OnUpdateClicked = new RelayCommand(_ =>
 		{
-			CanCancel = true;
-			OnCancelClicked = new RelayCommand(_ => { Close(); });
-			OnUpdateClicked = new RelayCommand(_ =>
-			{
-				UpdateHelper.GetUpdate();
-				Close();
-			});
-		}
+			UpdateHelper.GetUpdate();
+			Close();
+		});
+	}
 
-		public void SetData(List<string> changelog, List<string> warnings, string newVersion)
-		{
-			Changelog.Clear();
-			Warnings.Clear();
+	public void SetData(List<string> changelog, List<string> warnings, string newVersion)
+	{
+		Changelog.Clear();
+		Warnings.Clear();
 
-			CurrentVersion = Constants.Version;
-			NewVersion = newVersion;
+		CurrentVersion = Constants.Version;
+		NewVersion = newVersion;
 
-			foreach (var c in changelog) Changelog.Add(c);
-			foreach (var w in warnings) Warnings.Add(w);
+		foreach (var c in changelog) Changelog.Add(c);
+		foreach (var w in warnings) Warnings.Add(w);
 
-			IsInitialized = true;
-		}
+		IsInitialized = true;
 	}
 }

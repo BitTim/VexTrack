@@ -1,17 +1,16 @@
 ﻿using VexTrack.MVVM.ViewModel;
 using VexTrack.MVVM.ViewModel.Popups;
 
-namespace VexTrack.MVVM.View.Popups
+namespace VexTrack.MVVM.View.Popups;
+
+/// <summary>
+/// Interaction logic for EditableGoalPopup.xaml
+/// </summary>
+public partial class EditableGoalPopup
 {
-	/// <summary>
-	/// Interaction logic for EditableGoalPopup.xaml
-	/// </summary>
-	public partial class EditableGoalPopup
+	public EditableGoalPopup()
 	{
-		public EditableGoalPopup()
-		{
-			InitializeComponent();
-			DataContext = ViewModelManager.ViewModels[nameof(EditableGoalPopupViewModel)];
-		}
+		InitializeComponent();
+		DataContext = ViewModelManager.ViewModels[nameof(EditableGoalPopupViewModel)];
 	}
 }

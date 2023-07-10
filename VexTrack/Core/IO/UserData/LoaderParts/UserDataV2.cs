@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using VexTrack.Core.Model;
+using VexTrack.Core.Model.Game;
+using VexTrack.Core.Model.Game.Templates;
 
-namespace VexTrack.Core.IO.LoaderParts;
+namespace VexTrack.Core.IO.UserData.LoaderParts;
 
 public static class UserDataV2
 {
@@ -13,14 +15,13 @@ public static class UserDataV2
     internal static List<Season> LoadSeasons(JObject jo)
     {
 	    List<Season> seasons = new();
-	    foreach (var jTokenSeason in jo["seasons"])
+	    foreach (var season in jo["seasons"])
 	    {
-		    var season = (JObject)jTokenSeason;
-		    var sUuid = (string)season["uuid"];
-		    var name = (string)season["name"];
-		    var endDate = (long)season["endDate"];
-		    var activeBpLevel = (int)season["activeBPLevel"];
-		    var cXp = (int)season["cXP"];
+		    var sUuid = season.Value<string>("uuid");
+		    var name = season.Value<string>("name");
+		    var endDate = season.Value<long>("endDate");
+		    var activeBpLevel = season.Value<int>("activeBPLevel");
+		    var cXp = season.Value<int>("cXP");
 
 		    sUuid ??= Guid.NewGuid().ToString();
 		    seasons.Add(new Season(sUuid, name, endDate, activeBpLevel, cXp));
@@ -37,31 +38,30 @@ public static class UserDataV2
     internal static List<HistoryGroup> LoadHistory(JObject jo)
     {
     	List<HistoryGroup> history = new();
-    	foreach (var jTokenGroup in jo["history"])
+    	foreach (var historyGroup in jo["history"])
     	{
-    		var historyGroup = (JObject)jTokenGroup;
-    		var sUuid = (string)historyGroup["sUuid"];
-    		var gUuid = (string)historyGroup["uuid"];
-    		var date = (long)historyGroup["date"];
+    		var sUuid = historyGroup.Value<string>("sUuid");
+    		var gUuid = historyGroup.Value<string>("uuid");
+    		var date = historyGroup.Value<long>("date");
 
     		List<HistoryEntry> entries = new();
-    		foreach (var jTokenEntry in jTokenGroup["entries"])
+    		foreach (var historyEntry in historyGroup.Value<JArray>("entries"))
     		{
-    			var historyEntry = (JObject)jTokenEntry;
-    			var hUuid = (string)historyEntry["uuid"];
-    			var gamemode = (string)historyEntry["gameMode"];
-    			var time = (long)historyEntry["time"];
-    			var amount = (int)historyEntry["amount"];
-    			var map = (string)historyEntry["map"];
-    			var description = (string)historyEntry["description"];
+    			var hUuid = historyEntry.Value<string>("uuid");
+    			var gamemodeUuid = historyEntry.Value<string>("gameMode");
+    			var time = historyEntry.Value<long>("time");
+    			var amount = historyEntry.Value<int>("amount");
+    			var mapUuid = historyEntry.Value<string>("map");
+    			var description = historyEntry.Value<string>("description");
+                
+                var map = Model.ApiData.Maps.Find(m => m.Uuid == mapUuid);
 
-    			if (string.IsNullOrEmpty(map)) map = Constants.Maps.Last();
-
-    			string gameMode, desc;
+                GameMode gameMode;
+    			string desc;
     			int score, enemyScore;
     			bool surrenderedWin, surrenderedLoss;
 
-    			if (gamemode == null)
+    			if (gamemodeUuid == null)
     			{
     				(gameMode, desc, score, enemyScore) = HistoryEntry.DescriptionToScores(description);
     				surrenderedWin = false;
@@ -69,12 +69,12 @@ public static class UserDataV2
     			}
     			else
     			{
-    				gameMode = gamemode;
+    				gameMode = Model.ApiData.GameModes.Find(gm => gm.Uuid == gamemodeUuid);
     				desc = description;
-    				score = (int)historyEntry["score"];
-    				enemyScore = (int)historyEntry["enemyScore"];
-    				surrenderedWin = (bool)historyEntry["surrenderedWin"];
-    				surrenderedLoss = (bool)historyEntry["surrenderedLoss"];
+    				score = historyEntry.Value<int>("score");
+    				enemyScore = historyEntry.Value<int>("enemyScore");
+    				surrenderedWin = historyEntry.Value<bool>("surrenderedWin");
+    				surrenderedLoss = historyEntry.Value<bool>("surrenderedLoss");
     			}
 
     			hUuid ??= Guid.NewGuid().ToString();
@@ -110,33 +110,32 @@ public static class UserDataV2
     internal static List<Contract> LoadContracts(JObject jo)
     {
 	    List<Contract> contracts = new();
-	    foreach (var jTokenContract in jo["contracts"])
+	    foreach (var contract in jo["contracts"])
 	    {
-		    var contract = (JObject)jTokenContract;
 		    var source = contract["goals"];
+		    List<GoalTemplate> goalTemplates = new();
 		    List<Goal> goals = new();
 			
 		    if(source == null) continue;
-		    foreach (var jTokenGoal in source)
+		    foreach (var goal in source)
 		    {
-			    var goal = (JObject)jTokenGoal;
-			    var goalUuid = (string)goal["uuid"];
-			    var goalName = (string)goal["name"];
+			    var goalUuid = goal.Value<string>("uuid");
 
-			    var total = (int)goal["total"];
-			    var collected = (int)goal["collected"];
+			    var total = goal.Value<int>("total");
+			    var collected = goal.Value<int>("collected");
 			    if (collected > total) collected = total;
 				
 			    goalUuid ??= Guid.NewGuid().ToString();
-			    goals.Add(new Goal(goalUuid, goalName, total, collected));
+
+			    var goalTemplate = new GoalTemplate( new List<Reward> {new("", "", 0, false)}, false, 0, total, false, 0);
+			    goalTemplates.Add(goalTemplate);
+			    goals.Add(new Goal(goalTemplate, goalUuid, collected));
 		    }
 
 
-		    var uuid = (string)contract["uuid"];
-		    var name = (string)contract["name"];
-		    var color = (string)contract["color"];
-		    var paused = (bool)contract["paused"];
-		    contracts.Add(new Contract(uuid, name, color, paused, goals));
+		    var uuid = contract.Value<string>("uuid");
+		    var name = contract.Value<string>("name");
+		    contracts.Add(new Contract(new ContractTemplate(uuid, name, "", -1, -1, goalTemplates), goals));
 	    }
 
 	    return contracts;

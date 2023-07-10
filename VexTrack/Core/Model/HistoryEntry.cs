@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using VexTrack.Core.Model.Game;
 
 namespace VexTrack.Core.Model;
 
@@ -7,9 +8,9 @@ public class HistoryEntry
 	public string GroupUuid { get; set; }
     public string Uuid { get; set; }
     public long Time { get; set; }
-    public string GameMode { get; set; }
+    public GameMode GameMode { get; set; }
     public int Amount { get; set; }
-    public string Map { get; set; }
+    public Map Map { get; set; }
     public string Description { get; set; }
     public int Score { get; set; }
     public int EnemyScore { get; set; }
@@ -21,7 +22,7 @@ public class HistoryEntry
     public string Result => GetResult();
     
 
-    public HistoryEntry(string groupUuid, string uuid, long time, string gamemode, int amount, string map, string desc, int score, int enemyScore, bool surrenderedWin, bool surrenderedLoss)
+    public HistoryEntry(string groupUuid, string uuid, long time, GameMode gamemode, int amount, Map map, string desc, int score, int enemyScore, bool surrenderedWin, bool surrenderedLoss)
     {
 	    GroupUuid = groupUuid;
         Uuid = uuid;
@@ -40,17 +41,17 @@ public class HistoryEntry
 
     public string GetTitle()
     {
-	    return Constants.ScoreTypes[GameMode] switch
+	    return GameMode.ScoreType switch
 	    {
 		    "None" => Description,
-		    "Placement" => GameMode + " " + CalcHistoryResultFromScores("Placement", Score, EnemyScore, SurrenderedWin, SurrenderedLoss),
-		    _ => GameMode + " " + Score + "-" + EnemyScore
+		    "Placement" => GameMode.Name + " " + CalcHistoryResultFromScores("Placement", Score, EnemyScore, SurrenderedWin, SurrenderedLoss),
+		    _ => GameMode.Name + " " + Score + "-" + EnemyScore
 	    };
     }
     
     public string GetResult()
     {
-	    return Score == -1 ? CalcHistoryResultFromString(Description) : CalcHistoryResultFromScores(Constants.ScoreTypes[GameMode], Score, EnemyScore, SurrenderedWin, SurrenderedLoss);
+	    return Score == -1 ? CalcHistoryResultFromString(Description) : CalcHistoryResultFromScores(GameMode.ScoreType, Score, EnemyScore, SurrenderedWin, SurrenderedLoss);
     }
     
     
@@ -101,7 +102,7 @@ public class HistoryEntry
 
 		foreach (var token in splitDesc)
 		{
-			if (!"-".Contains(token)) { continue; }
+			if (!token.Contains("-")) { continue; }
 
 			if (token == "") return "";
 
@@ -118,12 +119,12 @@ public class HistoryEntry
 
 		return "";
 	}
-
-	public static (string, string, int, int) DescriptionToScores(string description)
+	
+	public static (GameMode, string, int, int) DescriptionToScores(string description)
 	{
 		var isCustom = true;
-		var gameMode = "Custom";
-		foreach (var mode in Constants.GameModes.Where(description.Contains))
+		var gameMode = ApiData.GameModes.Find(gm => gm.Name == "Custom");
+		foreach (var mode in ApiData.GameModes.Where(gm => description.Contains(gm.Name)))
 		{
 			isCustom = false;
 			gameMode = mode;

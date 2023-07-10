@@ -1,191 +1,188 @@
 using System;
-using VexTrack.Core;
+using System.Linq;
 using VexTrack.Core.Helper;
 using VexTrack.Core.Model;
+using VexTrack.Core.Model.Game;
 using VexTrack.Core.Model.WPF;
 
-namespace VexTrack.MVVM.ViewModel.Popups
+namespace VexTrack.MVVM.ViewModel.Popups;
+
+class EditableHistoryEntryPopupViewModel : BasePopupViewModel
 {
-	class EditableHistoryEntryPopupViewModel : BasePopupViewModel
+	public RelayCommand OnBackClicked { get; }
+	public RelayCommand OnDoneClicked { get; }
+
+	public string Title { get; private set; }
+	private string Uuid { get; set; }
+	private string GroupUuid { get; set; }
+	public string ScoreType => GameMode != null ? GameMode.ScoreType : "";
+	private bool EditMode { get; set; }
+
+	private string _description;
+	private GameMode _gamemode;
+	private int _score;
+	private int _enemyScore;
+	private long _time;
+	private int _amount;
+	private Map _map;
+	private bool _surrenderedWin;
+	private bool _surrenderedLoss;
+
+	public string Description
 	{
-		public RelayCommand OnBackClicked { get; }
-		public RelayCommand OnDoneClicked { get; }
-
-		public string Title { get; private set; }
-		private string Uuid { get; set; }
-		private string GroupUuid { get; set; }
-		public string ScoreType => GameMode != null ? Constants.ScoreTypes[GameMode] : "";
-		private bool EditMode { get; set; }
-
-		private string _description;
-		private string _gamemode;
-		private int _score;
-		private int _enemyScore;
-		private long _time;
-		private int _amount;
-		private string _map;
-		private bool _surrenderedWin;
-		private bool _surrenderedLoss;
-
-		public string Description
+		get => _description;
+		set
 		{
-			get => _description;
-			set
-			{
-				_description = value;
-				OnPropertyChanged();
-			}
+			_description = value;
+			OnPropertyChanged();
 		}
-		public string GameMode
+	}
+	public GameMode GameMode
+	{
+		get => _gamemode;
+		set
 		{
-			get => _gamemode;
-			set
-			{
-				_gamemode = value;
-				Score = 0;
-				EnemyScore = 0;
-				Description = "";
-				OnPropertyChanged();
-				OnPropertyChanged(nameof(Score));
-				OnPropertyChanged(nameof(EnemyScore));
-				OnPropertyChanged(nameof(Description));
-				OnPropertyChanged(nameof(ScoreType));
-			}
+			_gamemode = value;
+			OnPropertyChanged();
+			OnPropertyChanged(nameof(Score));
+			OnPropertyChanged(nameof(EnemyScore));
+			OnPropertyChanged(nameof(Description));
+			OnPropertyChanged(nameof(ScoreType));
 		}
-		public int Score
+	}
+	public int Score
+	{
+		get => _score;
+		set
 		{
-			get => _score;
-			set
-			{
-				_score = value;
-				OnPropertyChanged();
-				OnPropertyChanged(nameof(Result));
-			}
+			_score = value;
+			OnPropertyChanged();
+			OnPropertyChanged(nameof(Result));
 		}
-		public int EnemyScore
+	}
+	public int EnemyScore
+	{
+		get => _enemyScore;
+		set
 		{
-			get => _enemyScore;
-			set
-			{
-				_enemyScore = value;
-				OnPropertyChanged();
-				OnPropertyChanged(nameof(Result));
-			}
+			_enemyScore = value;
+			OnPropertyChanged();
+			OnPropertyChanged(nameof(Result));
 		}
-		public long Time
+	}
+	public long Time
+	{
+		get => _time;
+		set
 		{
-			get => _time;
-			set
-			{
-				_time = value;
-				OnPropertyChanged();
-			}
+			_time = value;
+			OnPropertyChanged();
 		}
-		public int Amount
+	}
+	public int Amount
+	{
+		get => _amount;
+		set
 		{
-			get => _amount;
-			set
-			{
-				_amount = value;
-				OnPropertyChanged();
-			}
+			_amount = value;
+			OnPropertyChanged();
 		}
-		public string Map
+	}
+	public Map Map
+	{
+		get => _map;
+		set
 		{
-			get => _map;
-			set
-			{
-				_map = value;
-				OnPropertyChanged();
-			}
+			_map = value;
+			OnPropertyChanged();
 		}
-		public bool SurrenderedWin
+	}
+	public bool SurrenderedWin
+	{
+		get => _surrenderedWin;
+		set
 		{
-			get => _surrenderedWin;
-			set
-			{
-				_surrenderedWin = value;
-				if (_surrenderedWin) SurrenderedLoss = false;
+			_surrenderedWin = value;
+			if (_surrenderedWin) SurrenderedLoss = false;
 
-				OnPropertyChanged();
-				OnPropertyChanged(nameof(Result));
-				OnPropertyChanged(nameof(SurrenderedLoss));
-			}
+			OnPropertyChanged();
+			OnPropertyChanged(nameof(Result));
+			OnPropertyChanged(nameof(SurrenderedLoss));
 		}
-		public bool SurrenderedLoss
+	}
+	public bool SurrenderedLoss
+	{
+		get => _surrenderedLoss;
+		set
 		{
-			get => _surrenderedLoss;
-			set
-			{
-				_surrenderedLoss = value;
-				if (_surrenderedLoss) SurrenderedWin = false;
+			_surrenderedLoss = value;
+			if (_surrenderedLoss) SurrenderedWin = false;
 
-				OnPropertyChanged();
-				OnPropertyChanged(nameof(Result));
-				OnPropertyChanged(nameof(SurrenderedWin));
-			}
+			OnPropertyChanged();
+			OnPropertyChanged(nameof(Result));
+			OnPropertyChanged(nameof(SurrenderedWin));
 		}
+	}
 
-		public string Result => HistoryEntry.CalcHistoryResultFromScores(ScoreType, Score, EnemyScore, SurrenderedWin, SurrenderedLoss);
+	public string Result => HistoryEntry.CalcHistoryResultFromScores(ScoreType, Score, EnemyScore, SurrenderedWin, SurrenderedLoss);
 
-		public EditableHistoryEntryPopupViewModel()
+	public EditableHistoryEntryPopupViewModel()
+	{
+		CanCancel = true;
+
+		OnBackClicked = new RelayCommand(_ => { if (CanCancel) Close(); });
+		OnDoneClicked = new RelayCommand(_ =>
 		{
-			CanCancel = true;
+			if (ScoreType is "Placement" or "None") EnemyScore = -1;
+			if (ScoreType == "None") Score = -1;
+			if (ScoreType == "Score") Description = "";
 
-			OnBackClicked = new RelayCommand(_ => { if (CanCancel) Close(); });
-			OnDoneClicked = new RelayCommand(_ =>
-			{
-				if (ScoreType is "Placement" or "None") EnemyScore = -1;
-				if (ScoreType == "None") Score = -1;
-				if (ScoreType == "Score") Description = "";
+			if (EditMode) UserData.EditHistoryEntry(GroupUuid, new HistoryEntry(GroupUuid, Uuid, Time, GameMode, Amount, Map, Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss));
+			else UserData.AddHistoryEntry(new HistoryEntry(GroupUuid, Uuid, Time, GameMode, Amount, Map, Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss));
+			Close();
+		});
+	}
 
-				if (EditMode) Tracking.EditHistoryEntry(GroupUuid, new HistoryEntry(GroupUuid, Uuid, Time, GameMode, Amount, Map, Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss));
-				else Tracking.AddHistoryEntry(new HistoryEntry(GroupUuid, Uuid, Time, GameMode, Amount, Map, Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss));
-				Close();
-			});
-		}
+	public void SetParameters(string title, bool editMode)
+	{
+		Title = title;
+		EditMode = editMode;
 
-		public void SetParameters(string title, bool editMode)
-		{
-			Title = title;
-			EditMode = editMode;
+		if (!editMode) InitData();
+	}
 
-			if (!editMode) InitData();
-		}
+	private void InitData()
+	{
+		Time = TimeHelper.NowTimestamp;
 
-		private void InitData()
-		{
-			Time = TimeHelper.NowTimestamp;
+		GroupUuid = "";
+		Uuid = Guid.NewGuid().ToString();
+		Description = "";
+		GameMode = ApiData.GameModes.First();
+		Map = ApiData.Maps.First();
+		Amount = 0;
+		Score = 0;
+		EnemyScore = 0;
+		SurrenderedWin = false;
+		SurrenderedLoss = false;
 
-			GroupUuid = "";
-			Uuid = Guid.NewGuid().ToString();
-			Description = "";
-			GameMode = Constants.GameModes[0];
-			Map = Constants.Maps[0];
-			Amount = 0;
-			Score = 0;
-			EnemyScore = 0;
-			SurrenderedWin = false;
-			SurrenderedLoss = false;
+		IsInitialized = true;
+	}
 
-			IsInitialized = true;
-		}
+	public void SetData(HistoryEntry data)
+	{
+		GroupUuid = data.GroupUuid;
+		Uuid = data.Uuid;
+		GameMode = data.GameMode;
+		Score = data.Score;
+		EnemyScore = data.EnemyScore;
+		Time = data.Time;
+		Amount = data.Amount;
+		Map = data.Map;
+		Description = data.Description;
+		SurrenderedWin = data.SurrenderedWin;
+		SurrenderedLoss = data.SurrenderedLoss;
 
-		public void SetData(HistoryEntry data)
-		{
-			GroupUuid = data.GroupUuid;
-			Uuid = data.Uuid;
-			GameMode = data.GameMode;
-			Score = data.Score;
-			EnemyScore = data.EnemyScore;
-			Time = data.Time;
-			Amount = data.Amount;
-			Map = data.Map;
-			Description = data.Description;
-			SurrenderedWin = data.SurrenderedWin;
-			SurrenderedLoss = data.SurrenderedLoss;
-
-			IsInitialized = true;
-		}
+		IsInitialized = true;
 	}
 }

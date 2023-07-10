@@ -4,8 +4,10 @@ using System.Linq;
 using Newtonsoft.Json.Linq;
 using VexTrack.Core.Helper;
 using VexTrack.Core.Model;
+using VexTrack.Core.Model.Game;
+using VexTrack.Core.Model.Game.Templates;
 
-namespace VexTrack.Core.IO.LoaderParts;
+namespace VexTrack.Core.IO.UserData.LoaderParts;
 
 public static class UserDataV1
 {
@@ -35,19 +37,26 @@ public static class UserDataV1
 			{
 				var historyEntry = (JObject)jTokenEntry;
 				var hUuid = (string)historyEntry["uuid"];
-				var gamemode = (string)historyEntry["gameMode"];
+				var gamemodeUuid = (string)historyEntry["gameMode"];
 				var time = (long)historyEntry["time"];
 				var amount = (int)historyEntry["amount"];
-				var map = (string)historyEntry["map"];
+				var mapUuid = (string)historyEntry["map"];
 				var description = (string)historyEntry["description"];
 
-				if (string.IsNullOrEmpty(map)) map = Constants.Maps.Last();
+				mapUuid = !string.IsNullOrEmpty(mapUuid) ? Model.ApiData.Maps.Find(m => m.Name == mapUuid).Uuid : // Convert Map Name to UUID
+					Model.ApiData.Maps.Last().Uuid;
+				var map = Model.ApiData.Maps.Find(m => m.Uuid == mapUuid);
 
-				string gameMode, desc;
+				// These are here because of typos I did way back in v1.7
+				if (gamemodeUuid == "Competetive") gamemodeUuid = "Competitive";
+				if (gamemodeUuid == "Snowballfight") gamemodeUuid = "Snowball Fight";
+
+				GameMode gameMode;
+				string desc;
 				int score, enemyScore;
 				bool surrenderedWin, surrenderedLoss;
 
-				if (gamemode == null)
+				if (gamemodeUuid == null)
 				{
 					(gameMode, desc, score, enemyScore) = HistoryEntry.DescriptionToScores(description);
 					surrenderedWin = false;
@@ -55,16 +64,13 @@ public static class UserDataV1
 				}
 				else
 				{
-					gameMode = gamemode;
+					gameMode = Model.ApiData.GameModes.Find(gm => gm.Name == gamemodeUuid);
 					desc = description;
 					score = (int)historyEntry["score"];
 					enemyScore = (int)historyEntry["enemyScore"];
 					surrenderedWin = (bool)historyEntry["surrenderedWin"];
 					surrenderedLoss = (bool)historyEntry["surrenderedLoss"];
 				}
-
-				// This is because of a typo I did way back in v1.7
-				if (gameMode == "Competetive") gameMode = "Competitive";
 				
 				hUuid ??= Guid.NewGuid().ToString();
 
@@ -105,8 +111,8 @@ public static class UserDataV1
 		if (jo["streak"] != null)
 		{
 			streakEntries.AddRange(from JObject streakEntry in jo["streak"]
-				let date = (long)streakEntry["date"]
-				let status = (string)streakEntry["status"]
+				let date = streakEntry.Value<long>("date")
+				let status = streakEntry.Value<string>("status")
 				select new LegacyStreakEntry(date, status));
 		}
 		streakEntries = streakEntries.OrderByDescending(t => t.Date).ToList();
@@ -135,39 +141,38 @@ public static class UserDataV1
 				convertToGrouped = true;
 			}
 
+			List<GoalTemplate> goalTemplates = new();
 			List<Goal> goals = new();
 			if (source == null) continue;
 			foreach (var jTokenGoal in source)
 			{
 				var goal = (JObject)jTokenGoal;
-				var goalUuid = (string)goal["uuid"];
-				var goalName = (string)goal["name"];
+				var goalUuid = goal.Value<string>("uuid");
+				var goalName = goal.Value<string>("name");
 
-				var total = (int)goal["total"];
-				var collected = (int)goal["collected"];
+				var total = goal.Value<int>("total");
+				var collected = goal.Value<int>("collected");
 				if (collected > total) collected = total;
 
 				goalUuid ??= Guid.NewGuid().ToString();
-				var goalObj = new Goal(goalUuid, goalName, total, collected);
-				
-				if(!convertToGrouped) goals.Add(goalObj);
-				else contracts.Add(new Contract(Guid.NewGuid().ToString(), goalName,
-						(string)goal["color"], (bool)goal["paused"], new List<Goal> { goalObj }));
+				var goalTemplate = new GoalTemplate(new List<Reward>{new("", "", 0, false)}, false, 0, total, false, 0);
+				var goalObj = new Goal(goalTemplate, goalUuid, collected);
+
+				if (!convertToGrouped)
+				{
+					goalTemplates.Add(goalTemplate);
+					goals.Add(goalObj);
+				}
+				else contracts.Add(new Contract(new ContractTemplate(Guid.NewGuid().ToString(), goalName,
+						"", -1, -1, new List<GoalTemplate> { goalTemplate }), new List<Goal> { goalObj }));
 			}
 
 			if (convertToGrouped) return contracts;
 			
-			var uuid = (string)contract["uuid"];
-			var name = (string)contract["name"];
-			var loadedGoals = (JArray)contract["goals"];
+			var uuid = contract.Value<string>("uuid");
+			var name = contract.Value<string>("name"); 
 
-			string color;
-			bool paused;
-
-			if (loadedGoals.Count < 1) (color, paused) = ("", false);
-			else (color, paused) = ((string)loadedGoals.First()["color"], (bool)loadedGoals.First()["paused"]);
-			
-			if(goals.Count > 0) contracts.Add(new Contract(uuid, name, color, paused, goals));
+			if(goals.Count > 0) contracts.Add(new Contract(new ContractTemplate(uuid, name, "", -1, -1, goalTemplates), goals));
 		}
 
 		return contracts;

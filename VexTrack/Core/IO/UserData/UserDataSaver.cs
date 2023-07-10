@@ -5,9 +5,9 @@ using System.Linq;
 using Newtonsoft.Json.Linq;
 using VexTrack.Core.Model;
 
-namespace VexTrack.Core.IO;
+namespace VexTrack.Core.IO.UserData;
 
-public static class Saver
+public static class UserDataSaver
 {
     internal static void SaveUserData(int streak, long lastStreakUpdateTimestamp, List<Contract> contracts, List<Season> seasons, List<HistoryGroup> history)
 	{
@@ -25,8 +25,6 @@ public static class Saver
 			{
 				{ "uuid", contract.Uuid },
 				{ "name", contract.Name },
-				{ "color", contract.Color },
-				{ "paused", contract.Paused }
 			};
 
 			JArray goals = new();
@@ -76,10 +74,10 @@ public static class Saver
 			foreach (var entryObj in hg.Entries.Select(he => new JObject()
 			         {
 				         { "uuid", he.Uuid },
-		                 { "gameMode", he.GameMode },
+		                 { "gameMode", he.GameMode.Uuid },
 		                 { "time", he.Time },
 		                 { "amount", he.Amount },
-		                 { "map", he.Map },
+		                 { "map", he.Map.Uuid },
 		                 { "description", he.Description },
 		                 { "score", he.Score },
 		                 { "enemyScore", he.EnemyScore },

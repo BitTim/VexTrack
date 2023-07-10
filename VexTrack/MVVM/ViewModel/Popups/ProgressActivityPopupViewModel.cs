@@ -2,32 +2,31 @@
 using System.Collections.ObjectModel;
 using VexTrack.Core.Model.WPF;
 
-namespace VexTrack.MVVM.ViewModel.Popups
+namespace VexTrack.MVVM.ViewModel.Popups;
+
+class ProgressActivityPopupViewModel : BasePopupViewModel
 {
-	class ProgressActivityPopupViewModel : BasePopupViewModel
+	public RelayCommand OnOkClicked { get; }
+	public bool CompletedVisible => Completed.Count != 0;
+	public bool LostVisible => Lost.Count != 0;
+
+	public ObservableCollection<string> Completed { get; } = new();
+	public ObservableCollection<string> Lost { get; } = new();
+
+	public ProgressActivityPopupViewModel()
 	{
-		public RelayCommand OnOkClicked { get; }
-		public bool CompletedVisible => Completed.Count != 0;
-		public bool LostVisible => Lost.Count != 0;
+		CanCancel = true;
+		OnOkClicked = new RelayCommand(_ => { Close(); });
+	}
 
-		public ObservableCollection<string> Completed { get; } = new();
-		public ObservableCollection<string> Lost { get; } = new();
+	public void SetData(List<string> completed, List<string> lost)
+	{
+		Completed.Clear();
+		Lost.Clear();
 
-		public ProgressActivityPopupViewModel()
-		{
-			CanCancel = true;
-			OnOkClicked = new RelayCommand(_ => { Close(); });
-		}
+		foreach (var c in completed) Completed.Add(c);
+		foreach (var l in lost) Lost.Add(l);
 
-		public void SetData(List<string> completed, List<string> lost)
-		{
-			Completed.Clear();
-			Lost.Clear();
-
-			foreach (var c in completed) Completed.Add(c);
-			foreach (var l in lost) Lost.Add(l);
-
-			IsInitialized = true;
-		}
+		IsInitialized = true;
 	}
 }

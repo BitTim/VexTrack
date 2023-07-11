@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using VexTrack.Core.Helper;
 using VexTrack.Core.Model;
@@ -48,6 +49,10 @@ class EditableHistoryEntryPopupViewModel : BasePopupViewModel
 			OnPropertyChanged(nameof(EnemyScore));
 			OnPropertyChanged(nameof(Description));
 			OnPropertyChanged(nameof(ScoreType));
+			OnPropertyChanged(nameof(Maps));
+
+			Map = Maps.First();
+			OnPropertyChanged(nameof(Map));
 		}
 	}
 	public int Score
@@ -125,6 +130,7 @@ class EditableHistoryEntryPopupViewModel : BasePopupViewModel
 	}
 
 	public string Result => HistoryEntry.CalcHistoryResultFromScores(ScoreType, Score, EnemyScore, SurrenderedWin, SurrenderedLoss);
+	public List<Map> Maps => ApiData.Maps.Where(map => map.Type == GameMode.MapType || map.Type == "all" || GameMode.MapType == "all").ToList();
 
 	public EditableHistoryEntryPopupViewModel()
 	{
@@ -159,7 +165,7 @@ class EditableHistoryEntryPopupViewModel : BasePopupViewModel
 		Uuid = Guid.NewGuid().ToString();
 		Description = "";
 		GameMode = ApiData.GameModes.First();
-		Map = ApiData.Maps.First();
+		Map = Maps.First();
 		Amount = 0;
 		Score = 0;
 		EnemyScore = 0;

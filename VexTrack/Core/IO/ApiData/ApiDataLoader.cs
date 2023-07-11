@@ -88,11 +88,11 @@ public static class ApiDataLoader
         {
             var uuid = map.Value<string>("uuid");
             var name = map.Value<string>("name");
+            var type = map.Value<string>("type");
             var listViewImagePath = map.Value<string>("listViewImagePath");
             var splashImagePath = map.Value<string>("splashImagePath");
             
-            
-            maps.Add(new Map(uuid, name, listViewImagePath, splashImagePath));
+            maps.Add(new Map(uuid, name, type, listViewImagePath, splashImagePath));
         }
 
         return maps;
@@ -111,11 +111,12 @@ public static class ApiDataLoader
         {
             var uuid = gameMode.Value<string>("uuid");
             var name = gameMode.Value<string>("name");
+            var mapType = gameMode.Value<string>("mapType");
             var scoreType = gameMode.Value<string>("scoreType");
             var iconPath = gameMode.Value<string>("iconPath");
             
             
-            gameModes.Add(new GameMode(uuid, name, scoreType, iconPath));
+            gameModes.Add(new GameMode(uuid, name, mapType, scoreType, iconPath));
         }
 
         return gameModes;

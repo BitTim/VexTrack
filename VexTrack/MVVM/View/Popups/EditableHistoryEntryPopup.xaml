@@ -254,7 +254,7 @@
 							   Grid.Column="1"
 							   Margin="0, 0, 0, 8"
 							   FontSize="14"
-							   ItemsSource="{Binding Source={x:Static model:ApiData.Maps}}"
+							   ItemsSource="{Binding Maps}"
 							   SelectedValuePath="Uuid"
 							   DisplayMemberPath="Name"
 							   SelectedIndex="0"

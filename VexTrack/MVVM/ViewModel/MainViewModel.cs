@@ -127,8 +127,6 @@ class MainViewModel : ObservableObject
 		if (now > midnight) midnight = midnight.AddDays(1).ToLocalTime();
 		var msUntilMidnight = (int)(midnight - now).TotalMilliseconds;
 		updateTimer.Change(msUntilMidnight, Timeout.Infinite);
-		
-		Update();
 	}
 
 	private async void LoadDataAsync()
@@ -138,6 +136,7 @@ class MainViewModel : ObservableObject
 		var loadError = ApiDataLoader.LoadApiData();
 		var fetchError = await ApiDataFetcher.FetchApiDataAsync();
 		
+		if(fetchError != 0 && loadError != 0) return; // Something went terribly wrong here
 		UserDataLoader.LoadUserData();
 		Update();
 	}

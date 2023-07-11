@@ -23,6 +23,7 @@ public static class ApiDataSaver
             {
                 { "uuid", map.Uuid },
                 { "name", map.Name },
+                { "type", map.Type },
                 { "listViewImagePath", map.ListViewImagePath },
                 { "splashImagePath", map.SplashImagePath }
             };
@@ -44,6 +45,7 @@ public static class ApiDataSaver
             {
                 { "uuid", gameMode.Uuid },
                 { "name", gameMode.Name },
+                { "mapType", gameMode.MapType },
                 { "scoreType", gameMode.ScoreType },
                 { "iconPath", gameMode.IconPath }
             };

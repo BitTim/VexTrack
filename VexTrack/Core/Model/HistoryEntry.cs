@@ -136,10 +136,21 @@ public class HistoryEntry
 
 		if (!isCustom)
 		{
-			var splitDesc = description.Split(" ");
+			var splitDesc = description.Split(" ").ToList();
 
-			foreach (var token in splitDesc)
+			foreach (var rawToken in splitDesc)
 			{
+				var token = rawToken;
+				if (string.IsNullOrEmpty(token)) continue;
+				
+				var index = splitDesc.IndexOf(token);
+				if (int.TryParse(token, out _) && index + 2 < splitDesc.Count && splitDesc[index + 1].Contains('-') && int.TryParse(splitDesc[index + 2], out _))
+				{
+					token = token + '-' + splitDesc[index + 2];
+					splitDesc.RemoveRange(index, 3);
+					splitDesc.Insert(index, token);
+				}
+				
 				if (!token.Contains('-')) { continue; }
 
 				var scoreTokens = token.Split("-");

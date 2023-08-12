@@ -221,14 +221,18 @@ public static class ApiDataFetcher
             ++_popup.CurrentStepItem;
             _popup.CurrentStepItemLabel = name;
 
+            var mapUrl = map.Value<string>("mapUrl");
+            var type = mapUrl.Contains("/Game/Maps/HURM/") ? "tdm" : "regular";
+            if (name == "The Range") type = "custom";
+
             var listViewImagePath = await ApiHelper.DownloadImage(map.Value<string>("listViewIcon"), Constants.MapListViewImageFolder, uuid);
             var splashImagePath = await ApiHelper.DownloadImage(map.Value<string>("splash"), Constants.MapSplashImageFolder, uuid);
             
-            maps.Add(new Map(uuid, name, listViewImagePath, splashImagePath));
+            maps.Add(new Map(uuid, name, type, listViewImagePath, splashImagePath));
         }
 
         // Add empty map as option
-        maps.Add(new Map("", "None", "", "")); 
+        maps.Add(new Map("", "None", "all", "", "")); 
         return maps;
     }
 
@@ -258,14 +262,15 @@ public static class ApiDataFetcher
             _popup.CurrentStepItemLabel = name;
             
             var iconPath = await ApiHelper.DownloadImage(gameMode.Value<string>("displayIcon"), Constants.GameModeIconFolder, uuid);
-            
-            gameModes.Add(new GameMode(uuid, name, name == "Deathmatch" ? "Placement" : "Score", iconPath));
+
+            var mapType = name == "Team Deathmatch" ? "tdm" : "regular";
+            gameModes.Add(new GameMode(uuid, name, mapType, name == "Deathmatch" ? "Placement" : "Score", iconPath));
         }
         
         // Adjust "Standard" game mode to have Competitive and Unrated game modes for selection
         var stdIdx = gameModes.FindIndex(gm => gm.Name == "Standard");
         gameModes[stdIdx].Name = "Unrated";
-        gameModes.Insert(stdIdx + 1, new GameMode(Constants.CompetitiveGameModeUuid, "Competitive", "Score", gameModes[stdIdx].IconPath));
+        gameModes.Insert(stdIdx + 1, new GameMode(Constants.CompetitiveGameModeUuid, "Competitive", "regular", "Score", gameModes[stdIdx].IconPath));
         
         // Remove Onboarding
         var onboardingIdx = gameModes.FindIndex(gm => gm.Name == "Onboarding");
@@ -276,7 +281,7 @@ public static class ApiDataFetcher
         if (practiceIdx != -1) gameModes[practiceIdx].Name = "Practice";
         
         // Add custom GameMode as option
-        gameModes.Add(new GameMode("", "Custom", "None", ""));
+        gameModes.Add(new GameMode("", "Custom", "all", "None", ""));
         return gameModes;
     }
 

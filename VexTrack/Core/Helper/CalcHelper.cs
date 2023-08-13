@@ -30,6 +30,7 @@ public static class CalcHelper
 	public static List<int> CalcCollectedPerDay(long startTimestamp, List<HistoryEntry> history, int duration)
 	{
 		var dailyAmounts = new List<int>();
+		history = history.OrderBy(he => he.Time).ToList();
 
 		var historyIdx = 0;
 		var startDate = TimeHelper.TimestampToDate(startTimestamp);
@@ -39,7 +40,7 @@ public static class CalcHelper
 			var amount = 0;
 
 			if(historyIdx < history.Count) {
-				var currDate = startDate.AddDays(i).ToLocalTime().Date;
+				var currDate = startDate.AddDays(i).ToLocalTime();
 				while(TimeHelper.TimestampToDate(history[historyIdx].Time) == currDate)
 				{
 					amount += history[historyIdx++].Amount;

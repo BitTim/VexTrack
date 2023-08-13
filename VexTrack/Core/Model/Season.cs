@@ -13,7 +13,8 @@ public class Season
 {
     public string Uuid { get; set; }
     public string Name { get; set; }
-    public long StartTimestamp => TimeHelper.IsolateTimestampDate(HistoryHelper.GetFirstFromSeason(Uuid).Time); // TODO: Change to API data with #69
+    public long ActualStartTimestamp { get; set; }
+    public long StartTimestamp => ActualStartTimestamp == -1 ? TimeHelper.IsolateTimestampDate(HistoryHelper.GetFirstFromSeason(Uuid).Time) : ActualStartTimestamp;
     public long EndTimestamp { get; set; }
     public int Collected => CalcHelper.CalcTotalCollected(ActiveBpLevel, Cxp); // TODO: Replace ActiveBpLevel and Cxp with #69
     public int ActiveBpLevel { get; set; }
@@ -45,9 +46,9 @@ public class Season
 
 
     
-    public Season(string uuid, string name, long endDate, int activeBpLevel, int cXp)
+    public Season(string uuid, string name, long startTimestamp, long endTimestamp, int activeBpLevel, int cXp)
     {
-        (Uuid, Name, EndTimestamp, ActiveBpLevel, Cxp) = (uuid, name, endDate, activeBpLevel, cXp);
+        (Uuid, Name, ActualStartTimestamp, EndTimestamp, ActiveBpLevel, Cxp) = (uuid, name, startTimestamp, endTimestamp, activeBpLevel, cXp);
         Goals = GetGoals();
     }
 

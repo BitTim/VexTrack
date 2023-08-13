@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 using VexTrack.Core.Helper;
 using VexTrack.Core.Model;
@@ -86,8 +87,42 @@ public static class UserDataV1
 				history.Find(hg => hg.Uuid == gUuid).Entries.Add(new HistoryEntry(gUuid, hUuid, time, gameMode, amount, map, desc, score, enemyScore, surrenderedWin, surrenderedLoss));
 			}
 
+			var startTimestamp = TimeHelper.IsolateTimestampDate(HistoryHelper.GetFirstFromSeason(sUuid, history).Time);
+			var endTimestamp = TimeHelper.StringToTimestamp(endDate);
+
+			// If a Season with a matching name is found in ApiData, use the Uuid from the ApiData
+			foreach (var template in Model.ApiData.ContractTemplates.Where(ct => ct.Type == "Season"))
+			{
+				var tokens = name.Split(' ');
+				var romanRegex = new Regex(@"^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$");
+
+				for (var i = 0; i < tokens.Length; i++)
+				{
+					if (romanRegex.IsMatch(tokens[i])) tokens[i] = FormatHelper.RomanToArabicNumbers(tokens[i]);
+				}
+
+				var modifiedName = string.Join(' ', tokens);
+                modifiedName = Regex.Replace(modifiedName, "[^a-zA-Z0-9]", string.Empty);
+				modifiedName = modifiedName.ToLower();
+				
+				var modifiedApiName = Regex.Replace(template.Name, "[^a-zA-Z0-9]", string.Empty);
+				modifiedApiName = modifiedApiName.ToLower();
+
+				if (modifiedName.Equals(modifiedApiName))
+				{
+					var prevSUuid = sUuid;
+					
+					sUuid = template.Uuid;
+					startTimestamp = template.StartTimestamp;
+					endTimestamp = template.EndTimestamp;
+
+					history.Where(hg => hg.SeasonUuid == prevSUuid).ToList().ForEach(hg => hg.SeasonUuid = sUuid);
+					break;
+				}
+			}
+			
 			sUuid ??= Guid.NewGuid().ToString();
-			seasons.Add(new Season(sUuid, name, TimeHelper.StringToTimestamp(endDate), activeBpLevel, cXp));
+			seasons.Add(new Season(sUuid, name, startTimestamp, endTimestamp, activeBpLevel, cXp));
 		}
 		
 		foreach(var hg in history)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -138,6 +139,16 @@ class MainViewModel : ObservableObject
 		
 		if(fetchError != 0 && loadError != 0) return; // Something went terribly wrong here
 		UserDataLoader.LoadUserData();
+
+		if (UserData.CurrentSeasonData.EndTimestamp <= TimeHelper.NowTimestamp)
+		{
+			foreach (var template in ApiData.ContractTemplates.Where(ct => ct.Type == "Season" && ct.EndTimestamp > TimeHelper.NowTimestamp && ct.StartTimestamp <= TimeHelper.NowTimestamp))
+			{
+				UserData.AddSeason(new Season(Guid.NewGuid().ToString(), template.Name, template.StartTimestamp, template.EndTimestamp, 2, 0));
+				UserData.AddHistoryEntry(new HistoryEntry("", Guid.NewGuid().ToString(), template.StartTimestamp, ApiData.GameModes.Find(gm => gm.Name == "Custom"), 0, ApiData.Maps.Last(), "Initialization", -1, -1, false, false));
+			}
+		}
+		
 		Update();
 	}
 

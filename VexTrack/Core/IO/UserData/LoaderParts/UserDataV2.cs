@@ -19,12 +19,13 @@ public static class UserDataV2
 	    {
 		    var sUuid = season.Value<string>("uuid");
 		    var name = season.Value<string>("name");
-		    var endDate = season.Value<long>("endDate");
+		    var startTimestamp = season.Value<long>("startTimestamp");
+		    var endTimestamp = season.Value<long>("endTimestamp");
 		    var activeBpLevel = season.Value<int>("activeBPLevel");
 		    var cXp = season.Value<int>("cXP");
 
 		    sUuid ??= Guid.NewGuid().ToString();
-		    seasons.Add(new Season(sUuid, name, endDate, activeBpLevel, cXp));
+		    seasons.Add(new Season(sUuid, name, startTimestamp, endTimestamp, activeBpLevel, cXp));
 	    }
 		
 	    return seasons;

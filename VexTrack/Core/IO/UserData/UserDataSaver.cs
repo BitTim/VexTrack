@@ -51,7 +51,8 @@ public static class UserDataSaver
 			{
 				{ "uuid", season.Uuid },
 				{ "name", season.Name },
-				{ "endDate", season.EndTimestamp },
+				{ "startTimestamp", season.StartTimestamp },
+				{ "endTimestamp", season.EndTimestamp },
 				{ "activeBPLevel", season.ActiveBpLevel },
 				{ "cXP", season.Cxp }
 			};

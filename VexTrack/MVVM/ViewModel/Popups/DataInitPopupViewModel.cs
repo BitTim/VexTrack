@@ -86,7 +86,7 @@ class DataInitPopupViewModel : BasePopupViewModel
 			var totalCollectedXp = CalcHelper.CalcTotalCollected(ActiveBpLevel, Collected);
 			var seasonUuid = Guid.NewGuid().ToString();
 				
-			UserData.AddSeason(new Season(seasonUuid, Name, EndTimestamp, ActiveBpLevel, Collected));
+			UserData.AddSeason(new Season(seasonUuid, Name, -1, EndTimestamp, ActiveBpLevel, Collected));
 			UserData.AddHistoryEntry(new HistoryEntry("", Guid.NewGuid().ToString(), TimeHelper.TodayDate.AddDays(-1).ToUnixTimeSeconds(), ApiData.GameModes.Find(gm => gm.Name == "Custom"), totalCollectedXp, ApiData.Maps.Last(), "Initialization", -1, -1, false, false));
 
 			Close();

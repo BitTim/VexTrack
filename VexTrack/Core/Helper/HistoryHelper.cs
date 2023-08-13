@@ -6,24 +6,25 @@ namespace VexTrack.Core.Helper;
 
 public static class HistoryHelper
 {
-    public static List<HistoryGroup> GetFromSeason(string seasonUuid)
+    public static List<HistoryGroup> GetFromSeason(string seasonUuid, List<HistoryGroup> historyOverride = null)
     {
-        return UserData.History.Where(hg => hg.SeasonUuid == seasonUuid).ToList();
+        var history = historyOverride ?? UserData.History;
+        return history.Where(hg => hg.SeasonUuid == seasonUuid).ToList();
     }
 
-    public static int GetCountFromSeason(string seasonUuid)
+    public static int GetCountFromSeason(string seasonUuid, List<HistoryGroup> historyOverride = null)
     {
-        return GetFromSeason(seasonUuid).Count;
+        return GetFromSeason(seasonUuid, historyOverride).Count;
     }
     
-    public static HistoryEntry GetFirstFromSeason(string seasonUuid)
+    public static HistoryEntry GetFirstFromSeason(string seasonUuid, List<HistoryGroup> historyOverride = null)
     {
-        return GetFromSeason(seasonUuid).Last().Entries.Last();
+        return GetFromSeason(seasonUuid, historyOverride).LastOrDefault()?.Entries.Last();
     }
 
-    public static List<HistoryEntry> GetAllEntriesFromSeason(string seasonUuid)
+    public static List<HistoryEntry> GetAllEntriesFromSeason(string seasonUuid, List<HistoryGroup> historyOverride = null)
     {
-        return GetFromSeason(seasonUuid).SelectMany(hg => hg.Entries).ToList();
+        return GetFromSeason(seasonUuid, historyOverride).SelectMany(hg => hg.Entries).ToList();
     }
 
     public static void SortHistory()

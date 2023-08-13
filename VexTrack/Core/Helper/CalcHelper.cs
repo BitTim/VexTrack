@@ -136,6 +136,8 @@ public static class CalcHelper
 		var stops = new List<decimal>();
 		decimal prevVal = 0;
 
+		if (total <= 0 || segments.Count <= 0) return stops;
+
 		for (var i = 0; i < segments.Count; i++)
 		{
 			var val = proportional
@@ -155,6 +157,8 @@ public static class CalcHelper
 		var stops = new List<decimal>();
 		decimal prevVal = 0;
 
+		if (total <= 0 || segments.Count <= 0) return stops;
+		
 		foreach (var val in segments.Select(segment => proportional ? (decimal)segment  / total : 1 / (decimal)segments.Count))
 		{
 			prevVal += val;

@@ -55,4 +55,22 @@ public static class FormatHelper
 
         return (size, unit);
     }
+    
+    public static string RomanToArabicNumbers(string input)
+    {
+        var num = 0;
+        for (var i = 0; i < input.Length; i++)
+        {
+            if (i > 0 && (int)Enum.Parse(typeof(RomanValues), input[i].ToString()) > (int)Enum.Parse(typeof(RomanValues), input[i - 1].ToString()))
+            {
+                num += (int)Enum.Parse(typeof(RomanValues), input[i].ToString()) - (int)Enum.Parse(typeof(RomanValues), input[i - 1].ToString()) * 2;
+            }
+            else
+            {
+                num += (int)Enum.Parse(typeof(RomanValues), input[i].ToString());
+            }
+        }
+
+        return num.ToString();
+    }
 }

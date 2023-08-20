@@ -144,7 +144,13 @@ class MainViewModel : ObservableObject
 		{
 			foreach (var template in ApiData.ContractTemplates.Where(ct => ct.Type == "Season" && ct.EndTimestamp > TimeHelper.NowTimestamp && ct.StartTimestamp <= TimeHelper.NowTimestamp))
 			{
-				UserData.AddSeason(new Season(Guid.NewGuid().ToString(), template.Name, template.StartTimestamp, template.EndTimestamp, 2, 0));
+				List<Goal> goals = new();
+				foreach (var goalTemplate in template.Goals)
+				{
+					goals.Add(new Goal(goalTemplate, Guid.NewGuid().ToString(), 0));
+				}
+				
+				UserData.AddSeason(new Season(Guid.NewGuid().ToString(), template.Name, template.StartTimestamp, template.EndTimestamp, goals));
 				UserData.AddHistoryEntry(new HistoryEntry("", Guid.NewGuid().ToString(), template.StartTimestamp, ApiData.GameModes.Find(gm => gm.Name == "Custom"), 0, ApiData.Maps.Last(), "Initialization", -1, -1, false, false));
 			}
 		}
@@ -220,13 +226,6 @@ class MainViewModel : ObservableObject
 		if (!_viewModelsInitialized) InitViewModels();
 
 		if (InterruptUpdate) return;
-
-		if (UserData.CurrentSeasonData.ActiveBpLevel > Constants.BattlepassLevels && SettingsHelper.Data.ForceEpilogue)
-		{
-			if (!Epilogue) Epilogue = true;
-			EpilogueButtonEnabled = false;
-		}
-		else EpilogueButtonEnabled = true;
 
 		HomeVm.Update();
 		ContractVm.Update();

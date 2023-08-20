@@ -53,10 +53,19 @@ public static class UserDataSaver
 				{ "name", season.Name },
 				{ "startTimestamp", season.StartTimestamp },
 				{ "endTimestamp", season.EndTimestamp },
-				{ "activeBPLevel", season.ActiveBpLevel },
-				{ "cXP", season.Cxp }
 			};
 			
+			JArray goals = new();
+			foreach (var goalObj in season.Goals.Select(goal => new JObject()
+			         {
+				         { "uuid", goal.Uuid },
+				         { "collected", goal.Collected }
+			         }))
+			{
+				goals.Add(goalObj);
+			}
+			
+			seasonObj.Add("goals", goals);
 			seasonsArr.Add(seasonObj);
 		}
 		jo.Add("seasons", seasonsArr);

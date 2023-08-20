@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using VexTrack.Core;
 using VexTrack.Core.Helper;
 using VexTrack.Core.Model;
+using VexTrack.Core.Model.Game;
+using VexTrack.Core.Model.Game.Templates;
 using VexTrack.Core.Model.WPF;
 
 namespace VexTrack.MVVM.ViewModel.Popups;
@@ -86,7 +89,26 @@ class DataInitPopupViewModel : BasePopupViewModel
 			var totalCollectedXp = CalcHelper.CalcTotalCollected(ActiveBpLevel, Collected);
 			var seasonUuid = Guid.NewGuid().ToString();
 				
-			UserData.AddSeason(new Season(seasonUuid, Name, -1, EndTimestamp, ActiveBpLevel, Collected));
+			var goals = new List<Goal>();
+			var maxLevel = Constants.BattlepassLevels + Constants.EpilogueLevels;
+			var startLevel = ActiveBpLevel - 1;
+			var endLevel = ActiveBpLevel + 2;
+
+			if (ActiveBpLevel > maxLevel - 3)
+			{
+				startLevel = maxLevel - 2;
+				endLevel = maxLevel + 1;
+			}
+
+			for (var i = startLevel; i < endLevel; i++)
+			{
+				if (i > maxLevel) break;
+				var levelTotal = CalcHelper.CalcMaxForLevel(i);
+				var goal = new Goal(new GoalTemplate(new List<Reward> {new("", "", 0, true)}, false, 0, levelTotal, true, 300), Guid.NewGuid().ToString(), ActiveBpLevel <= i ? ActiveBpLevel == i ? Collected : 0 : levelTotal);
+				goals.Add(goal);
+			}
+			
+			UserData.AddSeason(new Season(seasonUuid, Name, -1, EndTimestamp, goals));
 			UserData.AddHistoryEntry(new HistoryEntry("", Guid.NewGuid().ToString(), TimeHelper.TodayDate.AddDays(-1).ToUnixTimeSeconds(), ApiData.GameModes.Find(gm => gm.Name == "Custom"), totalCollectedXp, ApiData.Maps.Last(), "Initialization", -1, -1, false, false));
 
 			Close();

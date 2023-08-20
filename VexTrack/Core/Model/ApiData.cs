@@ -53,33 +53,35 @@ public static class ApiData
         WeaponSkinLevels = weaponSkinLevels;
     }
 
+    private static readonly Cosmetic NotFoundCosmetic = new Cosmetic("", "Not found", "Error");
     public static Cosmetic GetCosmetic(string type, string uuid)
     {
+        
         switch (type)
         {
             case "EquippableCharmLevel":
-                return Buddies.Find(b => b.Uuid == uuid);
+                return Buddies.Find(b => b.Uuid == uuid || b.LevelUuid == uuid) ?? NotFoundCosmetic;
             
             case "Currency":
-                return Currencies.Find(c => c.Uuid == uuid);
+                return Currencies.Find(c => c.Uuid == uuid) ?? NotFoundCosmetic;
             
             case "PlayerCard":
-                return PlayerCards.Find(pc => pc.Uuid == uuid);
+                return PlayerCards.Find(pc => pc.Uuid == uuid) ?? NotFoundCosmetic;
             
             case "Title":
-                return PlayerTitles.Find(pt => pt.Uuid == uuid);
+                return PlayerTitles.Find(pt => pt.Uuid == uuid) ?? NotFoundCosmetic;
             
             case "Spray":
-                return Sprays.Find(s => s.Uuid == uuid);
+                return Sprays.Find(s => s.Uuid == uuid) ?? NotFoundCosmetic;
             
             case "WeaponSkin":
-                return WeaponSkins.Find(ws => ws.Uuid == uuid);
+                return WeaponSkins.Find(ws => ws.Uuid == uuid) ?? NotFoundCosmetic;
             
             case "EquippableSkinChroma":
-                return WeaponSkinChromas.Find(wsc => wsc.Uuid == uuid);
+                return WeaponSkinChromas.Find(wsc => wsc.Uuid == uuid) ?? NotFoundCosmetic;
             
             case "EquippableSkinLevel":
-                return WeaponSkinLevels.Find(wsl => wsl.Uuid == uuid);
+                return WeaponSkinLevels.Find(wsl => wsl.Uuid == uuid) ?? NotFoundCosmetic;
             
             default:
                 return new Cosmetic("", "Invalid Type", "Error");

@@ -281,10 +281,11 @@ public static class ApiDataLoader
         foreach (var buddy in cache.Value<JArray>("buddies") ?? new JArray())
         {
             var uuid = buddy.Value<string>("uuid");
+            var levelUuid = buddy.Value<string>("levelUuid");
             var name = buddy.Value<string>("name");
             var iconPath = buddy.Value<string>("iconPath");
             
-            buddies.Add(new Buddy(uuid, name, iconPath));
+            buddies.Add(new Buddy(uuid, levelUuid, name, iconPath));
         }
 
         return buddies;

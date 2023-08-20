@@ -503,12 +503,13 @@ public static class ApiDataFetcher
         {
             var uuid = buddy.Value<string>("uuid");
             var name = buddy.Value<string>("displayName");
+            var levelUuid = buddy.Value<JArray>("levels").First()?.Value<string>("uuid");
             
             ++_popup.CurrentStepItem;
             _popup.CurrentStepItemLabel = name;
             
             var iconPath = await ApiHelper.DownloadImage(buddy.Value<string>("displayIcon"), Constants.BuddyIconFolder, uuid);
-            buddies.Add(new Buddy(uuid, name, iconPath));
+            buddies.Add(new Buddy(uuid, levelUuid, name, iconPath));
         }
 
         return buddies;

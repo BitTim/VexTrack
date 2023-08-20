@@ -6,6 +6,7 @@ using LiveCharts;
 using VexTrack.Core.Helper;
 using VexTrack.Core.Model.Game;
 using VexTrack.Core.Model.Game.Templates;
+using VexTrack.MVVM.Model;
 
 namespace VexTrack.Core.Model;
 
@@ -16,15 +17,13 @@ public class Season
     public long ActualStartTimestamp { get; set; }
     public long StartTimestamp => ActualStartTimestamp == -1 ? TimeHelper.IsolateTimestampDate(HistoryHelper.GetFirstFromSeason(Uuid).Time) : ActualStartTimestamp;
     public long EndTimestamp { get; set; }
-    public int Collected => CalcHelper.CalcTotalCollected(ActiveBpLevel, Cxp); // TODO: Replace ActiveBpLevel and Cxp with #69
-    public int ActiveBpLevel { get; set; }
-    public int Cxp { get; set; }
     public int Duration => GetDuration();
     public int RemainingDays => GetRemainingDays();
 
 
-    public int Total => CalcHelper.CalcMaxForSeason(true);
-    private static int TotalMin => CalcHelper.CalcMaxForSeason(false);
+    public int Total => Goals.Sum(g => g.Total);
+    private int TotalMin => Goals.Where(g => !g.IsEpilogue).Sum(g => g.Total);
+    public int Collected => HistoryHelper.CalcCollectedFromSeason(Uuid);
     public int Remaining => Total - Collected;
     public double RemainingMin => TotalMin - Collected;
     public int Average => CalcHelper.CalcAverage(Collected, Duration, RemainingDays);
@@ -34,7 +33,7 @@ public class Season
     private bool IsActive => TimeHelper.NowTimestamp < EndTimestamp;
     public string Status => GetStatus();
     
-    private List<Goal> Goals { get; }
+    public List<Goal> Goals { get; set; }
     public ObservableCollection<Goal> ObservableGoals => new(Goals);
     public SeasonExtremes Extremes => GetExtremes();
     public SeriesCollection GraphSeriesCollection => GraphCalcHelper.CalcGraphs(Total, HistoryHelper.GetFirstFromSeason(Uuid).Amount, StartTimestamp, Duration, BufferDays, RemainingDays, Uuid);
@@ -46,10 +45,9 @@ public class Season
 
 
     
-    public Season(string uuid, string name, long startTimestamp, long endTimestamp, int activeBpLevel, int cXp)
+    public Season(string uuid, string name, long startTimestamp, long endTimestamp, List<Goal> goals)
     {
-        (Uuid, Name, ActualStartTimestamp, EndTimestamp, ActiveBpLevel, Cxp) = (uuid, name, startTimestamp, endTimestamp, activeBpLevel, cXp);
-        Goals = GetGoals();
+        (Uuid, Name, ActualStartTimestamp, EndTimestamp, Goals) = (uuid, name, startTimestamp, endTimestamp, goals);
     }
 
     public SeriesCollection GetDailyGraphSeriesCollection(int dayIndex, int dailyIdeal)
@@ -89,30 +87,6 @@ public class Season
         if (Collected < TotalMin) return IsActive ? "Warning" : "Failed";
         if (Collected < Total) return "Done";
         return Collected >= Total ? "DoneAll" : "";
-    }
-    
-    private List<Goal> GetGoals()
-    {
-        var goals = new List<Goal>();
-        var maxLevel = Constants.BattlepassLevels + Constants.EpilogueLevels;
-        var startLevel = ActiveBpLevel - 1;
-        var endLevel = ActiveBpLevel + 2;
-
-        if (ActiveBpLevel > maxLevel - 3)
-        {
-            startLevel = maxLevel - 2;
-            endLevel = maxLevel + 1;
-        }
-
-        for (var i = startLevel; i < endLevel; i++)
-        {
-            if (i > maxLevel) break;
-            var levelTotal = CalcHelper.CalcMaxForLevel(i);
-            var goal = new Goal(new GoalTemplate(new List<Reward> {new("", "", 0, true)}, false, 0, levelTotal, true, 300), Guid.NewGuid().ToString(), ActiveBpLevel <= i ? ActiveBpLevel == i ? Cxp : 0 : levelTotal);
-            goals.Add(goal);
-        }
-
-        return goals;
     }
 
     private Goal GetNextUnlock()

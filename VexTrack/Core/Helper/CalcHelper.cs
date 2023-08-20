@@ -21,7 +21,7 @@ public static class CalcHelper
 	public static int CalcTotalCollected(int activeLevel, int cxp)
 	{
 		int collected;
-		if (activeLevel - 1 <= Constants.BattlepassLevels) collected = CalcHelper.CumulativeSum(activeLevel - 1, Constants.Level2Offset, Constants.XpPerLevel) + cxp;
+		if (activeLevel - 1 <= Constants.BattlepassLevels) collected = CumulativeSum(activeLevel - 1, Constants.Level2Offset, Constants.XpPerLevel) + cxp;
 		else collected = CalcMaxForSeason(false) + cxp + (activeLevel - Constants.BattlepassLevels - 1) * Constants.XpPerEpilogueLevel;
 
 		return collected;
@@ -58,11 +58,11 @@ public static class CalcHelper
 	{
 		var daysFinished = 0;
 
-		var total = CalcHelper.CalcMaxForSeason(epilogue);
+		var total = CalcMaxForSeason(epilogue);
 		var duration = UserData.CurrentSeasonData.Duration;
 		var remainingDays = UserData.CurrentSeasonData.RemainingDays;
 		var daysPassed = duration - remainingDays;
-		var totalCollected = CalcHelper.CalcTotalCollected(UserData.CurrentSeasonData.ActiveBpLevel, UserData.CurrentSeasonData.Cxp);
+		var totalCollected = UserData.CurrentSeasonData.Collected;
 		var average = (int)MathF.Round((float)totalCollected / (daysPassed + 1));
 
 		var val = totalCollected;

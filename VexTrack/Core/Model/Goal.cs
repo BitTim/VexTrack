@@ -12,6 +12,7 @@ public class Goal
     
     public string Name => Template.Name;
     public int Total => Template.XpTotal;
+    public bool IsEpilogue => Template.IsEpilogue;
     
 
     public int Progress => GetProgress();

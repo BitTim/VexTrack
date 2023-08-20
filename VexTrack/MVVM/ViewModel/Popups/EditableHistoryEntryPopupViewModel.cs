@@ -130,7 +130,7 @@ class EditableHistoryEntryPopupViewModel : BasePopupViewModel
 	}
 
 	public string Result => HistoryEntry.CalcHistoryResultFromScores(ScoreType, Score, EnemyScore, SurrenderedWin, SurrenderedLoss);
-	public List<Map> Maps => ApiData.Maps.Where(map => map.Type == GameMode.MapType || map.Type == "all" || GameMode.MapType == "all").ToList();
+	public List<Map> Maps => ApiData.Maps.Where(map => map.Type == GameMode?.MapType || map.Type == "all" || GameMode?.MapType == "all").ToList();
 
 	public EditableHistoryEntryPopupViewModel()
 	{

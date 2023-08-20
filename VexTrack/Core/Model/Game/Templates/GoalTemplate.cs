@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace VexTrack.Core.Model.Game.Templates;
 
@@ -13,7 +14,7 @@ public class GoalTemplate
     public bool CanBuyVp { get; set; }
     public bool IsEpilogue { get; set; }
 
-    public string Name => ""; // TODO: Fetch name from reward cosmetic
+    public string Name => GetName();
     public bool CanUseXp => !CanBuyDough;
     
     public GoalTemplate(List<Reward> rewards, bool canBuyDough, int doughCost, int xpTotal, bool canBuyVp, int vpCost, bool isEpilogue = false)
@@ -27,5 +28,19 @@ public class GoalTemplate
         VpCost = vpCost;
         
         IsEpilogue = isEpilogue;
+    }
+
+    private string GetName()
+    {
+        var rewardNames = new List<string>();
+        
+        foreach (var reward in Rewards)
+        {
+            if (reward == null) continue;
+            rewardNames.Add(ApiData.GetCosmetic(reward.CosmeticType, reward.CosmeticUuid).Name);
+        }
+
+        if (rewardNames.Count < 0) return "No Rewards";
+        return string.Join(" | ", rewardNames);
     }
 }

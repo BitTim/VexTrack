@@ -239,6 +239,7 @@ public static class ApiDataSaver
             JObject buddyObj = new()
             {
                 { "uuid", buddy.Uuid },
+                { "levelUuid", buddy.LevelUuid },
                 { "name", buddy.Name },
                 { "iconPath", buddy.IconPath }
             };

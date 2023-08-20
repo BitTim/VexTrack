@@ -27,6 +27,11 @@ public static class HistoryHelper
         return GetFromSeason(seasonUuid, historyOverride).SelectMany(hg => hg.Entries).ToList();
     }
 
+    public static int CalcCollectedFromSeason(string seasonUuid, List<HistoryGroup> historyOverride = null)
+    {
+        return GetAllEntriesFromSeason(seasonUuid, historyOverride).Sum(he => he.Amount);
+    }
+
     public static void SortHistory()
     {
         foreach (var hg in UserData.History)

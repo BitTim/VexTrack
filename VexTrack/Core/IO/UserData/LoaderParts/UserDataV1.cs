@@ -120,9 +120,26 @@ public static class UserDataV1
 					break;
 				}
 			}
+            
+			// Convert old xp tracking for seasons to newer one similar to contracts
+			var goals = new List<Goal>();
+			var templates = Model.ApiData.ContractTemplates.Find(ct => ct.Type == "Season" && ct.Uuid == sUuid).Goals;
+			var goalIdx = 0;
+			
+			foreach (var template in templates)
+			{
+				var collected = 0;
+
+				if (goalIdx == activeBpLevel - 1) collected = cXp;
+				if (goalIdx < activeBpLevel - 1) collected = template.XpTotal;
+				goalIdx++;
+				
+				var goal = new Goal(template, Guid.NewGuid().ToString(), collected);
+				goals.Add(goal);
+			}
 			
 			sUuid ??= Guid.NewGuid().ToString();
-			seasons.Add(new Season(sUuid, name, startTimestamp, endTimestamp, activeBpLevel, cXp));
+			seasons.Add(new Season(sUuid, name, startTimestamp, endTimestamp, goals));
 		}
 		
 		foreach(var hg in history)
@@ -131,8 +148,9 @@ public static class UserDataV1
 			hg.Entries = sortedEntries;
 		}
 		
+		var sortedSeasons = seasons.OrderByDescending(s => s.StartTimestamp).ToList();
 		var sortedHistory = history.OrderByDescending(hg => hg.Date).ToList();
-		return (seasons, sortedHistory);
+		return (sortedSeasons, sortedHistory);
 	}
 
 

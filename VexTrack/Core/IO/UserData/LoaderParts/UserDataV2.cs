@@ -21,14 +21,26 @@ public static class UserDataV2
 		    var name = season.Value<string>("name");
 		    var startTimestamp = season.Value<long>("startTimestamp");
 		    var endTimestamp = season.Value<long>("endTimestamp");
-		    var activeBpLevel = season.Value<int>("activeBPLevel");
-		    var cXp = season.Value<int>("cXP");
+
+		    List<Goal> goals = new();
+		    var templates = Model.ApiData.ContractTemplates.Find(ct => ct.Type == "Season" && ct.Uuid == sUuid)?.Goals;
+		    var goalIdx = 0;
+		    
+		    foreach (var goal in season.Value<JArray>("goals"))
+		    {
+			    var goalUuid = goal.Value<string>("uuid");
+			    var collected = goal.Value<int>("collected");
+
+			    var template = templates[goalIdx++];
+			    goals.Add(new Goal(template, goalUuid, collected));
+		    }
 
 		    sUuid ??= Guid.NewGuid().ToString();
-		    seasons.Add(new Season(sUuid, name, startTimestamp, endTimestamp, activeBpLevel, cXp));
+		    seasons.Add(new Season(sUuid, name, startTimestamp, endTimestamp, goals));
 	    }
 		
-	    return seasons;
+	    var sortedSeasons = seasons.OrderByDescending(s => s.StartTimestamp).ToList();
+	    return sortedSeasons;
     }
     
     

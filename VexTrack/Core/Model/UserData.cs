@@ -21,7 +21,7 @@ public abstract class UserData
 		(Streak, LastStreakUpdateTimestamp, Contracts, Seasons, History) = (streak, lastStreakUpdateTimestamp, contracts, seasons, history);
 	}
 
-	public static Season CurrentSeasonData => Seasons?.Last();
+	public static Season CurrentSeasonData => Seasons?.First();
 		
 		
 
@@ -56,63 +56,59 @@ public abstract class UserData
 		List<string> lost = new();
 
 		//Get Completed goals
-		var completedGoals = (from contract in Contracts from goal in contract.Goals where goal.Collected >= goal.Total select goal.Uuid).ToList();
+		var completedSeasonGoals = (from season in Seasons from goal in season.Goals where goal.Collected >= goal.Total select goal.Uuid).ToList();
+		var completedContractGoals = (from contract in Contracts from goal in contract.Goals where goal.Collected >= goal.Total select goal.Uuid).ToList();
 
-		//Recalculate total collected XP, collected XP in level and current level
-		var prevTotalXp = CalcHelper.CalcTotalCollected(CurrentSeasonData.ActiveBpLevel, CurrentSeasonData.Cxp);
+		//Calculate XP delta
+		var collectedXp = CurrentSeasonData.Collected;
+		var prevCollectedXp = CurrentSeasonData.Goals.Sum(g => g.Collected);
+		var deltaXp = collectedXp - prevCollectedXp;
 
-		var iter = 2;
-		var cxp = HistoryHelper.GetAllEntriesFromSeason(CurrentSeasonData.Uuid).Sum(he => he.Amount);
-
-		while (cxp >= 0) // TODO: Find better way to figure out what battlepass level were gained / lost
-		{
-			if (iter <= Constants.BattlepassLevels) cxp -= Constants.Level2Offset + iter * Constants.XpPerLevel;
-			else if (iter < Constants.BattlepassLevels + Constants.EpilogueLevels + 2) cxp -= Constants.XpPerEpilogueLevel;
-			else break;
-				
-			iter++;
-		}
-		iter--;
-
-		for (var i = CurrentSeasonData.ActiveBpLevel - 1; i > iter - 1; i--)
-			lost.Add("Battlepass Level " + i.ToString());
-
-		for (var i = CurrentSeasonData.ActiveBpLevel; i < iter; i++)
-			completed.Add("Battlepass Level " + i.ToString());
-
-		CurrentSeasonData.ActiveBpLevel = iter;
-
-		if (iter < Constants.BattlepassLevels)
-			cxp += Constants.Level2Offset + iter * Constants.XpPerLevel;
-		else if (iter < Constants.BattlepassLevels + Constants.EpilogueLevels + 2)
-			cxp += Constants.XpPerEpilogueLevel;
-
-		CurrentSeasonData.Cxp = cxp;
+		if (prevCollectedXp >= CurrentSeasonData.Goals.Sum(g => g.Total)) deltaXp = 0;
 
 		//Calculate difference in XP and apply to goals
-		var currTotalXp = CalcHelper.CalcTotalCollected(CurrentSeasonData.ActiveBpLevel, CurrentSeasonData.Cxp);
-		var deltaXp = currTotalXp - prevTotalXp;
 
-			
-		foreach (var contract in Contracts) // TODO: Move contents to update() function within contracts
+		var xpPool = Math.Abs(deltaXp);
+
+		for (var i = CurrentSeasonData.Goals.Count - 1; i >= 0; i--) // TODO: This sets collected of all goals to 0 when removing XP
 		{
-			var xpPool = Math.Abs(deltaXp);
-				
+			var goal = CurrentSeasonData.Goals[i];
+			var goalLimit = deltaXp > 0 ? goal.Remaining : goal.Collected;
+
+			var appliedXp = xpPool > goalLimit ? goalLimit : xpPool;
+			appliedXp *= Math.Sign(deltaXp);
+			xpPool -= appliedXp;
+
+			var newCollected = goal.Collected + appliedXp;
+			if (newCollected < 0) newCollected = 0;
+
+			goal.Collected = newCollected;
+
+			if (goal.Collected >= goal.Total && !completedSeasonGoals.Contains(goal.Uuid)) completed.Add(goal.Name);
+			if (goal.Collected < goal.Total && completedSeasonGoals.Contains(goal.Uuid)) lost.Add(goal.Name);
+		}
+
+		for (var i = Contracts.Count - 1; i >= 0; i--)
+		{
+			var contract = Contracts[i];
+			xpPool = Math.Abs(deltaXp);
+
 			foreach (var goal in contract.Goals)
 			{
-				var goalLimit = deltaXp > 0 ? goal.Total - goal.Collected : goal.Collected;
+				var goalLimit = deltaXp > 0 ? goal.Remaining : goal.Collected;
 
 				var appliedXp = xpPool > goalLimit ? goalLimit : xpPool;
 				appliedXp *= Math.Sign(deltaXp);
 				xpPool -= appliedXp;
-						
+
 				var newCollected = goal.Collected + appliedXp;
 				if (newCollected < 0) newCollected = 0;
 
 				goal.Collected = newCollected;
 
-				if (goal.Collected >= goal.Total && !completedGoals.Contains(goal.Uuid)) completed.Add(goal.Name);
-				if (goal.Collected < goal.Total && completedGoals.Contains(goal.Uuid)) lost.Add(goal.Name);
+				if (goal.Collected >= goal.Total && !completedContractGoals.Contains(goal.Uuid))
+					completed.Add(goal.Name);
+				if (goal.Collected < goal.Total && completedContractGoals.Contains(goal.Uuid)) lost.Add(goal.Name);
 			}
 		}
 

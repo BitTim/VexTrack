@@ -221,7 +221,7 @@ public static class ApiDataLoader
                 var canBuyVp = goal.Value<bool>("canBuyVp");
                 var isEpilogue = goal.Value<bool>("isEpilogue");
                 
-                goals.Add(new GoalTemplate(rewards, canBuyDough, doughCost, xpTotal, canBuyVp, vpCost, isEpilogue));
+                goals.Add(new GoalTemplate(rewards, true, canBuyDough, doughCost, xpTotal, canBuyVp, vpCost, isEpilogue));
             }
             
             contracts.Add(new ContractTemplate(uuid, name, type, startTimestamp, endTimestamp, goals));
@@ -260,7 +260,7 @@ public static class ApiDataLoader
                 var canBuyVp = goal.Value<bool>("canBuyVp");
                 var isEpilogue = goal.Value<bool>("isEpilogue");
                 
-                goals.Add(new GoalTemplate(rewards, canBuyDough, doughCost, xpTotal, canBuyVp, vpCost, isEpilogue));
+                goals.Add(new GoalTemplate(rewards, true, canBuyDough, doughCost, xpTotal, canBuyVp, vpCost, isEpilogue));
             }
             
             gears.Add(new GearTemplate(uuid, name, agentUuid, goals));

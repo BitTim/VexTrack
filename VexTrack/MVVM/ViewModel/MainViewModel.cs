@@ -135,12 +135,14 @@ class MainViewModel : ObservableObject
 		SettingsHelper.LoadSettings();
 		
 		var loadError = ApiDataLoader.LoadApiData();
-		var fetchError = await ApiDataFetcher.FetchApiDataAsync();
+		var fetchTask = ApiDataFetcher.FetchApiDataAsync();
+		fetchTask.Wait();
 		
+		var fetchError = fetchTask.Result;
 		if(fetchError != 0 && loadError != 0) return; // Something went terribly wrong here
 		UserDataLoader.LoadUserData();
 
-		if (UserData.CurrentSeasonData.EndTimestamp <= TimeHelper.NowTimestamp)
+		if (UserData.CurrentSeasonData != null && UserData.CurrentSeasonData.EndTimestamp <= TimeHelper.NowTimestamp)
 		{
 			foreach (var template in ApiData.ContractTemplates.Where(ct => ct.Type == "Season" && ct.EndTimestamp > TimeHelper.NowTimestamp && ct.StartTimestamp <= TimeHelper.NowTimestamp))
 			{
@@ -150,7 +152,7 @@ class MainViewModel : ObservableObject
 					goals.Add(new Goal(goalTemplate, Guid.NewGuid().ToString(), 0));
 				}
 				
-				UserData.AddSeason(new Season(Guid.NewGuid().ToString(), template.Name, template.StartTimestamp, template.EndTimestamp, goals));
+				UserData.AddSeason(new Season(Guid.NewGuid().ToString(), template.Name, template.StartTimestamp, template.EndTimestamp, goals), true);
 				UserData.AddHistoryEntry(new HistoryEntry("", Guid.NewGuid().ToString(), template.StartTimestamp, ApiData.GameModes.Find(gm => gm.Name == "Custom"), 0, ApiData.Maps.Last(), "Initialization", -1, -1, false, false));
 			}
 		}

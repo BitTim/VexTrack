@@ -41,6 +41,8 @@ class HistoryViewModel : ObservableObject
 		var groups = SettingsHelper.Data.SingleSeasonHistory ? UserData.History.Where(hg => hg.SeasonUuid == UserData.CurrentSeasonData.Uuid).ToList() : UserData.History;
 		foreach (var hg in groups) { Groups.Add(hg); }
 
+		if (Groups.Count < 1) return;
+		
 		_initUuid = Groups.Last().Entries.Last().Uuid;
 
 		var entry = (from g in Groups

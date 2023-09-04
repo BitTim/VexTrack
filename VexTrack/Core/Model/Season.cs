@@ -36,7 +36,7 @@ public class Season
     public List<Goal> Goals { get; set; }
     public ObservableCollection<Goal> ObservableGoals => new(Goals);
     public SeasonExtremes Extremes => GetExtremes();
-    public SeriesCollection GraphSeriesCollection => GraphCalcHelper.CalcGraphs(Total, HistoryHelper.GetFirstFromSeason(Uuid).Amount, StartTimestamp, Duration, BufferDays, RemainingDays, Uuid);
+    public SeriesCollection GraphSeriesCollection => GraphCalcHelper.CalcGraphs(Total, HistoryHelper.GetFirstFromSeason(Uuid)?.Amount ?? 0, StartTimestamp, Duration, BufferDays, RemainingDays, Uuid);
 
     
     public string NextUnlockName => GetNextUnlock()?.Name ?? "None";

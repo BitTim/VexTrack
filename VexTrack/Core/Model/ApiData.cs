@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using VexTrack.Core.Helper;
 using VexTrack.Core.Model.Game;
 using VexTrack.Core.Model.Game.Agent;
 using VexTrack.Core.Model.Game.Cosmetic;
@@ -27,6 +29,10 @@ public static class ApiData
     public static List<WeaponSkin> WeaponSkins;
     public static List<WeaponSkinChroma> WeaponSkinChromas;
     public static List<WeaponSkinLevel> WeaponSkinLevels;
+
+    public static ContractTemplate ActiveSeasonTemplate => ContractTemplates?.Find(ct =>
+        ct.Type == "Season" && ct.EndTimestamp > TimeHelper.NowTimestamp &&
+        ct.StartTimestamp <= TimeHelper.NowTimestamp);
     
     public static void SetData(string version, List<Map> maps, List<GameMode> gameModes, List<Agent> agents,
         List<AgentRole> agentRoles, List<ContractTemplate> contractTemplates, List<GearTemplate> gearTemplates,

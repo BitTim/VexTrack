@@ -123,19 +123,35 @@ public static class UserDataV1
             
 			// Convert old xp tracking for seasons to newer one similar to contracts
 			var goals = new List<Goal>();
-			var templates = Model.ApiData.ContractTemplates.Find(ct => ct.Type == "Season" && ct.Uuid == sUuid).Goals;
+			var templates = Model.ApiData.ContractTemplates.Find(ct => ct.Type == "Season" && ct.Uuid == sUuid)?.Goals;
 			var goalIdx = 0;
-			
-			foreach (var template in templates)
-			{
-				var collected = 0;
 
-				if (goalIdx == activeBpLevel - 1) collected = cXp;
-				if (goalIdx < activeBpLevel - 1) collected = template.XpTotal;
-				goalIdx++;
+			if (templates != null)
+			{
+				foreach (var template in templates)
+				{
+					var collected = 0;
+
+					if (goalIdx == activeBpLevel - 1) collected = cXp;
+					if (goalIdx < activeBpLevel - 1) collected = template.XpTotal;
+					goalIdx++;
 				
-				var goal = new Goal(template, Guid.NewGuid().ToString(), collected);
-				goals.Add(goal);
+					var goal = new Goal(template, Guid.NewGuid().ToString(), collected);
+					goals.Add(goal);
+				}
+			}
+			else
+			{
+				var minTotal = CalcHelper.CalcMaxForSeason(false);
+				var maxTotal = CalcHelper.CalcMaxForSeason(true);
+				var epilogueTotal = maxTotal - minTotal;
+
+				var collectedPool = HistoryHelper.CalcCollectedFromSeason("", history);
+				var normalCollected = collectedPool > minTotal ? minTotal : collectedPool;
+				var epilogueCollected = collectedPool - normalCollected;
+				
+                goals.Add(new Goal(new GoalTemplate(new List<Reward>(), false, false, 0, minTotal, false, 0, false, name + " Battlepass"), Guid.NewGuid().ToString(), normalCollected));
+                goals.Add(new Goal(new GoalTemplate(new List<Reward>(), false, false, 0, epilogueTotal, false, 0, false, name + " Epilogue"), Guid.NewGuid().ToString(), epilogueCollected));
 			}
 			
 			sUuid ??= Guid.NewGuid().ToString();
@@ -208,7 +224,7 @@ public static class UserDataV1
 				if (collected > total) collected = total;
 
 				goalUuid ??= Guid.NewGuid().ToString();
-				var goalTemplate = new GoalTemplate(new List<Reward>{new("", "", 0, false)}, false, 0, total, false, 0);
+				var goalTemplate = new GoalTemplate(new List<Reward>{new("", "", 0, false)}, false, false, 0, total, false, 0);
 				var goalObj = new Goal(goalTemplate, goalUuid, collected);
 
 				if (!convertToGrouped)

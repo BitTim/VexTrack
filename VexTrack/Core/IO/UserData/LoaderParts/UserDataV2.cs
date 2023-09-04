@@ -31,7 +31,37 @@ public static class UserDataV2
 			    var goalUuid = goal.Value<string>("uuid");
 			    var collected = goal.Value<int>("collected");
 
-			    var template = templates[goalIdx++];
+			    GoalTemplate template;
+			    var templateObj = goal.Value<JObject>("template");
+			    if (templateObj == null)
+			    {
+					template = templates?[goalIdx++];
+			    }
+			    else
+			    {
+				    List<Reward> rewards = new();
+				    foreach (var reward in templateObj.Value<JArray>("rewards") ?? new JArray())
+				    {
+					    var cosmeticUuid = reward.Value<string>("cosmeticUuid");
+					    var cosmeticType = reward.Value<string>("cosmeticType");
+					    var amount = reward.Value<int>("amount");
+					    var isPremium = reward.Value<bool>("isPremium");
+                    
+					    rewards.Add(new Reward(cosmeticUuid, cosmeticType, amount, isPremium));
+				    }
+                    
+				    var canBuyDough = templateObj.Value<bool>("canBuyDough");
+				    var doughCost = templateObj.Value<int>("doughCost");
+				    var xpTotal = templateObj.Value<int>("xpTotal");
+				    var canBuyVp = templateObj.Value<bool>("canBuyVp");
+				    var vpCost = templateObj.Value<int>("vpCost");
+				    var isEpilogue = templateObj.Value<bool>("isEpilogue");
+				    var nameOverride = templateObj.Value<string>("nameOverride");
+				    
+				    template = new GoalTemplate(rewards, false, canBuyDough, doughCost, xpTotal, canBuyVp, vpCost, isEpilogue, nameOverride);
+			    }
+
+			    template ??= new GoalTemplate(new List<Reward>(), false, false, 0, 0, false, 0, false, "Error");
 			    goals.Add(new Goal(template, goalUuid, collected));
 		    }
 
@@ -140,7 +170,7 @@ public static class UserDataV2
 				
 			    goalUuid ??= Guid.NewGuid().ToString();
 
-			    var goalTemplate = new GoalTemplate( new List<Reward> {new("", "", 0, false)}, false, 0, total, false, 0);
+			    var goalTemplate = new GoalTemplate( new List<Reward> {new("", "", 0, false)}, false, false, 0, total, false, 0);
 			    goalTemplates.Add(goalTemplate);
 			    goals.Add(new Goal(goalTemplate, goalUuid, collected));
 		    }

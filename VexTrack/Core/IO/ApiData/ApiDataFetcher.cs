@@ -431,7 +431,7 @@ public static class ApiDataFetcher
                     var rewardAmount = reward.Value<int>("amount");
 
                     var rewardObj = new Reward(rewardUuid, rewardType, rewardAmount, true);
-                    goals.Add(new GoalTemplate(new List<Reward> {rewardObj}, canBuyDough, doughCost, xp, canBuyVp, vpCost, isEpilogue));
+                    goals.Add(new GoalTemplate(new List<Reward> {rewardObj}, true, canBuyDough, doughCost, xp, canBuyVp, vpCost, isEpilogue));
                 }
                 
                 var freeRewards = chapter["freeRewards"];

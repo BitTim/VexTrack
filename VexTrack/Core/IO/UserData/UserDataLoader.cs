@@ -10,19 +10,20 @@ public static class UserDataLoader
 {
     internal static void LoadUserData()
     {
-        if (!File.Exists(Constants.DataPath) || File.ReadAllText(Constants.DataPath) == "")
+        var version = "empty";
+        JObject jo = null;
+        
+        if (File.Exists(Constants.DataPath) && !string.IsNullOrEmpty(File.ReadAllText(Constants.DataPath))) // TODO fix init
         {
-            Model.UserData.InitData();
-            Model.UserData.CreateDataInitPopup();
-            return;
+            var rawJson = File.ReadAllText(Constants.DataPath);
+            jo = JObject.Parse(rawJson);
+            
+            version = jo.Value<string>("version");
+            if (string.IsNullOrEmpty(version)) version = "v1";
         }
 
-        var rawJson = File.ReadAllText(Constants.DataPath);
-        var jo = JObject.Parse(rawJson);
-
-        var version = jo.Value<string>("version");
-        if (string.IsNullOrEmpty(version)) version = "v1";
-
+        if (jo == null) version = "empty";
+        
         var reSave = false;
 			
         var streak = 0;
@@ -33,6 +34,11 @@ public static class UserDataLoader
 
         switch (version)
         {
+            case "empty":
+                Model.UserData.CreateDataInitPopup();
+                reSave = true;
+                break;
+            
             case "v1":
                 (streak, lastStreakUpdateTimestamp) = UserDataV1.LoadStreak(jo);
                 (seasons, history) = UserDataV1.LoadSeasonsAndHistory(jo);
@@ -47,8 +53,6 @@ public static class UserDataLoader
                 contracts = UserDataV2.LoadContracts(jo);
                 break;
         }
-
-        if (seasons.Count == 0) Model.UserData.CreateDataInitPopup();
 
         Model.UserData.SetData(streak, lastStreakUpdateTimestamp, contracts, seasons, history);
         if(reSave) UserDataSaver.SaveUserData(streak, lastStreakUpdateTimestamp, contracts, seasons, history); // Save in new format

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using VexTrack.Core.Model;
+using VexTrack.Core.Model.Game.Templates;
 
 namespace VexTrack.Core.Helper;
 
@@ -18,13 +19,10 @@ public static class CalcHelper
 		return ret;
 	}
 
-	public static int CalcTotalCollected(int activeLevel, int cxp)
+	public static int CalcTotalCollected(int activeLevel, int cxp, List<GoalTemplate> goals)
 	{
-		int collected;
-		if (activeLevel - 1 <= Constants.BattlepassLevels) collected = CumulativeSum(activeLevel - 1, Constants.Level2Offset, Constants.XpPerLevel) + cxp;
-		else collected = CalcMaxForSeason(false) + cxp + (activeLevel - Constants.BattlepassLevels - 1) * Constants.XpPerEpilogueLevel;
-
-		return collected;
+		if (activeLevel - 1 > goals.Count) return ApiData.ActiveSeasonTemplate.XpTotal + cxp;
+		return ApiData.ActiveSeasonTemplate.Goals.GetRange(0, activeLevel - 2 < 2 ? 2 : activeLevel - 2).Sum(g => g.XpTotal) + cxp;
 	}
 		
 	public static List<int> CalcCollectedPerDay(long startTimestamp, List<HistoryEntry> history, int duration)
@@ -54,18 +52,13 @@ public static class CalcHelper
 		return dailyAmounts;
 	}
 		
-	public static int CalcDaysFinished(bool epilogue)
+	public static int CalcDaysFinished(int total, int duration, int remainingDays, int collected)
 	{
 		var daysFinished = 0;
-
-		var total = CalcMaxForSeason(epilogue);
-		var duration = UserData.CurrentSeasonData.Duration;
-		var remainingDays = UserData.CurrentSeasonData.RemainingDays;
 		var daysPassed = duration - remainingDays;
-		var totalCollected = UserData.CurrentSeasonData.Collected;
-		var average = (int)MathF.Round((float)totalCollected / (daysPassed + 1));
+		var average = (int)MathF.Round((float)collected / (daysPassed + 1));
 
-		var val = totalCollected;
+		var val = collected;
 		for (var i = 0; i < remainingDays + 1; i++)
 		{
 			val += average;

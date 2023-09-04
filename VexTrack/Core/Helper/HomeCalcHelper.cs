@@ -11,6 +11,7 @@ public static class HomeCalcHelper
 		DailyData ret = new();
 
 		var currentSeasonData = UserData.CurrentSeasonData;
+		if (currentSeasonData == null) return ret;
 
 		var idealRemainingDays = currentSeasonData.RemainingDays - currentSeasonData.BufferDays + 1;
 		if (idealRemainingDays > -currentSeasonData.BufferDays && idealRemainingDays <= 0) idealRemainingDays = 1;

@@ -21,7 +21,7 @@ public abstract class UserData
 		(Streak, LastStreakUpdateTimestamp, Contracts, Seasons, History) = (streak, lastStreakUpdateTimestamp, contracts, seasons, history);
 	}
 
-	public static Season CurrentSeasonData => Seasons?.First();
+	public static Season CurrentSeasonData => Seasons?.FirstOrDefault();
 		
 		
 
@@ -33,15 +33,6 @@ public abstract class UserData
 	{
 		(Streak, LastStreakUpdateTimestamp, Contracts, Seasons, History) = (streak, lastStreakUpdateTimestamp ,contracts, seasons, history);
 		Recalculate();
-	}
-
-	internal static void InitData()
-	{
-		List<Contract> contracts = new();
-		List<Season> seasons = new();
-		List<HistoryGroup> history = new();
-
-		SetData(0, TimeHelper.TodayTimestamp, contracts, seasons, history);
 	}
 		
 		
@@ -59,6 +50,9 @@ public abstract class UserData
 		var completedSeasonGoals = (from season in Seasons from goal in season.Goals where goal.Collected >= goal.Total select goal.Uuid).ToList();
 		var completedContractGoals = (from contract in Contracts from goal in contract.Goals where goal.Collected >= goal.Total select goal.Uuid).ToList();
 
+		// Cancel when no current Season data is available
+		if (CurrentSeasonData == null) return;
+		
 		//Calculate XP delta
 		var collectedXp = CurrentSeasonData.Collected;
 		var prevCollectedXp = CurrentSeasonData.Goals.Sum(g => g.Collected);
@@ -129,7 +123,12 @@ public abstract class UserData
 
 	public static void ResetData()
 	{
-		InitData();
+		Streak = 0;
+		LastStreakUpdateTimestamp = 0;
+		Contracts = new List<Contract>();
+		Seasons = new List<Season>();
+		History = new List<HistoryGroup>();
+		
 		UserDataSaver.SaveUserData(Streak, LastStreakUpdateTimestamp, Contracts, Seasons, History);
 		UserDataLoader.LoadUserData();
 		CallUpdate();
@@ -217,10 +216,10 @@ public abstract class UserData
 
 
 
-	public static void AddSeason(Season data)
+	public static void AddSeason(Season data, bool skipUpdate = false)
 	{
-		Seasons.Add(data);
-		CallUpdate();
+		Seasons.Insert(0, data);
+		if(!skipUpdate) CallUpdate();
 	}
 
 	public static void EndSeason(string uuid)

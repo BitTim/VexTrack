@@ -183,8 +183,8 @@ class HomeViewModel : ObservableObject
 	}
 
 	public string Status => GetStatus();
-	public int BufferDays => UserData.CurrentSeasonData.BufferDays;
-	public int BufferDaysPosition => UserData.CurrentSeasonData.Duration - BufferDays;
+	public int BufferDays => UserData.CurrentSeasonData?.BufferDays ?? 0;
+	public int BufferDaysPosition => UserData.CurrentSeasonData?.Duration ?? 1 - BufferDays;
 	public List<decimal> LogicalStops => CalcHelper.CalcLogicalStops(Segments, true);
 	public List<decimal> VisualStops => CalcHelper.CalcVisualStops(Segments, true);
 
@@ -210,16 +210,16 @@ class HomeViewModel : ObservableObject
 		Total = data.Total;
 		Progress = data.Progress;
 		Streak = data.Streak;
-		Segments = data.Segments;
+		Segments = data.Segments ?? new List<int>();
 
 		StreakColor = UserData.LastStreakUpdateTimestamp == TimeHelper.TodayTimestamp
 			? SettingsHelper.Data.Theme.AccentBrush
 			: SettingsHelper.Data.Theme.ShadeBrush;
 
-		SeasonName = UserData.CurrentSeasonData.Name;
+		SeasonName = UserData.CurrentSeasonData?.Name ?? "No season active";
 		(DeviationIdeal, DeviationDaily) = CalcGraph();
-		DaysRemaining = UserData.CurrentSeasonData.RemainingDays;
-		DaysFinished = CalcHelper.CalcDaysFinished(true);
+		DaysRemaining = UserData.CurrentSeasonData?.RemainingDays ?? 1;
+		DaysFinished = CalcHelper.CalcDaysFinished(Total, UserData.CurrentSeasonData?.Duration ?? 1, DaysRemaining, Collected);
 
 		OnAddClicked = new RelayCommand(_ =>
 		{
@@ -232,6 +232,8 @@ class HomeViewModel : ObservableObject
 		
 	private string GetStatus()
 	{
+		if (Segments.Count < 1) return "";
+		
 		if (Collected < Segments[0]) return "Warning";
 		if (Collected >= Segments[0] && Collected < Total) return "Done";
 		return Collected >= Total ? "DoneAll" : "";
@@ -240,6 +242,8 @@ class HomeViewModel : ObservableObject
 	private (int, int) CalcGraph()
 	{
 		var currSeason = UserData.CurrentSeasonData;
+		if (currSeason == null) return (0, 0);
+		
 		var today = TimeHelper.TodayDate;
 		var dayIndex = (today - TimeHelper.TimestampToDate(currSeason.StartTimestamp)).Days;
 			

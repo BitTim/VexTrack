@@ -56,12 +56,31 @@ public static class UserDataSaver
 			};
 			
 			JArray goals = new();
-			foreach (var goalObj in season.Goals.Select(goal => new JObject()
-			         {
-				         { "uuid", goal.Uuid },
-				         { "collected", goal.Collected }
-			         }))
+			foreach (var goal in season.Goals)
 			{
+				JObject goalObj = new()
+				{
+					{ "uuid", goal.Uuid },
+					{ "collected", goal.Collected}
+				};
+
+				JObject template = null;
+				
+				if (!goal.Template.IsFromApi)
+				{
+					template = new JObject()
+					{
+						{ "canBuyDough", goal.Template.CanBuyDough },
+						{ "doughCost", goal.Template.DoughCost },
+						{ "xpTotal", goal.Template.XpTotal },
+						{ "canBuyVp", goal.Template.CanBuyVp },
+						{ "vpCost", goal.Template.VpCost },
+						{ "isEpilogue", goal.Template.IsEpilogue },
+						{ "nameOverride", goal.Template.NameOverride }
+					};
+				}
+				
+				goalObj.Add("template", template);
 				goals.Add(goalObj);
 			}
 			

@@ -135,7 +135,7 @@ class MainViewModel : ObservableObject
 		SettingsHelper.LoadSettings();
 		
 		var loadError = ApiDataLoader.LoadApiData();
-		var fetchTask = ApiDataFetcher.FetchApiDataAsync();
+		var fetchTask = ApiDataFetcher.FetchApiDataAsync(true);
 		fetchTask.Wait();
 		
 		var fetchError = fetchTask.Result;

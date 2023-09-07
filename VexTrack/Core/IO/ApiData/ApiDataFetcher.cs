@@ -22,7 +22,7 @@ public static class ApiDataFetcher
 {
     private static ApiFetchPopupViewModel _popup;
     
-    internal static async Task<int> FetchApiDataAsync()
+    internal static async Task<int> FetchApiDataAsync(bool noImages)
     {
         _popup = CreateApiFetchPopup();
         _popup.TotalFetchSteps = 11; // Update when more fetch steps are added
@@ -43,7 +43,7 @@ public static class ApiDataFetcher
         
         // Fetch Maps
 
-        var maps = await FetchMaps(2);
+        var maps = await FetchMaps(2, noImages);
         if (maps.Count == 0)
         {
             RestoreAssetsBackup();
@@ -53,7 +53,7 @@ public static class ApiDataFetcher
 
         // Fetch GameModes
 
-        var gameModes = await FetchGameModes(3);
+        var gameModes = await FetchGameModes(3, noImages);
         if (gameModes.Count == 0)
         {
             RestoreAssetsBackup();
@@ -63,7 +63,7 @@ public static class ApiDataFetcher
 
         // Fetch Agents and AgentRoles
 
-        var (agents, agentRoles) = await FetchAgentData(4);
+        var (agents, agentRoles) = await FetchAgentData(4, noImages);
         if (agents.Count == 0 || agentRoles.Count == 0)
         {
             RestoreAssetsBackup();
@@ -73,7 +73,7 @@ public static class ApiDataFetcher
 
         // Fetch Contracts and Gears
 
-        var (contracts, gears) = FetchContractsAndGears(5);
+        var (contracts, gears) = FetchContractsAndGears(5, noImages);
         if (contracts.Count == 0 || gears.Count == 0)
         {
             RestoreAssetsBackup();
@@ -83,7 +83,7 @@ public static class ApiDataFetcher
 
         // Fetch Buddies
 
-        var buddies = await FetchBuddies(6);
+        var buddies = await FetchBuddies(6, noImages);
         if (buddies.Count == 0)
         {
             RestoreAssetsBackup();
@@ -93,7 +93,7 @@ public static class ApiDataFetcher
 
         // Fetch Currencies
 
-        var currencies = await FetchCurrencies(7);
+        var currencies = await FetchCurrencies(7, noImages);
         if (currencies.Count == 0)
         {
             RestoreAssetsBackup();
@@ -103,7 +103,7 @@ public static class ApiDataFetcher
 
         // Fetch Player Cards
 
-        var playerCards = await FetchPlayerCards(8);
+        var playerCards = await FetchPlayerCards(8, noImages);
         if (playerCards.Count == 0)
         {
             RestoreAssetsBackup();
@@ -113,7 +113,7 @@ public static class ApiDataFetcher
 
         // Fetch Player Titles
 
-        var playerTitles = FetchPlayerTitles(9);
+        var playerTitles = FetchPlayerTitles(9, noImages);
         if (playerTitles.Count == 0)
         {
             RestoreAssetsBackup();
@@ -123,7 +123,7 @@ public static class ApiDataFetcher
 
         // Fetch Sprays
 
-        var sprays = await FetchSprays(10);
+        var sprays = await FetchSprays(10, noImages);
         if (sprays.Count == 0)
         {
             RestoreAssetsBackup();
@@ -133,7 +133,7 @@ public static class ApiDataFetcher
 
         // Fetch Weapons, Weapon Skins, Weapon Skin Chromas and Weapon Skin Levels
 
-        var (weapons, weaponSkins, weaponSkinChromas, weaponSkinLevels) = await FetchWeaponData(11);
+        var (weapons, weaponSkins, weaponSkinChromas, weaponSkinLevels) = await FetchWeaponData(11, noImages);
         if (weapons.Count == 0 || weaponSkins.Count == 0 || weaponSkinChromas.Count == 0 || weaponSkinLevels.Count == 0)
         {
             RestoreAssetsBackup();
@@ -202,7 +202,7 @@ public static class ApiDataFetcher
     //  Maps
     // ================================
     
-    private static async Task<List<Map>> FetchMaps(int idx)
+    private static async Task<List<Map>> FetchMaps(int idx, bool noImages)
     {
         SetNewFetchStep("Maps", idx);
         List<Map> maps = new();
@@ -225,8 +225,8 @@ public static class ApiDataFetcher
             var type = mapUrl.Contains("/Game/Maps/HURM/") ? "tdm" : "regular";
             if (name == "The Range") type = "custom";
 
-            var listViewImagePath = await ApiHelper.DownloadImage(map.Value<string>("listViewIcon"), Constants.MapListViewImageFolder, uuid);
-            var splashImagePath = await ApiHelper.DownloadImage(map.Value<string>("splash"), Constants.MapSplashImageFolder, uuid);
+            var listViewImagePath = noImages ? "" : await ApiHelper.DownloadImage(map.Value<string>("listViewIcon"), Constants.MapListViewImageFolder, uuid);
+            var splashImagePath = noImages ? "" : await ApiHelper.DownloadImage(map.Value<string>("splash"), Constants.MapSplashImageFolder, uuid);
             
             maps.Add(new Map(uuid, name, type, listViewImagePath, splashImagePath));
         }
@@ -242,7 +242,7 @@ public static class ApiDataFetcher
     //  GameModes
     // ================================
     
-    private static async Task<List<GameMode>> FetchGameModes(int idx)
+    private static async Task<List<GameMode>> FetchGameModes(int idx, bool noImages)
     {
         SetNewFetchStep("Game modes", idx);
         List<GameMode> gameModes = new();
@@ -261,7 +261,7 @@ public static class ApiDataFetcher
             ++_popup.CurrentStepItem;
             _popup.CurrentStepItemLabel = name;
             
-            var iconPath = await ApiHelper.DownloadImage(gameMode.Value<string>("displayIcon"), Constants.GameModeIconFolder, uuid);
+            var iconPath = noImages ? "" : await ApiHelper.DownloadImage(gameMode.Value<string>("displayIcon"), Constants.GameModeIconFolder, uuid);
 
             var mapType = name == "Team Deathmatch" ? "tdm" : "regular";
             gameModes.Add(new GameMode(uuid, name, mapType, name == "Deathmatch" ? "Placement" : "Score", iconPath));
@@ -291,7 +291,7 @@ public static class ApiDataFetcher
     //  Agents
     // ================================
 
-    private static async Task<(List<Agent>, List<AgentRole>)> FetchAgentData(int idx)
+    private static async Task<(List<Agent>, List<AgentRole>)> FetchAgentData(int idx, bool noImages)
     {
         SetNewFetchStep("Agents", idx);
         List<Agent> agents = new();
@@ -312,10 +312,10 @@ public static class ApiDataFetcher
             ++_popup.CurrentStepItem;
             _popup.CurrentStepItemLabel = name;
             
-            var iconPath = await ApiHelper.DownloadImage(agent.Value<string>("displayIcon"), Constants.AgentIconFolder, uuid);
-            var portraitPath = await ApiHelper.DownloadImage(agent.Value<string>("fullPortrait"), Constants.AgentPortraitFolder, uuid);
-            var killFeedPortraitPath = await ApiHelper.DownloadImage(agent.Value<string>("killfeedPortrait"), Constants.AgentKillFeedPortraitFolder, uuid);
-            var backgroundPath = await ApiHelper.DownloadImage(agent.Value<string>("background"), Constants.AgentBackgroundFolder, uuid);
+            var iconPath = noImages ? "" : await ApiHelper.DownloadImage(agent.Value<string>("displayIcon"), Constants.AgentIconFolder, uuid);
+            var portraitPath = noImages ? "" : await ApiHelper.DownloadImage(agent.Value<string>("fullPortrait"), Constants.AgentPortraitFolder, uuid);
+            var killFeedPortraitPath = noImages ? "" : await ApiHelper.DownloadImage(agent.Value<string>("killfeedPortrait"), Constants.AgentKillFeedPortraitFolder, uuid);
+            var backgroundPath = noImages ? "" : await ApiHelper.DownloadImage(agent.Value<string>("background"), Constants.AgentBackgroundFolder, uuid);
 
             var isBaseContent = agent.Value<bool>("isBaseContent");
 
@@ -339,7 +339,7 @@ public static class ApiDataFetcher
             {
                 var roleName = role.Value<string>("displayName");
                 var roleDescription = role.Value<string>("description");
-                var roleIconPath = await ApiHelper.DownloadImage(role.Value<string>("displayIcon"), Constants.AgentRoleIconFolder, roleUuid);
+                var roleIconPath = noImages ? "" : await ApiHelper.DownloadImage(role.Value<string>("displayIcon"), Constants.AgentRoleIconFolder, roleUuid);
                 
                 agentRoles.Add(new AgentRole(roleUuid, roleName, roleDescription, roleIconPath));
             }
@@ -356,7 +356,7 @@ public static class ApiDataFetcher
                 var abilityDescription = ability.Value<string>("description");
                 var abilitySlot = ability.Value<string>("slot");
                 
-                var abilityIconPath = await ApiHelper.DownloadImage(ability.Value<string>("displayIcon"), Constants.AgentAbilityIconFolder, uuid + "-" + abilitySlot);
+                var abilityIconPath = noImages ? "" : await ApiHelper.DownloadImage(ability.Value<string>("displayIcon"), Constants.AgentAbilityIconFolder, uuid + "-" + abilitySlot);
                 abilities.Add(new AgentAbility(abilityName, abilityDescription, abilitySlot, abilityIconPath));
             }
             
@@ -373,7 +373,7 @@ public static class ApiDataFetcher
     //  Contracts and Gears
     // ================================
 
-    private static (List<ContractTemplate>, List<GearTemplate>) FetchContractsAndGears(int idx)
+    private static (List<ContractTemplate>, List<GearTemplate>) FetchContractsAndGears(int idx, bool noImages)
     {
         SetNewFetchStep("Contracts / Gears", idx);
         List<ContractTemplate> contracts = new();
@@ -488,7 +488,7 @@ public static class ApiDataFetcher
     //  Buddies
     // ================================
 
-    private static async Task<List<Buddy>> FetchBuddies(int idx)
+    private static async Task<List<Buddy>> FetchBuddies(int idx, bool noImages)
     {
         SetNewFetchStep("Buddies", idx);
         List<Buddy> buddies = new();
@@ -508,7 +508,7 @@ public static class ApiDataFetcher
             ++_popup.CurrentStepItem;
             _popup.CurrentStepItemLabel = name;
             
-            var iconPath = await ApiHelper.DownloadImage(buddy.Value<string>("displayIcon"), Constants.BuddyIconFolder, uuid);
+            var iconPath = noImages ? "" : await ApiHelper.DownloadImage(buddy.Value<string>("displayIcon"), Constants.BuddyIconFolder, uuid);
             buddies.Add(new Buddy(uuid, levelUuid, name, iconPath));
         }
 
@@ -521,7 +521,7 @@ public static class ApiDataFetcher
     //  Currencies
     // ================================
     
-    private static async Task<List<Currency>> FetchCurrencies(int idx)
+    private static async Task<List<Currency>> FetchCurrencies(int idx, bool noImages)
     {
         SetNewFetchStep("Currencies", idx);
         List<Currency> currencies = new();
@@ -540,8 +540,8 @@ public static class ApiDataFetcher
             ++_popup.CurrentStepItem;
             _popup.CurrentStepItemLabel = name;
             
-            var iconPath = await ApiHelper.DownloadImage(currency.Value<string>("displayIcon"), Constants.CurrencyIconFolder, uuid);
-            var largeIconPath = await ApiHelper.DownloadImage(currency.Value<string>("largeIcon"), Constants.CurrencyLargeIconFolder, uuid);
+            var iconPath = noImages ? "" : await ApiHelper.DownloadImage(currency.Value<string>("displayIcon"), Constants.CurrencyIconFolder, uuid);
+            var largeIconPath = noImages ? "" : await ApiHelper.DownloadImage(currency.Value<string>("largeIcon"), Constants.CurrencyLargeIconFolder, uuid);
             
             currencies.Add(new Currency(uuid, name, iconPath, largeIconPath));
         }
@@ -555,7 +555,7 @@ public static class ApiDataFetcher
     //  Player Cards
     // ================================
 
-    private static async Task<List<PlayerCard>> FetchPlayerCards(int idx)
+    private static async Task<List<PlayerCard>> FetchPlayerCards(int idx, bool noImages)
     {
         SetNewFetchStep("Player Cards", idx);
         List<PlayerCard> playerCards = new();
@@ -574,10 +574,10 @@ public static class ApiDataFetcher
             ++_popup.CurrentStepItem;
             _popup.CurrentStepItemLabel = name;
             
-            var iconPath = await ApiHelper.DownloadImage(playerCard.Value<string>("displayIcon"), Constants.PlayerCardIconFolder, uuid);
-            var smallArtPath = await ApiHelper.DownloadImage(playerCard.Value<string>("smallArt"), Constants.PlayerCardSmallArtFolder, uuid);
-            var wideArtPath = await ApiHelper.DownloadImage(playerCard.Value<string>("wideArt"), Constants.PlayerCardWideArtFolder, uuid);
-            var largeArtPath = await ApiHelper.DownloadImage(playerCard.Value<string>("largeArt"), Constants.PlayerCardLargeArtFolder, uuid);
+            var iconPath = noImages ? "" : await ApiHelper.DownloadImage(playerCard.Value<string>("displayIcon"), Constants.PlayerCardIconFolder, uuid);
+            var smallArtPath = noImages ? "" : await ApiHelper.DownloadImage(playerCard.Value<string>("smallArt"), Constants.PlayerCardSmallArtFolder, uuid);
+            var wideArtPath = noImages ? "" : await ApiHelper.DownloadImage(playerCard.Value<string>("wideArt"), Constants.PlayerCardWideArtFolder, uuid);
+            var largeArtPath = noImages ? "" : await ApiHelper.DownloadImage(playerCard.Value<string>("largeArt"), Constants.PlayerCardLargeArtFolder, uuid);
             
             playerCards.Add(new PlayerCard(uuid, name, iconPath, smallArtPath, wideArtPath, largeArtPath));
         }
@@ -591,7 +591,7 @@ public static class ApiDataFetcher
     //  Player Titles
     // ================================
 
-    private static List<PlayerTitle> FetchPlayerTitles(int idx)
+    private static List<PlayerTitle> FetchPlayerTitles(int idx, bool noImages)
     {
         SetNewFetchStep("PLayer Titles", idx);
         List<PlayerTitle> playerTitles = new();
@@ -623,7 +623,7 @@ public static class ApiDataFetcher
     //  Sprays
     // ================================
 
-    private static async Task<List<Spray>> FetchSprays(int idx)
+    private static async Task<List<Spray>> FetchSprays(int idx, bool noImages)
     {
         SetNewFetchStep("Sprays", idx);
         List<Spray> sprays = new();
@@ -642,9 +642,9 @@ public static class ApiDataFetcher
             ++_popup.CurrentStepItem;
             _popup.CurrentStepItemLabel = name;
             
-            var iconPath = await ApiHelper.DownloadImage(spray.Value<string>("displayIcon"), Constants.SprayIconFolder, uuid);
-            var fullIconPath = await ApiHelper.DownloadImage(spray.Value<string>("fullTransparentIcon"), Constants.SprayFullIconFolder, uuid);
-            var animationPath = await ApiHelper.DownloadImage(spray.Value<string>("animationGif"), Constants.SprayAnimationFolder, uuid);
+            var iconPath = noImages ? "" : await ApiHelper.DownloadImage(spray.Value<string>("displayIcon"), Constants.SprayIconFolder, uuid);
+            var fullIconPath = noImages ? "" : await ApiHelper.DownloadImage(spray.Value<string>("fullTransparentIcon"), Constants.SprayFullIconFolder, uuid);
+            var animationPath = noImages ? "" : await ApiHelper.DownloadImage(spray.Value<string>("animationGif"), Constants.SprayAnimationFolder, uuid);
             
             sprays.Add(new Spray(uuid, name, iconPath, fullIconPath, animationPath));
         }
@@ -658,7 +658,7 @@ public static class ApiDataFetcher
     //  Weapons and Skins
     // ================================
     
-    private static async Task<(List<Weapon> weapons, List<WeaponSkin> weaponSkins, List<WeaponSkinChroma> weaponSkinChromas, List<WeaponSkinLevel> weaponSkinLevels)> FetchWeaponData(int idx)
+    private static async Task<(List<Weapon> weapons, List<WeaponSkin> weaponSkins, List<WeaponSkinChroma> weaponSkinChromas, List<WeaponSkinLevel> weaponSkinLevels)> FetchWeaponData(int idx, bool noImages)
     {
         SetNewFetchStep("Weapons", idx);
         List<Weapon> weapons = new();
@@ -683,8 +683,8 @@ public static class ApiDataFetcher
             
             var category = weapon.Value<string>("category").Replace("EEquippableCategory::", ""); // Convert class names to readable names
             var defaultSkinUuid = weapon.Value<string>("defaultSkinUuid");
-            var iconPath = await ApiHelper.DownloadImage(weapon.Value<string>("displayIcon"), Constants.WeaponIconPath, uuid);
-            var killStreamIconPath = await ApiHelper.DownloadImage(weapon.Value<string>("killStreamIcon"), Constants.WeaponKillStreamIconPath, uuid);
+            var iconPath = noImages ? "" : await ApiHelper.DownloadImage(weapon.Value<string>("displayIcon"), Constants.WeaponIconPath, uuid);
+            var killStreamIconPath = noImages ? "" : await ApiHelper.DownloadImage(weapon.Value<string>("killStreamIcon"), Constants.WeaponKillStreamIconPath, uuid);
 
             var shopCost = -1;
             var shopData = weapon.Value<JObject>("shopData");
@@ -769,8 +769,8 @@ public static class ApiDataFetcher
                 var skinName = rawSkin.Value<string>("displayName");
                 _popup.CurrentStepItemLabel = name + " / " + skinName;
                 
-                var skinIconPath = await ApiHelper.DownloadImage(rawSkin.Value<string>("displayIcon"), Constants.WeaponSkinIconPath, skinUuid);
-                var skinWallpaperPath = await ApiHelper.DownloadImage(rawSkin.Value<string>("wallpaper"), Constants.WeaponSkinWallpaperPath, skinUuid);
+                var skinIconPath = noImages ? "" : await ApiHelper.DownloadImage(rawSkin.Value<string>("displayIcon"), Constants.WeaponSkinIconPath, skinUuid);
+                var skinWallpaperPath = noImages ? "" : await ApiHelper.DownloadImage(rawSkin.Value<string>("wallpaper"), Constants.WeaponSkinWallpaperPath, skinUuid);
                 
                 // Skin Chromas
                 List<string> chromaUuids = new();
@@ -779,9 +779,9 @@ public static class ApiDataFetcher
                 {
                     var chromaUuid = rawChroma.Value<string>("uuid");
                     var chromaName = rawChroma.Value<string>("displayName");
-                    var chromaIconPath = await ApiHelper.DownloadImage(rawChroma.Value<string>("displayIcon"), Constants.WeaponSkinChromaIconPath, chromaUuid);
-                    var chromaFullRenderPath = await ApiHelper.DownloadImage(rawChroma.Value<string>("fullRender"), Constants.WeaponSkinChromaFullRenderPath, chromaUuid);
-                    var chromaSwatchPath = await ApiHelper.DownloadImage(rawChroma.Value<string>("swatch"), Constants.WeaponSkinChromaSwatchPath, chromaUuid);
+                    var chromaIconPath = noImages ? "" : await ApiHelper.DownloadImage(rawChroma.Value<string>("displayIcon"), Constants.WeaponSkinChromaIconPath, chromaUuid);
+                    var chromaFullRenderPath = noImages ? "" : await ApiHelper.DownloadImage(rawChroma.Value<string>("fullRender"), Constants.WeaponSkinChromaFullRenderPath, chromaUuid);
+                    var chromaSwatchPath = noImages ? "" : await ApiHelper.DownloadImage(rawChroma.Value<string>("swatch"), Constants.WeaponSkinChromaSwatchPath, chromaUuid);
                     
                     var chroma = new WeaponSkinChroma(chromaUuid, chromaName, skinUuid, chromaIconPath, chromaFullRenderPath, chromaSwatchPath);
                     chromaUuids.Add(chroma.Uuid);
@@ -796,7 +796,7 @@ public static class ApiDataFetcher
                     var levelUuid = rawLevel.Value<string>("uuid");
                     var levelName = rawLevel.Value<string>("displayName");
                     var levelLevelItem = (rawLevel.Value<string>("levelItem") ?? "").Replace("EEquippableSkinLevelItem::", ""); // Convert class names to readable names
-                    var levelIconPath = await ApiHelper.DownloadImage(rawLevel.Value<string>("displayIcon"), Constants.WeaponSkinLevelIconPath, levelUuid);
+                    var levelIconPath = noImages ? "" : await ApiHelper.DownloadImage(rawLevel.Value<string>("displayIcon"), Constants.WeaponSkinLevelIconPath, levelUuid);
 
                     var level = new WeaponSkinLevel(levelUuid, levelName, skinUuid, levelLevelItem, levelIconPath);
                     levelUuids.Add(level.Uuid);

@@ -97,7 +97,7 @@ public static class GraphCalcHelper
 		};
 
 		var dailyAmounts = CalcHelper.CalcCollectedPerDay(startDate, HistoryHelper.GetAllEntriesFromSeason(seasonUuid), duration);
-		var collected = dailyAmounts.GetRange(0, dayIndex).Sum(); //TODO: "Out of Bounds" since no new season is created at the moment. Fix with #69 
+		var collected = dailyAmounts.GetRange(0, dayIndex).Sum(); 
 
 		var offset = dayIndex - 1;
 		for (var i = offset; i < duration + 1; i++)

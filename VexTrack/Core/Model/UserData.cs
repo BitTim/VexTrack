@@ -197,23 +197,6 @@ public abstract class UserData
 		CallUpdate();
 	}
 
-	// TODO: Update for Contracts
-	public static void RemoveContract(string uuid)
-	{
-		Contracts.RemoveAt(Contracts.FindIndex(gg => gg.Uuid == uuid));
-		CallUpdate();
-	}
-
-	// TODO: Update for Contracts
-	public static void EditContract(string uuid, Contract data)
-	{
-		var index = Contracts.FindIndex(c => c.Uuid == uuid);
-		if (index < 0) return;
-			
-		Contracts[index] = data;
-		CallUpdate();
-	}
-
 
 
 	public static void AddSeason(Season data, bool skipUpdate = false)

@@ -146,7 +146,7 @@ public static class UserDataV1
 				var maxTotal = CalcHelper.CalcMaxForSeason(true);
 				var epilogueTotal = maxTotal - minTotal;
 
-				var collectedPool = HistoryHelper.CalcCollectedFromSeason("", history);
+				var collectedPool = HistoryHelper.CalcCollectedFromSeason(sUuid, history);
 				var normalCollected = collectedPool > minTotal ? minTotal : collectedPool;
 				var epilogueCollected = collectedPool - normalCollected;
 				

@@ -128,6 +128,7 @@ class EditableHistoryEntryPopupViewModel : BasePopupViewModel
 			OnPropertyChanged(nameof(SurrenderedWin));
 		}
 	}
+	private bool IsInit { get; set; }
 
 	public string Result => HistoryEntry.CalcHistoryResultFromScores(ScoreType, Score, EnemyScore, SurrenderedWin, SurrenderedLoss);
 	public List<Map> Maps => ApiData.Maps.Where(map => map.Type == GameMode?.MapType || map.Type == "all" || GameMode?.MapType == "all").ToList();
@@ -143,8 +144,8 @@ class EditableHistoryEntryPopupViewModel : BasePopupViewModel
 			if (ScoreType == "None") Score = -1;
 			if (ScoreType == "Score") Description = "";
 
-			if (EditMode) UserData.EditHistoryEntry(GroupUuid, new HistoryEntry(GroupUuid, Uuid, Time, GameMode, Amount, Map, Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss));
-			else UserData.AddHistoryEntry(new HistoryEntry(GroupUuid, Uuid, Time, GameMode, Amount, Map, Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss));
+			if (EditMode) UserData.EditHistoryEntry(GroupUuid, new HistoryEntry(GroupUuid, Uuid, Time, GameMode, Amount, Map, Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss, IsInit));
+			else UserData.AddHistoryEntry(new HistoryEntry(GroupUuid, Uuid, Time, GameMode, Amount, Map, Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss, IsInit));
 			Close();
 		});
 	}
@@ -171,6 +172,7 @@ class EditableHistoryEntryPopupViewModel : BasePopupViewModel
 		EnemyScore = 0;
 		SurrenderedWin = false;
 		SurrenderedLoss = false;
+		IsInit = false;
 
 		IsInitialized = true;
 	}
@@ -188,6 +190,7 @@ class EditableHistoryEntryPopupViewModel : BasePopupViewModel
 		Description = data.Description;
 		SurrenderedWin = data.SurrenderedWin;
 		SurrenderedLoss = data.SurrenderedLoss;
+		IsInit = data.IsInit;
 
 		IsInitialized = true;
 	}

@@ -16,13 +16,15 @@ public class HistoryEntry
     public int EnemyScore { get; set; }
     public bool SurrenderedWin { get; set; }
     public bool SurrenderedLoss { get; set; }
+    public bool IsInit { get; set; } // TODO: Implement ignoring of entries with this flag set in calculations
+    // TODO: Do this by having a startXP field on the season
 
 
     public string Title => GetTitle();
     public string Result => GetResult();
     
 
-    public HistoryEntry(string groupUuid, string uuid, long time, GameMode gamemode, int amount, Map map, string desc, int score, int enemyScore, bool surrenderedWin, bool surrenderedLoss)
+    public HistoryEntry(string groupUuid, string uuid, long time, GameMode gamemode, int amount, Map map, string desc, int score, int enemyScore, bool surrenderedWin, bool surrenderedLoss, bool isInit)
     {
 	    GroupUuid = groupUuid;
         Uuid = uuid;
@@ -35,6 +37,7 @@ public class HistoryEntry
         EnemyScore = enemyScore;
         SurrenderedWin = surrenderedWin;
         SurrenderedLoss = surrenderedLoss;
+        IsInit = isInit;
     }
 
 

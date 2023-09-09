@@ -111,7 +111,8 @@ public static class UserDataSaver
 		                 { "score", he.Score },
 		                 { "enemyScore", he.EnemyScore },
 		                 { "surrenderedWin", he.SurrenderedWin },
-		                 { "surrenderedLoss", he.SurrenderedLoss }
+		                 { "surrenderedLoss", he.SurrenderedLoss },
+		                 { "isInit", he.IsInit }
 			         }))
 			{
 				entries.Add(entryObj);

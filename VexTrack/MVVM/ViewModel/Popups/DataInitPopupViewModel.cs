@@ -81,7 +81,7 @@ class DataInitPopupViewModel : BasePopupViewModel
 			}
 			
 			UserData.AddSeason(new Season(ApiData.ActiveSeasonTemplate.Uuid, Name, ApiData.ActiveSeasonTemplate.StartTimestamp, EndTimestamp, goals));
-			UserData.AddHistoryEntry(new HistoryEntry("", Guid.NewGuid().ToString(), TimeHelper.TodayDate.ToUnixTimeSeconds(), ApiData.GameModes.Find(gm => gm.Name == "Custom"), totalCollectedXp, ApiData.Maps.Last(), "Initialization", -1, -1, false, false));
+			UserData.AddHistoryEntry(new HistoryEntry("", Guid.NewGuid().ToString(), TimeHelper.TodayDate.ToUnixTimeSeconds(), ApiData.GameModes.Find(gm => gm.Name == "Custom"), totalCollectedXp, ApiData.Maps.Last(), "Initialization", -1, -1, false, false, true));
 
 			Close();
 		});
@@ -96,8 +96,8 @@ class DataInitPopupViewModel : BasePopupViewModel
 
 	public void InitData()
 	{
-		Collected = 0;
 		ActiveLevel = 2;
+		Collected = 0;
 
 		IsInitialized = true;
 	}

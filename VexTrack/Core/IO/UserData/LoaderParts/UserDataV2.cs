@@ -96,6 +96,7 @@ public static class UserDataV2
     			var amount = historyEntry.Value<int>("amount");
     			var mapUuid = historyEntry.Value<string>("map");
     			var description = historyEntry.Value<string>("description");
+			    var isInit = historyEntry.Value<bool>("isInit");
                 
                 var map = Model.ApiData.Maps.Find(m => m.Uuid == mapUuid);
 
@@ -122,7 +123,7 @@ public static class UserDataV2
 
     			hUuid ??= Guid.NewGuid().ToString();
     			entries.Add(new HistoryEntry(gUuid, hUuid, time, gameMode, amount, map, desc, score, enemyScore,
-    				surrenderedWin, surrenderedLoss));
+    				surrenderedWin, surrenderedLoss, isInit));
     		}
 
     		var sortedEntries = entries.OrderByDescending(he => he.Time).ToList();

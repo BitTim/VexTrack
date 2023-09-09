@@ -84,7 +84,7 @@ public static class UserDataV1
 					history.Add(new HistoryGroup(sUuid, gUuid, date, new List<HistoryEntry>()));
 				}
 				
-				history.Find(hg => hg.Uuid == gUuid).Entries.Add(new HistoryEntry(gUuid, hUuid, time, gameMode, amount, map, desc, score, enemyScore, surrenderedWin, surrenderedLoss));
+				history.Find(hg => hg.Uuid == gUuid).Entries.Add(new HistoryEntry(gUuid, hUuid, time, gameMode, amount, map, desc, score, enemyScore, surrenderedWin, surrenderedLoss, desc == "Initialization"));
 			}
 
 			var startTimestamp = TimeHelper.IsolateTimestampDate(HistoryHelper.GetFirstFromSeason(sUuid, history).Time);

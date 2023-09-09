@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using VexTrack.Core.Helper;
 using VexTrack.Core.IO.UserData;
@@ -123,13 +124,7 @@ public abstract class UserData
 
 	public static void ResetData()
 	{
-		Streak = 0;
-		LastStreakUpdateTimestamp = 0;
-		Contracts = new List<Contract>();
-		Seasons = new List<Season>();
-		History = new List<HistoryGroup>();
-		
-		UserDataSaver.SaveUserData(Streak, LastStreakUpdateTimestamp, Contracts, Seasons, History);
+		if(File.Exists(Constants.DataPath)) File.Delete(Constants.DataPath);
 		UserDataLoader.LoadUserData();
 		CallUpdate();
 	}
@@ -204,14 +199,6 @@ public abstract class UserData
 		Seasons.Insert(0, data);
 		if(!skipUpdate) CallUpdate();
 	}
-
-	public static void EndSeason(string uuid)
-	{
-		// Set end date to today
-		Seasons[Seasons.FindIndex(s => s.Uuid == uuid)].EndTimestamp = TimeHelper.TodayTimestamp;
-		CallUpdate();
-	}
-
 
 	internal static void CreateDataInitPopup()
 	{

@@ -118,7 +118,7 @@ class MainViewModel : ObservableObject
 		HistoryViewCommand = new RelayCommand(_ => SetView(HistoryVm));
 		SettingsViewCommand = new RelayCommand(_ => SetView(SettingsVm));
 
-		LoadDataAsync();
+		LoadData();
 		UpdateHelper.CheckUpdateAsync();
 
 		Timer updateTimer = new(UpdateTimerCallback);
@@ -130,7 +130,7 @@ class MainViewModel : ObservableObject
 		updateTimer.Change(msUntilMidnight, Timeout.Infinite);
 	}
 
-	private async void LoadDataAsync()
+	private void LoadData()
 	{
 		SettingsHelper.LoadSettings();
 		
@@ -141,21 +141,6 @@ class MainViewModel : ObservableObject
 		var fetchError = fetchTask.Result;
 		if(fetchError != 0 && loadError != 0) return; // Something went terribly wrong here
 		UserDataLoader.LoadUserData();
-
-		if (UserData.CurrentSeasonData != null && UserData.CurrentSeasonData.EndTimestamp <= TimeHelper.NowTimestamp)
-		{
-			foreach (var template in ApiData.ContractTemplates.Where(ct => ct.Type == "Season" && ct.EndTimestamp > TimeHelper.NowTimestamp && ct.StartTimestamp <= TimeHelper.NowTimestamp))
-			{
-				List<Goal> goals = new();
-				foreach (var goalTemplate in template.Goals)
-				{
-					goals.Add(new Goal(goalTemplate, Guid.NewGuid().ToString(), 0));
-				}
-				
-				UserData.AddSeason(new Season(Guid.NewGuid().ToString(), template.Name, template.StartTimestamp, template.EndTimestamp, goals), true);
-				UserData.AddHistoryEntry(new HistoryEntry("", Guid.NewGuid().ToString(), template.StartTimestamp, ApiData.GameModes.Find(gm => gm.Name == "Custom"), 0, ApiData.Maps.Last(), "Initialization", -1, -1, false, false));
-			}
-		}
 		
 		Update();
 	}

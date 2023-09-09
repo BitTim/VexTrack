@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json.Linq;
+using VexTrack.Core.Helper;
 using VexTrack.Core.IO.UserData.LoaderParts;
 using VexTrack.Core.Model;
 
@@ -13,7 +16,7 @@ public static class UserDataLoader
         var version = "empty";
         JObject jo = null;
         
-        if (File.Exists(Constants.DataPath) && !string.IsNullOrEmpty(File.ReadAllText(Constants.DataPath))) // TODO fix init
+        if (File.Exists(Constants.DataPath) && !string.IsNullOrEmpty(File.ReadAllText(Constants.DataPath)))
         {
             var rawJson = File.ReadAllText(Constants.DataPath);
             jo = JObject.Parse(rawJson);
@@ -54,6 +57,23 @@ public static class UserDataLoader
                 break;
         }
 
+
+        var currentSeason = seasons.FirstOrDefault();
+        if (currentSeason != null && currentSeason.EndTimestamp <= TimeHelper.NowTimestamp)
+        {
+            foreach (var template in Model.ApiData.ContractTemplates.Where(ct => ct.Type == "Season" && ct.EndTimestamp > TimeHelper.NowTimestamp && ct.StartTimestamp <= TimeHelper.NowTimestamp))
+            {
+                List<Goal> goals = new();
+                foreach (var goalTemplate in template.Goals)
+                {
+                    goals.Add(new Goal(goalTemplate, Guid.NewGuid().ToString(), 0));
+                }
+				
+                Model.UserData.AddSeason(new Season(Guid.NewGuid().ToString(), template.Name, template.StartTimestamp, template.EndTimestamp, goals), true);
+                Model.UserData.AddHistoryEntry(new HistoryEntry("", Guid.NewGuid().ToString(), template.StartTimestamp, Model.ApiData.GameModes.Find(gm => gm.Name == "Custom"), 0, Model.ApiData.Maps.Last(), "Initialization", -1, -1, false, false, true));
+            }
+        }
+        
         Model.UserData.SetData(streak, lastStreakUpdateTimestamp, contracts, seasons, history);
         if(reSave) UserDataSaver.SaveUserData(streak, lastStreakUpdateTimestamp, contracts, seasons, history); // Save in new format
     }

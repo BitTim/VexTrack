@@ -29,7 +29,8 @@ public static class HistoryHelper
 
     public static int CalcCollectedFromSeason(string seasonUuid, List<HistoryGroup> historyOverride = null)
     {
-        return GetAllEntriesFromSeason(seasonUuid, historyOverride).Sum(he => he.Amount);
+        var startXp = UserData.Seasons.FirstOrDefault(s => s.Uuid == seasonUuid)?.StartXp ?? 0;
+        return GetAllEntriesFromSeason(seasonUuid, historyOverride).Sum(he => he.Amount) + startXp;
     }
 
     public static void SortHistory()

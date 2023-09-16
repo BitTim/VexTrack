@@ -28,6 +28,8 @@ public static class UserDataV1
 			var activeBpLevel = (int)season["activeBPLevel"];
 			var cXp = (int)season["cXP"];
 
+			var startXp = 0;
+
 			var historyKey = "history";
 			if (season["history"] == null)
 			{
@@ -72,6 +74,13 @@ public static class UserDataV1
 					surrenderedWin = (bool)historyEntry["surrenderedWin"];
 					surrenderedLoss = (bool)historyEntry["surrenderedLoss"];
 				}
+
+				// Convert "Initialization" Entries to startXp field of season
+				if (desc == "Initialization")
+				{
+					startXp = amount;
+					continue;
+				}
 				
 				hUuid ??= Guid.NewGuid().ToString();
 
@@ -84,7 +93,7 @@ public static class UserDataV1
 					history.Add(new HistoryGroup(sUuid, gUuid, date, new List<HistoryEntry>()));
 				}
 				
-				history.Find(hg => hg.Uuid == gUuid).Entries.Add(new HistoryEntry(gUuid, hUuid, time, gameMode, amount, map, desc, score, enemyScore, surrenderedWin, surrenderedLoss, desc == "Initialization"));
+				history.Find(hg => hg.Uuid == gUuid).Entries.Add(new HistoryEntry(gUuid, hUuid, time, gameMode, amount, map, desc, score, enemyScore, surrenderedWin, surrenderedLoss));
 			}
 
 			var startTimestamp = TimeHelper.IsolateTimestampDate(HistoryHelper.GetFirstFromSeason(sUuid, history).Time);
@@ -155,7 +164,7 @@ public static class UserDataV1
 			}
 			
 			sUuid ??= Guid.NewGuid().ToString();
-			seasons.Add(new Season(sUuid, name, startTimestamp, endTimestamp, goals));
+			seasons.Add(new Season(sUuid, name, startTimestamp, endTimestamp, startXp, goals));
 		}
 		
 		foreach(var hg in history)

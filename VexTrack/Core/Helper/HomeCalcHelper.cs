@@ -25,7 +25,7 @@ public static class HomeCalcHelper
 		var totalToday = (int)Math.Ceiling((currentSeasonData.Remaining + collectedPerDay[dayIndex]) /
 		                                   (double)idealRemainingDays);
 		var totalTodayMin =
-			(int)Math.Ceiling((currentSeasonData.RemainingMin + collectedPerDay[dayIndex]) / idealRemainingDays);
+			(int)Math.Ceiling(((double)currentSeasonData.RemainingMin + collectedPerDay[dayIndex]) / idealRemainingDays);
 		if (totalToday <= 0) totalToday = 0;
 		if (totalTodayMin <= 0) totalTodayMin = 0;
 

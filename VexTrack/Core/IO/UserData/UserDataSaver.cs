@@ -53,6 +53,7 @@ public static class UserDataSaver
 				{ "name", season.Name },
 				{ "startTimestamp", season.StartTimestamp },
 				{ "endTimestamp", season.EndTimestamp },
+				{ "startXp", season.StartXp }
 			};
 			
 			JArray goals = new();
@@ -112,7 +113,6 @@ public static class UserDataSaver
 		                 { "enemyScore", he.EnemyScore },
 		                 { "surrenderedWin", he.SurrenderedWin },
 		                 { "surrenderedLoss", he.SurrenderedLoss },
-		                 { "isInit", he.IsInit }
 			         }))
 			{
 				entries.Add(entryObj);

@@ -59,7 +59,7 @@ public static class UserDataLoader
 
 
         var currentSeason = seasons.FirstOrDefault();
-        if (currentSeason != null && currentSeason.EndTimestamp <= TimeHelper.NowTimestamp)
+        if (currentSeason == null || currentSeason.EndTimestamp <= TimeHelper.NowTimestamp)
         {
             foreach (var template in Model.ApiData.ContractTemplates.Where(ct => ct.Type == "Season" && ct.EndTimestamp > TimeHelper.NowTimestamp && ct.StartTimestamp <= TimeHelper.NowTimestamp))
             {
@@ -69,8 +69,7 @@ public static class UserDataLoader
                     goals.Add(new Goal(goalTemplate, Guid.NewGuid().ToString(), 0));
                 }
 				
-                Model.UserData.AddSeason(new Season(Guid.NewGuid().ToString(), template.Name, template.StartTimestamp, template.EndTimestamp, goals), true);
-                Model.UserData.AddHistoryEntry(new HistoryEntry("", Guid.NewGuid().ToString(), template.StartTimestamp, Model.ApiData.GameModes.Find(gm => gm.Name == "Custom"), 0, Model.ApiData.Maps.Last(), "Initialization", -1, -1, false, false, true));
+                seasons.Insert(0, new Season(template.Uuid, template.Name, template.StartTimestamp, template.EndTimestamp, 0, goals));
             }
         }
         

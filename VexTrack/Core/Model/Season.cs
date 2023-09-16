@@ -11,7 +11,7 @@ public class Season
 {
     public string Uuid { get; set; }
     public string Name { get; set; }
-    public long ActualStartTimestamp { get; set; }
+    private long ActualStartTimestamp { get; set; }
     public long StartTimestamp => ActualStartTimestamp == -1 ? TimeHelper.IsolateTimestampDate(HistoryHelper.GetFirstFromSeason(Uuid).Time) : ActualStartTimestamp;
     public long EndTimestamp { get; set; }
     public int Duration => GetDuration();
@@ -22,7 +22,8 @@ public class Season
     private int TotalMin => Goals.Where(g => !g.IsEpilogue).Sum(g => g.Total);
     public int Collected => HistoryHelper.CalcCollectedFromSeason(Uuid);
     public int Remaining => Total - Collected;
-    public double RemainingMin => TotalMin - Collected;
+    public int RemainingMin => TotalMin - Collected;
+    public int StartXp { get; set; }
     public int Average => CalcHelper.CalcAverage(Collected, Duration, RemainingDays);
     public double Progress => CalcHelper.CalcProgress(Total, Collected);
     public int BufferDays => (int)Math.Ceiling(Duration * (SettingsHelper.Data.BufferPercentage / 100));
@@ -33,7 +34,7 @@ public class Season
     public List<Goal> Goals { get; set; }
     public ObservableCollection<Goal> ObservableGoals => new(Goals);
     public SeasonExtremes Extremes => GetExtremes();
-    public SeriesCollection GraphSeriesCollection => GraphCalcHelper.CalcGraphs(Total, HistoryHelper.GetFirstFromSeason(Uuid)?.Amount ?? 0, StartTimestamp, Duration, BufferDays, RemainingDays, Uuid);
+    public SeriesCollection GraphSeriesCollection => GraphCalcHelper.CalcGraphs(Total, StartXp, StartTimestamp, Duration, BufferDays, RemainingDays, Uuid);
 
     
     public string NextUnlockName => GetNextUnlock()?.Name ?? "None";
@@ -42,9 +43,9 @@ public class Season
 
 
     
-    public Season(string uuid, string name, long startTimestamp, long endTimestamp, List<Goal> goals)
+    public Season(string uuid, string name, long startTimestamp, long endTimestamp, int startXp, List<Goal> goals)
     {
-        (Uuid, Name, ActualStartTimestamp, EndTimestamp, Goals) = (uuid, name, startTimestamp, endTimestamp, goals);
+        (Uuid, Name, ActualStartTimestamp, EndTimestamp, StartXp, Goals) = (uuid, name, startTimestamp, endTimestamp, startXp, goals);
     }
 
     public SeriesCollection GetDailyGraphSeriesCollection(int dayIndex, int dailyIdeal)

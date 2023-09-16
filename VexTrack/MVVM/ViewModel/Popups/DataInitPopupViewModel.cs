@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using VexTrack.Core.Helper;
 using VexTrack.Core.Model;
 using VexTrack.Core.Model.WPF;
@@ -77,9 +76,7 @@ class DataInitPopupViewModel : BasePopupViewModel
 				goals.Add(new Goal(template, Guid.NewGuid().ToString(), collected));
 			}
 			
-			UserData.AddSeason(new Season(ApiData.ActiveSeasonTemplate.Uuid, Name, ApiData.ActiveSeasonTemplate.StartTimestamp, EndTimestamp, goals));
-			UserData.AddHistoryEntry(new HistoryEntry("", Guid.NewGuid().ToString(), TimeHelper.TodayDate.ToUnixTimeSeconds(), ApiData.GameModes.Find(gm => gm.Name == "Custom"), totalCollectedXp, ApiData.Maps.Last(), "Initialization", -1, -1, false, false, true));
-
+			UserData.AddSeason(new Season(ApiData.ActiveSeasonTemplate.Uuid, Name, ApiData.ActiveSeasonTemplate.StartTimestamp, EndTimestamp, totalCollectedXp, goals));
 			Close();
 		});
 	}

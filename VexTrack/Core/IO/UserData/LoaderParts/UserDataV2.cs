@@ -21,6 +21,7 @@ public static class UserDataV2
 		    var name = season.Value<string>("name");
 		    var startTimestamp = season.Value<long>("startTimestamp");
 		    var endTimestamp = season.Value<long>("endTimestamp");
+		    var startXp = season.Value<int>("startXp");
 
 		    List<Goal> goals = new();
 		    var templates = Model.ApiData.ContractTemplates.Find(ct => ct.Type == "Season" && ct.Uuid == sUuid)?.Goals;
@@ -66,7 +67,7 @@ public static class UserDataV2
 		    }
 
 		    sUuid ??= Guid.NewGuid().ToString();
-		    seasons.Add(new Season(sUuid, name, startTimestamp, endTimestamp, goals));
+		    seasons.Add(new Season(sUuid, name, startTimestamp, endTimestamp, startXp, goals));
 	    }
 		
 	    var sortedSeasons = seasons.OrderByDescending(s => s.StartTimestamp).ToList();
@@ -96,7 +97,6 @@ public static class UserDataV2
     			var amount = historyEntry.Value<int>("amount");
     			var mapUuid = historyEntry.Value<string>("map");
     			var description = historyEntry.Value<string>("description");
-			    var isInit = historyEntry.Value<bool>("isInit");
                 
                 var map = Model.ApiData.Maps.Find(m => m.Uuid == mapUuid);
 
@@ -123,7 +123,7 @@ public static class UserDataV2
 
     			hUuid ??= Guid.NewGuid().ToString();
     			entries.Add(new HistoryEntry(gUuid, hUuid, time, gameMode, amount, map, desc, score, enemyScore,
-    				surrenderedWin, surrenderedLoss, isInit));
+    				surrenderedWin, surrenderedLoss));
     		}
 
     		var sortedEntries = entries.OrderByDescending(he => he.Time).ToList();

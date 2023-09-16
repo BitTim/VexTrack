@@ -73,7 +73,7 @@ public static class ApiDataFetcher
 
         // Fetch Contracts and Gears
 
-        var (contracts, gears) = FetchContractsAndGears(5, noImages);
+        var (contracts, gears) = FetchContractsAndGears(5);
         if (contracts.Count == 0 || gears.Count == 0)
         {
             RestoreAssetsBackup();
@@ -113,7 +113,7 @@ public static class ApiDataFetcher
 
         // Fetch Player Titles
 
-        var playerTitles = FetchPlayerTitles(9, noImages);
+        var playerTitles = FetchPlayerTitles(9);
         if (playerTitles.Count == 0)
         {
             RestoreAssetsBackup();
@@ -373,7 +373,7 @@ public static class ApiDataFetcher
     //  Contracts and Gears
     // ================================
 
-    private static (List<ContractTemplate>, List<GearTemplate>) FetchContractsAndGears(int idx, bool noImages)
+    private static (List<ContractTemplate>, List<GearTemplate>) FetchContractsAndGears(int idx)
     {
         SetNewFetchStep("Contracts / Gears", idx);
         List<ContractTemplate> contracts = new();
@@ -591,7 +591,7 @@ public static class ApiDataFetcher
     //  Player Titles
     // ================================
 
-    private static List<PlayerTitle> FetchPlayerTitles(int idx, bool noImages)
+    private static List<PlayerTitle> FetchPlayerTitles(int idx)
     {
         SetNewFetchStep("PLayer Titles", idx);
         List<PlayerTitle> playerTitles = new();

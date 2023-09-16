@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using VexTrack.Core.Helper;
+﻿using VexTrack.Core.Helper;
 
 namespace VexTrack.MVVM.ViewModel.Popups;
 

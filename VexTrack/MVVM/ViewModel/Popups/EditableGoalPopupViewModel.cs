@@ -1,5 +1,4 @@
-﻿using System;
-using VexTrack.Core.Helper;
+﻿using VexTrack.Core.Helper;
 using VexTrack.Core.Model;
 using VexTrack.Core.Model.WPF;
 
@@ -10,10 +9,8 @@ class EditableGoalPopupViewModel : BasePopupViewModel
 	public RelayCommand OnBackClicked { get; }
 	public RelayCommand OnDoneClicked { get; }
 
-	public string PopupTitle { get; set; }
-	private string Uuid { get; set; }
+	public string PopupTitle { get; private set; }
 	private bool EditMode { get; set; }
-	private bool Paused { get; set; }
 
 
 	private string PrevColor { get; set; }
@@ -111,20 +108,17 @@ class EditableGoalPopupViewModel : BasePopupViewModel
 
 	private void InitData()
 	{
-		Uuid = Guid.NewGuid().ToString();
 		Name = "";
 		Total = 0;
 		Collected = 0;
 		UseAccentColor = false;
 		Color = "#000000";
-		Paused = false;
-			
+
 		IsInitialized = true;
 	}
 
 	public void SetData(Goal data)
 	{
-		Uuid = data.Uuid;
 		Name = data.Name;
 		Total = data.Total;
 		Collected = data.Collected;

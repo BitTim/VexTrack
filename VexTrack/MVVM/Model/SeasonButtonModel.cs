@@ -23,6 +23,7 @@ public class SeasonButtonModel : ToggleButton
     public static readonly DependencyProperty GraphSeriesCollectionProperty = DependencyProperty.Register(nameof(GraphSeriesCollection), typeof(SeriesCollection), typeof(SeasonButtonModel), new PropertyMetadata(new SeriesCollection()));
     public static readonly DependencyProperty GoalsProperty = DependencyProperty.Register(nameof(Goals), typeof(ObservableCollection<Goal>), typeof(SeasonButtonModel), new PropertyMetadata(new ObservableCollection<Goal>()));
     public static readonly DependencyProperty GoalDisplayHeightProperty = DependencyProperty.Register(nameof(GoalDisplayHeight), typeof(double), typeof(SeasonButtonModel), new PropertyMetadata(72.0));
+    public static readonly DependencyProperty StartTimestampProperty = DependencyProperty.Register(nameof(StartTimestamp), typeof(long), typeof(SeasonButtonModel), new PropertyMetadata((long) 0));
     public static readonly DependencyProperty EndTimestampProperty = DependencyProperty.Register(nameof(EndTimestamp), typeof(long), typeof(SeasonButtonModel), new PropertyMetadata((long) 0));
     
     public static readonly DependencyProperty StrongestDayAmountProperty = DependencyProperty.Register(nameof(StrongestDayAmount), typeof(int), typeof(SeasonButtonModel), new PropertyMetadata(0));
@@ -103,6 +104,12 @@ public class SeasonButtonModel : ToggleButton
     {
         get => (double)GetValue(GoalDisplayHeightProperty);
         set => SetValue(GoalDisplayHeightProperty, value);
+    }
+
+    public long StartTimestamp
+    {
+        get => (long)GetValue(StartTimestampProperty);
+        set => SetValue(StartTimestampProperty, value);
     }
 
     public long EndTimestamp

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -8,7 +7,6 @@ using VexTrack.Core;
 using VexTrack.Core.Helper;
 using VexTrack.Core.IO.ApiData;
 using VexTrack.Core.IO.UserData;
-using VexTrack.Core.Model;
 using VexTrack.Core.Model.WPF;
 using VexTrack.MVVM.ViewModel.Popups;
 
@@ -42,7 +40,6 @@ class MainViewModel : ObservableObject
 	private ApiFetchPopupViewModel ApiFetchPopup { get; set; }
 
 	private object _currentView;
-	private bool _epilogue;
 
 	private BasePopupViewModel _currentPopup;
 
@@ -70,26 +67,6 @@ class MainViewModel : ObservableObject
 	}
 
 	public List<BasePopupViewModel> PopupQueue { get; } = new();
-
-	private bool Epilogue
-	{
-		get => _epilogue;
-		set
-		{
-			_epilogue = value;
-			OnPropertyChanged();
-			Update(true);
-		}
-	}
-
-	public bool EpilogueButtonEnabled
-	{
-		set
-		{
-			_epilogue = value;
-			OnPropertyChanged();
-		}
-	}
 
 	public MainViewModel()
 	{

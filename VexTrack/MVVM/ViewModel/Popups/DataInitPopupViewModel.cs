@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using VexTrack.Core;
 using VexTrack.Core.Helper;
 using VexTrack.Core.Model;
-using VexTrack.Core.Model.Game;
-using VexTrack.Core.Model.Game.Templates;
 using VexTrack.Core.Model.WPF;
 
 namespace VexTrack.MVVM.ViewModel.Popups;

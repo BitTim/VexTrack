@@ -1,8 +1,6 @@
-﻿using System.Windows.Controls;
+﻿namespace VexTrack.MVVM.View.Popups;
 
-namespace VexTrack.MVVM.View.Popups;
-
-public partial class ApiFetchPopup : UserControl
+public partial class ApiFetchPopup
 {
     public ApiFetchPopup()
     {

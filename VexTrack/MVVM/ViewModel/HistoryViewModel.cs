@@ -50,7 +50,7 @@ class HistoryViewModel : ObservableObject
 			where e.Uuid == HePopup.Uuid
 			select e).FirstOrDefault();
 
-		if (HePopup.IsInitialized && entry != null) HePopup.SetData(entry, _initUuid);
+		if (HePopup.IsInitialized && entry != null) HePopup.SetData(entry);
 		else HePopup.Close();
 	}
 
@@ -61,7 +61,7 @@ class HistoryViewModel : ObservableObject
 		HePopup.SetData((from g in Groups
 			from e in g.Entries
 			where e.Uuid == hUuid
-			select e).FirstOrDefault(), _initUuid);
+			select e).FirstOrDefault());
 
 		MainVm.QueuePopup(HePopup);
 	}

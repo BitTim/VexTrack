@@ -79,9 +79,35 @@
 							                         Goals="{Binding ObservableGoals}"/>
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
+					<ItemsControl.Style>
+						<Style TargetType="ItemsControl">
+							<Style.Triggers>
+								<Trigger Property="HasItems" Value="false">
+									<Setter Property="Template">
+										<Setter.Value>
+											<ControlTemplate>
+												<StackPanel Margin="9, 0, 0, 0">
+													<TextBlock Text="No Seasons available"
+													           Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+													           FontSize="14"
+													           Margin="0, 8, 0, 4"
+													           FontWeight="Bold" />
+												
+													<TextBlock Text="To be honest, I do not know how you even got to this point. Normally you should have got a popup telling you that data could not be fetched from the API. Without API data and without a Season VexTrack would normally crash. You really achieved something impossible! Please screenshot this and send it to me via Twitter (Or X, however you want to call it) via @TheBitTim. "
+													           TextWrapping="Wrap"
+													           Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+													           FontSize="14"/>
+												</StackPanel>
+											</ControlTemplate>
+										</Setter.Value>
+									</Setter>
+								</Trigger>
+							</Style.Triggers>
+						</Style>
+					</ItemsControl.Style>
 				</ItemsControl>
 
-				<TextBlock Text="Contracts"
+				<TextBlock Text="Events"
 						   Grid.Row="2"
 						   Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
 						   FontSize="20"
@@ -117,6 +143,32 @@
 							                           NextUnlockRemaining="{Binding NextUnlockRemaining}"/>
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
+					<ItemsControl.Style>
+						<Style TargetType="ItemsControl">
+							<Style.Triggers>
+								<Trigger Property="HasItems" Value="false">
+									<Setter Property="Template">
+										<Setter.Value>
+											<ControlTemplate>
+												<StackPanel Margin="9, 0, 0,0 ">
+													<TextBlock Text="No events available"
+													           Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+													           FontSize="14"
+													           Margin="0, 8, 0, 4"
+													           FontWeight="Bold" />
+												
+													<TextBlock Text="There are currently no events available. As soon as one is available it will be added automatically."
+													           TextWrapping="Wrap"
+													           Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+													           FontSize="14"/>
+												</StackPanel>
+											</ControlTemplate>
+										</Setter.Value>
+									</Setter>
+								</Trigger>
+							</Style.Triggers>
+						</Style>
+					</ItemsControl.Style>
 				</ItemsControl>
 			</Grid>
 		</ScrollViewer>

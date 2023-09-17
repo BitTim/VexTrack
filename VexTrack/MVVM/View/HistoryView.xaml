@@ -58,6 +58,32 @@
 						</StackPanel>
 					</DataTemplate>
 				</ItemsControl.ItemTemplate>
+				<ItemsControl.Style>
+					<Style TargetType="ItemsControl">
+						<Style.Triggers>
+							<Trigger Property="HasItems" Value="false">
+								<Setter Property="Template">
+									<Setter.Value>
+										<ControlTemplate>
+											<StackPanel>
+												<TextBlock Text="Your history is empty"
+												           Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+												           FontSize="14"
+												           Margin="0, 8, 0, 4"
+												           FontWeight="Bold" />
+												
+												<TextBlock Text="There are currently no history entries to display. Start by adding a new entry to keep track of your match history."
+												           TextWrapping="Wrap"
+												           Foreground="{Binding Source={x:Static util:SettingsHelper.Data}, Path=Theme.ForegroundBrush}"
+												           FontSize="14"/>
+											</StackPanel>
+										</ControlTemplate>
+									</Setter.Value>
+								</Setter>
+							</Trigger>
+						</Style.Triggers>
+					</Style>
+				</ItemsControl.Style>
 			</ItemsControl>
 		</ScrollViewer>
 

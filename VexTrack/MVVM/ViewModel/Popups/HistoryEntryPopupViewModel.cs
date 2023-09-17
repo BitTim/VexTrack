@@ -30,8 +30,6 @@ class HistoryEntryPopupViewModel : BasePopupViewModel
 		}
 	}
 
-	public bool Deletable { get; set; }
-
 	public HistoryEntryPopupViewModel()
 	{
 		EditableHePopup = (EditableHistoryEntryPopupViewModel)ViewModelManager.ViewModels[nameof(EditableHistoryEntryPopupViewModel)];
@@ -48,13 +46,13 @@ class HistoryEntryPopupViewModel : BasePopupViewModel
 		{
 			IsInitialized = false;
 			UserData.RemoveHistoryEntry(SeasonUuid, Uuid);
+			Close();
 		});
 	}
 
-	public void SetData(HistoryEntry data, string initUuid)
+	public void SetData(HistoryEntry data)
 	{
 		RawData = data;
-		Deletable = true;
 
 		SeasonUuid = data.GroupUuid;
 		Uuid = data.Uuid;
@@ -66,7 +64,6 @@ class HistoryEntryPopupViewModel : BasePopupViewModel
 
 		if (Result == "") Result = "-";
 		if (string.IsNullOrEmpty(Map)) Map = "-";
-		if (data.Uuid == initUuid) Deletable = false;
 
 		IsInitialized = true;
 	}

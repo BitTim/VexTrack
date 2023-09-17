@@ -30,7 +30,7 @@ class DataInitPopupViewModel : BasePopupViewModel
 		{
 			_collected = value;
 
-			var maxForLevel = ApiData.ActiveSeasonTemplate.Goals[ActiveLevel].XpTotal;
+			var maxForLevel = ApiData.ActiveSeasonTemplate.Goals[ActiveLevel - 1].XpTotal;
 			if (_collected >= maxForLevel) _collected = maxForLevel - 1;
 
 			CalcProgress();

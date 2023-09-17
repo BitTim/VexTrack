@@ -12,7 +12,7 @@ public class ColorCodeValidation : ValidationRule
 		var strValue = Convert.ToString(value);
 
 		if (string.IsNullOrEmpty(strValue))
-			return new ValidationResult(false, $"This field cannot be empty, last known value will be used");
+			return new ValidationResult(false, "This field cannot be empty, last known value will be used");
 		bool canConvert;
 
 		try
@@ -25,6 +25,6 @@ public class ColorCodeValidation : ValidationRule
 			canConvert = false;
 		}
 
-		return canConvert ? new ValidationResult(true, null) : new ValidationResult(false, $"Input is not a valid color");
+		return canConvert ? new ValidationResult(true, null) : new ValidationResult(false, "Input is not a valid color");
 	}
 }

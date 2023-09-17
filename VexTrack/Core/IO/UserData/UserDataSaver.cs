@@ -24,11 +24,11 @@ public static class UserDataSaver
 			JObject contractObj = new()
 			{
 				{ "uuid", contract.Uuid },
-				{ "name", contract.Name },
+				{ "name", contract.Name }
 			};
 
 			JArray goals = new();
-			foreach (var goalObj in contract.Goals.Select(goal => new JObject()
+			foreach (var goalObj in contract.Goals.Select(goal => new JObject
 			         {
 				         { "uuid", goal.Uuid },
 				         { "name", goal.Name },
@@ -69,7 +69,7 @@ public static class UserDataSaver
 				
 				if (!goal.Template.IsFromApi)
 				{
-					template = new JObject()
+					template = new JObject
 					{
 						{ "canBuyDough", goal.Template.CanBuyDough },
 						{ "doughCost", goal.Template.DoughCost },
@@ -101,7 +101,7 @@ public static class UserDataSaver
 			};
 
 			JArray entries = new();
-			foreach (var entryObj in hg.Entries.Select(he => new JObject()
+			foreach (var entryObj in hg.Entries.Select(he => new JObject
 			         {
 				         { "uuid", he.Uuid },
 		                 { "gameMode", he.GameMode.Uuid },
@@ -112,7 +112,7 @@ public static class UserDataSaver
 		                 { "score", he.Score },
 		                 { "enemyScore", he.EnemyScore },
 		                 { "surrenderedWin", he.SurrenderedWin },
-		                 { "surrenderedLoss", he.SurrenderedLoss },
+		                 { "surrenderedLoss", he.SurrenderedLoss }
 			         }))
 			{
 				entries.Add(entryObj);

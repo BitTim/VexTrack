@@ -34,7 +34,7 @@ public class Season
     public List<Goal> Goals { get; set; }
     public ObservableCollection<Goal> ObservableGoals => new(Goals);
     public SeasonExtremes Extremes => GetExtremes();
-    public SeriesCollection GraphSeriesCollection => GraphCalcHelper.CalcGraphs(Total, StartXp, StartTimestamp, Duration, BufferDays, RemainingDays, Uuid);
+    public SeriesCollection GraphSeriesCollection => GraphCalcHelper.CalcGraphs(Uuid);
 
     
     public string NextUnlockName => GetNextUnlock()?.Name ?? "None";
@@ -50,7 +50,7 @@ public class Season
 
     public SeriesCollection GetDailyGraphSeriesCollection(int dayIndex, int dailyIdeal)
     {
-        return GraphCalcHelper.CalcDailyGraphs(Total, dayIndex, StartTimestamp, Duration, dailyIdeal, Average, Uuid);
+        return GraphCalcHelper.CalcDailyGraphs(dayIndex, dailyIdeal, Uuid);
     }
 
     

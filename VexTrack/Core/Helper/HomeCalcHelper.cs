@@ -20,8 +20,7 @@ public static class HomeCalcHelper
 		var dayIndex = (today - TimeHelper.TimestampToDate(currentSeasonData.StartTimestamp)).Days;
 		if (dayIndex < 0 || dayIndex >= currentSeasonData.Duration) return ret;
 
-		var collectedPerDay = CalcHelper.CalcCollectedPerDay(currentSeasonData.StartTimestamp, HistoryHelper.GetAllEntriesFromSeason(UserData.CurrentSeasonData.Uuid),
-			currentSeasonData.Duration);
+		var collectedPerDay = HistoryHelper.CalcDailyCollectedFromSeason(UserData.CurrentSeasonData.Uuid);
 		var totalToday = (int)Math.Ceiling((currentSeasonData.Remaining + collectedPerDay[dayIndex]) /
 		                                   (double)idealRemainingDays);
 		var totalTodayMin =

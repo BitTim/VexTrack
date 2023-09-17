@@ -20,7 +20,7 @@ public class SliderTools : DependencyObject
 						slider.RaiseEvent(new MouseButtonEventArgs(mouseEvent.MouseDevice, mouseEvent.Timestamp, MouseButton.Left)
 						{
 							RoutedEvent = UIElement.PreviewMouseLeftButtonDownEvent,
-							Source = mouseEvent.Source,
+							Source = mouseEvent.Source
 						});
 				};
 		}

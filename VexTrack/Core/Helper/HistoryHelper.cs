@@ -32,6 +32,34 @@ public static class HistoryHelper
         var startXp = UserData.Seasons.FirstOrDefault(s => s.Uuid == seasonUuid)?.StartXp ?? 0;
         return GetAllEntriesFromSeason(seasonUuid, historyOverride).Sum(he => he.Amount) + startXp;
     }
+    
+    public static List<int> CalcDailyCollectedFromSeason(string seasonUuid, List<HistoryGroup> historyOverride = null)
+    {
+        var dailyAmounts = new List<int>();
+        var historyGroups = GetFromSeason(seasonUuid, historyOverride);
+
+        var seasonData = UserData.Seasons.FirstOrDefault(s => s.Uuid == seasonUuid);
+        if (seasonData == null) return dailyAmounts;
+
+        var startDate = TimeHelper.TimestampToDate(seasonData.StartTimestamp);
+        
+        for (var i = 0; i < seasonData.Duration + 1; i++)
+        {
+            var amount = 0;
+
+            var currDate = startDate.AddDays(i).ToLocalTime().ToUnixTimeSeconds();
+            var group = historyGroups.FirstOrDefault(hg => hg.Date == currDate);
+
+            if (group != null)
+            {
+                amount = group.Entries.Select(e => e.Amount).Sum();
+            }
+            
+            dailyAmounts.Add(amount);
+        }
+
+        return dailyAmounts;
+    }
 
     public static void SortHistory()
     {

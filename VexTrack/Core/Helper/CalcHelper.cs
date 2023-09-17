@@ -21,53 +21,25 @@ public static class CalcHelper
 
 	public static int CalcTotalCollected(int activeLevel, int cxp, List<GoalTemplate> goals)
 	{
-		if (activeLevel - 1 > goals.Count) return ApiData.ActiveSeasonTemplate.XpTotal + cxp;
-		return ApiData.ActiveSeasonTemplate.Goals.GetRange(0, activeLevel - 2 < 2 ? 2 : activeLevel - 2).Sum(g => g.XpTotal) + cxp;
+		if (activeLevel > goals.Count) return ApiData.ActiveSeasonTemplate.XpTotal + cxp;
+		return ApiData.ActiveSeasonTemplate.Goals.GetRange(0, activeLevel - 1 < 2 ? 2 : activeLevel - 1).Sum(g => g.XpTotal) + cxp;
 	}
 		
-	public static List<int> CalcCollectedPerDay(long startTimestamp, List<HistoryEntry> history, int duration)
+	public static int CalcDaysFinished(string seasonUuid)
 	{
-		var dailyAmounts = new List<int>();
-		history = history.OrderBy(he => he.Time).ToList();
-
-		var historyIdx = 0;
-		var startDate = TimeHelper.TimestampToDate(startTimestamp);
-
-		for (var i = 0; i < duration + 1; i++)
-		{
-			var amount = 0;
-
-			if(historyIdx < history.Count) {
-				var currDate = startDate.AddDays(i).ToLocalTime();
-				while(TimeHelper.TimestampToDate(history[historyIdx].Time) == currDate)
-				{
-					amount += history[historyIdx++].Amount;
-					if (historyIdx >= history.Count) break;
-				}
-			}
-
-			dailyAmounts.Add(amount);
-		}
-
-		return dailyAmounts;
-	}
+		var seasonData = UserData.Seasons.FirstOrDefault(s => s.Uuid == seasonUuid);
+		if (seasonData == null) return -1;
 		
-	public static int CalcDaysFinished(int total, int duration, int remainingDays, int collected)
-	{
 		var daysFinished = 0;
-		var daysPassed = duration - remainingDays;
-		var average = (int)MathF.Round((float)collected / (daysPassed + 1));
+		if (seasonData.Average <= 0) return -1;
 
-		var val = collected;
-		for (var i = 0; i < remainingDays + 1; i++)
+		var val = seasonData.Collected;
+		while (val < seasonData.Total)
 		{
-			val += average;
+			val += seasonData.Average;
 			daysFinished++;
-
-			if (val >= total) break;
 		}
 
-		if (daysFinished > remainingDays) daysFinished = -1;
 		return daysFinished;
 	}
 
@@ -77,17 +49,6 @@ public static class CalcHelper
 
 		var ret = (int)Math.Floor(collected / total * 100);
 		return ret;
-	}
-
-	public static int CalcMaxForLevel(int level)
-	{
-		return level <= Constants.BattlepassLevels ? Constants.Level2Offset + level * Constants.XpPerLevel : Constants.XpPerEpilogueLevel;
-	}
-
-	public static int CalcMaxForTier(int tier)
-	{
-		if (tier < 1 || tier > Constants.TierTotals.Count) return 0;
-		return Constants.TierTotals[tier - 1];
 	}
 
 	public static int CalcMaxForSeason(bool epilogue)
@@ -101,7 +62,7 @@ public static class CalcHelper
 	public static int CalcAverage(int collected, int duration, int remainingDays)
 	{
 		var daysPassed = duration - remainingDays;
-		return (int)MathF.Round((float)collected / (daysPassed + 1));
+		return (int)MathF.Round((float)collected / daysPassed);
 	}
 
 	public static List<int> CalcSeasonSegments()

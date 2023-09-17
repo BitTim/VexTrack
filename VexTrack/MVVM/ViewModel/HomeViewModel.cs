@@ -2,11 +2,11 @@
 using System.Windows.Media;
 using LiveCharts;
 using LiveCharts.Defaults;
+using LiveCharts.Wpf;
 using VexTrack.Core.Helper;
 using VexTrack.Core.Model;
 using VexTrack.Core.Model.WPF;
 using VexTrack.MVVM.ViewModel.Popups;
-using LineSeries = LiveCharts.Wpf.LineSeries;
 
 namespace VexTrack.MVVM.ViewModel;
 
@@ -184,7 +184,7 @@ class HomeViewModel : ObservableObject
 
 	public string Status => GetStatus();
 	public int BufferDays => UserData.CurrentSeasonData?.BufferDays ?? 0;
-	public int BufferDaysPosition => UserData.CurrentSeasonData?.Duration ?? 1 - BufferDays;
+	public int BufferDaysPosition => (UserData.CurrentSeasonData?.Duration ?? 1) - BufferDays;
 	public List<decimal> LogicalStops => CalcHelper.CalcLogicalStops(Segments, true);
 	public List<decimal> VisualStops => CalcHelper.CalcVisualStops(Segments, true);
 
@@ -219,7 +219,7 @@ class HomeViewModel : ObservableObject
 		SeasonName = UserData.CurrentSeasonData?.Name ?? "No season active";
 		(DeviationIdeal, DeviationDaily) = CalcGraph();
 		DaysRemaining = UserData.CurrentSeasonData?.RemainingDays ?? 1;
-		DaysFinished = CalcHelper.CalcDaysFinished(Total, UserData.CurrentSeasonData?.Duration ?? 1, DaysRemaining, Collected);
+		DaysFinished = CalcHelper.CalcDaysFinished(UserData.CurrentSeasonData?.Uuid ?? "");
 
 		OnAddClicked = new RelayCommand(_ =>
 		{

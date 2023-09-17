@@ -5,12 +5,13 @@ using System.Windows.Media;
 using LiveCharts;
 using LiveCharts.Defaults;
 using LiveCharts.Wpf;
+using VexTrack.Core.Model;
 
 namespace VexTrack.Core.Helper;
 
 public static class GraphCalcHelper
 {
-	public static SeriesCollection CalcGraphs(int total, int startXp, long startDate,  int duration, int bufferDays, int remainingDays, string seasonUuid)
+	public static SeriesCollection CalcGraphs(string seasonUuid)
 	{
 		var collection = new SeriesCollection();
 
@@ -24,7 +25,7 @@ public static class GraphCalcHelper
 			PointGeometry = null,
 			Stroke = mono,
 			Fill = Brushes.Transparent,
-			LineSmoothness = 0,
+			LineSmoothness = 0
 		};
 			
 		var performanceSeries = new LineSeries
@@ -37,28 +38,31 @@ public static class GraphCalcHelper
 			Fill = Brushes.Transparent,
 			LineSmoothness = 0
 		};
-			
-		var startRemaining = total - startXp;
-		var totalDaily = startRemaining / (double)(duration - bufferDays);
-		var dailyAmounts = CalcHelper.CalcCollectedPerDay(startDate, HistoryHelper.GetAllEntriesFromSeason(seasonUuid), duration);
 
+		var seasonData = UserData.Seasons.FirstOrDefault(s => s.Uuid == seasonUuid);
+		if (seasonData == null) return collection;
+		
+		var startRemaining = seasonData.Total - seasonData.StartXp;
+		var totalDaily = startRemaining / (double)(seasonData.Duration - seasonData.BufferDays);
+		var dailyAmounts = HistoryHelper.CalcDailyCollectedFromSeason(seasonUuid);
+		
 		var prevPerformanceVal = 0;
 			
-		for (var i = 0; i < duration + 1; i++)
+		for (var i = 0; i < seasonData.Duration + 1; i++)
 		{
 			// Ideal
-			var idealVal = (int)Math.Ceiling(i * totalDaily + startXp);
-			if (idealVal > total) idealVal = total;
+			var idealVal = (int)Math.Ceiling(i * totalDaily + seasonData.StartXp);
+			if (idealVal > seasonData.Total) idealVal = seasonData.Total;
 
 			idealSeries.Values.Add(new ObservablePoint(i, idealVal));
 
 			// Performance
-			if(i >= duration - remainingDays + 1) continue;
+			if(i >= seasonData.Duration - seasonData.RemainingDays + 1) continue;
 				
 			var performanceVal = prevPerformanceVal + dailyAmounts[i];
 			prevPerformanceVal = performanceVal;
 
-			performanceSeries.Values.Add(new ObservablePoint(i, performanceVal));
+			performanceSeries.Values.Add(new ObservablePoint(i, performanceVal + seasonData.StartXp));		// Offset Performance by StartXp
 		}
 
 		collection.Add(idealSeries);
@@ -67,7 +71,7 @@ public static class GraphCalcHelper
 		return collection;
 	}
 
-	public static SeriesCollection CalcDailyGraphs(int total, int dayIndex, long startDate, int duration, int dailyIdeal, int average, string seasonUuid)
+	public static SeriesCollection CalcDailyGraphs(int dayIndex, int dailyIdeal, string seasonUuid)
 	{
 		var collection = new SeriesCollection();
 
@@ -82,7 +86,7 @@ public static class GraphCalcHelper
 			Stroke = win,
 			Fill = Brushes.Transparent,
 			LineSmoothness = 0,
-			StrokeDashArray = new DoubleCollection { 2, 2 },
+			StrokeDashArray = new DoubleCollection { 2, 2 }
 		};
 			
 		var averageSeries = new LineSeries
@@ -93,23 +97,26 @@ public static class GraphCalcHelper
 			Stroke = loss,
 			Fill = Brushes.Transparent,
 			LineSmoothness = 0,
-			StrokeDashArray = new DoubleCollection { 1, 1 },
+			StrokeDashArray = new DoubleCollection { 1, 1 }
 		};
+		
+		var seasonData = UserData.Seasons.FirstOrDefault(s => s.Uuid == seasonUuid);
+		if (seasonData == null) return collection;
 
-		var dailyAmounts = CalcHelper.CalcCollectedPerDay(startDate, HistoryHelper.GetAllEntriesFromSeason(seasonUuid), duration);
+		var dailyAmounts = HistoryHelper.CalcDailyCollectedFromSeason(seasonUuid);
 		var collected = dailyAmounts.GetRange(0, dayIndex).Sum(); 
 
 		var offset = dayIndex - 1;
-		for (var i = offset; i < duration + 1; i++)
+		for (var i = offset; i < seasonData.Duration + 1; i++)
 		{
 			// Daily Ideal
-			var dailyIdealVal = collected + (int)MathF.Ceiling((i - offset) * dailyIdeal);
-			if (dailyIdealVal > total) dailyIdealVal = total;
+			var dailyIdealVal = collected + (int)MathF.Ceiling((i - offset) * dailyIdeal) + seasonData.StartXp;	// Offset DailyIdeal by StartXp
+			if (dailyIdealVal > seasonData.Total) dailyIdealVal = seasonData.Total;
 
 			dailyIdealSeries.Values.Add(new ObservablePoint(i, dailyIdealVal));
 
 			// Average
-			var averageVal = collected + (int)MathF.Ceiling((i - offset) * average);
+			var averageVal = collected + (int)MathF.Ceiling((i - offset) * seasonData.Average) + seasonData.StartXp;	// Offset Average by StartXp
 			averageSeries.Values.Add(new ObservablePoint(i, averageVal));
 		}
 			

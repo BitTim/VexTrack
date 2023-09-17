@@ -23,7 +23,7 @@ public class SegmentedProgressModel : ItemsControl
     public static readonly DependencyProperty VisualSegmentsStopsProperty = DependencyProperty.Register(nameof(VisualSegmentsStops), typeof(List<decimal>), typeof(SegmentedProgressModel), new PropertyMetadata(new List<decimal> {1}, OnPropertyChanged));
     public static readonly DependencyProperty ColorProperty = DependencyProperty.Register(nameof(Color), typeof(string), typeof(SegmentedProgressModel), new PropertyMetadata("", OnPropertyChanged));
 
-    public static readonly DependencyProperty SegmentedDataProperty = DependencyProperty.Register(nameof(SegmentedData), typeof(List<SegmentData>), typeof(SegmentedProgressModel), new PropertyMetadata(new List<SegmentData>() {new(0, 1.0)}));
+    public static readonly DependencyProperty SegmentedDataProperty = DependencyProperty.Register(nameof(SegmentedData), typeof(List<SegmentData>), typeof(SegmentedProgressModel), new PropertyMetadata(new List<SegmentData> {new(0, 1.0)}));
     public static readonly DependencyProperty PercentageProperty = DependencyProperty.Register(nameof(Percentage), typeof(string), typeof(SegmentedProgressModel), new PropertyMetadata("0 %"));
     public static readonly DependencyProperty ShowPercentageProperty = DependencyProperty.Register(nameof(ShowPercentage), typeof(bool), typeof(SegmentedProgressModel), new PropertyMetadata(true));
     public static readonly DependencyProperty NumSegmentsProperty = DependencyProperty.Register(nameof(NumSegments), typeof(int), typeof(SegmentedProgressModel), new PropertyMetadata(1));

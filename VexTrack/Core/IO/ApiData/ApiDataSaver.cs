@@ -150,7 +150,7 @@ public static class ApiDataSaver
                     { "vpCost", goal.VpCost },
                     { "canBuyDough", goal.CanBuyDough },
                     { "canBuyVp", goal.CanBuyVp },
-                    { "isEpilogue", goal.IsEpilogue },
+                    { "isEpilogue", goal.IsEpilogue }
                 };
                 
                 // Rewards
@@ -202,7 +202,7 @@ public static class ApiDataSaver
                     { "vpCost", goal.VpCost },
                     { "canBuyDough", goal.CanBuyDough },
                     { "canBuyVp", goal.CanBuyVp },
-                    { "isEpilogue", goal.IsEpilogue },
+                    { "isEpilogue", goal.IsEpilogue }
                 };
                 
                 // Rewards
@@ -262,7 +262,7 @@ public static class ApiDataSaver
                 { "uuid", currency.Uuid },
                 { "name", currency.Name },
                 { "iconPath", currency.IconPath },
-                { "largeIconPath", currency.LargeIconPath },
+                { "largeIconPath", currency.LargeIconPath }
             };
             
             currencies.Add(currencyObj);

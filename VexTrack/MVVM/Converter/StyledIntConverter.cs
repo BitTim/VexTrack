@@ -12,8 +12,8 @@ internal class StyledIntConverter : IValueConverter
 		var param = (string)parameter;
 		var str = val + " " + param;
 
-		if (param != "NegativeToNone") return str;
-		str = (int)value < 0 ? "-" : val;
+		if (param != "NegativeToInf") return str;
+		str = (int)value < 0 ? "\u221e" : val;
 
 		return str;
 	}

@@ -25,7 +25,7 @@ public static class UpdateHelper
 	{
 		if (Directory.Exists(Constants.UpdateFolder)) Directory.Delete(Constants.UpdateFolder, true);
 
-		var request = new HttpRequestMessage() { RequestUri = new Uri(Constants.ReleasesUrl), Method = HttpMethod.Get };
+		var request = new HttpRequestMessage { RequestUri = new Uri(Constants.ReleasesUrl), Method = HttpMethod.Get };
 		request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 		request.Headers.UserAgent.Add(new ProductInfoHeaderValue(Constants.AppName, Constants.Version));
 

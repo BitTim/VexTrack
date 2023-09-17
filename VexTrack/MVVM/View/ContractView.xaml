@@ -65,6 +65,8 @@
 							                         Progress="{Binding Progress}"
 							                         DailyAverage="{Binding Average}"
 							                         Duration="{Binding Duration}"
+							                         BufferDays="{Binding BufferDays}"
+							                         StartTimestamp="{Binding StartTimestamp}"
 							                         EndTimestamp="{Binding EndTimestamp}"
 							                         StrongestDayAmount="{Binding Extremes.StrongestDayAmount}"
 							                         StrongestDayTimestamp="{Binding Extremes.StrongestDayTimestamp}"

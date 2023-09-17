@@ -9,8 +9,6 @@ namespace VexTrack.MVVM.ViewModel;
 
 class HistoryViewModel : ObservableObject
 {
-	private string _initUuid;
-
 	public RelayCommand HistoryButtonClick { get; }
 	public RelayCommand OnAddClicked { get; }
 	private HistoryEntryPopupViewModel HePopup { get; }
@@ -42,8 +40,6 @@ class HistoryViewModel : ObservableObject
 		foreach (var hg in groups) { Groups.Add(hg); }
 
 		if (Groups.Count < 1) return;
-		
-		_initUuid = Groups.Last().Entries.Last().Uuid;
 
 		var entry = (from g in Groups
 			from e in g.Entries

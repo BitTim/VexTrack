@@ -43,7 +43,7 @@ public static class HomeCalcHelper
 			         .Equals(today)) // When streak was not fulfilled today, but is now fulfilled, update
 		{
 			UserData.Streak++;
-			UserData.LastStreakUpdateTimestamp = today.ToUnixTimeSeconds();
+			UserData.LastStreakUpdateTimestamp = TimeHelper.TodayTimestamp;
 		}
 		else if (collectedPerDay[dayIndex] <= 0 &&
 		         TimeHelper.TimestampToDate(UserData.LastStreakUpdateTimestamp)

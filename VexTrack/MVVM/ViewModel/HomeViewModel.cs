@@ -59,6 +59,7 @@ class HomeViewModel : ObservableObject
 		{
 			_collected = value;
 			OnPropertyChanged();
+			OnPropertyChanged(nameof(Status));
 		}
 	}
 
@@ -232,7 +233,7 @@ class HomeViewModel : ObservableObject
 		
 	private string GetStatus()
 	{
-		if (Segments.Count < 1) return "";
+		if (Segments == null || Segments.Count < 1) return "";
 		
 		if (Collected < Segments[0]) return "Warning";
 		if (Collected >= Segments[0] && Collected < Total) return "Done";

@@ -30,7 +30,7 @@ public static class UserDataLoader
         var reSave = false;
 			
         var streak = 0;
-        var lastStreakUpdateTimestamp = (long)0;
+        var lastStreakUpdateTimestamp = TimeHelper.TodayDate.AddDays(-1).ToUnixTimeSeconds();
         List<HistoryGroup> history = new();
         List<Season> seasons = new();
         List<Contract> contracts = new();

@@ -196,7 +196,11 @@ public abstract class UserData
 
 	public static void AddSeason(Season data, bool skipUpdate = false)
 	{
-		Seasons.Insert(0, data);
+		var idx = Seasons.FindIndex(s => s.Uuid == data.Uuid);
+			
+		if (idx != -1) { Seasons[idx] = data; }
+		else { Seasons.Insert(0, data); }
+		
 		if(!skipUpdate) CallUpdate();
 	}
 
@@ -208,7 +212,7 @@ public abstract class UserData
 		dataInitPopup.InitData();
 		dataInitPopup.CanCancel = false;
 		mainVm.InterruptUpdate = true;
-
+		
 		mainVm.QueuePopup(dataInitPopup);
 	}
 }

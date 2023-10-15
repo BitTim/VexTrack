@@ -58,7 +58,7 @@ class SettingsViewModel : ObservableObject
 			_username = value;
 			SettingsHelper.Data.Username = value;
 			OnPropertyChanged();
-			if (_doUpdate) SettingsHelper.CallUpdate();
+			if (_doUpdate) SettingsHelper.CallMainUpdate();
 		}
 	}
 	public double BufferPercentage
@@ -71,7 +71,7 @@ class SettingsViewModel : ObservableObject
 			_bufferPercentage = value;
 			SettingsHelper.Data.BufferPercentage = value;
 			OnPropertyChanged();
-			if (_doUpdate) SettingsHelper.CallUpdate();
+			if (_doUpdate) SettingsHelper.CallMainUpdate();
 		}
 	}
 	public bool IgnoreInactive
@@ -84,7 +84,7 @@ class SettingsViewModel : ObservableObject
 			_ignoreInactive = value;
 			SettingsHelper.Data.IgnoreInactiveDays = value;
 			OnPropertyChanged();
-			if (_doUpdate) SettingsHelper.CallUpdate();
+			if (_doUpdate) SettingsHelper.CallMainUpdate();
 		}
 	}
 	public bool IgnoreInit
@@ -97,7 +97,7 @@ class SettingsViewModel : ObservableObject
 			_ignoreInit = value;
 			SettingsHelper.Data.IgnoreInit = value;
 			OnPropertyChanged();
-			if (_doUpdate) SettingsHelper.CallUpdate();
+			if (_doUpdate) SettingsHelper.CallMainUpdate();
 		}
 	}
 	public bool IgnorePreReleases
@@ -110,7 +110,7 @@ class SettingsViewModel : ObservableObject
 			_ignorePreReleases = value;
 			SettingsHelper.Data.IgnorePreReleases = value;
 			OnPropertyChanged();
-			if (_doUpdate) SettingsHelper.CallUpdate();
+			if (_doUpdate) SettingsHelper.CallMainUpdate();
 		}
 	}
 	public bool ForceEpilogue
@@ -123,7 +123,7 @@ class SettingsViewModel : ObservableObject
 			_forceEpilogue = value;
 			SettingsHelper.Data.ForceEpilogue = value;
 			OnPropertyChanged();
-			if (_doUpdate) SettingsHelper.CallUpdate();
+			if (_doUpdate) SettingsHelper.CallMainUpdate();
 		}
 	}
 	public bool SingleSeasonHistory
@@ -136,7 +136,7 @@ class SettingsViewModel : ObservableObject
 			_singleSeasonHistory = value;
 			SettingsHelper.Data.SingleSeasonHistory = value;
 			OnPropertyChanged();
-			if (_doUpdate) SettingsHelper.CallUpdate();
+			if (_doUpdate) SettingsHelper.CallMainUpdate();
 		}
 	}
 
@@ -153,7 +153,7 @@ class SettingsViewModel : ObservableObject
 		{
 			SettingsHelper.Data.Reset();
 			SettingsHelper.Data.UpdateTheme();
-			SettingsHelper.CallUpdate();
+			SettingsHelper.CallMainUpdate();
 		});
 		OnResetClicked = new RelayCommand(_ =>
 		{
@@ -186,13 +186,13 @@ class SettingsViewModel : ObservableObject
 	{
 		SettingsHelper.Data.ThemeString = theme;
 		SettingsHelper.Data.UpdateTheme();
-		SettingsHelper.CallUpdate();
+		SettingsHelper.CallMainUpdate();
 	}
 
 	private static void SetAccent(string accent)
 	{
 		SettingsHelper.Data.AccentString = accent;
 		SettingsHelper.Data.UpdateTheme();
-		SettingsHelper.CallUpdate();
+		SettingsHelper.CallMainUpdate();
 	}
 }

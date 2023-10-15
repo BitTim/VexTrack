@@ -52,7 +52,7 @@ public static class HistoryHelper
 
             if (group != null)
             {
-                amount = group.Entries.Select(e => e.Amount).Sum();
+                amount = group.SumCollected;
             }
             
             dailyAmounts.Add(amount);

@@ -93,11 +93,9 @@ class EditableGoalPopupViewModel : BasePopupViewModel
 			Close();
 		});
 	}
+	
 		
-		
-		
-	// TODO: These three are currently unused, but will be used again at a later point in time
-		
+	
 	public void SetParameters(string popupTitle, bool editMode)
 	{
 		PopupTitle = popupTitle;

@@ -101,8 +101,8 @@ public static class UpdateHelper
 	{
 		if (!Directory.Exists(Constants.UpdateFolder)) Directory.CreateDirectory(Constants.UpdateFolder);
 
-		await Update.DownloadUpdate(SourceFile, UpdaterFile, _latestVersionTag, Client);
-		var extractResult = Update.ExtractUpdate(SourceFile, ExtractTarget);
+		await Updater.DownloadUpdate(SourceFile, UpdaterFile, _latestVersionTag, Client);
+		var extractResult = Updater.ExtractUpdate(SourceFile, ExtractTarget);
 		
 		var mainVm = (MainViewModel)ViewModelManager.ViewModels[nameof(MainViewModel)];
 		var popup = new UpdateFailedPopupViewModel();
@@ -117,7 +117,7 @@ public static class UpdateHelper
 			return;
 		}
 
-		var applyResult = Update.ApplyUpdate(UpdaterFile, ExtractTarget, Environment.CurrentDirectory, _latestVersionTag);
+		var applyResult = Updater.ApplyUpdate(UpdaterFile, ExtractTarget, Environment.CurrentDirectory, _latestVersionTag);
 
 		if (applyResult != 1) return;
 		

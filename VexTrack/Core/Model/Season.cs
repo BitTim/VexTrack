@@ -37,6 +37,7 @@ public class Season
     public SeriesCollection GraphSeriesCollection => GraphCalcHelper.CalcGraphs(Uuid);
 
     
+    public int NextUnlockIndex => Goals.IndexOf(GetNextUnlock());
     public string NextUnlockName => GetNextUnlock()?.Name ?? "None";
     public double NextUnlockProgress => GetNextUnlock()?.Progress ?? 100;
     public int NextUnlockRemaining => GetNextUnlock()?.Remaining ?? 0;

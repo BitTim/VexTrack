@@ -15,7 +15,7 @@ public static class SettingsHelper
 		Data = new Settings();
 	}
 
-	public static void CallUpdate()
+	public static void CallMainUpdate()
 	{
 		var mainVm = (MainViewModel)ViewModelManager.ViewModels[nameof(MainViewModel)];
 		mainVm.Update();

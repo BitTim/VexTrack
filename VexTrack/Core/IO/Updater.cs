@@ -13,7 +13,7 @@ using VexTrack.MVVM.ViewModel.Popups;
 
 namespace VexTrack.Core.IO;
 
-public static class Update
+public static class Updater
 {
 	public static async Task DownloadUpdate(string packageFile, string updaterFile, string tag, HttpClient client)
 	{

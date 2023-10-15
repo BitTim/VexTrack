@@ -33,7 +33,6 @@ public abstract class UserData
 	internal static void SetData(int streak, long lastStreakUpdateTimestamp, List<Contract> contracts, List<Season> seasons, List<HistoryGroup> history)
 	{
 		(Streak, LastStreakUpdateTimestamp, Contracts, Seasons, History) = (streak, lastStreakUpdateTimestamp ,contracts, seasons, history);
-		Recalculate();
 	}
 		
 		
@@ -42,71 +41,45 @@ public abstract class UserData
 	//  Updating
 	// ================================
 
-	private static void Recalculate() // TODO: Restructure this to have Update() methods in Season and Contracts
+	private static void Update(int amount)
 	{
 		List<string> completed = new();
 		List<string> lost = new();
 
-		//Get Completed goals
-		var completedSeasonGoals = (from season in Seasons from goal in season.Goals where goal.Collected >= goal.Total select goal.Uuid).ToList();
-		var completedContractGoals = (from contract in Contracts from goal in contract.Goals where goal.Collected >= goal.Total select goal.Uuid).ToList();
-
-		// Cancel when no current Season data is available
-		if (CurrentSeasonData == null) return;
-		
-		//Calculate XP delta
-		var collectedXp = CurrentSeasonData.Collected;
-		var prevCollectedXp = CurrentSeasonData.Goals.Sum(g => g.Collected);
-		var deltaXp = collectedXp - prevCollectedXp;
-
-		if (prevCollectedXp >= CurrentSeasonData.Goals.Sum(g => g.Total)) deltaXp = 0;
-
-		//Calculate difference in XP and apply to goals
-
-		var xpPool = Math.Abs(deltaXp);
-
-		for (var i = CurrentSeasonData.Goals.Count - 1; i >= 0; i--) // TODO: This sets collected of all goals to 0 when removing XP
+		foreach (var season in Seasons)
 		{
-			var goal = CurrentSeasonData.Goals[i];
-			var goalLimit = deltaXp > 0 ? goal.Remaining : goal.Collected;
+			var xpPool = amount;
+			var activeGoalIndex = season.NextUnlockIndex;
 
-			var appliedXp = xpPool > goalLimit ? goalLimit : xpPool;
-			appliedXp *= Math.Sign(deltaXp);
-			xpPool -= appliedXp;
-
-			var newCollected = goal.Collected + appliedXp;
-			if (newCollected < 0) newCollected = 0;
-
-			goal.Collected = newCollected;
-
-			if (goal.Collected >= goal.Total && !completedSeasonGoals.Contains(goal.Uuid)) completed.Add(goal.Name);
-			if (goal.Collected < goal.Total && completedSeasonGoals.Contains(goal.Uuid)) lost.Add(goal.Name);
-		}
-
-		for (var i = Contracts.Count - 1; i >= 0; i--)
-		{
-			var contract = Contracts[i];
-			xpPool = Math.Abs(deltaXp);
-
-			foreach (var goal in contract.Goals)
+			while (xpPool != 0)
 			{
-				var goalLimit = deltaXp > 0 ? goal.Remaining : goal.Collected;
+				var goal = season.Goals[activeGoalIndex];
+				goal.Collected += xpPool;
 
-				var appliedXp = xpPool > goalLimit ? goalLimit : xpPool;
-				appliedXp *= Math.Sign(deltaXp);
-				xpPool -= appliedXp;
+				if (goal.Collected >= goal.Total)
+				{
+					xpPool = goal.Collected - goal.Total;
+					goal.Collected = goal.Total;
 
-				var newCollected = goal.Collected + appliedXp;
-				if (newCollected < 0) newCollected = 0;
-
-				goal.Collected = newCollected;
-
-				if (goal.Collected >= goal.Total && !completedContractGoals.Contains(goal.Uuid))
 					completed.Add(goal.Name);
-				if (goal.Collected < goal.Total && completedContractGoals.Contains(goal.Uuid)) lost.Add(goal.Name);
+					activeGoalIndex++;
+				}
+				else if (goal.Collected <= 0)
+				{
+					xpPool = goal.Collected;
+					goal.Collected = 0;
+
+					if (activeGoalIndex > 1)
+					{
+						activeGoalIndex--;
+						lost.Add(season.Goals[activeGoalIndex].Name);
+					}
+					else xpPool = 0;
+				}
+				else xpPool = 0;
 			}
 		}
-
+		
 		if (completed.Count == 0 && lost.Count == 0) return;
 		var mainVm = (MainViewModel)ViewModelManager.ViewModels[nameof(MainViewModel)];
 		var paPopupVm = (ProgressActivityPopupViewModel)ViewModelManager.ViewModels[nameof(ProgressActivityPopupViewModel)];
@@ -115,7 +88,7 @@ public abstract class UserData
 		mainVm.QueuePopup(paPopupVm);
 	}
 
-	private static void CallUpdate()
+	private static void CallMainUpdate()
 	{
 		UserDataSaver.SaveUserData(Streak, LastStreakUpdateTimestamp, Contracts, Seasons, History);
 		var mainVm = (MainViewModel)ViewModelManager.ViewModels[nameof(MainViewModel)];
@@ -126,7 +99,7 @@ public abstract class UserData
 	{
 		if(File.Exists(Constants.DataPath)) File.Delete(Constants.DataPath);
 		UserDataLoader.LoadUserData();
-		CallUpdate();
+		CallMainUpdate();
 	}
 
 		
@@ -135,7 +108,7 @@ public abstract class UserData
 	//  Modifying
 	// ================================
 		
-	public static void AddHistoryEntry(HistoryEntry data)
+	public static void AddHistoryEntry(HistoryEntry data, bool suppressUpdate = false)
 	{
 		var seasonUuid = Seasons.Find(s => data.Time > s.StartTimestamp && data.Time < s.EndTimestamp)?.Uuid;
 
@@ -158,30 +131,37 @@ public abstract class UserData
 		History.Find(hg => hg.Uuid == groupUuid).Entries.Add(data);
 
 		HistoryHelper.SortHistory();
-			
-		Recalculate();
-		CallUpdate();
+
+		if(!suppressUpdate) Update(data.Amount);
+		CallMainUpdate();
 	}
 
-	public static void RemoveHistoryEntry(string groupUuid, string uuid)
+	public static void RemoveHistoryEntry(string groupUuid, string uuid, bool suppressUpdate = false)
 	{
 		var hgIdx = History.FindIndex(hg => hg.Uuid == groupUuid);
 		var heIdx = History[hgIdx].Entries.FindIndex(he => he.Uuid == uuid);
+		
+		var amount = History[hgIdx].Entries[heIdx].Amount;
 		History[hgIdx].Entries.RemoveAt(heIdx);
 
 		if(History[hgIdx].Entries.Count < 1) History.RemoveAt(hgIdx);
 			
-		Recalculate();
-		CallUpdate();
+		if(!suppressUpdate) Update(-amount);
+		CallMainUpdate();
 	}
 
 	public static void EditHistoryEntry(string groupUuid, HistoryEntry data)
 	{
-		RemoveHistoryEntry(groupUuid, data.Uuid);
-		AddHistoryEntry(data);
-			
-		Recalculate();
-		CallUpdate();
+		var hgIdx = History.FindIndex(hg => hg.Uuid == groupUuid);
+		var heIdx = History[hgIdx].Entries.FindIndex(he => he.Uuid == data.Uuid);
+		
+		var amount = History[hgIdx].Entries[heIdx].Amount;
+		
+		RemoveHistoryEntry(groupUuid, data.Uuid, true);
+		AddHistoryEntry(data, true);
+
+		Update(data.Amount - amount);
+		CallMainUpdate();
 	}
 
 		
@@ -189,7 +169,7 @@ public abstract class UserData
 	public static void AddContract(Contract data)
 	{
 		Contracts.Add(data);
-		CallUpdate();
+		CallMainUpdate();
 	}
 
 
@@ -201,7 +181,7 @@ public abstract class UserData
 		if (idx != -1) { Seasons[idx] = data; }
 		else { Seasons.Insert(0, data); }
 		
-		if(!skipUpdate) CallUpdate();
+		if(!skipUpdate) CallMainUpdate();
 	}
 
 	internal static void CreateDataInitPopup()

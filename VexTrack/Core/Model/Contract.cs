@@ -9,7 +9,7 @@ namespace VexTrack.Core.Model;
 
 public class Contract
 {
-    public ContractTemplate Template { get; set; }
+    private ContractTemplate Template { get; set; }
     public List<Goal> Goals { get; set; }
 
 
@@ -25,6 +25,7 @@ public class Contract
     public int Remaining => GetRemaining();
     public int Progress => CalcHelper.CalcProgress(Total, Collected);
     
+    public int NextUnlockIndex => Goals.IndexOf(GetNextUnlock());
     public string NextUnlockName => GetNextUnlock()?.Name ?? "None";
     public double NextUnlockProgress => GetNextUnlock()?.Progress ?? 100;
     public int NextUnlockRemaining => GetNextUnlock()?.Remaining ?? 0;
@@ -35,7 +36,7 @@ public class Contract
     public long CompletionTimestamp => GetCompletionTimestamp();
     public int BufferDays => (int)Math.Ceiling(Duration * (SettingsHelper.Data.BufferPercentage / 100));
 
-    private bool IsActive => TimeHelper.NowTimestamp < Template.EndTimestamp;
+    protected bool IsActive => TimeHelper.NowTimestamp < EndTimestamp;
     public string Status => GetStatus();
     public ObservableCollection<Goal> ObservableGoals => new(Goals);
     
@@ -101,8 +102,14 @@ public class Contract
     
     private string GetStatus()
     {
-        if (Collected < /*TotalMin*/ 0) return IsActive ? "Warning" : "Failed"; //TODO: Rework
+        if (Collected < Total)
+        {
+            if (!IsActive) return "Failed";
+            if (RemainingDays < BufferDays) return "Warning";
+            return "Active";
+        }
+        
         if (Collected < Total) return "Done";
-        return Collected >= Total ? "DoneAll" : "";
-    }
+        return "";
+    }  
 }

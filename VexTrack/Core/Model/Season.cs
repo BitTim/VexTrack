@@ -4,94 +4,55 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using LiveCharts;
 using VexTrack.Core.Helper;
+using VexTrack.Core.Model.Game.Templates;
 
 namespace VexTrack.Core.Model;
 
-public class Season
+public class Season : Contract
 {
-    public string Uuid { get; set; }
-    public string Name { get; set; }
-    private long ActualStartTimestamp { get; set; }
-    public long StartTimestamp => ActualStartTimestamp == -1 ? TimeHelper.IsolateTimestampDate(HistoryHelper.GetFirstFromSeason(Uuid).Time) : ActualStartTimestamp;
-    public long EndTimestamp { get; set; }
-    public int Duration => GetDuration();
-    public int RemainingDays => GetRemainingDays();
-
-
-    public int Total => Goals.Sum(g => g.Total);
+    
+    public new long StartTimestamp => ActualStartTimestamp == -1 ? TimeHelper.IsolateTimestampDate(HistoryHelper.GetFirstFromSeason(Uuid).Time) : ActualStartTimestamp;
+    public new int Collected => HistoryHelper.CalcCollectedFromSeason(Uuid);
+    public new string Status => GetStatus();
+    
     private int TotalMin => Goals.Where(g => !g.IsEpilogue).Sum(g => g.Total);
-    public int Collected => HistoryHelper.CalcCollectedFromSeason(Uuid);
-    public int Remaining => Total - Collected;
     public int RemainingMin => TotalMin - Collected;
+    private long ActualStartTimestamp { get; set; }
     public int StartXp { get; set; }
     public int Average => CalcHelper.CalcAverage(Collected, Duration, RemainingDays);
-    public double Progress => CalcHelper.CalcProgress(Total, Collected);
-    public int BufferDays => (int)Math.Ceiling(Duration * (SettingsHelper.Data.BufferPercentage / 100));
-
-    private bool IsActive => TimeHelper.NowTimestamp < EndTimestamp;
-    public string Status => GetStatus();
     
-    public List<Goal> Goals { get; set; }
-    public ObservableCollection<Goal> ObservableGoals => new(Goals);
     public SeasonExtremes Extremes => GetExtremes();
     public SeriesCollection GraphSeriesCollection => GraphCalcHelper.CalcGraphs(Uuid);
 
-    
-    public int NextUnlockIndex => Goals.IndexOf(GetNextUnlock());
-    public string NextUnlockName => GetNextUnlock()?.Name ?? "None";
-    public double NextUnlockProgress => GetNextUnlock()?.Progress ?? 100;
-    public int NextUnlockRemaining => GetNextUnlock()?.Remaining ?? 0;
 
 
-    
-    public Season(string uuid, string name, long startTimestamp, long endTimestamp, int startXp, List<Goal> goals)
+    public Season(ContractTemplate template, int startXp, List<Goal> goals) : base(template, goals)
     {
-        (Uuid, Name, ActualStartTimestamp, EndTimestamp, StartXp, Goals) = (uuid, name, startTimestamp, endTimestamp, startXp, goals);
+        StartXp = startXp;
+        ActualStartTimestamp = template.StartTimestamp;
     }
 
     public SeriesCollection GetDailyGraphSeriesCollection(int dayIndex, int dailyIdeal)
     {
         return GraphCalcHelper.CalcDailyGraphs(dayIndex, dailyIdeal, Uuid);
     }
-
-    
-    
-    
-    private int GetRemainingDays()
-    {
-        var endDate = TimeHelper.TimestampToDate(EndTimestamp);
-        var today = TimeHelper.TodayDate;
-
-        var remainingDays = (endDate - today).Days;
-        if ((endDate - today).Hours > 12) { remainingDays += 1; }
-        if (remainingDays < 0) remainingDays = 0;
-
-        return remainingDays;
-    }
-
-    private int GetDuration()
-    {
-        var endDate = TimeHelper.TimestampToDate(EndTimestamp);
-        var startDate = TimeHelper.TimestampToDate(StartTimestamp);
-
-        var duration = (endDate - startDate).Days;
-        if ((endDate - startDate).Hours > 12) { duration += 1; }
-        if (duration < 0) duration = 0;
-
-        return duration;
-    }
     
     private string GetStatus()
     {
-        if (Collected < TotalMin) return IsActive ? "Warning" : "Failed";
-        if (Collected < Total) return "Done";
-        return Collected >= Total ? "DoneAll" : "";
-    }
+        if (Collected < TotalMin)
+        {
+            if (!IsActive) return "Failed";
+            if (RemainingDays < BufferDays) return "Warning";
+            return "Active";
+        }
 
-    private Goal GetNextUnlock()
-    {
-        return Goals.FirstOrDefault(goal => !goal.IsCompleted());
-    }
+        if (Collected >= TotalMin && Collected < Total) return "Done";
+        if (Collected >= Total) return "DoneAll";
+        return "";
+    }  
+
+    
+    
     
     private SeasonExtremes GetExtremes()
     {

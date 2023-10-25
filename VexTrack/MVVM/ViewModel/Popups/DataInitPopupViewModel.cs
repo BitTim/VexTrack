@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using VexTrack.Core.Helper;
 using VexTrack.Core.Model;
+using VexTrack.Core.Model.Game.Templates;
 using VexTrack.Core.Model.WPF;
 
 namespace VexTrack.MVVM.ViewModel.Popups;
@@ -76,7 +78,7 @@ class DataInitPopupViewModel : BasePopupViewModel
 				goals.Add(new Goal(template, Guid.NewGuid().ToString(), collected));
 			}
 			
-			UserData.AddSeason(new Season(ApiData.ActiveSeasonTemplate.Uuid, Name, ApiData.ActiveSeasonTemplate.StartTimestamp, EndTimestamp, totalCollectedXp, goals));
+			UserData.AddSeason(new Season(new ContractTemplate(ApiData.ActiveSeasonTemplate.Uuid, Name, "season", ApiData.ActiveSeasonTemplate.StartTimestamp, EndTimestamp, goals.Select(g => g.Template).ToList()), totalCollectedXp, goals));
 			Close();
 		});
 	}

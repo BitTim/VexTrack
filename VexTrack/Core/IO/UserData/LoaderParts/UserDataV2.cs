@@ -24,6 +24,7 @@ public static class UserDataV2
 		    var startXp = season.Value<int>("startXp");
 
 		    List<Goal> goals = new();
+		    List<GoalTemplate> goalTemplates = new();
 		    var templates = Model.ApiData.ContractTemplates.Find(ct => ct.Type == "Season" && ct.Uuid == sUuid)?.Goals;
 		    var goalIdx = 0;
 		    
@@ -67,7 +68,7 @@ public static class UserDataV2
 		    }
 
 		    sUuid ??= Guid.NewGuid().ToString();
-		    seasons.Add(new Season(sUuid, name, startTimestamp, endTimestamp, startXp, goals));
+		    seasons.Add(new Season(new ContractTemplate(sUuid, name, "season", startTimestamp, endTimestamp, goals.Select(g => g.Template).ToList()), startXp, goals));
 	    }
 		
 	    var sortedSeasons = seasons.OrderByDescending(s => s.StartTimestamp).ToList();

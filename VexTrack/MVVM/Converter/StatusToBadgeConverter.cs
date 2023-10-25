@@ -16,6 +16,7 @@ internal class StatusToBadgeConverter : IValueConverter
 
 		var doneIcon = (Path)Application.Current.FindResource("DoneIcon");
 		var doneAllIcon = (Path)Application.Current.FindResource("DoneAllIcon");
+		var activeIcon = (Path)Application.Current.FindResource("ActiveIcon");
 		var warnIcon = (Path)Application.Current.FindResource("WarnIcon");
 		var crossIcon = (Path)Application.Current.FindResource("CrossIcon");
 
@@ -30,6 +31,7 @@ internal class StatusToBadgeConverter : IValueConverter
 			{
 				"DoneAll" => doneAllIcon?.Data,
 				"Done" => doneIcon?.Data,
+				"Active" => activeIcon?.Data,
 				"Warning" => warnIcon?.Data,
 				"Failed" => crossIcon?.Data,
 				_ => null
@@ -38,6 +40,7 @@ internal class StatusToBadgeConverter : IValueConverter
 			{
 				"DoneAll" => blue,
 				"Done" => green,
+				"Active" => yellow,
 				"Warning" => yellow,
 				"Failed" => red,
 				_ => null

@@ -69,7 +69,7 @@ public static class UserDataLoader
                     goals.Add(new Goal(goalTemplate, Guid.NewGuid().ToString(), 0));
                 }
 				
-                seasons.Insert(0, new Season(template.Uuid, template.Name, template.StartTimestamp, template.EndTimestamp, 0, goals));
+                seasons.Insert(0, new Season(template, 0, goals));
             }
         }
         

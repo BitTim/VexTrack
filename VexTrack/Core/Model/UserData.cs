@@ -46,14 +46,16 @@ public abstract class UserData
 		List<string> completed = new();
 		List<string> lost = new();
 
-		foreach (var season in Seasons)
+		var allContracts = Seasons.Concat(Contracts);
+		
+		foreach (var contract in allContracts)
 		{
 			var xpPool = amount;
-			var activeGoalIndex = season.NextUnlockIndex;
+			var activeGoalIndex = contract.NextUnlockIndex;
 
 			while (xpPool != 0)
 			{
-				var goal = season.Goals[activeGoalIndex];
+				var goal = contract.Goals[activeGoalIndex];
 				goal.Collected += xpPool;
 
 				if (goal.Collected >= goal.Total)
@@ -72,7 +74,7 @@ public abstract class UserData
 					if (activeGoalIndex > 1)
 					{
 						activeGoalIndex--;
-						lost.Add(season.Goals[activeGoalIndex].Name);
+						lost.Add(contract.Goals[activeGoalIndex].Name);
 					}
 					else xpPool = 0;
 				}

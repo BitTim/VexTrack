@@ -235,7 +235,7 @@ class HomeViewModel : ObservableObject
 	{
 		if (Segments == null || Segments.Count < 1) return "";
 		
-		if (Collected < Segments[0]) return "Warning";
+		if (Collected < Segments[0]) return "Active";
 		if (Collected >= Segments[0] && Collected < Total) return "Done";
 		return Collected >= Total ? "DoneAll" : "";
 	}

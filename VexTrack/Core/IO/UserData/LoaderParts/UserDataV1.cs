@@ -164,7 +164,7 @@ public static class UserDataV1
 			}
 			
 			sUuid ??= Guid.NewGuid().ToString();
-			seasons.Add(new Season(sUuid, name, startTimestamp, endTimestamp, startXp, goals));
+			seasons.Add(new Season(new ContractTemplate(sUuid, name, "season", startTimestamp, endTimestamp, goals.Select(g => g.Template).ToList()), startXp, goals));
 		}
 		
 		foreach(var hg in history)

@@ -81,24 +81,22 @@ namespace VexTrack.Core
 
 			int score = -1;
 			int enemyScore = -1;
+			
 
-			if (!isCustom)
+			string[] splitDesc = description.Split(" ");
+			string scoreStr = "";
+
+			foreach (string token in splitDesc)
 			{
-				string[] splitDesc = description.Split(" ");
-				string scoreStr = "";
+				if (!token.Contains("-")) { continue; }
+				scoreStr = token;
 
-				foreach (string token in splitDesc)
-				{
-					if (!token.Contains("-")) { continue; }
-					scoreStr = token;
+				string[] scoreTokens = scoreStr.Split("-");
+				if (scoreTokens.Length != 2) continue;
+				if (scoreTokens[0] == "" || scoreTokens[1] == "") continue;
 
-					string[] scoreTokens = scoreStr.Split("-");
-					if (scoreTokens.Length != 2) continue;
-					if (scoreTokens[0] == "" || scoreTokens[1] == "") continue;
-
-					(score, enemyScore) = (int.Parse(scoreTokens[0]), int.Parse(scoreTokens[1]));
-					break;
-				}
+				(score, enemyScore) = (int.Parse(scoreTokens[0]), int.Parse(scoreTokens[1]));
+				break;
 			}
 
 			string desc = isCustom ? description : "";

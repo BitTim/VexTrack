@@ -290,7 +290,7 @@ namespace VexTrack.Core
 					int score, enemyScore;
 					bool surrenderedWin, surrenderedLoss;
 
-					if (gamemode == null)
+					if (gamemode is null or "Custom")
 					{
 						(gameMode, desc, score, enemyScore) = HistoryDataCalc.DescriptionToScores(description);
 						surrenderedWin = false;

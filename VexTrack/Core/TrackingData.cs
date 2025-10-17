@@ -273,13 +273,24 @@ namespace VexTrack.Core
 					string map = (string)historyEntry["map"];
 					string description = (string)historyEntry["description"];
 
-					if (map == null || map == "") map = Constants.Maps.Last();
+					// Fix previous typos
+					if (gamemode == "Competetive")
+					{
+						gamemode = "Competitive";
+						reSave = true;
+					}
+
+					if (gamemode == "Snowballfight")
+					{
+						gamemode = "Snowball Fight";
+						reSave = true;
+					}
 
 					string gameMode, desc;
 					int score, enemyScore;
 					bool surrenderedWin, surrenderedLoss;
 
-					if (gamemode == null)
+					if (gamemode is null or "Custom")
 					{
 						(gameMode, desc, score, enemyScore) = HistoryDataCalc.DescriptionToScores(description);
 						surrenderedWin = false;
@@ -662,7 +673,7 @@ namespace VexTrack.Core
 				.History.FindIndex(he => he.UUID == hUUID)] = data;
 
 			HistoryViewModel HistoryVM = (HistoryViewModel)ViewModelManager.ViewModels["History"];
-			HistoryVM.EditEntry(new HistoryEntryData(sUUID, hUUID, data.GameMode, data.Time, data.Amount, data.Map, HistoryDataCalc.CalcHistoryResultFromScores(Constants.ScoreTypes[data.GameMode], data.Score, data.EnemyScore, data.SurrenderedWin, data.SurrenderedLoss), data.Description, data.Score, data.EnemyScore, data.SurrenderedWin, data.SurrenderedLoss));
+			HistoryVM.EditEntry(new HistoryEntryData(sUUID, hUUID, data.GameMode, data.Time, data.Amount, data.Map, HistoryDataCalc.CalcHistoryResultFromScores(Constants.ScoreTypes[data.GameMode], data.Description, data.Score, data.EnemyScore, data.SurrenderedWin, data.SurrenderedLoss), data.Description, data.Score, data.EnemyScore, data.SurrenderedWin, data.SurrenderedLoss));
 
 			Recalculate();
 			CallUpdate();

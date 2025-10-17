@@ -6,7 +6,7 @@ namespace VexTrack.Core
 	static class Constants
 	{
 		public static readonly string AppName = "VexTrack";
-		public static readonly string Version = "v1.87";
+		public static readonly string Version = "v1.88";
 
 		public static readonly string DataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"/VexTrack - Preview";
 		public static readonly string LegacyDataFolder = @"dat";
@@ -32,24 +32,40 @@ namespace VexTrack.Core
 		public static readonly List<string> Maps = new List<string>()
 		{
 			"Ascent",
+			"Split",
+			"Fracture",
 			"Bind",
 			"Breeze",
-			"Fracture",
-			"Haven",
+			"Abyss",
+			"Lotus",
+			"Sunset",
+			"Peral",
 			"Icebox",
-			"Split",
-			"None"
+			"Corrode",
+			"Haven",
+			"Disctrict",
+			"Kasbah",
+			"Drift",
+			"Glitch",
+			"Piazza",
+			"Skirmish A",
+			"Skirmish B",
+			"Skirmish C",
+			"Custom"
 		};
 
 		public static readonly List<string> Gamemodes = new List<string>()
 		{
 			"Unrated",
-			"Competetive",
+			"Competitive",
+			"Swiftplay",
 			"Spike Rush",
+			"Team Deathmatch",
 			"Deathmatch",
 			"Escalation",
 			"Replication",
-			"Snowballfight",
+			"Snowball Fight",
+			"Skirmish",
 			"Custom"
 		};
 
@@ -58,11 +74,14 @@ namespace VexTrack.Core
 			[Gamemodes[0]] = "Score",
 			[Gamemodes[1]] = "Score",
 			[Gamemodes[2]] = "Score",
-			[Gamemodes[3]] = "Placement",
+			[Gamemodes[3]] = "Score",
 			[Gamemodes[4]] = "Score",
-			[Gamemodes[5]] = "Score",
+			[Gamemodes[5]] = "Placement",
 			[Gamemodes[6]] = "Score",
-			[Gamemodes[7]] = "None"
+			[Gamemodes[7]] = "Score",
+			[Gamemodes[8]] = "Score",
+			[Gamemodes[9]] = "Score",
+			[Gamemodes[10]] = "None"
 		};
 
 		public static readonly Dictionary<string, int> StreakStatusOrder = new Dictionary<string, int>

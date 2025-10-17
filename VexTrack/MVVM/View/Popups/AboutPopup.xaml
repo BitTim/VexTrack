@@ -50,6 +50,7 @@
 							<RowDefinition Height="Auto"/>
 							<RowDefinition Height="Auto"/>
 							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
 						</Grid.RowDefinitions>
 						
 						<TextBlock Grid.Row="0"
@@ -74,13 +75,12 @@
 								   HorizontalAlignment="Center"
 								   Foreground="{DynamicResource Foreground}"
 								   Margin="0, 0, 0, 8">
-							GitHub:
 							<Hyperlink NavigateUri="https://github.com/BitTim/VexTrack" RequestNavigate="Hyperlink_RequestNavigate">
 								https://github.com/BitTim/VexTrack					
 							</Hyperlink>
 						</TextBlock>
 
-						<TextBlock Text="Created by BitTim, Copyright ©2021 - 2022"
+						<TextBlock Text="Created by BitTim, Copyright ©2021 - 2025"
 								   Grid.Row="3"
 								   FontSize="14"
 								   TextWrapping="Wrap"
@@ -88,7 +88,7 @@
 								   Foreground="{DynamicResource Foreground}"
 								   Margin="0, 0, 0, 32"/>
 
-						<TextBlock Text="v2.0 is gonna be big"
+						<TextBlock Text="This is the end. Please check out Valolink!"
 								   Grid.Row="4"
 								   FontSize="14"
                                    FontStyle="Italic"
@@ -96,6 +96,19 @@
 								   HorizontalAlignment="Center"
 								   Foreground="{DynamicResource Foreground}"
 								   Margin="0, 0, 0, 2"/>
+
+						<TextBlock Text=""
+								   Grid.Row="5"
+								   FontSize="14"
+                                   FontStyle="Italic"
+								   TextWrapping="Wrap"
+								   HorizontalAlignment="Center"
+								   Foreground="{DynamicResource Foreground}"
+								   Margin="0, 0, 0, 2">
+							<Hyperlink NavigateUri="https://github.com/BitTim/Valolink" RequestNavigate="Hyperlink_RequestNavigate">
+								https://github.com/BitTim/Valolink					
+							</Hyperlink>
+						</TextBlock>
 					</Grid>
 				</Grid>
 

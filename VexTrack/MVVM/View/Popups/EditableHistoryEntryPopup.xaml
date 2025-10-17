@@ -15,6 +15,7 @@
 		<conv:TimestampToStringConverter x:Key="TimestampConv"/>
 		<conv:StringToVisibilityConverter x:Key="StringToVisibleConv"/>
 		<conv:InvertedStringToVisibilityConverter x:Key="InvStringToVisibleConv"/>
+		<BooleanToVisibilityConverter x:Key="BoolToVisibleConv"/>
 	</UserControl.Resources>
 
 	<Grid Height="Auto"
@@ -51,6 +52,7 @@
 						<RowDefinition Height="Auto"/>
 						<RowDefinition Height="30"/>
 						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="30"/>
 						<RowDefinition Height="30"/>
 						<RowDefinition Height="30"/>
 					</Grid.RowDefinitions>
@@ -105,25 +107,25 @@
 							   Margin="0, 0, 0, 8"/>
 
 					<TextBlock Text="Map"
-							   Grid.Row="3"
-							   Grid.Column="0"
-							   FontSize="14"
-							   FontWeight="Bold"
-							   VerticalAlignment="Center"
-							   Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
-							   Margin="0, 0, 0, 8"/>
+					           Grid.Row="3"
+					           Grid.Column="0"
+					           FontSize="14"
+					           FontWeight="Bold"
+					           VerticalAlignment="Center"
+					           Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
+					           Margin="0, 0, 0, 8"/>
+					
+					<TextBlock Text="Custom Map Name"
+					           Grid.Row="4"
+					           Grid.Column="0"
+					           FontSize="14"
+					           FontWeight="Bold"
+					           VerticalAlignment="Center"
+					           Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
+					           Visibility="{Binding IsMapCustom, Converter={StaticResource BoolToVisibleConv}, ConverterParameter=None}"
+					           Margin="0, 0, 0, 8"/>
 
 					<TextBlock Text="Result"
-							   Grid.Row="4"
-							   Grid.Column="0"
-							   FontSize="14"
-							   FontWeight="Bold"
-							   VerticalAlignment="Center"
-							   Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
-							   Visibility="{Binding ScoreType, Converter={StaticResource StringToVisibleConv}, ConverterParameter=Score}"
-							   Margin="0, 0, 0, 8"/>
-
-					<TextBlock Text="Time"
 							   Grid.Row="5"
 							   Grid.Column="0"
 							   FontSize="14"
@@ -132,8 +134,17 @@
 							   Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
 							   Margin="0, 0, 0, 8"/>
 
-					<TextBlock Text="Gained XP"
+					<TextBlock Text="Time"
 							   Grid.Row="6"
+							   Grid.Column="0"
+							   FontSize="14"
+							   FontWeight="Bold"
+							   VerticalAlignment="Center"
+							   Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
+							   Margin="0, 0, 0, 8"/>
+
+					<TextBlock Text="Gained XP"
+							   Grid.Row="7"
 							   Grid.Column="0"
 							   FontSize="14"
 							   FontWeight="Bold"
@@ -259,24 +270,32 @@
 					</Grid>
 
 					<ComboBox  Grid.Row="3"
-							   Grid.Column="1"
-							   Margin="0, 0, 0, 8"
-							   FontSize="14"
-							   ItemsSource="{Binding Maps}"
-							   SelectedIndex="0"
-							   SelectedItem="{Binding Map, UpdateSourceTrigger=PropertyChanged}"/>
+					           Grid.Column="1"
+					           Margin="0, 0, 0, 8"
+					           FontSize="14"
+					           ItemsSource="{Binding Maps}"
+					           SelectedIndex="0"
+					           SelectedItem="{Binding Map, UpdateSourceTrigger=PropertyChanged}"/>
+
+					<TextBox Text="{Binding CustomMapName, UpdateSourceTrigger=PropertyChanged}"
+					         Grid.Row="4"
+					         Grid.Column="1"
+					         FontSize="14"
+					         Margin="0, 0, 0, 8"
+					         Height="22"
+					         Visibility="{Binding IsMapCustom, Converter={StaticResource BoolToVisibleConv}, ConverterParameter=None}"
+					         Style="{DynamicResource TextBoxTheme}"/>
 
 					<TextBlock Text="{Binding Result, UpdateSourceTrigger=PropertyChanged}"
-							   Grid.Row="4"
+							   Grid.Row="5"
 							   Grid.Column="1"
 							   FontSize="14"
 							   Foreground="{Binding Result, Converter={StaticResource ResultToKeyConv}, ConverterParameter=Foreground}"
-							   Visibility="{Binding ScoreType, Converter={StaticResource StringToVisibleConv}, ConverterParameter=Score}"
 							   Margin="0, 0, 0, 8"
 							 Height="22"/>
 
 					<TextBox x:Name="PART_DateTimeBox"
-							 Grid.Row="5"
+							 Grid.Row="6"
 							 Grid.Column="1"
 							 FontSize="14"
 							 Margin="0, 0, 0, 8"
@@ -297,7 +316,7 @@
 					</TextBox>
 
 					<TextBox x:Name="PART_AmountBox"
-							 Grid.Row="6"
+							 Grid.Row="7"
 							 Grid.Column="1"
 							 FontSize="14"
 							 Margin="0, 0, 0, 8"

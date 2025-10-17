@@ -74,7 +74,7 @@ namespace VexTrack.MVVM.ViewModel
 						  where e.HUUID == he.UUID
 						  select e).Any())
 					{
-						string result = HistoryDataCalc.CalcHistoryResultFromScores(Constants.ScoreTypes[he.GameMode], he.Score, he.EnemyScore, he.SurrenderedWin, he.SurrenderedLoss);
+						string result = HistoryDataCalc.CalcHistoryResultFromScores(Constants.ScoreTypes[he.GameMode], he.Description, he.Score, he.EnemyScore, he.SurrenderedWin, he.SurrenderedLoss);
 						HistoryEntryData hed = new HistoryEntryData(TrackingDataHelper.CurrentSeasonUUID, he.UUID, he.GameMode, he.Time, he.Amount, he.Map, result, he.Description, he.Score, he.EnemyScore, he.SurrenderedWin, he.SurrenderedLoss);
 
 						InsertEntry(hed);

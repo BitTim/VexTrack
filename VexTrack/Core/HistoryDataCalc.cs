@@ -5,7 +5,7 @@ namespace VexTrack.Core
 {
 	public static class HistoryDataCalc
 	{
-		public static string CalcHistoryResultFromScores(string scoreType, int score, int enemyScore, bool surrenderedWin, bool surrenderedLoss)
+		public static string CalcHistoryResultFromScores(string scoreType, string description, int score, int enemyScore, bool surrenderedWin, bool surrenderedLoss)
 		{
 			if (scoreType == "Score")
 			{
@@ -13,8 +13,8 @@ namespace VexTrack.Core
 				if (surrenderedLoss) return "Surrendered Loss";
 			}
 
-			if (scoreType == "Placement" || scoreType == "None") enemyScore = -1;
-			if (scoreType == "None") score = -1;
+			if (scoreType == "Placement") enemyScore = -1;
+			if (scoreType == "None") (_, _, score, enemyScore) = DescriptionToScores(description);
 
 			if (enemyScore == -1)
 			{
@@ -81,24 +81,22 @@ namespace VexTrack.Core
 
 			int score = -1;
 			int enemyScore = -1;
+			
 
-			if (!isCustom)
+			string[] splitDesc = description.Split(" ");
+			string scoreStr = "";
+
+			foreach (string token in splitDesc)
 			{
-				string[] splitDesc = description.Split(" ");
-				string scoreStr = "";
+				if (!token.Contains("-")) { continue; }
+				scoreStr = token;
 
-				foreach (string token in splitDesc)
-				{
-					if (!token.Contains("-")) { continue; }
-					scoreStr = token;
+				string[] scoreTokens = scoreStr.Split("-");
+				if (scoreTokens.Length != 2) continue;
+				if (scoreTokens[0] == "" || scoreTokens[1] == "") continue;
 
-					string[] scoreTokens = scoreStr.Split("-");
-					if (scoreTokens.Length != 2) continue;
-					if (scoreTokens[0] == "" || scoreTokens[1] == "") continue;
-
-					(score, enemyScore) = (int.Parse(scoreTokens[0]), int.Parse(scoreTokens[1]));
-					break;
-				}
+				(score, enemyScore) = (int.Parse(scoreTokens[0]), int.Parse(scoreTokens[1]));
+				break;
 			}
 
 			string desc = isCustom ? description : "";
@@ -138,7 +136,7 @@ namespace VexTrack.Core
 			SurrenderedLoss = surrenderedLoss;
 
 			if (Constants.ScoreTypes[GameMode] == "None") Title = Description;
-			else if (Constants.ScoreTypes[GameMode] == "Placement") Title = GameMode + " " + HistoryDataCalc.CalcHistoryResultFromScores("Placement", Score, EnemyScore, SurrenderedWin, SurrenderedLoss);
+			else if (Constants.ScoreTypes[GameMode] == "Placement") Title = GameMode + " " + HistoryDataCalc.CalcHistoryResultFromScores("Placement", Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss);
 			else Title = GameMode + " " + Score.ToString() + "-" + EnemyScore.ToString();
 		}
 	}

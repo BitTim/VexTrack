@@ -273,7 +273,18 @@ namespace VexTrack.Core
 					string map = (string)historyEntry["map"];
 					string description = (string)historyEntry["description"];
 
-					if (map == null || map == "") map = Constants.Maps.Last();
+					// Fix previous typos
+					if (gamemode == "Competetive")
+					{
+						gamemode = "Competitive";
+						reSave = true;
+					}
+
+					if (gamemode == "Snowballfight")
+					{
+						gamemode = "Snowball Fight";
+						reSave = true;
+					}
 
 					string gameMode, desc;
 					int score, enemyScore;

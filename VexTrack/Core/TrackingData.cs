@@ -673,7 +673,7 @@ namespace VexTrack.Core
 				.History.FindIndex(he => he.UUID == hUUID)] = data;
 
 			HistoryViewModel HistoryVM = (HistoryViewModel)ViewModelManager.ViewModels["History"];
-			HistoryVM.EditEntry(new HistoryEntryData(sUUID, hUUID, data.GameMode, data.Time, data.Amount, data.Map, HistoryDataCalc.CalcHistoryResultFromScores(Constants.ScoreTypes[data.GameMode], data.Score, data.EnemyScore, data.SurrenderedWin, data.SurrenderedLoss), data.Description, data.Score, data.EnemyScore, data.SurrenderedWin, data.SurrenderedLoss));
+			HistoryVM.EditEntry(new HistoryEntryData(sUUID, hUUID, data.GameMode, data.Time, data.Amount, data.Map, HistoryDataCalc.CalcHistoryResultFromScores(Constants.ScoreTypes[data.GameMode], data.Description, data.Score, data.EnemyScore, data.SurrenderedWin, data.SurrenderedLoss), data.Description, data.Score, data.EnemyScore, data.SurrenderedWin, data.SurrenderedLoss));
 
 			Recalculate();
 			CallUpdate();

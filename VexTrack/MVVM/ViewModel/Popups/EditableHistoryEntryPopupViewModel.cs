@@ -24,6 +24,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 		private long _time;
 		private int _amount;
 		private string _map;
+		private string _customMapName;
 		private bool _surrenderedWin;
 		private bool _surrenderedLoss;
 
@@ -34,6 +35,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			{
 				_description = value;
 				OnPropertyChanged();
+				OnPropertyChanged(nameof(Result));
 			}
 		}
 		public string GameMode
@@ -50,6 +52,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 				OnPropertyChanged(nameof(EnemyScore));
 				OnPropertyChanged(nameof(Description));
 				OnPropertyChanged(nameof(ScoreType));
+				OnPropertyChanged(nameof(Result));
 			}
 		}
 		public int Score
@@ -97,8 +100,19 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			{
 				_map = value;
 				OnPropertyChanged();
+				OnPropertyChanged(nameof(IsMapCustom));
 			}
 		}
+		public string CustomMapName
+		{
+			get => _customMapName;
+			set
+			{
+				_customMapName = value;
+				OnPropertyChanged();
+			}
+		}
+
 		public bool SurrenderedWin
 		{
 			get => _surrenderedWin;
@@ -126,7 +140,11 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			}
 		}
 
-		public string Result => HistoryDataCalc.CalcHistoryResultFromScores(ScoreType, Score, EnemyScore, SurrenderedWin, SurrenderedLoss);
+		public string Result =>
+			HistoryDataCalc.CalcHistoryResultFromScores(ScoreType, Description, Score, EnemyScore, SurrenderedWin,
+				SurrenderedLoss);
+
+		public bool IsMapCustom => Map == "Custom";
 
 		public EditableHistoryEntryPopupViewModel()
 		{
@@ -139,8 +157,10 @@ namespace VexTrack.MVVM.ViewModel.Popups
 				if (ScoreType == "None") Score = -1;
 				if (ScoreType == "Score") Description = "";
 
-				if (EditMode) TrackingDataHelper.EditHistoryEntry(SUUID, HUUID, new HistoryEntry(HUUID, Time, GameMode, Amount, Map, Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss));
-				else TrackingDataHelper.AddHistoryEntry(SUUID, new HistoryEntry(HUUID, Time, GameMode, Amount, Map, Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss));
+				var map = Map ==  "Custom" ? CustomMapName : Map;
+				
+				if (EditMode) TrackingDataHelper.EditHistoryEntry(SUUID, HUUID, new HistoryEntry(HUUID, Time, GameMode, Amount, map, Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss));
+				else TrackingDataHelper.AddHistoryEntry(SUUID, new HistoryEntry(HUUID, Time, GameMode, Amount, map, Description, Score, EnemyScore, SurrenderedWin, SurrenderedLoss));
 				Close();
 			});
 		}
@@ -163,6 +183,7 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			Description = "";
 			GameMode = Constants.Gamemodes[0];
 			Map = Constants.Maps[0];
+			CustomMapName = "";
 			Amount = 0;
 			Score = 0;
 			EnemyScore = 0;
@@ -181,7 +202,8 @@ namespace VexTrack.MVVM.ViewModel.Popups
 			EnemyScore = data.EnemyScore;
 			Time = data.Time;
 			Amount = data.Amount;
-			Map = data.Map;
+			Map = Constants.Maps.Contains(data.Map) ? data.Map : "Custom";
+			CustomMapName = Constants.Maps.Contains(data.Map) ? "" : data.Map;
 			Description = data.Description;
 			SurrenderedWin = data.SurrenderedWin;
 			SurrenderedLoss = data.SurrenderedLoss;

@@ -3,7 +3,7 @@
 ![Status badge](https://img.shields.io/badge/Status-Stable-green "Development Status")
 ![Latest badge](https://img.shields.io/badge/Latest%20Version-v1.88-9cf "Latest Version")
 ![Platform badge](https://img.shields.io/badge/Platform-Windows%2010/11-informational?logo=windows "Platform")
-[![Language badge](https://img.shields.io/badge/Language-C%23_.NET_6.0-blueviolet?logo=visual-studio&logoColor=ffffff)](https://dotnet.microsoft.com/download/dotnet/6.0 "Language") 
+[![Language badge](https://img.shields.io/badge/Language-C%23_.NET_6.0-blueviolet?logo=visual-studio&logoColor=ffffff)](https://dotnet.microsoft.com/download/dotnet/8.0 "Language") 
 ![GitHub License](https://img.shields.io/github/license/BitTim/VexTrack?logo=github "License")
 ![GitHub repo size](https://img.shields.io/github/repo-size/BitTim/VexTrack?logo=github)
 ![GitHub Contributors](https://img.shields.io/github/contributors/BitTim/VexTrack?logo=github "Contributors")

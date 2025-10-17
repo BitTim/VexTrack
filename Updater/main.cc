@@ -155,32 +155,15 @@ int main(int argc, char* argv[])
 
 	log("Installation", "Started Copying");
 
-	if (legacyMode)
-	{
-		std::filesystem::copy(exPackPath, installPath);
-		log("Installation", "Copying everything in extracted folder due to legacy mode");
-	}
-	else
-	{
-		for (std::string file : fileList)
-		{
-			if (std::filesystem::exists(exPackPath + "\\" + file))
-			{
-				std::filesystem::copy(exPackPath + "\\" + file, installPath + "\\" + file);
-				log("Installation", (exPackPath + "\\" + file + " => " + installPath + "\\" + file).c_str());
-			}
-			else
-			{
-				log("Installation", (exPackPath + "\\" + file + " not found, skipping...").c_str());
-			}
-		}
-	}
+
+	std::filesystem::copy(exPackPath, installPath);
+	log("Installation", "Copying everything in extracted folder");
 	
 
-	log("Installation", "Consluded Copying");
+	log("Installation", "Concluded Copying");
 	log("Finalization", "Creating exe path");
 	
-	std::string exePath = "\"" + installPath + "\\" + exeName + "\"";
+	std::string exePath = "\"" + installPath + "\\" + exeName;
 
 	log("Finalization", exePath.c_str());
 	log("Finalization", "Staring exe");
